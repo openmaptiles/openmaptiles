@@ -71,3 +71,17 @@ CREATE OR REPLACE VIEW boundary_z7 AS (
     WHERE featurecla = 'Adm-1 boundary'
 
 );
+
+CREATE OR REPLACE VIEW boundary_z8 AS (
+    SELECT way AS geom, level AS admin_level,
+           NULL AS scalerank, NULL AS class
+    FROM admin_line
+    WHERE level <= 4
+);
+
+CREATE OR REPLACE VIEW boundary_z10 AS (
+    SELECT way AS geom, level AS admin_level,
+           NULL AS scalerank, NULL AS class
+    FROM admin_line
+    WHERE level <= 8
+);
