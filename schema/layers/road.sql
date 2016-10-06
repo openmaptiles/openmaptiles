@@ -71,15 +71,24 @@ CREATE OR REPLACE VIEW road_z12 AS (
     SELECT way AS geom, class::text
     FROM roads
     WHERE class IN ('motorway','trunk','primary', 'secondary', 'tertiary', 'minor')
+    UNION ALL
+    SELECT way AS geom, class::text
+    FROM road_areas
 );
 
 CREATE OR REPLACE VIEW road_z13 AS (
     SELECT way AS geom, class::text
     FROM roads
     WHERE class NOT IN ('path')
+    UNION ALL
+    SELECT way AS geom, class::text
+    FROM road_areas
 );
 
 CREATE OR REPLACE VIEW road_z14 AS (
     SELECT way AS geom, class::text
     FROM roads
+    UNION ALL
+    SELECT way AS geom, class::text
+    FROM road_areas
 );
