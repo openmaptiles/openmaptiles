@@ -66,6 +66,16 @@ Import [Natural Earth](http://www.naturalearthdata.com/) data.
 docker-compose run import-natural-earth
 ```
 
+Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables).
+In order to do this you first need to clone the latest ClearTables.
+
+- [ ] *Should we use a submodule for ClearTables? On the other hand it is quite convenient to able to work directly on ClearTables while working on the style.*
+
+```bash
+git clone https://github.com/ClearTables/ClearTables.git
+docker-compose run import-osm
+```
+
 ### Work on Vector Tile Schema
 
 Run the `db-schema` container each time you modify SQL code inside `./schema`.
