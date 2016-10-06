@@ -1,0 +1,5 @@
+# Mapnik XML
+data.xml
+*.thumb.png
+*.swp
+*.pbf
