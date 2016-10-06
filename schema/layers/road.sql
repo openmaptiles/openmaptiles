@@ -22,19 +22,19 @@ CREATE OR REPLACE VIEW ne_10m_global_roads AS (
 CREATE OR REPLACE VIEW road_z4 AS (
     SELECT *
     FROM ne_10m_global_roads
-    WHERE scalerank <= 4
+    WHERE scalerank <= 5
 );
 
 CREATE OR REPLACE VIEW road_z5 AS (
     SELECT *
     FROM ne_10m_global_roads
-    WHERE scalerank <= 5
+    WHERE scalerank <= 6
 );
 
 CREATE OR REPLACE VIEW road_z6 AS (
     SELECT *
     FROM ne_10m_global_roads
-    WHERE scalerank <= 6
+    WHERE scalerank <= 7
 );
 
 CREATE OR REPLACE VIEW road_z7 AS (
