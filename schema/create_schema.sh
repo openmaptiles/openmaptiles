@@ -19,6 +19,7 @@ function main() {
     exec_psql_file "layers/water.sql"
     exec_psql_file "layers/building.sql"
     exec_psql_file "layers/boundary.sql"
+    exec_psql_file "layers/road.sql"
 }
 
 main
