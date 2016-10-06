@@ -51,6 +51,44 @@ Layer:
     properties: 
       "buffer-size": 4
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: boundary
+    Datasource: 
+      dbname: osm
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: geom
+      geometry_table: ''
+      host: db
+      key_field: ''
+      key_field_as_attribute: ''
+      max_size: 512
+      password: osm
+      port: 5432
+      srid: ''
+      table: |-
+        ( SELECT *
+          FROM (
+              SELECT * FROM boundary_z0 WHERE z(!scale_denominator!) = 0
+              UNION ALL
+              SELECT * FROM boundary_z1 WHERE z(!scale_denominator!) BETWEEN 1 AND 2
+              UNION ALL
+              SELECT * FROM boundary_z3 WHERE z(!scale_denominator!) BETWEEN 3 AND 4
+              UNION ALL
+              SELECT * FROM boundary_z5 WHERE z(!scale_denominator!) BETWEEN 5 AND 6
+              UNION ALL
+              SELECT * FROM boundary_z7 WHERE z(!scale_denominator!) >= 7
+          ) AS admin
+          WHERE geom && !bbox!
+        ) AS data
+      type: postgis
+      user: osm
+    description: Buildings
+    fields: 
+      admin_level: Number
+      class: String
+      scalerank: Number
+    properties: 
+      "buffer-size": 4
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: building
     Datasource: 
       dbname: osm

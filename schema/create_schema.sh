@@ -18,6 +18,7 @@ function main() {
     exec_psql_file "$VT_UTIL_DIR/postgis-vt-util.sql"
     exec_psql_file "layers/water.sql"
     exec_psql_file "layers/building.sql"
+    exec_psql_file "layers/boundary.sql"
 }
 
 main
