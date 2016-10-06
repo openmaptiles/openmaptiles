@@ -122,7 +122,6 @@ Layer:
       user: osm
     description: Buildings
     fields: 
-      featureclass: String
       scalerank: Number
       type: String
     properties: 
@@ -151,7 +150,7 @@ Layer:
               WHERE z(!scale_denominator!) BETWEEN 2 AND 4
               UNION ALL
               SELECT * FROM ice_z5
-              WHERE z(!scale_denominator!) BETWEEN 5 AND 7
+              WHERE z(!scale_denominator!) BETWEEN 5 AND 8
           ) AS ice
           WHERE geom && !bbox!
         ) AS t

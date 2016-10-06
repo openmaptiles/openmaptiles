@@ -1,8 +1,8 @@
 CREATE OR REPLACE VIEW ne_10m_global_roads AS (
-    SELECT geom, scalerank, featurecla as featureclass, type
-    FROM ne_10m_roads WHERE continent <> 'North America'
+    SELECT geom, scalerank, type
+    FROM ne_10m_roads WHERE continent <> 'North America' AND featurecla = 'Road'
     UNION ALL
-    SELECT geom, scalerank, class as featureclass, type
+    SELECT geom, scalerank, type
     FROM ne_10m_roads_north_america
 );
 
