@@ -78,9 +78,10 @@ docker-compose run import-osm
 
 ### Work on Vector Tile Schema
 
-Run the `db-schema` container each time you modify SQL code inside `./schema`.
+Build and run the `db-schema` container each time you modify SQL code inside `./schema`.
 
 ```bash
+docker-compose build db-schema
 docker-compose run db-schema
 ```
 
