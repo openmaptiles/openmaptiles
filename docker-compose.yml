@@ -1,0 +1,34 @@
+version: '2'
+volumes:
+  pgdata:
+services:
+  postgres:
+    image: "osm2vectortiles/postgis:latest"
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+    ports:
+     - "5432"
+    env_file: .env
+  db-schema:
+    build: "./schema"
+    env_file: .env
+    links:
+    - postgres:postgres
+  import-natural-earth:
+    image: "osm2vectortiles/import-natural-earth"
+    env_file: .env
+    links:
+    - postgres
+  import-water:
+    image: "osm2vectortiles/import-water"
+    env_file: .env
+    links:
+    - postgres
+  mapbox-studio:
+    image: "osm2vectortiles/mapbox-studio"
+    volumes:
+     - ./:/projects/osm2vectortiles.tm2source
+    links:
+     - postgres:db
+    ports:
+     - "3000:3000"
