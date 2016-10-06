@@ -22,18 +22,22 @@ This vector tile schema depends on a database containing several different data 
 which need to be imported first. You can use your own ETL process or use the Docker containers from
 OSM2VectorTiles.
 
-Your PostGIS database needs the following data imported
+Your PostGIS database needs the following data imported. If you use our Docker based workflow this is very straightforward to setup
+but if you don't want to use Docker you can set up your own ETL pipeline to import the required data sources.
 
 - [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables)
 - [OpenStreetMapData](http://openstreetmapdata.com/) split and simplified water polygons
 - [Natural Earth](http://www.naturalearthdata.com/)
+- [PostGIS Vector Tile Utils](https://github.com/mapbox/postgis-vt-util) for `LabelGrid` and `z` function
 
-## Schema
+## Database Schema
 
-The vector data source is using zoom level views for each layer and contains useful functions.
-The PostgreSQL code can be found in `sql`.
+The vector data source is using views, generalized tables and functions to share code between layers.
+The SQL code can be found in `./schema`. The different features from OSM however are determined in the [ClearTables](https://github.com/ClearTables/ClearTables) project.
 
-*TODO: Write import container*
+Each zoom level in a layer has it's own view where the data is *filtered* for the zoom level.
+This keeps the filtering logic per zoom level out of the TM2Source `data.yml`.
+To work on the database and vector tile schema read the *Develop* section.
 
 ## Develop
 
@@ -78,3 +82,7 @@ docker-compose up mapbox-studio
 ```
 
 ![Develop on OSM2VectorTiles with Mapbox Studio Classic](./mapbox_studio_classic.gif)
+
+## License
+
+All code in this repository is under the [MIT license](./LICENSE) and the cartography decisions encoded in the schema and SQL is licensed under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
