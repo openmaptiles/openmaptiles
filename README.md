@@ -62,7 +62,7 @@ Import [Natural Earth](http://www.naturalearthdata.com/) data.
 docker-compose run import-natural-earth
 ```
 
-### Work on Schema
+### Work on Vector Tile Schema
 
 Run the `db-schema` container each time you modify SQL code inside `./schema`.
 
@@ -76,3 +76,5 @@ and visit `localhost:3000` and open the vector source project under `projects/os
 ```bash
 docker-compose up mapbox-studio
 ```
+
+![Develop on OSM2VectorTiles with Mapbox Studio Classic](./mapbox_studio_classic.gif)
