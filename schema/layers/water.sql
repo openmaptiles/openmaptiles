@@ -26,7 +26,7 @@ CREATE OR REPLACE VIEW water_z3 AS (
 );
 
 CREATE OR REPLACE VIEW water_z4 AS (
-    SELECT geom FROM ne_10m_ocean
+    SELECT geom FROM ne_50m_ocean
     UNION ALL
     SELECT geom FROM ne_50m_lakes
     UNION ALL
@@ -34,7 +34,7 @@ CREATE OR REPLACE VIEW water_z4 AS (
     WHERE featurecla = 'River'
 );
 
-CREATE OR REPLACE VIEW water_z5 AS (
+CREATE OR REPLACE VIEW water_z6 AS (
     SELECT geom FROM ne_10m_ocean
     UNION ALL
     SELECT geom FROM ne_10m_lakes
