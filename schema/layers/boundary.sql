@@ -38,6 +38,17 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
     FROM ne_50m_admin_1_states_provinces_lines
 );
 
+CREATE OR REPLACE VIEW boundary_z4 AS (
+    SELECT geom, 0 AS admin_level, scalerank,
+           boundary_class(featurecla) AS class
+    FROM ne_10m_admin_0_boundary_lines_land
+    UNION ALL
+    SELECT geom, 1 AS admin_level, scalerank,
+           boundary_class(featurecla) AS class
+    FROM ne_10m_admin_1_states_provinces_lines_shp
+    WHERE scalerank <= 3 AND featurecla = 'Adm-1 boundary'
+);
+
 CREATE OR REPLACE VIEW boundary_z5 AS (
     SELECT geom, 0 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
