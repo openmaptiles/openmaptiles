@@ -125,6 +125,41 @@ Layer:
     properties: 
       "buffer-size": 4
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  - id: ice
+    Datasource: 
+      dbname: osm
+      extent: -20037508.34,-20037508.34,20037508.34,20037508.34
+      geometry_field: geom
+      geometry_table: ''
+      host: db
+      key_field: ''
+      key_field_as_attribute: ''
+      max_size: 512
+      password: osm
+      port: 5432
+      srid: ''
+      table: |-
+        ( SELECT geom, type
+          FROM (
+              SELECT * FROM ice_z0
+              WHERE z(!scale_denominator!) BETWEEN 0 AND 1
+              UNION ALL
+              SELECT * FROM ice_z2
+              WHERE z(!scale_denominator!) BETWEEN 2 AND 4
+              UNION ALL
+              SELECT * FROM ice_z5
+              WHERE z(!scale_denominator!) BETWEEN 5 AND 7
+          ) AS ice
+          WHERE geom && !bbox!
+        ) AS t
+      type: postgis
+      user: osm
+    description: Ice shelves
+    fields: 
+      type: String
+    properties: 
+      "buffer-size": 4
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   - id: building
     Datasource: 
       dbname: osm

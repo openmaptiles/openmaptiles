@@ -20,6 +20,7 @@ function main() {
     exec_psql_file "layers/building.sql"
     exec_psql_file "layers/boundary.sql"
     exec_psql_file "layers/road.sql"
+    exec_psql_file "layers/ice.sql"
 }
 
 main
