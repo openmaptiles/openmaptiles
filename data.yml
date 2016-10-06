@@ -34,7 +34,10 @@ Layer:
               WHERE z(!scale_denominator!) = 1
               UNION ALL
               SELECT * FROM water_z2
-              WHERE z(!scale_denominator!) BETWEEN 2 AND 3
+              WHERE z(!scale_denominator!) = 2
+              UNION ALL
+              SELECT * FROM water_z3
+              WHERE z(!scale_denominator!) = 3
               UNION ALL
               SELECT * FROM water_z4
               WHERE z(!scale_denominator!) = 4
