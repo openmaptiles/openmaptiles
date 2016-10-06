@@ -215,8 +215,8 @@ Layer:
       table: |-
         ( SELECT geom, scalerank
           FROM (
-              SELECT * FROM urban_z4
-              WHERE z(!scale_denominator!) BETWEEN 4 AND 5
+              SELECT * FROM urban_z5
+              WHERE z(!scale_denominator!) = 5
               UNION ALL
               SELECT * FROM urban_z6
               WHERE z(!scale_denominator!) >= 6 AND scalerank-1 <= z(!scale_denominator!)
