@@ -48,8 +48,11 @@ Layer:
               SELECT * FROM water_z6
               WHERE z(!scale_denominator!) = 6
               UNION ALL
-              SELECT * FROM water_z8
-              WHERE z(!scale_denominator!) BETWEEN 8 AND 10
+              SELECT ST_SimplifyPreserveTopology(geom, 200) AS geom FROM water_z8
+              WHERE z(!scale_denominator!) = 8
+              UNION ALL
+              SELECT ST_SimplifyPreserveTopology(geom, 100) AS geom FROM water_z8
+              WHERE z(!scale_denominator!) BETWEEN 9 AND 10
               UNION ALL
               SELECT * FROM water_z11
               WHERE z(!scale_denominator!) = 11

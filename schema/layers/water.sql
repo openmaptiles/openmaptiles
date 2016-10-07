@@ -54,10 +54,18 @@ CREATE OR REPLACE VIEW water_z6 AS (
 
 CREATE OR REPLACE VIEW water_z8 AS (
     SELECT way AS geom FROM water_areas
-    WHERE way_area > 100000
+    WHERE way_area > 1000000
 	UNION ALL
 	SELECT way AS geom FROM waterways
-	WHERE waterway IN ('river')
+	WHERE waterway IN ('river') AND ST_Length(way) > 10000
+);
+
+CREATE OR REPLACE VIEW water_z9 AS (
+    SELECT way AS geom FROM water_areas
+    WHERE way_area > 500000
+	UNION ALL
+	SELECT way AS geom FROM waterways
+	WHERE waterway IN ('river') AND ST_Length(way) > 5000
 );
 
 CREATE OR REPLACE VIEW water_z11 AS (
