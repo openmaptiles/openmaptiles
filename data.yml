@@ -197,7 +197,7 @@ Layer:
       table: |-
         ( SELECT geom, type
           FROM (
-              SELECT * FROM ice_z0
+              SELECT ST_Simplify(geom, 80000) AS geom, type FROM ice_z0
               WHERE z(!scale_denominator!) BETWEEN 0 AND 1
               UNION ALL
               SELECT * FROM ice_z2
