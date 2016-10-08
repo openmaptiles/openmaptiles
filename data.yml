@@ -104,7 +104,7 @@ Layer:
     Datasource: 
       dbname: osm
       extent: -20037508.34,-20037508.34,20037508.34,20037508.34
-      geometry_field: way
+      geometry_field: geom
       geometry_table: ''
       host: db
       key_field: ''
@@ -112,22 +112,8 @@ Layer:
       max_size: 512
       password: osm
       port: 5432
-      srid: ''
-      table: |-
-        ( SELECT
-            osm_id,
-            way,
-            least(greatest(3, COALESCE(height, levels*3.66,5)),400)^.7 AS render_height
-          FROM (
-              SELECT osm_id, ST_Simplify(way, 10) AS way, height, levels FROM building_z13
-              WHERE z(!scale_denominator!) = 13
-              UNION ALL
-              SELECT * FROM building_z14
-              WHERE z(!scale_denominator!) >= 14
-          ) AS water
-          WHERE way && !bbox!
-          ORDER BY render_height, ST_YMin(way) DESC
-        ) AS data
+      srid: 900913
+      table: (SELECT * FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
       type: postgis
       user: osm
     description: Buildings
