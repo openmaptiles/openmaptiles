@@ -68,34 +68,8 @@ Layer:
       max_size: 512
       password: osm
       port: 5432
-      srid: ''
-      table: |-
-        ( SELECT *
-          FROM (
-            SELECT * FROM road_z4 WHERE z(!scale_denominator!) BETWEEN 4 AND 5
-            UNION ALL
-            SELECT * FROM road_z5 WHERE z(!scale_denominator!) = 5
-            UNION ALL
-            SELECT * FROM road_z6 WHERE z(!scale_denominator!) = 6
-            UNION ALL
-            SELECT * FROM road_z7 WHERE z(!scale_denominator!) = 7
-            UNION ALL
-            SELECT * FROM road_z8 WHERE z(!scale_denominator!) = 8
-            UNION ALL
-            SELECT ST_Simplify(geom, 200), class FROM road_z9 WHERE z(!scale_denominator!) = 9
-            UNION ALL
-            SELECT ST_Simplify(geom, 120), class FROM road_z10 WHERE z(!scale_denominator!) = 10
-            UNION ALL
-            SELECT ST_Simplify(geom, 50), class FROM road_z11 WHERE z(!scale_denominator!) = 11
-            UNION ALL
-            SELECT ST_Simplify(geom, 20), class FROM road_z12 WHERE z(!scale_denominator!) = 12
-            UNION ALL
-            SELECT * FROM road_z13 WHERE z(!scale_denominator!) = 13
-            UNION ALL
-            SELECT * FROM road_z14 WHERE z(!scale_denominator!) >= 14
-          ) AS road
-          WHERE geom && !bbox!
-        ) AS data
+      srid: 900913
+      table: (SELECT * FROM layer_road(!bbox!, z(!scale_denominator!))) AS t
       type: postgis
       user: osm
     description: Buildings
