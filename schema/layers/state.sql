@@ -1,3 +1,11 @@
+CREATE OR REPLACE FUNCTION fix_win1252_shp_encoding(str TEXT) RETURNS TEXT
+AS $$
+BEGIN
+    RETURN convert_from(convert_to(str, 'WIN1252'), 'UTF-8');
+    EXCEPTION WHEN others THEN RETURN str;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
 CREATE TABLE IF NOT EXISTS state_label AS (
     SELECT topoint(geom) AS geom,
            name_local, fix_win1252_shp_encoding(name) AS name_en,
@@ -9,14 +17,6 @@ CREATE TABLE IF NOT EXISTS state_label AS (
     AND scalerank <= 3 AND labelrank <= 2
 );
 CREATE INDEX IF NOT EXISTS state_label_geom_idx ON state_label USING gist(geom);
-
-CREATE OR REPLACE FUNCTION fix_win1252_shp_encoding(str TEXT) RETURNS TEXT
-AS $$
-BEGIN
-    RETURN convert_from(convert_to(str, 'WIN1252'), 'UTF-8');
-    EXCEPTION WHEN others THEN RETURN str;
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE OR REPLACE VIEW state_z3 AS (
     SELECT * FROM state_label
