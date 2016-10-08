@@ -121,4 +121,4 @@ RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
     )
     SELECT geom, admin_level, scalerank::int, class FROM zoom_levels
     WHERE geom && bbox;
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL IMMUTABLE;
