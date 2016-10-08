@@ -22,6 +22,9 @@ function main() {
     exec_psql_file "layers/road.sql"
     exec_psql_file "layers/ice.sql"
     exec_psql_file "layers/urban.sql"
+    exec_psql_file "layers/place.sql"
+    exec_psql_file "layers/country.sql"
+    exec_psql_file "layers/state.sql"
 }
 
 main
