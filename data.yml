@@ -135,21 +135,8 @@ Layer:
       max_size: 512
       password: osm
       port: 5432
-      srid: ''
-      table: |-
-        ( SELECT geom, scalerank
-          FROM (
-              SELECT * FROM urban_z4
-              WHERE z(!scale_denominator!) = 4
-              UNION ALL
-              SELECT * FROM urban_z5
-              WHERE z(!scale_denominator!) = 5
-              UNION ALL
-              SELECT * FROM urban_z6
-              WHERE z(!scale_denominator!) >= 6 AND scalerank-1 <= z(!scale_denominator!)
-          ) AS urban
-          WHERE geom && !bbox!
-        ) AS t
+      srid: 900913
+      table: (SELECT * FROM layer_urban(!bbox!, z(!scale_denominator!))) AS t
       type: postgis
       user: osm
     description: Buildings
