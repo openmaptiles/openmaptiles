@@ -12,12 +12,11 @@ RETURNS TABLE(geom geometry, osm_id bigint, render_height float) AS $$
     least(greatest(3, COALESCE(height, levels*3.66,5)),400)^.7 AS render_height
     FROM (
         SELECT osm_id, ST_Simplify(way, 10) AS way, height, levels FROM building_z13
-        WHERE zoom_level = 13
+        WHERE zoom_level = 13 AND way && bbox
         UNION ALL
         SELECT * FROM building_z14
-        WHERE zoom_level >= 14
+        WHERE zoom_level >= 14 AND way && bbox
     ) AS zoom_levels
-    WHERE way && bbox
     ORDER BY render_height, ST_YMin(way) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
 
