@@ -85,3 +85,40 @@ CREATE OR REPLACE VIEW boundary_z10 AS (
     FROM admin_line
     WHERE level <= 8
 );
+
+CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
+RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
+    WITH zoom_levels AS (
+        SELECT * FROM boundary_z0 WHERE zoom_level = 0
+        UNION ALL
+        SELECT * FROM boundary_z1 WHERE zoom_level BETWEEN 1 AND 2
+        UNION ALL
+        SELECT * FROM boundary_z3 WHERE zoom_level = 3
+        UNION ALL
+        SELECT * FROM boundary_z4 WHERE zoom_level = 4
+        UNION ALL
+        SELECT * FROM boundary_z5 WHERE zoom_level BETWEEN 5 AND 6
+        UNION ALL
+        SELECT * FROM boundary_z7 WHERE zoom_level = 7
+        UNION ALL
+        SELECT ST_Simplify(geom, 400) AS geom, admin_level, scalerank, class
+        FROM boundary_z8 WHERE zoom_level = 8
+        UNION ALL
+        SELECT ST_Simplify(geom, 320) AS geom, admin_level, scalerank, class
+        FROM boundary_z8 WHERE zoom_level = 9
+        UNION ALL
+        SELECT ST_Simplify(geom, 150) AS geom, admin_level, scalerank, class
+        FROM boundary_z10 WHERE zoom_level = 10
+        UNION ALL
+        SELECT ST_Simplify(geom, 100) AS geom, admin_level, scalerank, class
+        FROM boundary_z10 WHERE zoom_level = 11
+        UNION ALL
+        SELECT ST_Simplify(geom, 50) AS geom, admin_level, scalerank, class
+        FROM boundary_z10 WHERE zoom_level = 12
+        UNION ALL
+        SELECT geom, admin_level, scalerank, class
+        FROM boundary_z10 WHERE zoom_level >= 13
+    )
+    SELECT geom, admin_level, scalerank::int, class FROM zoom_levels
+    WHERE geom && bbox;
+$$ LANGUAGE SQL;
