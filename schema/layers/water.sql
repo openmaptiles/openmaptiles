@@ -104,7 +104,7 @@ CREATE OR REPLACE VIEW water_z14 AS (
 
 CREATE OR REPLACE FUNCTION layer_water (bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry) AS $$
-    WITH zoom_levels AS (
+    SELECT geom FROM (
         SELECT * FROM water_z0
         WHERE zoom_level = 0
         UNION ALL
@@ -143,7 +143,6 @@ RETURNS TABLE(geom geometry) AS $$
         UNION ALL
         SELECT * FROM water_z14
         WHERE zoom_level >= 14
-    )
-    SELECT geom FROM zoom_levels
+    ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;

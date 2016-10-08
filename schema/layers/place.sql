@@ -54,37 +54,7 @@ CREATE OR REPLACE VIEW place_z13 AS (
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(geom geometry, name text, class text, rank text, scalerank int) AS $$
-    WITH zoom_levels AS (
-        SELECT * FROM place_z2
-        WHERE zoom_level = 2
-        UNION ALL
-        SELECT * FROM place_z3
-        WHERE zoom_level = 3
-        UNION ALL
-        SELECT * FROM place_z4
-        WHERE zoom_level = 4
-        UNION ALL
-        SELECT * FROM place_z5
-        WHERE zoom_level = 5
-        UNION ALL
-        SELECT * FROM place_z6
-        WHERE zoom_level = 6
-        UNION ALL
-        SELECT * FROM place_z7
-        WHERE zoom_level = 7
-        UNION ALL
-        SELECT * FROM place_z8
-        WHERE zoom_level BETWEEN 8 AND 9
-        UNION ALL
-        SELECT * FROM place_z10
-        WHERE zoom_level = 10
-        UNION ALL
-        SELECT * FROM place_z11
-        WHERE zoom_level BETWEEN 11 AND 12
-        UNION ALL
-        SELECT * FROM place_z13
-        WHERE zoom_level >= 13
-    ), ranked_places AS (
+    SELECT geom, name, class, rank::text, scalerank FROM (
         SELECT geom, name, class, rank, scalerank,
         row_number() OVER (
             PARTITION BY LabelGrid(geom, 150 * pixel_width)
@@ -98,10 +68,39 @@ RETURNS TABLE(geom geometry, name text, class text, rank text, scalerank int) AS
             population DESC NULLS LAST,
             length(name) DESC
         ) AS gridrank
-        FROM zoom_levels
+        FROM (
+            SELECT * FROM place_z2
+            WHERE zoom_level = 2
+            UNION ALL
+            SELECT * FROM place_z3
+            WHERE zoom_level = 3
+            UNION ALL
+            SELECT * FROM place_z4
+            WHERE zoom_level = 4
+            UNION ALL
+            SELECT * FROM place_z5
+            WHERE zoom_level = 5
+            UNION ALL
+            SELECT * FROM place_z6
+            WHERE zoom_level = 6
+            UNION ALL
+            SELECT * FROM place_z7
+            WHERE zoom_level = 7
+            UNION ALL
+            SELECT * FROM place_z8
+            WHERE zoom_level BETWEEN 8 AND 9
+            UNION ALL
+            SELECT * FROM place_z10
+            WHERE zoom_level = 10
+            UNION ALL
+            SELECT * FROM place_z11
+            WHERE zoom_level BETWEEN 11 AND 12
+            UNION ALL
+            SELECT * FROM place_z13
+            WHERE zoom_level >= 13
+        ) AS zoom_levels
         WHERE geom && bbox
-    )
-    SELECT geom, name, class, rank::text, scalerank FROM ranked_places
+    ) AS ranked_places
     WHERE
         zoom_level <= 7 OR
         (zoom_level = 8 AND gridrank <= 4) OR

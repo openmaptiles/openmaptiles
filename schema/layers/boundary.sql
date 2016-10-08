@@ -88,7 +88,7 @@ CREATE OR REPLACE VIEW boundary_z10 AS (
 
 CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
-    WITH zoom_levels AS (
+    SELECT geom, admin_level, scalerank::int, class FROM (
         SELECT * FROM boundary_z0 WHERE zoom_level = 0
         UNION ALL
         SELECT * FROM boundary_z1 WHERE zoom_level BETWEEN 1 AND 2
@@ -118,7 +118,6 @@ RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
         UNION ALL
         SELECT geom, admin_level, scalerank, class
         FROM boundary_z10 WHERE zoom_level >= 13
-    )
-    SELECT geom, admin_level, scalerank::int, class FROM zoom_levels
+    ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;

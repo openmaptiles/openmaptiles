@@ -29,16 +29,15 @@ CREATE OR REPLACE VIEW state_z4 AS (
 
 CREATE OR REPLACE FUNCTION layer_state(bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry, name text, name_en text, abbrev text, postal text, scalerank int, labelrank int) AS $$
-    WITH zoom_levels AS (
+    SELECT geom,
+    COALESCE(name_local, name_en) AS name_local, name_en,
+    abbrev, postal, scalerank::int, labelrank::int FROM (
         SELECT * FROM state_z3
         WHERE zoom_level = 3
         UNION ALL
         SELECT * FROM state_z4
         WHERE zoom_level >= 4
-    )
-    SELECT geom,
-    COALESCE(name_local, name_en) AS name_local, name_en,
-    abbrev, postal, scalerank::int, labelrank::int FROM zoom_levels
+    ) AS t
     WHERE geom && bbox
     ORDER BY scalerank ASC, labelrank ASC, shape_area DESC;
 $$ LANGUAGE SQL IMMUTABLE;

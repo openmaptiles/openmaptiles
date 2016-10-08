@@ -124,6 +124,6 @@ RETURNS TABLE(geom geometry, class text) AS $$
         SELECT * FROM road_z13 WHERE zoom_level = 13
         UNION ALL
         SELECT * FROM road_z14 WHERE zoom_level >= 14
-    ) AS t
+    ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;

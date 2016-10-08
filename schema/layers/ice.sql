@@ -18,7 +18,7 @@ CREATE OR REPLACE VIEW ice_z5 AS (
 
 CREATE OR REPLACE FUNCTION layer_ice(bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry, class text) AS $$
-    WITH zoom_levels AS (
+    SELECT geom, type::text AS class FROM (
         SELECT ST_Simplify(geom, 80000) AS geom, type FROM ice_z0
         WHERE zoom_level BETWEEN 0 AND 1
         UNION ALL
@@ -27,7 +27,6 @@ RETURNS TABLE(geom geometry, class text) AS $$
         UNION ALL
         SELECT * FROM ice_z5
         WHERE zoom_level BETWEEN 5 AND 8
-    )
-    SELECT geom, type::text AS class FROM zoom_levels
+    ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
