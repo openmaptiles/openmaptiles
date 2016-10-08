@@ -52,21 +52,25 @@ CREATE OR REPLACE VIEW water_z6 AS (
     WHERE featurecla = 'River'
 );
 
-CREATE OR REPLACE VIEW water_z8 AS (
-    SELECT way AS geom FROM water_areas
+CREATE TABLE IF NOT EXISTS water_z8 AS (
+    SELECT geom FROM ne_10m_ocean
+    UNION ALL
+    SELECT ST_SimplifyPreserveTopology(way, 200) AS geom FROM water_areas
     WHERE way_area > 1000000
     UNION ALL
-    SELECT way AS geom FROM waterways
+    SELECT ST_Simplify(way, 200) AS geom FROM waterways
     WHERE waterway IN ('river') AND ST_Length(way) > 10000
 );
+CREATE INDEX IF NOT EXISTS water_z8_geom_idx ON water_z8 USING gist(geom);
 
-CREATE OR REPLACE VIEW water_z9 AS (
-    SELECT way AS geom FROM water_areas
+CREATE TABLE IF NOT EXISTS water_z9 AS (
+    SELECT ST_SimplifyPreserveTopology(way, 100) AS geom FROM water_areas
     WHERE way_area > 500000
     UNION ALL
-    SELECT way AS geom FROM waterways
+    SELECT ST_Simplify(way,100) AS geom FROM waterways
     WHERE waterway IN ('river') AND ST_Length(way) > 5000
 );
+CREATE INDEX IF NOT EXISTS water_z9_geom_idx ON water_z9 USING gist(geom);
 
 CREATE OR REPLACE VIEW water_z11 AS (
     SELECT way AS geom FROM water_areas
@@ -120,12 +124,12 @@ RETURNS TABLE(geom geometry) AS $$
         WHERE zoom_level = 5
         UNION ALL
         SELECT * FROM water_z6
-        WHERE zoom_level = 6
+        WHERE zoom_level BETWEEN 6 AND 7
         UNION ALL
-        SELECT ST_SimplifyPreserveTopology(geom, 200) AS geom FROM water_z8
+        SELECT geom FROM water_z8
         WHERE zoom_level = 8
         UNION ALL
-        SELECT ST_SimplifyPreserveTopology(geom, 100) AS geom FROM water_z8
+        SELECT geom FROM water_z9
         WHERE zoom_level BETWEEN 9 AND 10
         UNION ALL
         SELECT * FROM water_z11
@@ -142,4 +146,4 @@ RETURNS TABLE(geom geometry) AS $$
     )
     SELECT geom FROM zoom_levels
     WHERE geom && bbox;
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL IMMUTABLE;
