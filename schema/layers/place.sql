@@ -79,7 +79,7 @@ RETURNS TABLE(geom geometry, name text, class text, rank text, scalerank int) AS
         SELECT * FROM place_z10
         WHERE zoom_level = 10
         UNION ALL
-        SELECT * FROM place_z12
+        SELECT * FROM place_z11
         WHERE zoom_level BETWEEN 11 AND 12
         UNION ALL
         SELECT * FROM place_z13
