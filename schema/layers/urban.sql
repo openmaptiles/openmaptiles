@@ -24,7 +24,7 @@ RETURNS TABLE(geom geometry, scalerank int) AS $$
         WHERE zoom_level = 5
         UNION ALL
         SELECT * FROM urban_z6
-        WHERE zoom_level >= 6 AND scalerank-1 <= zoom_level
+        WHERE zoom_level BETWEEN 6 AND 10 AND scalerank-1 <= zoom_level
     ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
