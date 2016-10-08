@@ -40,3 +40,16 @@ services:
      - postgres:db
     ports:
      - "3000:3000"
+  export-vectortiles:
+    image: "osm2vectortiles/export-vectortiles"
+    volumes:
+    - ./data:/export
+    - ./:/tm2source
+    links:
+    - postgres:postgres
+    env_file: .env
+    environment:
+      #BBOX: "8.25,46.97,9.58,47.52"
+      #BBOX: "5.97,45.75,10.7,47.72"
+      MIN_ZOOM: "0"
+      MAX_ZOOM: "7"
