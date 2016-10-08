@@ -157,71 +157,15 @@ Layer:
       max_size: 512
       password: osm
       port: 5432
-      srid: ''
-      table: |-
-        ( 
-          SELECT * FROM (
-          SELECT geom, name, class, rank, scalerank,
-          row_number() OVER (
-            PARTITION BY LabelGrid(geom, 150 * !pixel_width!)
-            ORDER BY scalerank ASC NULLS LAST,
-            CASE class
-              WHEN 'settlement' THEN 10
-              WHEN 'subregion' THEN 5
-              WHEN 'locality' THEN 2 ELSE 1
-            END DESC,
-            rank DESC,
-            population DESC NULLS LAST,
-            length(name) DESC
-          ) AS gridrank
-          FROM (
-              SELECT * FROM place_z2
-              WHERE z(!scale_denominator!) = 2
-              UNION ALL
-              SELECT * FROM place_z3
-              WHERE z(!scale_denominator!) = 3
-              UNION ALL
-              SELECT * FROM place_z4
-              WHERE z(!scale_denominator!) = 4
-              UNION ALL
-              SELECT * FROM place_z5
-              WHERE z(!scale_denominator!) = 5
-              UNION ALL
-              SELECT * FROM place_z6
-              WHERE z(!scale_denominator!) = 6
-              UNION ALL
-              SELECT * FROM place_z7
-              WHERE z(!scale_denominator!) = 7
-              UNION ALL
-              SELECT * FROM place_z8
-              WHERE z(!scale_denominator!) BETWEEN 8 AND 9
-              UNION ALL
-              SELECT * FROM place_z10
-              WHERE z(!scale_denominator!) = 10
-              UNION ALL
-              SELECT * FROM place_z12
-              WHERE z(!scale_denominator!) BETWEEN 11 AND 12
-              UNION ALL
-              SELECT * FROM place_z13
-              WHERE z(!scale_denominator!) >= 13
-          ) AS place
-          WHERE geom && !bbox!
-          ) AS ranked_place
-          WHERE z(!scale_denominator!) <= 7 OR
-               (z(!scale_denominator!) = 8 AND gridrank <= 4) OR 
-               (z(!scale_denominator!) = 9 AND gridrank <= 9) OR 
-               (z(!scale_denominator!) = 10 AND gridrank <= 9) OR
-               (z(!scale_denominator!) = 11 AND gridrank <= 9) OR
-               (z(!scale_denominator!) = 12 AND gridrank <= 9) OR
-               z(!scale_denominator!) >= 13
-        ) AS t
+      srid: 900913
+      table: (SELECT * FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
       type: postgis
       user: osm
     description: Buildings
     fields: 
       class: String
-      gridrank: Number
       name: String
+      rank: String
       scalerank: Number
     properties: 
       "buffer-size": 64
