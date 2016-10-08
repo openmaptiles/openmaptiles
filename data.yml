@@ -318,6 +318,9 @@ Layer:
             length(name) DESC
           ) AS gridrank
           FROM (
+              SELECT * FROM place_z2
+              WHERE z(!scale_denominator!) = 2
+              UNION ALL
               SELECT * FROM place_z3
               WHERE z(!scale_denominator!) = 3
               UNION ALL

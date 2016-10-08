@@ -1,3 +1,9 @@
+CREATE OR REPLACE VIEW place_z2 AS (
+	SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    FROM ne_10m_populated_places
+    WHERE  scalerank <= 0
+);
+
 CREATE OR REPLACE VIEW place_z3 AS (
 	SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
     FROM ne_10m_populated_places
