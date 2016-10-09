@@ -2,6 +2,7 @@
 """
 Usage:
   omtgen tm2source <tileset> [--host=<host>] [--port=<port>] [--database=<dbname>] [--user=<user>] [--password=<pw>]
+  omtgen imposm3 <tileset>
   omtgen dump-sql <tileset>
   omtgen --help
   omtgen --version
@@ -55,18 +56,11 @@ def generate_layer(layer_def, layer_defaults, db_params):
 
 
 def parse_tileset(filename):
-    with open(filename, 'r') as stream:
-        try:
-            return yaml.load(stream)['tileset']
-        except yaml.YAMLError as e:
-            print('Could not parse ' + filename)
-            print(e)
-            sys.exit(403)
+    return parse_file(filename)['tileset']
 
 
 def collect_sql(tileset_filename):
     tileset = parse_tileset(tileset_filename)
-    print(tileset)
     sql = ''
     for layer_filename in tileset['layers']:
         with open(layer_filename, 'r') as stream:
@@ -80,6 +74,38 @@ def collect_sql(tileset_filename):
                 print(e)
                 sys.exit(403)
     return sql
+
+
+def parse_file(filename):
+    with open(filename, 'r') as stream:
+        try:
+            return yaml.load(stream)
+        except yaml.YAMLError as e:
+            print('Could not parse ' + filename)
+            print(e)
+            sys.exit(403)
+
+
+def create_imposm3_mapping(tileset_filename):
+    tileset = parse_tileset(tileset_filename)
+    generalized_tables = {}
+    tables = {}
+    for layer_filename in tileset['layers']:
+        layer_def = parse_file(layer_filename)
+        for data_source in layer_def.get('datasources', []):
+            if data_source['type'] != 'imposm3':
+                continue
+            mapping_path = os.path.join(os.path.dirname(layer_filename),
+                                        data_source['mapping_file'])
+            mapping = parse_file(mapping_path)
+            for table_name, definition in mapping.get('generalized_tables', {}).items():
+                generalized_tables[table_name] = definition
+            for table_name, definition in mapping.get('tables', {}).items():
+                tables[table_name] = definition
+    return {
+        'generalized_tables': generalized_tables,
+        'tables': tables,
+    }
 
 
 def generate_tm2source(tileset_filename, db_params):
@@ -123,3 +149,6 @@ if __name__ == '__main__':
     if args.get('dump-sql'):
         sql = collect_sql(args['<tileset>'])
         print(sql)
+    if args.get('imposm3'):
+        mapping = create_imposm3_mapping(args['<tileset>'])
+        print(yaml.dump(mapping))
