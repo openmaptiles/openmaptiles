@@ -52,6 +52,17 @@ CREATE OR REPLACE VIEW water_z6 AS (
     WHERE featurecla = 'River'
 );
 
+CREATE TABLE IF NOT EXISTS water_z7 AS (
+    SELECT geom FROM ne_10m_ocean
+    UNION ALL
+    SELECT ST_SimplifyPreserveTopology(way, 350) AS geom FROM water_areas
+    WHERE way_area > 9000000
+    UNION ALL
+    SELECT geom FROM ne_10m_rivers_lake_centerlines
+    WHERE featurecla = 'River'
+);
+CREATE INDEX IF NOT EXISTS water_z7_geom_idx ON water_z7 USING gist(geom);
+
 CREATE TABLE IF NOT EXISTS water_z8 AS (
     SELECT geom FROM ne_10m_ocean
     UNION ALL
@@ -124,7 +135,10 @@ RETURNS TABLE(geom geometry) AS $$
         WHERE zoom_level = 5
         UNION ALL
         SELECT * FROM water_z6
-        WHERE zoom_level BETWEEN 6 AND 7
+        WHERE zoom_level = 6
+        UNION ALL
+        SELECT * FROM water_z7
+        WHERE zoom_level = 7
         UNION ALL
         SELECT geom FROM water_z8
         WHERE zoom_level = 8
