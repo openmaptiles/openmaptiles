@@ -1,7 +1,5 @@
 CREATE OR REPLACE VIEW ice_z0 AS (
     SELECT geom, 'glacier' AS type FROM ne_110m_glaciated_areas
-    UNION ALL
-    SELECT geom, 'ice_shelf' AS type FROM ne_50m_antarctic_ice_shelves_polys
 );
 
 CREATE OR REPLACE VIEW ice_z2 AS (
@@ -19,7 +17,7 @@ CREATE OR REPLACE VIEW ice_z5 AS (
 CREATE OR REPLACE FUNCTION layer_ice(bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry, class text) AS $$
     SELECT geom, type::text AS class FROM (
-        SELECT ST_Simplify(geom, 80000) AS geom, type FROM ice_z0
+        SELECT geom, type FROM ice_z0
         WHERE zoom_level BETWEEN 0 AND 1
         UNION ALL
         SELECT * FROM ice_z2
