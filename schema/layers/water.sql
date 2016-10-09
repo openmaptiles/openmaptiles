@@ -116,47 +116,33 @@ CREATE OR REPLACE VIEW water_z14 AS (
 CREATE OR REPLACE FUNCTION layer_water (bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry) AS $$
     SELECT geom FROM (
-        SELECT * FROM water_z0
-        WHERE zoom_level = 0
+        SELECT * FROM water_z0 WHERE zoom_level = 0
         UNION ALL
-        SELECT * FROM water_z1
-        WHERE zoom_level = 1
+        SELECT * FROM water_z1 WHERE zoom_level = 1
         UNION ALL
-        SELECT * FROM water_z2
-        WHERE zoom_level = 2
+        SELECT * FROM water_z2 WHERE zoom_level = 2
         UNION ALL
-        SELECT * FROM water_z3
-        WHERE zoom_level = 3
+        SELECT * FROM water_z3 WHERE zoom_level = 3
         UNION ALL
-        SELECT * FROM water_z4
-        WHERE zoom_level = 4
+        SELECT * FROM water_z4 WHERE zoom_level = 4
         UNION ALL
-        SELECT * FROM water_z5
-        WHERE zoom_level = 5
+        SELECT * FROM water_z5 WHERE zoom_level = 5
         UNION ALL
-        SELECT * FROM water_z6
-        WHERE zoom_level = 6
+        SELECT * FROM water_z6 WHERE zoom_level = 6
         UNION ALL
-        SELECT * FROM water_z7
-        WHERE zoom_level = 7
+        SELECT * FROM water_z7 WHERE zoom_level = 7
         UNION ALL
-        SELECT geom FROM water_z8
-        WHERE zoom_level = 8
+        SELECT geom FROM water_z8 WHERE zoom_level = 8
         UNION ALL
-        SELECT geom FROM water_z9
-        WHERE zoom_level BETWEEN 9 AND 10
+        SELECT geom FROM water_z9 WHERE zoom_level BETWEEN 9 AND 10
         UNION ALL
-        SELECT * FROM water_z11
-        WHERE zoom_level = 11
+        SELECT * FROM water_z11 WHERE zoom_level = 11
         UNION ALL
-        SELECT * FROM water_z12
-        WHERE zoom_level = 12
+        SELECT * FROM water_z12 WHERE zoom_level = 12
         UNION ALL
-        SELECT * FROM water_z13
-        WHERE zoom_level = 13
+        SELECT * FROM water_z13 WHERE zoom_level = 13
         UNION ALL
-        SELECT * FROM water_z14
-        WHERE zoom_level >= 14
+        SELECT * FROM water_z14 WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geom && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
