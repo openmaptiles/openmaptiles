@@ -76,14 +76,27 @@ CREATE OR REPLACE VIEW boundary_z8 AS (
     SELECT way AS geom, level AS admin_level,
            NULL AS scalerank, NULL AS class
     FROM admin_line
-    WHERE level <= 4
+    WHERE level <= 4 AND ST_Length(way) > 10000
 );
 
 CREATE OR REPLACE VIEW boundary_z10 AS (
     SELECT way AS geom, level AS admin_level,
            NULL AS scalerank, NULL AS class
     FROM admin_line
+    WHERE level <= 6
+);
+
+CREATE OR REPLACE VIEW boundary_z11 AS (
+    SELECT way AS geom, level AS admin_level,
+           NULL AS scalerank, NULL AS class
+    FROM admin_line
     WHERE level <= 8
+);
+
+CREATE OR REPLACE VIEW boundary_z12 AS (
+    SELECT way AS geom, level AS admin_level,
+           NULL AS scalerank, NULL AS class
+    FROM admin_line
 );
 
 CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
@@ -111,12 +124,12 @@ RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
         FROM boundary_z10 WHERE geom && bbox AND zoom_level = 10
         UNION ALL
         SELECT ST_Simplify(geom, 100) AS geom, admin_level, scalerank, class
-        FROM boundary_z10 WHERE geom && bbox AND zoom_level = 11
+        FROM boundary_z11 WHERE geom && bbox AND zoom_level = 11
         UNION ALL
         SELECT ST_Simplify(geom, 50) AS geom, admin_level, scalerank, class
-        FROM boundary_z10 WHERE geom && bbox AND zoom_level = 12
+        FROM boundary_z12 WHERE geom && bbox AND zoom_level = 12
         UNION ALL
         SELECT geom, admin_level, scalerank, class
-        FROM boundary_z10 WHERE geom && bbox AND zoom_level >= 13
+        FROM boundary_z12 WHERE geom && bbox AND zoom_level >= 13
     ) AS zoom_levels;
 $$ LANGUAGE SQL IMMUTABLE;
