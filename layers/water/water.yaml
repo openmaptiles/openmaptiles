@@ -1,0 +1,8 @@
+layer:
+  id: "water"
+  description: water
+  buffer_size: 4
+  datasource:
+    query: (SELECT * FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./water.sql

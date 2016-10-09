@@ -1,0 +1,8 @@
+layer:
+  id: "ice"
+  description: ice
+  buffer_size: 4
+  datasource:
+    query: (SELECT * FROM layer_ice(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./ice.sql

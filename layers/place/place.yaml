@@ -1,0 +1,8 @@
+layer:
+  id: "place"
+  description: place
+  buffer_size: 128
+  datasource:
+    query: (SELECT * FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+schema:
+  - ./place.sql

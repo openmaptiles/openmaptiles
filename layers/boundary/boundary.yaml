@@ -1,0 +1,12 @@
+layer:
+  id: "boundary"
+  description: Buildings
+  buffer_size: 4
+  fields:
+    admin_level: Number
+    class: String
+    scalerank: Number
+  datasource:
+    query: (SELECT * FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./boundary.sql

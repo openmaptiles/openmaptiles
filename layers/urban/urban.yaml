@@ -1,0 +1,8 @@
+layer:
+  id: "urban"
+  description: urban
+  buffer_size: 4
+  datasource:
+    query: (SELECT * FROM layer_urban(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./urban.sql

@@ -1,0 +1,8 @@
+layer:
+  id: "rail"
+  description: Rail
+  buffer_size: 4
+  datasource:
+    query: (SELECT * FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./rail.sql
