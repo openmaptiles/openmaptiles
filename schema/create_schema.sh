@@ -25,6 +25,7 @@ function main() {
     exec_psql_file "layers/place.sql"
     exec_psql_file "layers/country.sql"
     exec_psql_file "layers/state.sql"
+    exec_psql_file "layers/rail.sql"
 }
 
 main
