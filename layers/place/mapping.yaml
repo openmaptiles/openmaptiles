@@ -1,0 +1,33 @@
+tables:
+  place_point:
+    type: geometry
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: place
+      key: place
+      type: string
+    - key: population
+      name: population
+      type: integer
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    type_mappings:
+      points:
+        place:
+        - city
+        - town
+        - village
+        - hamlet
+        - suburb
+        - neighbourhood
+        - isolated_dwelling

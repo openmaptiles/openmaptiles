@@ -1,70 +1,63 @@
 CREATE OR REPLACE VIEW place_z2 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
     WHERE  scalerank <= 0
 );
 
 CREATE OR REPLACE VIEW place_z3 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
     WHERE  scalerank <= 2
 );
 
 CREATE OR REPLACE VIEW place_z4 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
     WHERE  scalerank <= 5
 );
 
 CREATE OR REPLACE VIEW place_z5 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
     WHERE  scalerank <= 6
 );
 
 CREATE OR REPLACE VIEW place_z6 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
     WHERE  scalerank <= 7
 );
 
 CREATE OR REPLACE VIEW place_z7 AS (
-    SELECT geom, name, 'settlement' AS class, 'city'::place AS rank, scalerank, pop_min AS population
+    SELECT geom, name, 'city' AS place, scalerank, pop_min AS population
     FROM ne_10m_populated_places
 );
 
 CREATE OR REPLACE VIEW place_z8 AS (
-    SELECT way AS geom, name, class::text, rank, NULL::integer AS scalerank, population FROM place_point
-    WHERE rank IN ('city', 'town')
+    SELECT geometry AS geom, name, place, NULL::integer AS scalerank, population FROM osm_place_point
+    WHERE place IN ('city', 'town')
 );
 
 CREATE OR REPLACE VIEW place_z10 AS (
-    SELECT way AS geom, name, class::text, rank, NULL::integer AS scalerank, population FROM place_point
-    WHERE rank IN ('city', 'town', 'village') OR class='subregion'
+    SELECT geometry AS geom, name, place, NULL::integer AS scalerank, population FROM osm_place_point
+    WHERE place IN ('city', 'town', 'village') OR place='subregion'
 );
 
 CREATE OR REPLACE VIEW place_z11 AS (
-    SELECT way AS geom, name, class::text, rank, NULL::integer AS scalerank, population FROM place_point
-    WHERE class IN ('subregion', 'settlement')
+    SELECT geometry AS geom, name, place, NULL::integer AS scalerank, population FROM osm_place_point
 );
 
 CREATE OR REPLACE VIEW place_z13 AS (
-    SELECT way AS geom, name, class::text, rank, NULL::integer AS scalerank, population FROM place_point
+    SELECT geometry AS geom, name, place, NULL::integer AS scalerank, population FROM osm_place_point
 );
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
-RETURNS TABLE(geom geometry, name text, class text, rank text, scalerank int) AS $$
-    SELECT geom, name, class, rank::text, scalerank FROM (
-        SELECT geom, name, class, rank, scalerank,
+RETURNS TABLE(geom geometry, name text, place text, scalerank int) AS $$
+    SELECT geom, name, place, scalerank FROM (
+        SELECT geom, name, place, scalerank,
         row_number() OVER (
             PARTITION BY LabelGrid(geom, 150 * pixel_width)
             ORDER BY scalerank ASC NULLS LAST,
-            CASE class
-            WHEN 'settlement' THEN 10
-            WHEN 'subregion' THEN 5
-            WHEN 'locality' THEN 2 ELSE 1
-            END DESC,
-            rank DESC,
             population DESC NULLS LAST,
             length(name) DESC
         ) AS gridrank
