@@ -11,7 +11,7 @@ ENV VT_UTIL_DIR=/opt/postgis-vt-util \
 
 RUN mkdir -p "$VT_UTIL_DIR" \
  && wget -P "$VT_UTIL_DIR" --quiet "$VT_UTIL_URL"
-
+ENV GENERATED_SQL_FILE=/usr/src/app/gen.sql
 COPY . /usr/src/app/
 WORKDIR /usr/src/app
 CMD ["./create_schema.sh"]

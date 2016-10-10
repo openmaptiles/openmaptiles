@@ -21,7 +21,7 @@ services:
     - postgres
     volumes:
      - ./data:/import
-     - ./ClearTables:/opt/cleartables
+     - ./:/mapping
   import-natural-earth:
     image: "osm2vectortiles/import-natural-earth"
     env_file: .env
