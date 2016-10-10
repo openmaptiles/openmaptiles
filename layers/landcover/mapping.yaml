@@ -1,0 +1,68 @@
+generalized_tables:
+  landcover_polygon_gen0:
+    source: landcover_polygon_gen1
+    sql_filter: area>500000.000000
+    tolerance: 200.0
+  landcover_polygon_gen1:
+    source: landcover_polygon
+    sql_filter: area>50000.000000
+    tolerance: 50.0
+tables:
+  landcover_polygon:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: landuse
+      key: landuse
+      type: string
+    - name: natural
+      key: natural
+      type: string
+    - name: wetland
+      key: wetland
+      type: string
+    - name: area
+      type: pseudoarea
+    mapping:
+      landuse:
+      - allotments
+      - farm
+      - farmland
+      - orchard
+      - greenhouse_horticulture
+      - plant_nursery
+      - vineyard
+      - grass
+      - grassland
+      - meadow
+      - park
+      - village_green
+      - recreation_ground
+      - forest
+      - beach
+      - greenfield
+      natural:
+      - wetland
+      - gravel
+      - sand
+      - wood
+      - scrub
+      - mud
+      - beach
+      - rock
+      - bare_rock
+      - scree
+      - grassland
+      - heath
+      - fell
+      wetland:
+      - saltmarsh
+      - reedbed
+      - bog
+      - marsh
+      - mangrove
+      - swamp
+      - tidalflat
+    type: polygon
