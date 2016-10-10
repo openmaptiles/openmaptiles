@@ -30,12 +30,10 @@ def generate_layer(layer_def, layer_defaults, db_params):
     datasource = layer['datasource']
     tm2layer = {
         'id': layer['id'],
-        'description': layer['description'],
         'srs': layer.get('srs', layer_defaults['srs']),
         'properties': {
             'buffer-size': layer['buffer_size']
         },
-        'fields': layer.get('fields', []),
         'Datasource': {
           'extent': [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
           'geometry_field': datasource.get('geometry_field', 'geom'),
