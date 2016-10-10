@@ -12,60 +12,60 @@ END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE OR REPLACE VIEW boundary_z0 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_110m_admin_0_boundary_lines_land
 );
 
 CREATE OR REPLACE VIEW boundary_z1 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_50m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 1 AS admin_level, scalerank,
+    SELECT geom, 4 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_50m_admin_1_states_provinces_lines
     WHERE scalerank <= 2
 );
 
 CREATE OR REPLACE VIEW boundary_z3 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_50m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 1 AS admin_level, scalerank,
+    SELECT geom, 4 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_50m_admin_1_states_provinces_lines
 );
 
 CREATE OR REPLACE VIEW boundary_z4 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 1 AS admin_level, scalerank,
+    SELECT geom, 4 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE scalerank <= 3 AND featurecla = 'Adm-1 boundary'
 );
 
 CREATE OR REPLACE VIEW boundary_z5 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 1 AS admin_level, scalerank,
+    SELECT geom, 4 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE scalerank <= 7 AND featurecla = 'Adm-1 boundary'
 );
 
 CREATE OR REPLACE VIEW boundary_z7 AS (
-    SELECT geom, 0 AS admin_level, scalerank,
+    SELECT geom, 2 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 1 AS admin_level, scalerank,
+    SELECT geom, 4 AS admin_level, scalerank,
            boundary_class(featurecla) AS class
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE featurecla = 'Adm-1 boundary'
@@ -73,30 +73,37 @@ CREATE OR REPLACE VIEW boundary_z7 AS (
 );
 
 CREATE OR REPLACE VIEW boundary_z8 AS (
-    SELECT way AS geom, level AS admin_level,
+    SELECT geometry AS geom, admin_level,
            NULL AS scalerank, NULL AS class
-    FROM admin_line
-    WHERE level <= 4 AND ST_Length(way) > 10000
+    FROM osm_boundary_linestring_gen5
+    WHERE admin_level <= 4 AND ST_Length(geometry) > 1000
+);
+
+CREATE OR REPLACE VIEW boundary_z9 AS (
+    SELECT geometry AS geom, admin_level,
+           NULL AS scalerank, NULL AS class
+    FROM osm_boundary_linestring_gen4
+    WHERE admin_level <= 6
 );
 
 CREATE OR REPLACE VIEW boundary_z10 AS (
-    SELECT way AS geom, level AS admin_level,
+    SELECT geometry AS geom, admin_level,
            NULL AS scalerank, NULL AS class
-    FROM admin_line
-    WHERE level <= 6
+    FROM osm_boundary_linestring_gen3
+    WHERE admin_level <= 6
 );
 
 CREATE OR REPLACE VIEW boundary_z11 AS (
-    SELECT way AS geom, level AS admin_level,
+    SELECT geometry AS geom, admin_level,
            NULL AS scalerank, NULL AS class
-    FROM admin_line
-    WHERE level <= 8
+    FROM osm_boundary_linestring_gen2
+    WHERE admin_level <= 8
 );
 
 CREATE OR REPLACE VIEW boundary_z12 AS (
-    SELECT way AS geom, level AS admin_level,
+    SELECT geometry AS geom, admin_level,
            NULL AS scalerank, NULL AS class
-    FROM admin_line
+    FROM osm_boundary_linestring_gen1
 );
 
 CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
@@ -114,22 +121,16 @@ RETURNS TABLE(geom geometry, admin_level int, scalerank int, class text) AS $$
         UNION ALL
         SELECT * FROM boundary_z7 WHERE geom && bbox AND zoom_level = 7
         UNION ALL
-        SELECT ST_Simplify(geom, 400) AS geom, admin_level, scalerank, class
-        FROM boundary_z8 WHERE geom && bbox AND zoom_level = 8
+        SELECT * FROM boundary_z8 WHERE geom && bbox AND zoom_level = 8
         UNION ALL
-        SELECT ST_Simplify(geom, 320) AS geom, admin_level, scalerank, class
-        FROM boundary_z8 WHERE geom && bbox AND zoom_level = 9
+        SELECT * FROM boundary_z9 WHERE geom && bbox AND zoom_level = 9
         UNION ALL
-        SELECT ST_Simplify(geom, 150) AS geom, admin_level, scalerank, class
-        FROM boundary_z10 WHERE geom && bbox AND zoom_level = 10
+        SELECT * FROM boundary_z10 WHERE geom && bbox AND zoom_level = 10
         UNION ALL
-        SELECT ST_Simplify(geom, 100) AS geom, admin_level, scalerank, class
-        FROM boundary_z11 WHERE geom && bbox AND zoom_level = 11
+        SELECT * FROM boundary_z11 WHERE geom && bbox AND zoom_level = 11
         UNION ALL
-        SELECT ST_Simplify(geom, 50) AS geom, admin_level, scalerank, class
-        FROM boundary_z12 WHERE geom && bbox AND zoom_level = 12
+        SELECT * FROM boundary_z12 WHERE geom && bbox AND zoom_level = 12
         UNION ALL
-        SELECT geom, admin_level, scalerank, class
-        FROM boundary_z12 WHERE geom && bbox AND zoom_level >= 13
+        SELECT * FROM boundary_z12 WHERE geom && bbox AND zoom_level >= 13
     ) AS zoom_levels;
 $$ LANGUAGE SQL IMMUTABLE;

@@ -1,0 +1,34 @@
+generalized_tables:
+  boundary_linestring_gen5:
+    source: boundary_linestring
+    tolerance: 420.0
+  boundary_linestring_gen4:
+    source: boundary_linestring
+    tolerance: 320.0
+  boundary_linestring_gen3:
+    source: boundary_linestring
+    tolerance: 150.0
+  boundary_linestring_gen2:
+    source: boundary_linestring
+    tolerance: 100.0
+  boundary_linestring_gen1:
+    source: boundary_linestring
+    tolerance: 50.0
+tables:
+  boundary_linestring:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: admin_level
+      name: admin_level
+      type: integer
+    filters:
+      exclude_tags:
+      - [ "admin_level", "__nil__" ]
+      - [ "natural", "coastline" ]
+    mapping:
+      boundary:
+      - administrative
+    type: linestring
