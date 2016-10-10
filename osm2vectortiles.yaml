@@ -1,0 +1,23 @@
+tileset:
+  layers:
+    - layers/boundary/boundary.yaml
+    - layers/highway/highway.yaml
+    - layers/ice/ice.yaml
+    - layers/building/building.yaml
+    - layers/state/state.yaml
+    - layers/country/country.yaml
+    - layers/place/place.yaml
+    #- layers/rail/rail.yaml
+    - layers/urban/urban.yaml
+    - layers/water/water.yaml
+    - layers/landcover/landcover.yaml
+  name: OSM2VectorTiles v3.0
+  description: "Free global vector tiles from OpenStreetMap. http://osm2vectortiles.org"
+  attribution: "<a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\">&copy; OpenStreetMap contributors</a>"
+  center: [-12.2168, 28.6135, 4]
+  maxzoom: 14
+  minzoom: 0
+  defaults:
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+    datasource:
+      srid: 900913
