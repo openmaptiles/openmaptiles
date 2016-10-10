@@ -1,0 +1,59 @@
+tables:
+  highway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - key: oneway
+      name: oneway
+      type: direction
+    - key: layer
+      name: layer
+      type: integer
+    - name: z_order
+      type: wayzorder
+    - key: tunnel
+      name: is_tunnel
+      type: bool
+    - key: bridge
+      name: is_bridge
+      type: bool
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    mapping:
+      highway:
+      - motorway
+      - motorway_link
+      - trunk
+      - trunk_link
+      - primary
+      - primary_link
+      - secondary
+      - secondary_link
+      - tertiary
+      - tertiary_link
+      - unclassified
+      - residential
+      - road
+      - living_street
+      - raceway
+      - construction
+      - track
+      - service
+      - path
+      - cycleway
+      - steps
+      - bridleway
+      - footway
+      - corridor
+      - crossing
+      - pedestrian
