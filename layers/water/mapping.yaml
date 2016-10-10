@@ -1,0 +1,67 @@
+generalized_tables:
+  water_polygon_gen3:
+    source: water_polygon
+    sql_filter: area>9000000.0
+    tolerance: 350.0
+  water_polygon_gen2:
+    source: water_polygon
+    sql_filter: area>1000000
+    tolerance: 200.0
+  water_polygon_gen1:
+    source: water_polygon
+    sql_filter: area>500000
+    tolerance: 100.0
+tables:
+  water_polygon:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: pseudoarea
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    filters:
+      exclude_tags:
+      - [ "covered", "yes" ]
+    mapping:
+      landuse:
+      - reservoir
+      natural:
+      - water
+      - bay
+      waterway:
+      - river
+      - riverbank
+      - stream
+      - canal
+      - drain
+      - ditch
+    type: polygon
+  water_linestring:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: waterway
+      type: mapping_value
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    mapping:
+      waterway:
+      - stream
+      - river
+      - canal
+      - drain
+      - ditch
+    type: linestring
