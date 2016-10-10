@@ -1,12 +1,15 @@
 layer:
   id: "building"
-  description: Roads
+  description: |
+    All [OSM Buildings](http://wiki.openstreetmap.org/wiki/Buildings).
   buffer_size: 4
   datasource:
     query: (SELECT * FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
   fields:
-    admin_level: Number
-    class: String
-    scalerank: Number
+    render_height: |
+        An approximated height from levels and height of building after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear)
 schema:
   - ./building.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

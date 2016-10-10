@@ -1,0 +1,24 @@
+generalized_tables:
+  building_polygon_gen1:
+    source: building_polygon
+    sql_filter: area>1400.0
+    tolerance: 10.0
+tables:
+  building_polygon:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: pseudoarea
+    - name: height
+      key: height
+      type: integer
+    - name: levels
+      key: levels
+      type: integer
+    mapping:
+      building:
+      - __any__
+    type: polygon
