@@ -41,10 +41,19 @@ To work on the database and vector tile schema read the *Develop* section.
 
 ## Develop
 
-To work on *osm2vectortiles.tm2source* we recommend using Docker.
+To work on *osm2vectortiles.tm2source* you need Docker and Python.
 
 - Install [Docker](https://docs.docker.com/engine/installation/)
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
+- Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
+
+### Build
+
+Build the tileset.
+
+```
+make
+```
 
 ### Prepare the Database
 
@@ -69,23 +78,20 @@ docker-compose run import-natural-earth
 Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables).
 In order to do this you first need to clone the latest ClearTables.
 
-- [ ] *Should we use a submodule for ClearTables? On the other hand it is quite convenient to able to work directly on ClearTables while working on the style.*
-
 ```bash
-git clone https://github.com/ClearTables/ClearTables.git
 docker-compose run import-osm
 ```
 
-### Work on Vector Tile Schema
+### Work on Layers
 
-Build and run the `db-schema` container each time you modify SQL code inside `./schema`.
+Each time you modify layer SQL code run `make` and `docker-compose run import-sql`.
 
-```bash
-docker-compose build db-schema
-docker-compose run db-schema
+```
+make
+docker-compose run import-sql
 ```
 
-To work on the *data.yml* you can start up Mapbox Studio Classic in a container
+To look at the vector tiles you can start up Mapbox Studio Classic in a container
 and visit `localhost:3000` and open the vector source project under `projects/osm2vectortiles.tm2source`.
 
 ```bash

@@ -1,50 +1,52 @@
-version: '2'
+version: "2"
 volumes:
   pgdata:
 services:
   postgres:
-    image: "osm2vectortiles/postgis:latest"
+    image: "openmaptiles/postgis:latest"
     volumes:
      - pgdata:/var/lib/postgresql/data
     ports:
      - "5432"
     env_file: .env
-  db-schema:
-    build: "./schema"
+  import-natural-earth:
+    image: "openmaptiles/import-natural-earth"
     env_file: .env
     links:
-    - postgres:postgres
+    - postgres
+  import-water:
+    image: "openmaptiles/import-water"
+    env_file: .env
+    links:
+    - postgres
   import-osm:
-    image: "osm2vectortiles/import-osm"
+    image: "openmaptiles/import-osm"
     env_file: .env
     links:
     - postgres
     volumes:
      - ./data:/import
-     - ./:/mapping
-  import-natural-earth:
-    image: "osm2vectortiles/import-natural-earth"
+     - ./build:/mapping
+  import-sql:
+    image: "openmaptiles/import-sql"
     env_file: .env
     links:
     - postgres
-  import-water:
-    image: "osm2vectortiles/import-water"
-    env_file: .env
-    links:
-    - postgres
+    volumes:
+     - ./build:/sql
   mapbox-studio:
     image: "osm2vectortiles/mapbox-studio"
     volumes:
-     - ./:/projects/osm2vectortiles.tm2source
+     - ./build/openmaptiles.tm2source:/projects/openmaptiles.tm2source
     links:
      - postgres:db
     ports:
      - "3000:3000"
   export-vectortiles:
-    image: "osm2vectortiles/export-vectortiles"
+    image: "openmaptiles/export-vectortiles"
     volumes:
     - ./data:/export
-    - ./:/tm2source
+    - ./build/openmaptiles.tm2source:/tm2source
     links:
     - postgres:postgres
     env_file: .env

@@ -1,6 +1,7 @@
 layer:
   id: "place"
-  description: [OSM Places](http://wiki.openstreetmap.org/wiki/Key:place)
+  description: |
+      [OSM Places](http://wiki.openstreetmap.org/wiki/Key:place)
   buffer_size: 128
   datasource:
     query: (SELECT * FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
