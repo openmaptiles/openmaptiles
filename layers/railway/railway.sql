@@ -23,8 +23,8 @@ CREATE OR REPLACE VIEW railway_z14 AS (
 );
 
 CREATE OR REPLACE FUNCTION layer_railway(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, class text, subclass text, brunnel text) AS $$
-    SELECT geometry,
+RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, brunnel text) AS $$
+    SELECT osm_id, geometry,
         railway_class(railway, service) AS class,
         railway AS subclass,
         railway_brunnel(is_bridge, is_tunnel) AS brunnel

@@ -29,13 +29,13 @@ CREATE OR REPLACE FUNCTION ne_highway(type VARCHAR) RETURNS VARCHAR AS $$
 $$ LANGUAGE SQL IMMUTABLE;
 
 CREATE TABLE IF NOT EXISTS ne_10m_global_roads AS (
-    SELECT geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
+    SELECT NULL::bigint as osm_id, geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
     FROM ne_10m_roads
     WHERE continent <> 'North America'
       AND featurecla = 'Road'
       AND type IN ('Major Highway', 'Secondary Highway', 'Road')
     UNION ALL
-    SELECT geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
+    SELECT NULL::bigint as osm_id, geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
     FROM ne_10m_roads_north_america
     WHERE type IN ('Major Highway', 'Secondary Highway', 'Road')
 );
@@ -44,51 +44,51 @@ CREATE INDEX IF NOT EXISTS ne_10m_global_roads_geometry_idx ON ne_10m_global_roa
 CREATE INDEX IF NOT EXISTS ne_10m_global_roads_scalerank_idx ON ne_10m_global_roads(scalerank);
 
 CREATE OR REPLACE VIEW highway_z4 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM ne_10m_global_roads
     WHERE scalerank <= 5
 );
 
 CREATE OR REPLACE VIEW highway_z5 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM ne_10m_global_roads
     WHERE scalerank <= 6
 );
 
 CREATE OR REPLACE VIEW highway_z6 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM ne_10m_global_roads
     WHERE scalerank <= 7
 );
 
 CREATE OR REPLACE VIEW highway_z8 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring_gen4
 );
 
 CREATE OR REPLACE VIEW highway_z9 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring_gen3
 );
 
 CREATE OR REPLACE VIEW highway_z10 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring_gen2
 );
 
 CREATE OR REPLACE VIEW highway_z11 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring_gen1
 );
 
 CREATE OR REPLACE VIEW highway_z12 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring
     WHERE highway IN ('motorway','trunk','primary', 'secondary', 'tertiary', 'minor')
 );
 
 CREATE OR REPLACE VIEW highway_z13 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring
     WHERE highway IN (
         'motorway',
@@ -109,13 +109,13 @@ CREATE OR REPLACE VIEW highway_z13 AS (
 );
 
 CREATE OR REPLACE VIEW highway_z14 AS (
-    SELECT geometry, highway, is_tunnel, is_bridge, z_order
+    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
     FROM osm_highway_linestring
 );
 
 CREATE OR REPLACE FUNCTION layer_highway(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, class text, subclass text) AS $$
-    SELECT geometry, highway_class(highway) AS class, highway AS subclass FROM (
+RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
+    SELECT osm_id, geometry, highway_class(highway) AS class, highway AS subclass FROM (
         SELECT * FROM highway_z4 WHERE zoom_level BETWEEN 4 AND 5
         UNION ALL
         SELECT * FROM highway_z5 WHERE zoom_level = 5

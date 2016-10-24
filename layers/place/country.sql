@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS country_label AS (
     SELECT topoint(geom) AS geometry,
+           NULL::bigint AS osm_id,
            name,
            adm0_a3, abbrev, postal,
            scalerank, labelrank,
@@ -30,8 +31,8 @@ CREATE OR REPLACE VIEW country_z5 AS (
 );
 
 CREATE OR REPLACE FUNCTION layer_country(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, name text, abbrev text, postal text, scalerank int, labelrank int) AS $$
-    SELECT geometry, name, abbrev, postal, scalerank::int, labelrank::int FROM (
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, abbrev text, postal text, scalerank int, labelrank int) AS $$
+    SELECT osm_id, geometry, name, abbrev, postal, scalerank::int, labelrank::int FROM (
         SELECT * FROM country_z0
         WHERE zoom_level = 0
         UNION ALL

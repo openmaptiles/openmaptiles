@@ -8,6 +8,7 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE TABLE IF NOT EXISTS state_label AS (
     SELECT topoint(geom) AS geometry,
+           NULL::bigint AS osm_id,
            name_local, fix_win1252_shp_encoding(name) AS name_en,
            abbrev, postal,
            scalerank, labelrank,
@@ -28,8 +29,8 @@ CREATE OR REPLACE VIEW state_z4 AS (
 );
 
 CREATE OR REPLACE FUNCTION layer_state(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, name text, name_en text, abbrev text, postal text, scalerank int, labelrank int) AS $$
-    SELECT geometry,
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, abbrev text, postal text, scalerank int, labelrank int) AS $$
+    SELECT osm_id, geometry,
     COALESCE(name_local, name_en) AS name_local, name_en,
     abbrev, postal, scalerank::int, labelrank::int FROM (
         SELECT * FROM state_z3
