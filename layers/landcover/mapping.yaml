@@ -1,11 +1,23 @@
 generalized_tables:
-  landcover_polygon_gen0:
-    source: landcover_polygon_gen1
-    sql_filter: area>500000.000000
+  landcover_polygon_gen5:
+    source: landcover_polygon_gen4
+    sql_filter: area>15000000
+    tolerance: 300.0
+  landcover_polygon_gen4:
+    source: landcover_polygon_gen3
+    sql_filter: area>4200000
     tolerance: 200.0
+  landcover_polygon_gen3:
+    source: landcover_polygon_gen2
+    sql_filter: area>1200000
+    tolerance: 120.0
+  landcover_polygon_gen2:
+    source: landcover_polygon_gen1
+    sql_filter: area>480000
+    tolerance: 80.0
   landcover_polygon_gen1:
     source: landcover_polygon
-    sql_filter: area>50000.000000
+    sql_filter: area>240000
     tolerance: 50.0
 tables:
   landcover_polygon:
@@ -31,7 +43,6 @@ tables:
       - farm
       - farmland
       - orchard
-      - greenhouse_horticulture
       - plant_nursery
       - vineyard
       - grass
@@ -41,28 +52,17 @@ tables:
       - village_green
       - recreation_ground
       - forest
-      - beach
-      - greenfield
       natural:
       - wetland
-      - gravel
-      - sand
-      - wood
-      - scrub
-      - mud
-      - beach
-      - rock
-      - bare_rock
-      - scree
       - grassland
-      - heath
-      - fell
       wetland:
-      - saltmarsh
-      - reedbed
       - bog
-      - marsh
-      - mangrove
       - swamp
+      - wet_meadow
+      - marsh
+      - reedbed
+      - saltern
       - tidalflat
+      - saltmarsh
+      - mangrove
     type: polygon

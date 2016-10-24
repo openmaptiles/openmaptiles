@@ -3,6 +3,7 @@ layer:
   description: Landcover is used to describe the physical material at the surface of the earth. Land covers include grass, asphalt, trees, bare ground etc. Tagging of landcover is often only implied by other tags at present, for example a park may be assumed to be covered in grass, but in some places this may in fact be trees or sand or some other cover. The following keys imply or specifically indicate landcover properties.
   buffer_size: 4
   datasource:
+    geometry_field: geometry
     query: (SELECT * FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landcover.sql
