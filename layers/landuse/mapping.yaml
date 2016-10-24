@@ -1,0 +1,29 @@
+generalized_tables:
+  landuse_polygon_gen2:
+    source: landuse_polygon_gen1
+    sql_filter: area>500000.000000
+    tolerance: 120.0
+  landuse_polygon_gen1:
+    source: landuse_polygon
+    sql_filter: area>50000.000000
+    tolerance: 50.0
+tables:
+  landuse_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: landuse
+      type: mapping_value
+    - name: area
+      type: pseudoarea
+    mapping:
+      amenity:
+      - school
+      - hospital
+      landuse:
+      - railway
+      - cemetry
+      - military
