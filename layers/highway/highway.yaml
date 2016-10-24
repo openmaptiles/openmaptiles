@@ -8,6 +8,7 @@ layer:
   fields:
     class: String
   datasource:
+    geometry_field: geometry
     srid: 900913
     query: (SELECT * FROM layer_highway(!bbox!, z(!scale_denominator!))) AS t
 schema:
