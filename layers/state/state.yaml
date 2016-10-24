@@ -1,8 +1,0 @@
-layer:
-  id: "state"
-  description: state
-  buffer_size: 128
-  datasource:
-    query: (SELECT * FROM layer_state(!bbox!, z(!scale_denominator!))) AS t
-schema:
-  - ./state.sql

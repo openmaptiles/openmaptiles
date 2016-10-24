@@ -1,8 +1,0 @@
-layer:
-  id: "country"
-  description: country
-  buffer_size: 128
-  datasource:
-    query: (SELECT * FROM layer_country(!bbox!, z(!scale_denominator!))) AS t
-schema:
-  - ./country.sql

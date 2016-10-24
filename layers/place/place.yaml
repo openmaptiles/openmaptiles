@@ -4,8 +4,11 @@ layer:
       [OSM Places](http://wiki.openstreetmap.org/wiki/Key:place)
   buffer_size: 128
   datasource:
+    geometry_field: geometry
     query: (SELECT * FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./country.sql
+  - ./state.sql
   - ./place.sql
 datasources:
   - type: imposm3

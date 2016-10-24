@@ -76,6 +76,10 @@ CREATE OR REPLACE VIEW place_z13 AS (
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(geometry geometry, name text, place text, scalerank int) AS $$
+    SELECT geometry, name, 'country' AS place, scalerank FROM layer_country(bbox, zoom_level)
+    UNION ALL
+    SELECT geometry, name, 'state' AS place, scalerank FROM layer_state(bbox, zoom_level)
+    UNION ALL
     SELECT geometry, name, place, scalerank FROM (
         SELECT geometry, name, place, scalerank,
         row_number() OVER (
@@ -85,6 +89,7 @@ RETURNS TABLE(geometry geometry, name text, place text, scalerank int) AS $$
             length(name) DESC
         ) AS gridrank
         FROM (
+            --Cities
             SELECT * FROM place_z2
             WHERE zoom_level = 2
             UNION ALL

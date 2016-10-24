@@ -3,8 +3,6 @@ tileset:
     - layers/boundary/boundary.yaml
     - layers/highway/highway.yaml
     - layers/building/building.yaml
-    - layers/state/state.yaml
-    - layers/country/country.yaml
     - layers/place/place.yaml
       #- layers/rail/rail.yaml
     - layers/water/water.yaml
