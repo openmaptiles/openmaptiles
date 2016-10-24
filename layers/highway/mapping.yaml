@@ -1,3 +1,20 @@
+generalized_tables:
+  highway_linestring_gen4:
+    source: highway_linestring_gen3
+    sql_filter: highway IN ('motorway','trunk')
+    tolerance: 200.0
+  highway_linestring_gen3:
+    source: highway_linestring_gen2
+    sql_filter: highway IN ('motorway','trunk', 'primary')
+    tolerance: 120.0
+  highway_linestring_gen2:
+    source: highway_linestring_gen1
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary')
+    tolerance: 50.0
+  highway_linestring_gen1:
+    source: highway_linestring
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary')
+    tolerance: 20.0
 tables:
   highway_linestring:
     type: linestring
@@ -12,9 +29,6 @@ tables:
     - key: oneway
       name: oneway
       type: direction
-    - key: layer
-      name: layer
-      type: integer
     - name: z_order
       type: wayzorder
     - key: tunnel

@@ -1,0 +1,33 @@
+tables:
+  railway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: railway
+      name: railway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - key: tunnel
+      name: is_tunnel
+      type: bool
+    - key: bridge
+      name: is_bridge
+      type: bool
+    - key: service
+      name: service
+      type: string
+    - key: usage
+      name: usage
+      type: string
+    mapping:
+      railway:
+      - rail
+      - light_rail
+      - subway
+      - narrow_gauge
+      - preserved
+      - tram
