@@ -45,7 +45,7 @@ services:
     ports:
      - "3000:3000"
   export-vectortiles:
-    image: "openmaptiles/export-vectortiles"
+    image: "openmaptiles/generate-vectortiles"
     volumes:
     - ./data:/export
     - ./build/openmaptiles.tm2source:/tm2source

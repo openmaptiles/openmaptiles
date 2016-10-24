@@ -52,7 +52,10 @@ To work on *osm2vectortiles.tm2source* you need Docker and Python.
 Build the tileset.
 
 ```
+# Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
+# You can also run the build process inside a Docker container
+docker run -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 ```
 
 ### Prepare the Database
@@ -87,8 +90,7 @@ docker-compose run import-osm
 Each time you modify layer SQL code run `make` and `docker-compose run import-sql`.
 
 ```
-make
-docker-compose run import-sql
+make clean && make && docker-compose run import-sql
 ```
 
 To look at the vector tiles you can start up Mapbox Studio Classic in a container
