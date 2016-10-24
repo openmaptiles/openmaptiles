@@ -34,24 +34,21 @@ CREATE OR REPLACE VIEW water_z6 AS (
     SELECT geom, 'lake' AS class FROM ne_10m_lakes
 );
 
-CREATE TABLE IF NOT EXISTS water_z7 AS (
+CREATE OR REPLACE VIEW water_z7 AS (
     SELECT geom, 'ocean' AS class FROM ne_10m_ocean
     UNION ALL
     SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon_gen3
 );
-CREATE INDEX IF NOT EXISTS water_z7_geom_idx ON water_z7 USING gist(geom);
 
-CREATE TABLE IF NOT EXISTS water_z8 AS (
+CREATE OR REPLACE VIEW water_z8 AS (
     SELECT geom, 'ocean' AS class FROM ne_10m_ocean
     UNION ALL
     SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon_gen2
 );
-CREATE INDEX IF NOT EXISTS water_z8_geom_idx ON water_z8 USING gist(geom);
 
-CREATE TABLE IF NOT EXISTS water_z9 AS (
+CREATE OR REPLACE VIEW water_z9 AS (
     SELECT geometry AS geom, 'lake'::text AS class FROM osm_water_polygon_gen1
 );
-CREATE INDEX IF NOT EXISTS water_z9_geom_idx ON water_z9 USING gist(geom);
 
 CREATE OR REPLACE VIEW water_z11 AS (
     SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon WHERE area > 40000
