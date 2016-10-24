@@ -9,6 +9,7 @@ layer:
 schema:
   - ./country.sql
   - ./state.sql
+  - ./important_place.sql
   - ./place.sql
 datasources:
   - type: imposm3
