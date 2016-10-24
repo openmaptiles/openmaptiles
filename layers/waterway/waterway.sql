@@ -13,17 +13,15 @@ CREATE OR REPLACE VIEW waterway_z6 AS (
     WHERE featurecla = 'River'
 );
 
-CREATE TABLE IF NOT EXISTS waterway_z8 AS (
-    SELECT ST_Simplify(geometry, 200) AS geom, waterway AS class FROM osm_waterway_linestring
+CREATE OR REPLACE VIEW waterway_z8 AS (
+    SELECT geometry AS geom, waterway AS class FROM osm_waterway_linestring
     WHERE waterway IN ('river') AND ST_Length(geometry) > 10000
 );
-CREATE INDEX IF NOT EXISTS waterway_z8_geom_idx ON waterway_z8 USING gist(geom);
 
-CREATE TABLE IF NOT EXISTS waterway_z9 AS (
-    SELECT ST_Simplify(geometry, 100) AS geom, waterway AS class FROM osm_waterway_linestring
+CREATE OR REPLACE VIEW waterway_z9 AS (
+    SELECT geometry AS geom, waterway AS class FROM osm_waterway_linestring
     WHERE waterway IN ('river') AND ST_Length(geometry) > 5000
 );
-CREATE INDEX IF NOT EXISTS waterway_z9_geom_idx ON waterway_z9 USING gist(geom);
 
 CREATE OR REPLACE VIEW waterway_z11 AS (
     SELECT geometry AS geom, waterway AS class FROM osm_waterway_linestring
