@@ -4,6 +4,7 @@ layer:
       OpenStreetMap waterways.
   buffer_size: 4
   datasource:
+    geometry_field: geometry
     query: (SELECT * FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./waterway.sql
