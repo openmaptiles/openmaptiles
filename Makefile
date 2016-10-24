@@ -10,4 +10,4 @@ build/tileset.sql:
 	mkdir -p build && generate-sql openmaptiles.yaml > build/tileset.sql
 
 clean:
-	rm -rf build
+	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql

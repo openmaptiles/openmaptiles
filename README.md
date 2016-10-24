@@ -92,7 +92,7 @@ docker-compose run import-sql
 ```
 
 To look at the vector tiles you can start up Mapbox Studio Classic in a container
-and visit `localhost:3000` and open the vector source project under `projects/osm2vectortiles.tm2source`.
+and visit `localhost:3000` and open the vector source project under `/projects`.
 
 ```bash
 docker-compose up mapbox-studio

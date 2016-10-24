@@ -7,9 +7,10 @@ tileset:
     - layers/state/state.yaml
     - layers/country/country.yaml
     - layers/place/place.yaml
-    #- layers/rail/rail.yaml
+      #- layers/rail/rail.yaml
     - layers/urban/urban.yaml
     - layers/water/water.yaml
+    - layers/waterway/waterway.yaml
     - layers/landcover/landcover.yaml
   name: OpenMapTiles v1.0
   description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"

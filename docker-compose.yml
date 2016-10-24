@@ -22,6 +22,8 @@ services:
   import-osm:
     image: "openmaptiles/import-osm"
     env_file: .env
+    environment:
+      DIFF_MODE: "false"
     links:
     - postgres
     volumes:

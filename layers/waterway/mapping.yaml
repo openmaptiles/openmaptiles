@@ -1,0 +1,24 @@
+tables:
+  waterway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: waterway
+      key: waterway
+      type: string
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    mapping:
+      waterway:
+      - stream
+      - river
+      - canal
+      - drain
+      - ditch
