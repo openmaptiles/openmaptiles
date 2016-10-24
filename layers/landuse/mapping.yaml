@@ -16,14 +16,22 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: landuse
-      type: mapping_value
+      key: landuse
+      type: string
+    - name: amenity
+      key: amenity
+      type: string
     - name: area
       type: pseudoarea
     mapping:
       amenity:
       - school
+      - university
+      - kindergarten
+      - college
+      - library
       - hospital
       landuse:
       - railway
-      - cemetry
+      - cemetery
       - military
