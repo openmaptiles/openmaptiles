@@ -2,7 +2,6 @@ tileset:
   layers:
     - layers/boundary/boundary.yaml
     - layers/highway/highway.yaml
-    - layers/ice/ice.yaml
     - layers/building/building.yaml
     - layers/state/state.yaml
     - layers/country/country.yaml
