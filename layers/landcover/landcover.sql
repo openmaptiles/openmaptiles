@@ -1,3 +1,14 @@
+--TODO: Find a way to nicely generalize landcover
+--CREATE TABLE IF NOT EXISTS landcover_grouped_gen2 AS (
+--	SELECT osm_id, ST_Simplify((ST_Dump(geometry)).geom, 600) AS geometry, landuse, "natural", wetland
+--	FROM (
+--	  SELECT max(osm_id) AS osm_id, ST_Union(ST_Buffer(geometry, 600)) AS geometry, landuse, "natural", wetland
+--	  FROM osm_landcover_polygon_gen1
+--	  GROUP BY LabelGrid(geometry, 15000000), landuse, "natural", wetland
+--	) AS grouped_measurements
+--);
+--CREATE INDEX IF NOT EXISTS landcover_grouped_gen2_geometry_idx ON landcover_grouped_gen2 USING gist(geometry);
+
 CREATE OR REPLACE FUNCTION landcover_class(landuse VARCHAR, "natural" VARCHAR, wetland VARCHAR) RETURNS TEXT AS $$
     SELECT CASE
          WHEN landuse IN ('farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery') THEN 'farmland'
