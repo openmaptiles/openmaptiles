@@ -34,15 +34,27 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
 		UNION ALL
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
-		WHERE zoom_level = 12 AND to_highway_class(highway) < 'minor_road'::highway_class AND NOT highway_is_link(highway)
+		WHERE zoom_level = 12
+            AND to_highway_class(highway) < 'minor_road'::highway_class
+            AND NOT highway_is_link(highway)
+            AND NOT is_area
         UNION ALL
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
-		WHERE zoom_level = 13 AND to_highway_class(highway) < 'path'::highway_class
+		WHERE zoom_level = 13
+            AND to_highway_class(highway) < 'path'::highway_class
+            AND NOT is_area
         UNION ALL
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
-		WHERE zoom_level >= 14
+		WHERE zoom_level >= 14 AND NOT is_area
+        UNION ALL
+        -- NOTE: We limit the selection of polys because we need to be careful to net get false positives here because
+        -- it is possible that closed linestrings appear both as highway linestrings and as polygon
+		SELECT osm_id, geometry, highway, FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford, FALSE AS is_ramp, FALSE AS is_oneway, z_order
+        FROM osm_highway_polygon
+        -- We do not want underground pedestrian areas for now
+		WHERE zoom_level BETWEEN 13 AND 14 AND is_area AND COALESCE(layer, 0) >= 0
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;

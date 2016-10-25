@@ -1,19 +1,19 @@
 generalized_tables:
   highway_linestring_gen4:
     source: highway_linestring_gen3
-    sql_filter: highway IN ('motorway','trunk')
+    sql_filter: highway IN ('motorway','trunk') AND NOT is_area
     tolerance: 200.0
   highway_linestring_gen3:
     source: highway_linestring_gen2
-    sql_filter: highway IN ('motorway','trunk', 'primary')
+    sql_filter: highway IN ('motorway','trunk', 'primary') AND NOT is_area
     tolerance: 120.0
   highway_linestring_gen2:
     source: highway_linestring_gen1
-    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary')
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
     tolerance: 50.0
   highway_linestring_gen1:
     source: highway_linestring
-    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary')
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
     tolerance: 20.0
 tables:
   highway_linestring:
@@ -31,6 +31,9 @@ tables:
       type: string
     - name: z_order
       type: wayzorder
+    - name: layer
+      key: layer
+      type: integer
     - key: tunnel
       name: is_tunnel
       type: bool
@@ -77,9 +80,29 @@ tables:
       - service
       - path
       - cycleway
-      - steps
       - bridleway
       - footway
       - corridor
       - crossing
+      - pedestrian
+  highway_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - name: layer
+      key: layer
+      type: integer
+    - name: is_area
+      key: area
+      type: bool
+    mapping:
+      highway:
       - pedestrian
