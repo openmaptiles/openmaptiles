@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION landuse_class(landuse TEXT, amenity TEXT, leisure TEX
          WHEN landuse IN('hospital', 'railway', 'cemetery', 'military', 'residential') THEN landuse
         ELSE NULL
 	 END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE STRICT;
 
 CREATE OR REPLACE VIEW landuse_z4 AS (
     SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential' AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
@@ -80,6 +80,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
         SELECT * FROM landuse_z13 WHERE zoom_level = 13
         UNION ALL
         SELECT * FROM landuse_z14 WHERE zoom_level >= 14
-    ) AS zoom_levels;
+    ) AS zoom_levels
+    WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
 
