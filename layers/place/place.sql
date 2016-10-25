@@ -45,10 +45,12 @@ CREATE OR REPLACE VIEW place_z10 AS (
 
 CREATE OR REPLACE VIEW place_z11 AS (
     SELECT osm_id, geometry, name, name_en, place, NULL::integer AS scalerank, population FROM osm_place_point
+    WHERE place IN ('city', 'town', 'village', 'suburb')
 );
 
 CREATE OR REPLACE VIEW place_z13 AS (
     SELECT osm_id, geometry, name, name_en, place, NULL::integer AS scalerank, population FROM osm_place_point
+    WHERE place IN ('city', 'town', 'village', 'suburb')
 );
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
