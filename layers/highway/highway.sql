@@ -1,140 +1,48 @@
-CREATE OR REPLACE FUNCTION highway_brunnel(is_bridge boolean, is_tunnel boolean) RETURNS TEXT AS $$
-    SELECT CASE
-         WHEN is_bridge THEN 'bridge'
-         WHEN is_tunnel THEN 'tunnel'
-        ELSE NULL
-    END;
-$$ LANGUAGE SQL IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION highway_class(highway TEXT) RETURNS TEXT AS $$
-    SELECT CASE
-        WHEN highway IN ('unclassified', 'residential', 'living_street', 'road', 'track', 'service') THEN 'minor'
-        WHEN highway IN ('primary', 'primary_link') THEN 'primary'
-        WHEN highway IN ('secondary', 'secondary_link') THEN 'secondary'
-        WHEN highway IN ('tertiary', 'tertiary_link') THEN 'tertiary'
-        WHEN highway IN ('motorway', 'motorway_link') THEN 'motorway'
-        WHEN highway IN ('trunk', 'trunk_link') THEN 'trunk'
-        WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps') THEN 'path'
-        ELSE NULL
-    END;
-$$ LANGUAGE SQL IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION ne_highway(type VARCHAR) RETURNS VARCHAR AS $$
-  SELECT CASE type
-    WHEN 'Major Highway' THEN 'motorway'
-    WHEN 'Secondary Highway' THEN 'trunk'
-    WHEN 'Road' THEN 'primary'
-    ELSE type
-  END;
-$$ LANGUAGE SQL IMMUTABLE;
-
-CREATE TABLE IF NOT EXISTS ne_10m_global_roads AS (
-    SELECT NULL::bigint as osm_id, geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
-    FROM ne_10m_roads
-    WHERE continent <> 'North America'
-      AND featurecla = 'Road'
-      AND type IN ('Major Highway', 'Secondary Highway', 'Road')
-    UNION ALL
-    SELECT NULL::bigint as osm_id, geom AS geometry, scalerank, ne_highway(type) AS highway, NULL::boolean AS is_tunnel, NULL::boolean AS is_bridge, 0::int as z_order
-    FROM ne_10m_roads_north_america
-    WHERE type IN ('Major Highway', 'Secondary Highway', 'Road')
-);
-
-CREATE INDEX IF NOT EXISTS ne_10m_global_roads_geometry_idx ON ne_10m_global_roads USING gist(geometry);
-CREATE INDEX IF NOT EXISTS ne_10m_global_roads_scalerank_idx ON ne_10m_global_roads(scalerank);
-
-CREATE OR REPLACE VIEW highway_z4 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM ne_10m_global_roads
-    WHERE scalerank <= 5
-);
-
-CREATE OR REPLACE VIEW highway_z5 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM ne_10m_global_roads
-    WHERE scalerank <= 6
-);
-
-CREATE OR REPLACE VIEW highway_z6 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM ne_10m_global_roads
-    WHERE scalerank <= 7
-);
-
-CREATE OR REPLACE VIEW highway_z8 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring_gen4
-);
-
-CREATE OR REPLACE VIEW highway_z9 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring_gen3
-);
-
-CREATE OR REPLACE VIEW highway_z10 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring_gen2
-);
-
-CREATE OR REPLACE VIEW highway_z11 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring_gen1
-);
-
-CREATE OR REPLACE VIEW highway_z12 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring
-    WHERE highway IN ('motorway','trunk','primary', 'secondary', 'tertiary', 'minor')
-);
-
-CREATE OR REPLACE VIEW highway_z13 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring
-    WHERE highway IN (
-        'motorway',
-        'motorway_link',
-        'trunk',
-        'trunk_link',
-        'primary',
-        'primary_link',
-        'secondary',
-        'secondary_link',
-        'tertiary',
-        'tertiary_link',
-        'road',
-        'living_street',
-        'service',
-        'residential'
-    )
-);
-
-CREATE OR REPLACE VIEW highway_z14 AS (
-    SELECT osm_id, geometry, highway, is_tunnel, is_bridge, z_order
-    FROM osm_highway_linestring
-);
+CREATE OR REPLACE FUNCTION highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
+    SELECT highway LIKE '%_link';
+$$ LANGUAGE SQL IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION layer_highway(bbox geometry, zoom_level int)
-RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
-    SELECT osm_id, geometry, highway_class(highway) AS class, highway AS subclass FROM (
-        SELECT * FROM highway_z4 WHERE zoom_level BETWEEN 4 AND 5
+RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass text, properties highway_properties) AS $$
+    SELECT
+		osm_id, geometry,
+		to_highway_class(highway) AS class, highway AS subclass,
+		to_highway_properties(is_bridge, is_tunnel, is_ford, is_ramp, is_oneway) AS properties
+	FROM (
+		SELECT
+			NULL::bigint AS osm_id, geometry, highway,
+			FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford, FALSE AS is_ramp, FALSE AS is_oneway,
+			0 AS z_order
+		FROM ne_10m_global_roads
+		WHERE zoom_level BETWEEN 4 AND 7 AND scalerank <= 1 + zoom_level
+		UNION ALL
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring_gen4
+		WHERE zoom_level = 8
+		UNION ALL
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring_gen3
+		WHERE zoom_level = 9
+		UNION ALL
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring_gen2
+		WHERE zoom_level = 10
+		UNION ALL
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring_gen1
+		WHERE zoom_level = 11
+		UNION ALL
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring
+		WHERE zoom_level = 12 AND to_highway_class(highway) < 'minor_road'::highway_class AND NOT highway_is_link(highway)
         UNION ALL
-        SELECT * FROM highway_z5 WHERE zoom_level = 5
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring
+		WHERE zoom_level = 13 AND to_highway_class(highway) < 'path'::highway_class
         UNION ALL
-        SELECT * FROM highway_z6 WHERE zoom_level BETWEEN 6 AND 7
-        UNION ALL
-        SELECT * FROM highway_z8 WHERE zoom_level = 8
-        UNION ALL
-        SELECT * FROM highway_z9 WHERE zoom_level = 9
-        UNION ALL
-        SELECT * FROM highway_z10 WHERE zoom_level = 10
-        UNION ALL
-        SELECT * FROM highway_z11 WHERE zoom_level = 11
-        UNION ALL
-        SELECT * FROM highway_z12 WHERE zoom_level = 12
-        UNION ALL
-        SELECT * FROM highway_z13 WHERE zoom_level = 13
-        UNION ALL
-        SELECT * FROM highway_z14 WHERE zoom_level >= 14
+		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_highway_linestring
+		WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;

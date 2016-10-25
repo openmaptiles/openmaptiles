@@ -26,9 +26,9 @@ tables:
     - name: highway
       key: highway
       type: string
-    - key: oneway
-      name: oneway
-      type: direction
+    - key: ref
+      name: ref
+      type: string
     - name: z_order
       type: wayzorder
     - key: tunnel
@@ -36,6 +36,15 @@ tables:
       type: bool
     - key: bridge
       name: is_bridge
+      type: bool
+    - key: ramp
+      name: is_ramp
+      type: bool
+    - key: ford
+      name: is_ford
+      type: bool
+    - key: oneway
+      name: is_oneway
       type: bool
     - key: name
       name: name

@@ -10,8 +10,10 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT * FROM layer_highway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, class::text, subclass, properties::text FROM layer_highway(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./types.sql
+  - ./ne_global_roads.sql
   - ./highway.sql
 datasources:
   - type: imposm3
