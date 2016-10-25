@@ -2,6 +2,7 @@ tileset:
   layers:
     - layers/boundary/boundary.yaml
     - layers/highway/highway.yaml
+    - layers/highway_name/highway_name.yaml
     - layers/building/building.yaml
     - layers/place/place.yaml
     - layers/railway/railway.yaml
