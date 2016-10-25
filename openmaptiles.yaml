@@ -4,6 +4,7 @@ tileset:
     - layers/highway/highway.yaml
     - layers/highway_name/highway_name.yaml
     - layers/building/building.yaml
+    - layers/housenumber/housenumber.yaml
     - layers/place/place.yaml
     - layers/railway/railway.yaml
     - layers/water/water.yaml

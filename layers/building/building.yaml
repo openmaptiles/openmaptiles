@@ -4,7 +4,7 @@ layer:
     All [OSM Buildings](http://wiki.openstreetmap.org/wiki/Buildings).
   buffer_size: 4
   datasource:
-    query: (SELECT * FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geom FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
   fields:
     render_height: |
         An approximated height from levels and height of building after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear)

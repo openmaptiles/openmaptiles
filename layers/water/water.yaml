@@ -4,7 +4,7 @@ layer:
       Water polygons and linestrings representing oceans, lakes and waterways.
   buffer_size: 4
   datasource:
-    query: (SELECT * FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geom, class FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./water.sql
 datasources:

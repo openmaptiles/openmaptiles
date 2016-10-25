@@ -4,7 +4,7 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT * FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landuse.sql
 datasources:

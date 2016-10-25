@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE FUNCTION landuse_class(landuse TEXT, amenity TEXT, leisure TEXT, boundary TEXT) RETURNS TEXT AS $$
     SELECT CASE
          WHEN leisure = 'nature_reserve' OR boundary='national_park' THEN 'park'

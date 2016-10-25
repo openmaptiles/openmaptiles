@@ -5,7 +5,7 @@ layer:
   buffer_size: 128
   datasource:
     geometry_field: geometry
-    query: (SELECT * FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, place, abbrev, postal, scalerank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./country.sql
   - ./state.sql
