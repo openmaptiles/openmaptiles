@@ -1,26 +1,82 @@
+name_field: &name
+  name: name
+  key: name
+  type: string
+name_en_field: &name_en
+  name: name_en
+  key: name_en
+  type: string
+scalerank_field: &scalerank
+  name: scalerank
+  key: scalerank
+  type: integer
 tables:
-  place_point:
+  country_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - name: name_int
+      key: int_name
+      type: string
+    - name: country_code_fips
+      key: country_code_fips
+      type: string
+    - *scalerank
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - country
+  state_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - name: is_in_country
+      key: is_in:country
+      type: string
+    - name: is_in_country_code
+      key: is_in:country_code
+      type: string
+    - name: name_abbreviation
+      key: name:abbreviation
+      type: string
+    - name: ref
+      key: ref
+      type: string
+    - *scalerank
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - state
+  city_point:
     type: geometry
     fields:
     - name: osm_id
       type: id
     - name: geometry
       type: geometry
-    - key: name
-      name: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
+    - *name
+    - *name_en
     - name: place
       key: place
       type: string
     - key: population
       name: population
       type: integer
-    - key: scalerank
-      name: scalerank
-      type: integer
+    - *scalerank
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]

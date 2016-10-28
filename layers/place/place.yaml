@@ -12,13 +12,13 @@ layer:
   buffer_size: 128
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, place, abbrev, postal, scalerank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, class, abbrev scalerank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
   - ./city.sql
   - ./country.sql
   - ./state.sql
-  - ./important_place.sql
+  - ./merge_scalerank.sql
   - ./place.sql
 datasources:
   - type: imposm3
