@@ -1,8 +1,19 @@
-DROP TYPE IF EXISTS highway_class CASCADE;
-CREATE TYPE highway_class AS ENUM ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'minor_road', 'path');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
+		CREATE TYPE highway_class AS ENUM ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'minor_road', 'path');
+    END IF;
+END
+$$;
 
-DROP TYPE IF EXISTS highway_properties CASCADE;
-CREATE TYPE highway_properties AS ENUM ('bridge:oneway', 'tunnel:oneway', 'ramp', 'ford', 'bridge', 'tunnel', 'oneway');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
+        CREATE TYPE highway_properties AS ENUM ('bridge:oneway', 'tunnel:oneway', 'ramp', 'ford', 'bridge', 'tunnel', 'oneway');
+    END IF;
+END
+$$;
+
 
 CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class AS $$
     SELECT CASE
