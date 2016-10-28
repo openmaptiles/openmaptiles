@@ -12,16 +12,18 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, ref text, class highw
         UNION ALL
         SELECT * FROM osm_highway_name_linestring
         WHERE zoom_level = 12
+            AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
             AND to_highway_class(highway) < 'minor_road'::highway_class
             AND NOT highway_is_link(highway)
         UNION ALL
         SELECT * FROM osm_highway_name_linestring
         WHERE zoom_level = 13
+            AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
             AND to_highway_class(highway) < 'path'::highway_class
         UNION ALL
         SELECT * FROM osm_highway_name_linestring
         WHERE zoom_level >= 14
     ) AS zoom_levels
-    WHERE geometry && bbox AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
+    WHERE geometry && bbox
     ORDER BY z_order ASC;
 $$ LANGUAGE SQL IMMUTABLE;
