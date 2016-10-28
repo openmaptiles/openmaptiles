@@ -8,6 +8,7 @@ tileset:
     #- layers/housenumber/housenumber.yaml
     - layers/place/place.yaml
     - layers/railway/railway.yaml
+    - layers/water_name/water_name.yaml
     - layers/water/water.yaml
     - layers/waterway/waterway.yaml
     - layers/landcover/landcover.yaml

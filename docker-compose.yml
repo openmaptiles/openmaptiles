@@ -19,6 +19,11 @@ services:
     env_file: .env
     links:
     - postgres
+  import-lakelines:
+    image: "openmaptiles/import-lakelines"
+    env_file: .env
+    links:
+    - postgres
   import-osm:
     image: "openmaptiles/import-osm"
     env_file: .env
