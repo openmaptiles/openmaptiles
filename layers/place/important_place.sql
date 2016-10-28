@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS osm_important_place_point AS (
+WITH important_place_point AS (
     SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, osm.place, ne.scalerank, COALESCE(osm.population, ne.pop_min) AS population
     FROM ne_10m_populated_places AS ne, osm_place_point AS osm
     WHERE
@@ -16,7 +16,10 @@ CREATE TABLE IF NOT EXISTS osm_important_place_point AS (
     )
     AND (osm.place = 'city' OR osm.place= 'town' OR osm.place = 'village')
     AND ST_DWithin(ne.geom, osm.geometry, 50000)
-);
+)
+UPDATE osm_place_point
+SET scalerank = important_place_point.scalerank
+FROM important_place_point
+WHERE osm_place_point.osm_id = important_place_point.osm_id;
 
-CREATE INDEX IF NOT EXISTS osm_important_place_point_geometry_idx ON osm_important_place_point USING gist(geometry);
-CLUSTER osm_important_place_point USING osm_important_place_point_geometry_idx;
+CREATE INDEX IF NOT EXISTS osm_place_point_scalerank_idx ON osm_place_point (scalerank);

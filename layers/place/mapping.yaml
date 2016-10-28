@@ -18,6 +18,9 @@ tables:
     - key: population
       name: population
       type: integer
+    - key: scalerank
+      name: scalerank
+      type: integer
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]
