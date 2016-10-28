@@ -1,0 +1,14 @@
+digraph "Imposm Mapping" {
+	graph [rankdir=LR ranksep=3]
+		subgraph railway_linestring {
+			node [fixed_size=shape "width:"=20]
+				railway_linestring [shape=box]
+				key_railway [label=railway shape=box]
+					key_railway -> railway_linestring [label="rail
+light_rail
+subway
+narrow_gauge
+preserved
+tram"]
+		}
+}

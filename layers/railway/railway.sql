@@ -13,25 +13,17 @@ CREATE OR REPLACE FUNCTION railway_brunnel(is_bridge boolean, is_tunnel boolean)
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE OR REPLACE VIEW railway_z13 AS (
-    SELECT * FROM osm_railway_linestring
-    WHERE railway = 'rail' AND service=''
-);
-
-CREATE OR REPLACE VIEW railway_z14 AS (
-    SELECT * FROM osm_railway_linestring
-);
-
 CREATE OR REPLACE FUNCTION layer_railway(bbox geometry, zoom_level int)
-RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, brunnel text) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, properties railway_properties) AS $$
     SELECT osm_id, geometry,
         railway_class(railway, service) AS class,
         railway AS subclass,
-        railway_brunnel(is_bridge, is_tunnel) AS brunnel
+        to_railway_properties(is_bridge, is_tunnel) AS properties
     FROM (
-        SELECT * FROM railway_z13 WHERE zoom_level = 13
+        SELECT * FROM osm_railway_linestring
+        WHERE zoom_level = 13 AND railway = 'rail' AND service=''
         UNION ALL
-        SELECT * FROM railway_z14 WHERE zoom_level >= 14
+        SELECT * FROM osm_railway_linestring WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;
