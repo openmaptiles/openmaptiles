@@ -4,9 +4,9 @@ CREATE OR REPLACE FUNCTION landuse_class(landuse TEXT, amenity TEXT, leisure TEX
          WHEN leisure = 'nature_reserve' OR boundary='national_park' THEN 'park'
          WHEN amenity IN ('school', 'university', 'kindergarten', 'college', 'library') THEN 'school'
          WHEN landuse IN('hospital', 'railway', 'cemetery', 'military', 'residential') THEN landuse
-        ELSE NULL
+         ELSE NULL
 	 END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$ LANGUAGE SQL IMMUTABLE;
 
 CREATE OR REPLACE VIEW landuse_z4 AS (
     SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential' AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
