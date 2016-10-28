@@ -10,7 +10,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, ref, class::text, subclass FROM layer_highway_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, ref, ref_length, class::text, subclass FROM layer_highway_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_highways.sql
   - ./layer.sql

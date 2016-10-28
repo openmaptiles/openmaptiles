@@ -1,6 +1,9 @@
 CREATE OR REPLACE FUNCTION layer_highway_name(bbox geometry, zoom_level integer)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, ref text, class highway_class, subclass text) AS $$
-    SELECT osm_id, geometry, name, ref, to_highway_class(highway) AS class, highway AS subclass FROM (
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, ref text, ref_length int, class highway_class, subclass text) AS $$
+    SELECT osm_id, geometry, name,
+      NULLIF(ref, ''), NULLIF(LENGTH(ref), 0) AS ref_length,
+      to_highway_class(highway) AS class, highway AS subclass
+    FROM (
         SELECT * FROM osm_highway_name_linestring_gen3
         WHERE zoom_level = 8
         UNION ALL
