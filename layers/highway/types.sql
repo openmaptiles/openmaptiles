@@ -40,4 +40,4 @@ CREATE OR REPLACE FUNCTION to_highway_properties(is_bridge boolean, is_tunnel bo
          WHEN is_oneway THEN 'oneway'::highway_properties
         ELSE NULL
     END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$ LANGUAGE SQL IMMUTABLE;
