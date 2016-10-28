@@ -7,6 +7,7 @@ tileset:
     # housenumbers are quite heavy on the tile size (up to +30KB)
     #- layers/housenumber/housenumber.yaml
     - layers/place/place.yaml
+    - layers/poi/poi.yaml
     - layers/railway/railway.yaml
     - layers/water_name/water_name.yaml
     - layers/water/water.yaml
