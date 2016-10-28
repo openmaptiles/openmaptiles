@@ -1,15 +1,15 @@
 generalized_tables:
   water_polygon_gen3:
     source: water_polygon
-    sql_filter: area>15000000.0
+    sql_filter: area>15000000.0 AND waterway = ''
     tolerance: 350.0
   water_polygon_gen2:
     source: water_polygon
-    sql_filter: area>2000000
+    sql_filter: area>2000000 AND waterway = ''
     tolerance: 200.0
   water_polygon_gen1:
     source: water_polygon
-    sql_filter: area>500000
+    sql_filter: area>500000 AND waterway = ''
     tolerance: 100.0
 tables:
   water_polygon:
@@ -25,6 +25,15 @@ tables:
       type: string
     - name: name_en
       key: name:en
+      type: string
+    - name: natural
+      key: natural
+      type: string
+    - name: landuse
+      key: landuse
+      type: string
+    - name: waterway
+      key: waterway
       type: string
     filters:
       exclude_tags:

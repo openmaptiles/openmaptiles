@@ -1,7 +1,7 @@
 layer:
   id: "water"
   description: |
-      Water polygons and linestrings representing oceans, lakes and waterways.
+      Water polygons and linestrings representing oceans, lakes.
   buffer_size: 4
   datasource:
     query: (SELECT geom, class FROM layer_water(!bbox!, z(!scale_denominator!))) AS t

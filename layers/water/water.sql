@@ -1,3 +1,8 @@
+CREATE OR REPLACE FUNCTION water_class(waterway TEXT) RETURNS TEXT AS $$
+    SELECT CASE WHEN waterway='' THEN 'lake' ELSE 'river' END;
+$$ LANGUAGE SQL IMMUTABLE;
+
+
 CREATE OR REPLACE VIEW water_z0 AS (
     SELECT geom, 'ocean' AS class FROM ne_110m_ocean
     UNION ALL
@@ -51,19 +56,19 @@ CREATE OR REPLACE VIEW water_z9 AS (
 );
 
 CREATE OR REPLACE VIEW water_z11 AS (
-    SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon WHERE area > 40000
+    SELECT geometry AS geom, water_class(waterway) AS class FROM osm_water_polygon WHERE area > 40000
 );
 
 CREATE OR REPLACE VIEW water_z12 AS (
-    SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon WHERE area > 10000
+    SELECT geometry AS geom, water_class(waterway) AS class FROM osm_water_polygon WHERE area > 10000
 );
 
 CREATE OR REPLACE VIEW water_z13 AS (
-    SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon WHERE area > 5000
+    SELECT geometry AS geom, water_class(waterway) AS class FROM osm_water_polygon WHERE area > 5000
 );
 
 CREATE OR REPLACE VIEW water_z14 AS (
-    SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon
+    SELECT geometry AS geom, water_class(waterway) AS class FROM osm_water_polygon
 );
 
 CREATE OR REPLACE FUNCTION layer_water (bbox geometry, zoom_level int)
