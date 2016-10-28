@@ -35,6 +35,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
 		WHERE zoom_level = 12
+            --NOTE: We could already show residential roads - but we can save a lot of data by not doing so
             AND to_highway_class(highway) < 'minor_road'::highway_class
             AND NOT highway_is_link(highway)
             AND NOT is_area
