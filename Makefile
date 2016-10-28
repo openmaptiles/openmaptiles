@@ -1,4 +1,7 @@
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md
+all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+
+.PHONY: docs
+docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md
 
 build/openmaptiles.tm2source/data.yml:
 	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
