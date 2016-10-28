@@ -19,24 +19,16 @@ CREATE TABLE IF NOT EXISTS state_label AS (
 );
 CREATE INDEX IF NOT EXISTS state_label_geometry_idx ON state_label USING gist(geometry);
 
-CREATE OR REPLACE VIEW state_z3 AS (
-    SELECT * FROM state_label
-    WHERE (scalerank <= 2 AND labelrank <= 1) OR type = 'Avtonomnyy Okrug'
-);
-
-CREATE OR REPLACE VIEW state_z4 AS (
-    SELECT * FROM state_label
-);
-
 CREATE OR REPLACE FUNCTION layer_state(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, abbrev text, postal text, scalerank int, labelrank int) AS $$
     SELECT osm_id, geometry,
-    COALESCE(name_local, name_en) AS name_local, name_en,
+    COALESCE(name_local, name_en) AS name, name_en,
     abbrev, postal, scalerank::int, labelrank::int FROM (
-        SELECT * FROM state_z3
-        WHERE zoom_level = 3
+        SELECT * FROM state_label
+        WHERE (zoom_level = 3)
+          AND ((scalerank <= 2 AND labelrank <= 1) OR type = 'Avtonomnyy Okrug')
         UNION ALL
-        SELECT * FROM state_z4
+        SELECT * FROM state_label
         WHERE zoom_level >= 4
     ) AS t
     WHERE geometry && bbox

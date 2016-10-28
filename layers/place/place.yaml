@@ -1,12 +1,21 @@
 layer:
   id: "place"
   description: |
-      [OSM Places](http://wiki.openstreetmap.org/wiki/Key:place)
+      The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
+      [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate) and [cities](http://wiki.openstreetmap.org/wiki/Key:place).
+      For countries, states and places at low zoom levels (`z0` to `z7`) the
+      [Populated Places](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/) dataset from NaturalEarth is merged
+      with OSM data to only show the most relevant places for the given zoom level. All features derived from NaturalEarth have a `scalerank` field.
+      States and countries additionally contain `postal` and `abbreviation` fields for styles that want to fit a lot of data with small labels on the map. 
+      The `place` layer only contains more important states (or similar entities) from the US, Russia, China and Brazil.
+
   buffer_size: 128
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, name, name_en, place, abbrev, postal, scalerank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./types.sql
+  - ./city.sql
   - ./country.sql
   - ./state.sql
   - ./important_place.sql
