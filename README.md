@@ -1,45 +1,12 @@
-## Vector Data Source
+## OpenMapTiles
 
-*This is a work in progress towards OSM2VectorTiles v3.0*
+OpenMapTiles is a collection of vector tile layers you can mix and match to create your own vector tile sets.
 
-This is the data source for the vector tile schema of OSM2VectorTiles.
-It contains the *tm2source* project and the required database schema (views, functions).
+### Define your own Layer
 
-The vector data sources stands as separate repository to foster collaboration with Wikipedia
-and make it easier to fork the style without forking OSM2VectorTiles as well.
+### Define your own Tileset
 
-## Vision
-
-The vector tile schema will contain the necessary features for creating a basemap.
-We will orient ourselves on the cartography used in the [Carto Basemaps](https://carto.com/location-data-services/basemaps/).
-Additional layers can be always be mixed in later on but we think OSM2VectorTiles should become less bloated in v3.0.
-
-![Future basemaps based on OSM2VectorTiles v3.0?](./basemap_vision.png)
-
-## Requirements
-
-This vector tile schema depends on a database containing several different data sources
-which need to be imported first. You can use your own ETL process or use the Docker containers from
-OSM2VectorTiles.
-
-Your PostGIS database needs the following data imported. If you use our Docker based workflow this is very straightforward to setup
-but if you don't want to use Docker you can set up your own ETL pipeline to import the required data sources.
-
-- [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables)
-- [OpenStreetMapData](http://openstreetmapdata.com/) split and simplified water polygons
-- [Natural Earth](http://www.naturalearthdata.com/)
-- [PostGIS Vector Tile Utils](https://github.com/mapbox/postgis-vt-util) for `LabelGrid` and `z` function
-
-## Database Schema
-
-The vector data source is using views, generalized tables and functions to share code between layers.
-The SQL code can be found in `./schema`. The different features from OSM however are determined in the [ClearTables](https://github.com/ClearTables/ClearTables) project.
-
-Each zoom level in a layer has it's own view where the data is *filtered* for the zoom level.
-This keeps the filtering logic per zoom level out of the TM2Source `data.yml`.
-To work on the database and vector tile schema read the *Develop* section.
-
-## Develop
+## Work on the Standard Layers
 
 To work on *osm2vectortiles.tm2source* you need Docker and Python.
 
@@ -76,6 +43,12 @@ Import [Natural Earth](http://www.naturalearthdata.com/) data.
 
 ```bash
 docker-compose run import-natural-earth
+```
+
+Import [Lake center line](https://github.com/lukasmartinelli/osm-lakelines) data.
+
+```bash
+docker-compose run import-lakelines
 ```
 
 Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables).
