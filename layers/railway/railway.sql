@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION railway_class(railway text, service text) RETURNS TEXT AS $$
     SELECT CASE
         WHEN railway='rail' AND service='' THEN 'rail'
-        ELSE 'minor'
+        ELSE 'minor_rail'
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
