@@ -1,7 +1,8 @@
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
 .PHONY: docs
-docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md
+docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md layers/highway_name/README.md layers/poi/README.md
+
 
 build/openmaptiles.tm2source/data.yml:
 	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
@@ -12,8 +13,14 @@ build/mapping.yaml:
 build/tileset.sql:
 	mkdir -p build && generate-sql openmaptiles.yaml > build/tileset.sql
 
+layers/poi/README.md:
+	generate-doc layers/poi/poi.yaml --diagram layers/poi/mapping > layers/poi/README.md
+
 layers/highway/README.md:
 	generate-doc layers/highway/highway.yaml --diagram layers/highway/mapping > layers/highway/README.md
+
+layers/highway_name/README.md:
+	generate-doc layers/highway_name/highway_name.yaml > layers/highway_name/README.md
 
 layers/railway/README.md:
 	generate-doc layers/railway/railway.yaml --diagram layers/railway/mapping > layers/railway/README.md
