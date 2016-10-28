@@ -5,3 +5,5 @@ BEGIN
     END IF;
 END
 $$;
+
+ALTER TABLE osm_place_point ALTER COLUMN place TYPE place_subclass USING place::place_subclass;
