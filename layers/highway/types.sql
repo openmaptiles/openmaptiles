@@ -1,14 +1,14 @@
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
-		CREATE TYPE highway_class AS ENUM ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'minor_road', 'path');
+		CREATE TYPE highway_class AS ENUM ('motorway', 'major_road', 'minor_road', 'path');
     END IF;
 END
 $$;
 
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_properties') THEN
         CREATE TYPE highway_properties AS ENUM ('bridge:oneway', 'tunnel:oneway', 'ramp', 'ford', 'bridge', 'tunnel', 'oneway');
     END IF;
 END
@@ -18,10 +18,11 @@ $$;
 CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class AS $$
     SELECT CASE
         WHEN highway IN ('motorway', 'motorway_link') THEN 'motorway'::highway_class
-        WHEN highway IN ('trunk', 'trunk_link') THEN 'trunk'::highway_class
-        WHEN highway IN ('primary', 'primary_link') THEN 'primary'::highway_class
-        WHEN highway IN ('secondary', 'secondary_link') THEN 'secondary'::highway_class
-        WHEN highway IN ('tertiary', 'tertiary_link') THEN 'tertiary'::highway_class
+        -- A major class is helpful in styling - one can still differentiate on a finer level using the subclass
+        WHEN highway IN ('trunk', 'trunk_link',
+                         'primary', 'primary_link',
+                         'secondary', 'secondary_link',
+                         'tertiary', 'tertiary_link') THEN 'major_road'::highway_class
         WHEN highway IN ('unclassified', 'residential', 'living_street', 'road', 'track', 'service') THEN 'minor_road'::highway_class
         WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps') THEN 'path'::highway_class
         ELSE NULL
