@@ -7,14 +7,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
         OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level)
       )
     UNION ALL
-    SELECT osm_id, geometry, name, name_en, place, "rank" FROM (
-        SELECT osm_id, geometry, name, name_en, place, "rank",
-			row_number() OVER (
-				PARTITION BY LabelGrid(geometry, 150 * pixel_width)
-				ORDER BY place ASC NULLS LAST,
-				population DESC NULLS LAST,
-				length(name) DESC
-			) AS gridrank
+    SELECT osm_id, geometry, name, name_en, place, COALESCE("rank", gridrank + 10) FROM (
+      SELECT osm_id, geometry, name, name_en, place, "rank",
+      row_number() OVER (
+        PARTITION BY LabelGrid(geometry, 150 * pixel_width)
+        ORDER BY "rank" ASC NULLS LAST,
+        place ASC NULLS LAST,
+        population DESC NULLS LAST,
+        length(name) ASC
+      )::int AS gridrank
         FROM osm_city_point
         WHERE geometry && bbox
           AND ((zoom_level BETWEEN 8 AND 9 AND place <= 'town'::city_class)
@@ -23,7 +24,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
             OR (zoom_level >= 14)
           )
     ) AS ranked_places
-    WHERE (zoom_level = 8 AND gridrank <= 4)
-       OR (zoom_level BETWEEN 9 AND 12 AND gridrank <= 9)
+    WHERE (zoom_level = 8 AND (gridrank <= 4 OR "rank" IS NOT NULL))
+       OR (zoom_level BETWEEN 9 AND 12 AND (gridrank <= 9 OR "rank" IS NOT NULL))
        OR (zoom_level >= 13);
 $$ LANGUAGE SQL IMMUTABLE;
