@@ -1,5 +1,7 @@
+ALTER TABLE osm_state_point DROP CONSTRAINT IF EXISTS osm_state_point_rank_constraint;
+
 WITH important_state_point AS (
-    SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank
+    SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank, ne.datarank
     FROM ne_10m_admin_1_states_provinces_shp AS ne, osm_state_point AS osm
     WHERE
     -- We only match whether the point is within the Natural Earth polygon
@@ -9,17 +11,14 @@ WITH important_state_point AS (
     AND ne.scalerank <= 3 AND ne.labelrank <= 2
 )
 UPDATE osm_state_point AS osm
--- We merge the labelrank not scalerank because it is more fine grained
-SET "rank" = ne.labelrank
+-- Normalize both scalerank and labelrank into a ranking system from 1 to 6.
+-- Scaleranks for NE states range from 2 to 11 and labelranks range from 0 to 20 and dataranks from 1 to 11.
+-- This means a max combined rank of 42 divided by 7 to get us uniform ranking from 1 to 6
+SET "rank" = CEILING((scalerank + labelrank + datarank)/7.0)
 FROM important_state_point AS ne
 WHERE osm.osm_id = ne.osm_id;
 
-UPDATE osm_state_point AS osm
-SET "rank" = 6
-WHERE "rank" <= 0 OR "rank" > 6;
-
 DELETE FROM osm_state_point WHERE "rank" IS NULL;
 
-ALTER TABLE osm_state_point DROP CONSTRAINT IF EXISTS osm_state_point_rank_constraint;
 ALTER TABLE osm_state_point ADD CONSTRAINT osm_state_point_rank_constraint CHECK("rank" BETWEEN 1 AND 6);
 CREATE INDEX IF NOT EXISTS osm_state_point_rank_idx ON osm_state_point("rank");

@@ -14,10 +14,10 @@ layer:
         Use this to separately style the different places according to their importance (usually country and state different
         than cities).
     rank: |
-        Countries, states and the most important cities all have a `rank` field ranging from `1` to `6` which
-        marks the importance of the feature. Less important places do not have a `rank`.
-        Use this to build a text hierarchy. The rank value originates from Natural Earth data and is either the
-        original `scalerank` for cities or the original `labelrank` for countries and states.
+        Countries, states and the most important cities all have a `rank` to boost their importance on the map.
+        The `rank` field for counries and states ranges from `1` to `6` while the `rank` field for
+        cities ranges from `1` to `10`. Use the `rank` field to build a text hierarchy.
+        The rank value is a combination of the Natural Earth `scalerank`, `labelrank` and `datarank` values.
   buffer_size: 128
   datasource:
     geometry_field: geometry
