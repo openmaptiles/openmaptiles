@@ -4,7 +4,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     FROM osm_water_lakeline
     WHERE geometry && bbox
       AND name <> ''
-      AND ((zoom_level BETWEEN 10 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
+      AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
         OR (zoom_level >= 14))
     ORDER BY ST_Length(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
