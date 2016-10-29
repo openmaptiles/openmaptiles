@@ -18,8 +18,8 @@ WITH important_city_point AS (
     AND ST_DWithin(ne.geom, osm.geometry, 50000)
 )
 UPDATE osm_city_point AS osm
-SET scalerank = ne.scalerank
+SET "rank" = ne.scalerank
 FROM important_city_point AS ne
 WHERE osm.osm_id = ne.osm_id;
 
-CREATE INDEX IF NOT EXISTS osm_city_point_scalerank_idx ON osm_city_point(scalerank);
+CREATE INDEX IF NOT EXISTS osm_city_point_rank_idx ON osm_city_point("rank");
