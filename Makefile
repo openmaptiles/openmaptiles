@@ -1,7 +1,7 @@
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
 .PHONY: docs
-docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md layers/highway_name/README.md layers/poi/README.md layers/place/README.md
+docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md layers/highway_name/README.md layers/poi/README.md layers/place/README.md layers/waterway/README.md layers/water_name/README.md
 
 build/openmaptiles.tm2source/data.yml:
 	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
@@ -27,8 +27,14 @@ layers/railway/README.md:
 layers/boundary/README.md:
 	generate-doc layers/boundary/boundary.yaml --diagram layers/boundary/mapping > layers/boundary/README.md
 
+layers/water_name/README.md:
+	generate-doc layers/water_name/water_name.yaml > layers/water_name/README.md
+
 layers/water/README.md:
 	generate-doc layers/water/water.yaml --diagram layers/water/mapping > layers/water/README.md
+
+layers/waterway/README.md:
+	generate-doc layers/waterway/waterway.yaml --diagram layers/waterway/mapping > layers/waterway/README.md
 
 layers/building/README.md:
 	generate-doc layers/building/building.yaml > layers/building/README.md
