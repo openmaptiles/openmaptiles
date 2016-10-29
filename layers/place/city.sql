@@ -3,8 +3,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
     SELECT osm_id, geometry, name, name_en, place, "rank"
     FROM osm_city_point
     WHERE geometry && bbox
-      AND ((zoom_level = 2 AND "rank" = 0)
-        OR (zoom_level BETWEEN 3 AND 7 AND "rank" < zoom_level)
+      AND ((zoom_level = 2 AND "rank" = 1)
+        OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level)
       )
     UNION ALL
     SELECT osm_id, geometry, name, name_en, place, "rank" FROM (

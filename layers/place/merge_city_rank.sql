@@ -18,11 +18,9 @@ WITH important_city_point AS (
     AND ST_DWithin(ne.geom, osm.geometry, 50000)
 )
 UPDATE osm_city_point AS osm
--- Normalize both scalerank and labelrank into a ranking system from 1 to 10.
--- Scaleranks for NE populated place range from 0 to 8 and labelranks range from 0 to 10.
--- To give features with both ranks close to 0 a lower rank we increase the range from 1 to 9 and 1 to 11.
--- This means a max combined rank of 20 divided by 2 to get us uniform ranking from 1 to 10
-SET "rank" = CEILING((ne.scalerank + 1 + ne.labelrank + 1)/2.0)
+-- Move scalerank to range 1 to 10 and merge scalerank 5 with 6 since not enough cities
+-- are in the scalerank 5 bucket
+SET "rank" = CASE WHEN scalerank <= 5 THEN scalerank + 1 ELSE scalerank END
 FROM important_city_point AS ne
 WHERE osm.osm_id = ne.osm_id;
 

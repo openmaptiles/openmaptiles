@@ -17,7 +17,8 @@ layer:
         Countries, states and the most important cities all have a `rank` to boost their importance on the map.
         The `rank` field for counries and states ranges from `1` to `6` while the `rank` field for
         cities ranges from `1` to `10`. Use the `rank` field to build a text hierarchy.
-        The rank value is a combination of the Natural Earth `scalerank`, `labelrank` and `datarank` values.
+        The rank value is a combination of the Natural Earth `scalerank`, `labelrank` and `datarank` values for countries
+        and states and a shifted Natural Earth `scalerank` for cities.
   buffer_size: 128
   datasource:
     geometry_field: geometry

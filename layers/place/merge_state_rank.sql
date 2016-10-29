@@ -12,9 +12,7 @@ WITH important_state_point AS (
 )
 UPDATE osm_state_point AS osm
 -- Normalize both scalerank and labelrank into a ranking system from 1 to 6.
--- Scaleranks for NE states range from 2 to 11 and labelranks range from 0 to 20 and dataranks from 1 to 11.
--- This means a max combined rank of 42 divided by 7 to get us uniform ranking from 1 to 6
-SET "rank" = CEILING((scalerank + labelrank + datarank)/7.0)
+SET "rank" = LEAST(6, CEILING((scalerank + labelrank + datarank)/3.0))
 FROM important_state_point AS ne
 WHERE osm.osm_id = ne.osm_id;
 
