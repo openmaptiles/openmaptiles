@@ -53,7 +53,7 @@ tables:
       place:
       - state
   city_point:
-    type: geometry
+    type: point
     fields:
     - name: osm_id
       type: id
@@ -71,13 +71,12 @@ tables:
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]
-    type_mappings:
-      points:
-        place:
-        - city
-        - town
-        - village
-        - hamlet
-        - suburb
-        - neighbourhood
-        - isolated_dwelling
+    mapping:
+      place:
+      - city
+      - town
+      - village
+      - hamlet
+      - suburb
+      - neighbourhood
+      - isolated_dwelling
