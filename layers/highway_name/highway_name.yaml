@@ -1,12 +1,22 @@
 layer:
   id: "highway_name"
   description: |
-      [OpenStreetMap highway] which is used for roads, paths and cycletracks
-      and other recognised routes on land.
+      This is the layer for labelling the highways. Only highways that are named `name=*` and are long enough
+      to place text upon appear. The OSM roads are stitched together if they contain the same name
+      to have better label placement than having many small linestrings.
+      For motorways you should use the `ref` field to label them while for other roads you should use `name`.
   buffer_size: 8
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
-    class: String
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Highways#Names_and_references) value of the highway.
+    ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or road.
+    ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
+    class: |
+        Either `motorway`, `major_road` (containing `trunk`, `primary`, `secondary` and `tertiary` roads) and `minor_road` (less important roads in the hierarchy like `residential` or `service`) or `path` for
+        non vehicle paths (such as `cycleway` or `footpath`).
+    subclass: |
+        Original value of the [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) tag. Use this to do more
+        precise styling.
   datasource:
     geometry_field: geometry
     srid: 900913
