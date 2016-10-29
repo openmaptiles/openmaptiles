@@ -4,11 +4,11 @@ name_field: &name
   type: string
 name_en_field: &name_en
   name: name_en
-  key: name_en
+  key: name:en
   type: string
-scalerank_field: &scalerank
-  name: scalerank
-  key: scalerank
+rank_field: &rank
+  name: rank
+  key: rank
   type: integer
 tables:
   country_point:
@@ -20,13 +20,7 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - name: name_int
-      key: int_name
-      type: string
-    - name: country_code_fips
-      key: country_code_fips
-      type: string
-    - *scalerank
+    - *rank
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]
@@ -48,13 +42,10 @@ tables:
     - name: is_in_country_code
       key: is_in:country_code
       type: string
-    - name: name_abbreviation
-      key: name:abbreviation
-      type: string
     - name: ref
       key: ref
       type: string
-    - *scalerank
+    - *rank
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]
@@ -76,7 +67,7 @@ tables:
     - key: population
       name: population
       type: integer
-    - *scalerank
+    - *rank
     filters:
       exclude_tags:
       - [ "name", "__nil__" ]
