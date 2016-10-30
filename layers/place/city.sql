@@ -1,13 +1,17 @@
 CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class city_class, "rank" int) AS $$
-    SELECT osm_id, geometry, name, name_en, place, "rank"
+    SELECT osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, place AS class, "rank"
     FROM osm_city_point
     WHERE geometry && bbox
       AND ((zoom_level = 2 AND "rank" = 1)
         OR (zoom_level BETWEEN 3 AND 7 AND "rank" <= zoom_level)
       )
     UNION ALL
-    SELECT osm_id, geometry, name, name_en, place, COALESCE("rank", gridrank + 10) FROM (
+    SELECT osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        place AS class,
+        COALESCE("rank", gridrank + 10)
+    FROM (
       SELECT osm_id, geometry, name, name_en, place, "rank",
       row_number() OVER (
         PARTITION BY LabelGrid(geometry, 150 * pixel_width)
