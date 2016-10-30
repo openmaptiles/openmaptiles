@@ -49,7 +49,7 @@ services:
      - postgres:db
     ports:
      - "3000:3000"
-  export-vectortiles:
+  generate-vectortiles:
     image: "openmaptiles/generate-vectortiles"
     volumes:
     - ./data:/export

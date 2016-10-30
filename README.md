@@ -1,6 +1,11 @@
 ## OpenMapTiles
 
-OpenMapTiles is a collection of vector tile layers you can mix and match to create your own vector tile sets.
+OpenMapTiles is a collection of vector tile layers you can mix and match to create your own vector tile sets
+It is used by [OSM2VectorTiles](http://osm2vectortiles.org/) and we encourage you to collaborate, reuse and adapt existing layers
+and add your own layers.
+
+You define a self contained **Layer** together with SQL files and layer and data source definitions (like a imposm3 mapping file)
+that you can then reference in a **Tileset** where you mix and match with other layers.
 
 ## Layers
 
@@ -10,7 +15,7 @@ OpenMapTiles contains a collection of Natural Earth and OSM based layers (with i
 We welcome new standard layers from other data sources or import tools (like osm2pgsql with ClearTables).
 
 Each layer is documented and self contained. Click on the link for each layer to get more information.
-Layers can be chosen to create a *Tileset* like the `openmaptiles.yaml` tileset.
+Layers can be chosen to create a **Tileset** like the `openmaptiles.yaml` tileset.
 
 - [boundary](layers/boundary/README.md)
 - [building](layers/building/README.md)
@@ -28,11 +33,55 @@ Layers can be chosen to create a *Tileset* like the `openmaptiles.yaml` tileset.
 
 ### Define your own Layer
 
+Take a look or copy a standard layer like [building](layers/building/README.md) to get started with your own layer.
+A layer consists out of a **Layer** definition written in YAML format.
+
+There you specify the `layer` proerties like `id`, `buffer_size` and possible Markdown documentation (`description` and `fields`).
+You can also reference SQL files in `schema` for writing the necessary queries for your layer or create generalized tables.
+We encourage you to have a function per layer which takes the bounding box and zoom level. This makes it easy
+to test and reuse.
+
+If your data is based of OSM you can also directly
+reference a [imposm3 mapping file](https://imposm.org/docs/imposm3/latest/mapping.html) to choose the OSM data you need.
+
+```yaml
+layer:
+  id: "building"
+  description: Buildings from OpenStreetMap
+  buffer_size: 4
+  datasource:
+    query: (SELECT geom FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+  fields:
+    render_height: An approximated height from levels and height of building.
+schema:
+  - ./building.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml
+```
+
 ### Define your own Tileset
 
-## Work on the Standard Layers
+A **Tileset** defines which layer will be in your vector tile set (`layers`)
+and metadata used for generating a TM2Source project to actually generate the vector tiles.
 
-To work on *osm2vectortiles.tm2source* you need Docker and Python.
+```yaml
+tileset:
+  layers:
+    - layers/building/building.yaml
+    - layers/housenumber/housenumber.yaml
+    - layers/poi/poi.yaml
+  name: Street Level
+  description: A tileset showing street level info like building, housenumbers and POIs.
+  attribution: "OpenStreetMap contributors"
+  maxzoom: 14
+  minzoom: 13
+  center: [-12.2168, 28.6135, 4]
+```
+
+## Develop
+
+To work on OpenMapTiles you need Docker and Python.
 
 - Install [Docker](https://docs.docker.com/engine/installation/)
 - Install [Docker Compose](https://docs.docker.com/compose/install/)
@@ -88,6 +137,13 @@ Each time you modify layer SQL code run `make` and `docker-compose run import-sq
 
 ```
 make clean && make && docker-compose run import-sql
+```
+
+Now you are ready to **generate the vector tiles**. Using environment variables
+you can limit the bounding box and zoom levels of what you want to generate (`docker-compose.yml`).
+
+```
+docker-compose run generate-vectortiles
 ```
 
 To look at the vector tiles you can start up Mapbox Studio Classic in a container
