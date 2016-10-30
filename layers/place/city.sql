@@ -14,7 +14,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
     FROM (
       SELECT osm_id, geometry, name, name_en, place, "rank",
       row_number() OVER (
-        PARTITION BY LabelGrid(geometry, 150 * pixel_width)
+        PARTITION BY LabelGrid(geometry, 128 * pixel_width)
         ORDER BY "rank" ASC NULLS LAST,
         place ASC NULLS LAST,
         population DESC NULLS LAST,
@@ -22,13 +22,16 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
       )::int AS gridrank
         FROM osm_city_point
         WHERE geometry && bbox
-          AND ((zoom_level BETWEEN 8 AND 9 AND place <= 'town'::city_class)
-            OR (zoom_level = 10 AND place <= 'village'::city_class)
+          AND ((zoom_level = 8 AND place <= 'town'::city_class)
+            OR (zoom_level BETWEEN 9 AND 10 AND place <= 'village'::city_class)
             OR (zoom_level BETWEEN 11 AND 13 AND place <= 'suburb'::city_class)
             OR (zoom_level >= 14)
           )
     ) AS ranked_places
     WHERE (zoom_level = 8 AND (gridrank <= 4 OR "rank" IS NOT NULL))
-       OR (zoom_level BETWEEN 9 AND 12 AND (gridrank <= 9 OR "rank" IS NOT NULL))
-       OR (zoom_level >= 13);
+       OR (zoom_level = 9 AND (gridrank <= 8 OR "rank" IS NOT NULL))
+       OR (zoom_level = 10 AND (gridrank <= 12 OR "rank" IS NOT NULL))
+       OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 14 OR "rank" IS NOT NULL))
+       OR (zoom_level >= 13)
+    ORDER BY "rank" ASC;
 $$ LANGUAGE SQL IMMUTABLE;
