@@ -55,5 +55,6 @@ tables:
       - military
       leisure:
       - nature_reserve
+      - park
       boundary:
       - national_park

@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION landuse_class(landuse TEXT, amenity TEXT, leisure TEXT, boundary TEXT) RETURNS TEXT AS $$
     SELECT CASE
-         WHEN leisure = 'nature_reserve' OR boundary='national_park' THEN 'park'
+         WHEN leisure IN ('nature_reserve', 'park') OR boundary='national_park' THEN 'park'
          WHEN amenity IN ('school', 'university', 'kindergarten', 'college', 'library') THEN 'school'
          WHEN landuse IN('hospital', 'railway', 'cemetery', 'military', 'residential') THEN landuse
          ELSE NULL
