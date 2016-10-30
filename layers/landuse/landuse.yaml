@@ -1,7 +1,16 @@
 layer:
   id: "landuse"
-  description: Landcover is used to describe the physical material at the surface of the earth. Land covers include grass, asphalt, trees, bare ground etc. Tagging of landcover is often only implied by other tags at present, for example a park may be assumed to be covered in grass, but in some places this may in fact be trees or sand or some other cover. The following keys imply or specifically indicate landcover properties.
+  description: |
+      Landuse is used to describe use of land by humans.At lower zoom levels this is
+      from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
   buffer_size: 4
+  fields:
+    class: |
+        More generalized groups of either `park`, `school`, `hospital`, `railway`,
+        `cemetery`, `military`, `residential`. Use this to assign general for landuse.
+    subclass: |
+        Original value of either the `amenity`, `landuse`, `leisure` or `boundary` tag.
+        Use this to do more precise styling.
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
