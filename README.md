@@ -2,6 +2,30 @@
 
 OpenMapTiles is a collection of vector tile layers you can mix and match to create your own vector tile sets.
 
+## Layers
+
+### Standard Layers
+
+OpenMapTiles contains a collection of Natural Earth and OSM based layers (with imposm3 mapping) you can modify and adapt.
+We welcome new standard layers from other data sources or import tools (like osm2pgsql with ClearTables).
+
+Each layer is documented and self contained. Click on the link for each layer to get more information.
+Layers can be chosen to create a *Tileset* like the `openmaptiles.yaml` tileset.
+
+- [boundary](layers/boundary/README.md)
+- [building](layers/building/README.md)
+- [highway](layers/highway/README.md)
+- [highway_name](layers/highway_name/README.md)
+- [housenumber](layers/housenumber/README.md)
+- [landcover](layers/landcover/README.md)
+- [landuse](layers/landuse/README.md)
+- [place](layers/place/README.md)
+- [poi](layers/poi/README.md)
+- [railway](layers/railway/README.md)
+- [water](layers/water/README.md)
+- [water_name](layers/water_name/README.md)
+- [waterway](layers/waterway/README.md)
+
 ### Define your own Layer
 
 ### Define your own Tileset
