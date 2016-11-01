@@ -139,7 +139,7 @@ Each time you modify layer SQL code run `make` and `docker-compose run import-sq
 make clean && make && docker-compose run import-sql
 ```
 
-Now you are ready to **generate the vector tiles**. Using environment variables
+Now you are ready to **generate the vector tiles** using a single process (for a full blown distributed workflow of rendering tiles check out [openmaptiles/distributed](https://github.com/openmaptiles/distributed)). Using environment variables
 you can limit the bounding box and zoom levels of what you want to generate (`docker-compose.yml`).
 
 ```
