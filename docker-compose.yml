@@ -3,7 +3,7 @@ volumes:
   pgdata:
 services:
   postgres:
-    image: "openmaptiles/postgis:latest"
+    image: "openmaptiles/postgis:2.2"
     volumes:
      - pgdata:/var/lib/postgresql/data
     ports:
