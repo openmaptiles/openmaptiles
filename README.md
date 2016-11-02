@@ -91,7 +91,7 @@ To work on OpenMapTiles you need Docker and Python.
 
 Build the tileset.
 
-```
+```bash
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
 # You can also run the build process inside a Docker container
@@ -103,29 +103,19 @@ docker run -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 Now start up the database container.
 
 ```bash
-docker-compose up -d postgres`
+docker-compose up -d postgres
 ```
 
-Import water from [OpenStreetMapData](http://openstreetmapdata.com/).
+Import external data from [OpenStreetMapData](http://openstreetmapdata.com/), [Natural Earth](http://www.naturalearthdata.com/) and  [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
 
 ```bash
 docker-compose run import-water
-```
-
-Import [Natural Earth](http://www.naturalearthdata.com/) data.
-
-```bash
 docker-compose run import-natural-earth
-```
-
-Import [Lake center line](https://github.com/lukasmartinelli/osm-lakelines) data.
-
-```bash
 docker-compose run import-lakelines
 ```
 
-Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data based on the [ClearTables osm2pgsql style](https://github.com/ClearTables/ClearTables).
-In order to do this you first need to clone the latest ClearTables.
+Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data with the mapping rules from
+`build/mapping.yaml` (which has been created by `make`).
 
 ```bash
 docker-compose run import-osm
