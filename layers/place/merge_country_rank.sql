@@ -22,5 +22,10 @@ UPDATE osm_country_point AS osm
 SET "rank" = 6
 WHERE "rank" IS NULL;
 
+-- TODO: This shouldn't be necessary? The rank function makes something wrong...
+UPDATE osm_country_point AS osm
+SET "rank" = 1
+WHERE "rank" = 0;
+
 ALTER TABLE osm_country_point ADD CONSTRAINT osm_country_point_rank_constraint CHECK("rank" BETWEEN 1 AND 6);
 CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point("rank");
