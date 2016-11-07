@@ -1,4 +1,11 @@
+
+
+-- etldoc: types_sql[label="types.sql", shape=note ]
+
 DO $$
+-- etldoc: type_highway_class[label="TYPE highway_class"] 
+-- etldoc: types_sql-> type_highway_class
+-- etldoc: type_highway_class -> postgreSQL
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
 		CREATE TYPE highway_class AS ENUM ('motorway', 'major_road', 'minor_road', 'path');
@@ -7,6 +14,9 @@ END
 $$;
 
 DO $$
+-- etldoc: type_highway_properties[label="TYPE highway_properties"] 
+-- etldoc: types_sql-> type_highway_properties
+-- etldoc: type_highway_properties -> postgreSQL
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_properties') THEN
         CREATE TYPE highway_properties AS ENUM ('bridge:oneway', 'tunnel:oneway', 'ramp', 'ford', 'bridge', 'tunnel', 'oneway');
@@ -15,6 +25,9 @@ END
 $$;
 
 
+-- etldoc: function_to_highway_class[label="FUNCTION to_highway_class"]
+-- etldoc: types_sql-> function_to_highway_class 
+-- etldoc: function_to_highway_class -> postgreSQL
 CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class AS $$
     SELECT CASE
         WHEN highway IN ('motorway', 'motorway_link') THEN 'motorway'::highway_class
@@ -29,6 +42,9 @@ CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class 
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
+-- etldoc: function_to_highway_properties[label="FUNCTION to_highway_properties"]
+-- etldoc: types_sql-> function_to_highway_properties
+-- etldoc: function_to_highway_properties -> postgreSQL
 CREATE OR REPLACE FUNCTION to_highway_properties(is_bridge boolean, is_tunnel boolean, is_ford boolean, is_ramp boolean, is_oneway boolean) RETURNS highway_properties AS $$
     SELECT CASE
          WHEN is_bridge AND is_oneway THEN 'bridge:oneway'::highway_properties
