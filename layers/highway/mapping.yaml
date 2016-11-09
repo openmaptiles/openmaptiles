@@ -1,15 +1,4 @@
 
-
-
-# etldoc: imposm3 [fillcolor=yellow, style="rounded,filled", shape=diamond ];
-# etldoc: osm [fillcolor=lightblue, 
-# etldoc:      style="rounded,filled", 
-# etldoc:      shape=box , label="OpenStreetMap", 
-# etldoc:      url="http://www.openstreetmap.org"];
-# etldoc: mapping_yml[label="mapping.yml", shape=note ]
-# etldoc: mapping_yml -> imposm3
-# etldoc: osm -> imposm3
-
 generalized_tables:
 
 # etldoc: imposm3 -> osm_highway_linestring_gen4

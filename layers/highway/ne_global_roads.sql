@@ -1,10 +1,5 @@
 
 
--- etldoc: ne_global_roads_sql [label="ne_global_roads.sql", shape=note ]
--- etldoc: function_ne_highway[label="FUNCTION ne_highway"]
--- etldoc: ne_global_roads_sql -> function_ne_highway
--- etldoc: function_ne_highway -> postgreSQL
-
 CREATE OR REPLACE FUNCTION ne_highway(type VARCHAR) RETURNS VARCHAR AS $$
   SELECT CASE type
     WHEN 'Major Highway' THEN 'motorway'
@@ -14,10 +9,6 @@ CREATE OR REPLACE FUNCTION ne_highway(type VARCHAR) RETURNS VARCHAR AS $$
   END;
 $$ LANGUAGE SQL IMMUTABLE;
 
-
--- etldoc: natural_earth [fillcolor=lightblue, style="rounded,filled", shape=box , label="Natural Earth" ];
--- etldoc: natural_earth -> ne_10m_roads 
--- etldoc: natural_earth -> ne_10m_roads_north_america
 
 -- etldoc: ne_global_roads_sql -> ne_10m_global_roads  ;
 CREATE TABLE IF NOT EXISTS ne_10m_global_roads AS (
@@ -30,7 +21,6 @@ CREATE TABLE IF NOT EXISTS ne_10m_global_roads AS (
       AND type IN ('Major Highway', 'Secondary Highway', 'Road')
     UNION ALL
 
-    -- etldoc: function_ne_highway -> ne_10m_global_roads  
     -- etldoc: ne_10m_roads_north_america ->  ne_10m_global_roads  
     SELECT geom AS geometry, scalerank, ne_highway(type) AS highway
     FROM ne_10m_roads_north_america

@@ -1,19 +1,12 @@
-
-
--- etldoc: highway_sql[label="highway.sql", shape=note ]
--- etldoc: function_highway_is_link[label="FUNCTION highway_is_link"]
--- etldoc: highway_sql-> function_highway_is_link
--- etldoc: function_highway_is_link -> postgreSQL
+ 
 
 CREATE OR REPLACE FUNCTION highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
     SELECT highway LIKE '%_link';
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 
--- etldoc: postgreSQL -> layer_highway
--- etldoc: highway_sql-> layer_highway
 -- etldoc: layer_highway[shape=record fillcolor=lightpink, style="rounded,filled",  
--- etldoc:     label="<sql> layer_highway (highway.sql) |<z4z7> z4-z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14" ] ;
+-- etldoc:     label="<sql> layer_highway |<z4z7> z4-z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14_" ] ;
 CREATE OR REPLACE FUNCTION layer_highway(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass text, properties highway_properties) AS $$
     SELECT
@@ -72,7 +65,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
             AND NOT is_area
         UNION ALL
 
-		-- etldoc: osm_highway_linestring       ->  layer_highway:z14
+		-- etldoc: osm_highway_linestring       ->  layer_highway:z14_
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
 		WHERE zoom_level >= 14 AND NOT is_area
@@ -81,7 +74,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
         -- NOTE: We limit the selection of polys because we need to be careful to net get false positives here because
         -- it is possible that closed linestrings appear both as highway linestrings and as polygon
         -- etldoc: osm_highway_polygon          ->  layer_highway:z13
-        -- etldoc: osm_highway_polygon          ->  layer_highway:z14
+        -- etldoc: osm_highway_polygon          ->  layer_highway:z14_
 		SELECT osm_id, geometry, highway, FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford, FALSE AS is_ramp, FALSE AS is_oneway, z_order
         FROM osm_highway_polygon
         -- We do not want underground pedestrian areas for now
