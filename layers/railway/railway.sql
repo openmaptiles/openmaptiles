@@ -13,6 +13,9 @@ CREATE OR REPLACE FUNCTION railway_brunnel(is_bridge boolean, is_tunnel boolean)
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
+-- etldoc: layer_railway[shape=record fillcolor=lightpink, style="rounded,filled",  
+-- etldoc:     label="layer_railway | <z13> z13 | <z14_> z14_" ] ;
+
 CREATE OR REPLACE FUNCTION layer_railway(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, properties railway_properties) AS $$
     SELECT osm_id, geometry,
@@ -20,9 +23,11 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, prope
         railway AS subclass,
         to_railway_properties(is_bridge, is_tunnel) AS properties
     FROM (
+        -- etldoc: osm_railway_linestring ->  layer_railway :z13 
         SELECT * FROM osm_railway_linestring
         WHERE zoom_level = 13 AND railway = 'rail' AND service=''
         UNION ALL
+        -- etldoc: osm_railway_linestring ->  layer_railway :z14_        
         SELECT * FROM osm_railway_linestring WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox
