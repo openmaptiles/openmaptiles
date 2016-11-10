@@ -1,3 +1,7 @@
+
+-- etldoc: ne_10m_populated_places -> osm_city_point
+-- etldoc: osm_city_point          -> osm_city_point
+
 WITH important_city_point AS (
     SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, ne.scalerank, ne.labelrank
     FROM ne_10m_populated_places AS ne, osm_city_point AS osm

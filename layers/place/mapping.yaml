@@ -11,6 +11,8 @@ rank_field: &rank
   key: rank
   type: integer
 tables:
+
+  # etldoc: imposm3 -> osm_country_point
   country_point:
     type: point
     fields:
@@ -27,6 +29,8 @@ tables:
     mapping:
       place:
       - country
+
+  # etldoc: imposm3 -> osm_state_point 
   state_point:
     type: point
     fields:
@@ -52,6 +56,8 @@ tables:
     mapping:
       place:
       - state
+
+  # etldoc: imposm3 -> osm_city_point      
   city_point:
     type: point
     fields:

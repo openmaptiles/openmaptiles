@@ -1,3 +1,8 @@
+
+-- etldoc: layer_country -> layer_place
+-- etldoc: layer_state   -> layer_place
+-- etldoc: layer_city    -> layer_place
+
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class text, "rank" int) AS $$
     SELECT osm_id, geometry, name, name_en, 'country' AS class, "rank" FROM layer_country(bbox, zoom_level)
