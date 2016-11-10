@@ -1,4 +1,7 @@
 
+-- etldoc: layer_place[shape=record fillcolor=lightpink, style="rounded,filled",  
+-- etldoc:     label="layer_place | <zall> z0-z14_ " ] ;
+
 -- etldoc: layer_country -> layer_place
 -- etldoc: layer_state   -> layer_place
 -- etldoc: layer_city    -> layer_place
