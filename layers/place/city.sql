@@ -1,5 +1,10 @@
+
+-- etldoc: layer_city[shape=record fillcolor=lightpink, style="rounded,filled",  
+-- etldoc:     label="layer_city | <z2_7> z2-z7 | <z8_14_> z8_z14_   " ] ;
+
 CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class city_class, "rank" int) AS $$
+    -- etldoc: osm_city_point -> layer_city:z2_7              
     SELECT osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, place AS class, "rank"
     FROM osm_city_point
     WHERE geometry && bbox
@@ -20,6 +25,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class c
         population DESC NULLS LAST,
         length(name) ASC
       )::int AS gridrank
+    -- etldoc: osm_city_point -> layer_city:z8_14_                          
         FROM osm_city_point
         WHERE geometry && bbox
           AND ((zoom_level = 8 AND place <= 'town'::city_class)

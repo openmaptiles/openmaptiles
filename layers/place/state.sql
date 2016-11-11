@@ -1,3 +1,9 @@
+
+-- etldoc: layer_state[shape=record fillcolor=lightpink, style="rounded,filled",  
+-- etldoc:     label="layer_state | <zall> z0-z14_ " ] ;
+
+-- etldoc:  osm_state_point -> layer_state
+
 CREATE OR REPLACE FUNCTION layer_state(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, "rank" int) AS $$
     SELECT osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, "rank"

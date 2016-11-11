@@ -1,21 +1,32 @@
+
 generalized_tables:
+
+# etldoc: imposm3 -> osm_highway_linestring_gen4
   highway_linestring_gen4:
     source: highway_linestring_gen3
     sql_filter: highway IN ('motorway','trunk') AND NOT is_area
     tolerance: 200.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen3    
   highway_linestring_gen3:
     source: highway_linestring_gen2
     sql_filter: highway IN ('motorway','trunk', 'primary') AND NOT is_area
     tolerance: 120.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen2    
   highway_linestring_gen2:
     source: highway_linestring_gen1
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
     tolerance: 50.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen1    
   highway_linestring_gen1:
     source: highway_linestring
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
     tolerance: 20.0
+
 tables:
+# etldoc: imposm3 -> osm_highway_linestring
   highway_linestring:
     type: linestring
     fields:
@@ -85,6 +96,8 @@ tables:
       - corridor
       - crossing
       - pedestrian
+
+# etldoc: imposm3 -> osm_highway_polygon     
   highway_polygon:
     type: polygon
     fields:

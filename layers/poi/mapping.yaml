@@ -1,4 +1,5 @@
 tables:
+  # etldoc: imposm3 -> osm_poi_point
   poi_point:
     type: point
     fields:

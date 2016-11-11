@@ -1,0 +1,8 @@
+version: "2"
+
+services:
+  generate-vectortiles:
+    environment:
+      BBOX: "8.25,46.97,9.58,47.52"
+      MIN_ZOOM: "0"
+      MAX_ZOOM: "7"

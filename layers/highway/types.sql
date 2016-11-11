@@ -1,3 +1,5 @@
+
+
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_class') THEN
@@ -13,7 +15,6 @@ BEGIN
     END IF;
 END
 $$;
-
 
 CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class AS $$
     SELECT CASE

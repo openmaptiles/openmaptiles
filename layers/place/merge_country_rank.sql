@@ -1,5 +1,8 @@
 ALTER TABLE osm_country_point DROP CONSTRAINT IF EXISTS osm_country_point_rank_constraint;
 
+-- etldoc: ne_10m_admin_0_countries   -> osm_country_point
+-- etldoc: osm_country_point          -> osm_country_point
+
 WITH important_country_point AS (
     SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank
     FROM ne_10m_admin_0_countries AS ne, osm_country_point AS osm

@@ -1,4 +1,5 @@
 tables:
+  # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
     type: linestring
     fields:
