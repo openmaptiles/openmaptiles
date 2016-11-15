@@ -6,6 +6,7 @@ Too short linestrings are filtered out for some zoom levels. Waterways do no not
 
 ## Fields
 
+- **name**: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the waterway or the name from Natural Earth for lower zoom levels.
 - **class**: The original value of the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
 Can be one of [`stream`](http://wiki.openstreetmap.org/wiki/Tag:waterway%3Dstream),
 [`river`](http://wiki.openstreetmap.org/wiki/Tag:waterway%3Driver),
