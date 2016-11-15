@@ -1,14 +1,4 @@
-generalized_tables:
-  # etldoc: imposm3 -> osm_waterway_linestring_gen0 
-  waterway_linestring_gen0:
-    source: waterway_linestring_gen1
-    sql_filter: waterway IN ('river') AND ST_Length(geometry) > 10000
-    tolerance: 200.0
-  # etldoc: imposm3 -> osm_waterway_linestring_gen1    
-  waterway_linestring_gen1:
-    source: waterway_linestring
-    sql_filter: waterway IN ('river') AND ST_Length(geometry) > 5000
-    tolerance: 100.0
+
 tables:
   # etldoc: imposm3 -> osm_waterway_linestring
   waterway_linestring:
