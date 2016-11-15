@@ -20,10 +20,21 @@ tables:
     - name: height
       key: height
       type: integer
-    - name: levels
-      key: levels
+    - name: min_height
+      key: min_height
       type: integer
+    - name: levels
+      key: building:levels
+      type: integer
+    - name: min_level
+      key: building:min_level
+      type: integer
+    - name: building_colour
+      key: building:colour
+      type: string
     mapping:
+      building:part:
+      - __any__
       building:
       - __any__
     type: polygon
