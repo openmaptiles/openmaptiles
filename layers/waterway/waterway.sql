@@ -30,7 +30,7 @@ CREATE OR REPLACE VIEW waterway_z10 AS (
 
 -- etldoc: osm_waterway_linestring_gen1 ->  waterway_z11
 CREATE OR REPLACE VIEW waterway_z11 AS (
-    SELECT geometry, 'river'::text AS class, name FROM osm_waterway_linestring_gen1
+    SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen1
 );
 
 -- etldoc: osm_waterway_linestring ->  waterway_z12
