@@ -83,8 +83,8 @@ tileset:
 
 To work on OpenMapTiles you need Docker and Python.
 
-- Install [Docker](https://docs.docker.com/engine/installation/)
-- Install [Docker Compose](https://docs.docker.com/compose/install/)
+- Install [Docker](https://docs.docker.com/engine/installation/). Minumum version is 1.10.0+.
+- Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.6.0+.
 - Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
 
 ### Build
