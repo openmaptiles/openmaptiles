@@ -3,15 +3,19 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+DOCKER_EXEC=docker
+DC_EXEC=docker-compose
+
 #Check installed versions
-docker --version
-docker-compose --version
+echo "This requires a docker engine version 1.10.0+ and docker-compose 1.6.0+. If not, it is expected to fail. See https://docs.docker.com/engine/installation/ and https://docs.docker.com/compose/install/"
+$DOCKER_EXEC --version
+$DC_EXEC --version
 
 #Remove 
-docker-compose down
-docker-compose rm -fv
+$DC_EXEC down
+$DC_EXEC rm -fv
 echo "Remove old volume"
-docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
+$DOCKER_EXEC volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
 
 echo "Make directories "
 mkdir -p build
@@ -24,23 +28,19 @@ if [ !  -f ./data/${testdata} ]; then
     wget https://s3.amazonaws.com/metro-extracts.mapzen.com/zurich_switzerland.osm.pbf -P ./data
 fi
 
-
-docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
-docker-compose up   -d postgres
+$DOCKER_EXEC run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
+$DC_EXEC up   -d postgres
 sleep 30
 
-docker-compose run --rm import-water
-docker-compose run --rm import-natural-earth
-docker-compose run --rm import-lakelines
-docker-compose run --rm import-osm
-docker-compose run --rm import-sql
+$DC_EXEC run --rm import-water
+$DC_EXEC run --rm import-natural-earth
+$DC_EXEC run --rm import-lakelines
+$DC_EXEC run --rm import-osm
+$DC_EXEC run --rm import-sql
 
-docker-compose -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
+$DC_EXEC -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
 
-docker-compose stop postgres
+$DC_EXEC stop postgres
 echo "The vectortiles created from $testdata  "
 ls ./data/*.mbtiles -la
 echo "Hello ... start experimenting   - see docs !   "
-
-
-
