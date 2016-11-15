@@ -24,8 +24,8 @@ CREATE OR REPLACE VIEW water_z2 AS (
     -- etldoc:  ne_50m_ocean ->  water_z2    
     SELECT geom, 'ocean' AS class FROM ne_50m_ocean
     UNION ALL
-    -- etldoc:  ne_110m_lakes ->  water_z2     
-    SELECT geom, 'lake' AS class FROM ne_110m_lakes
+    -- etldoc:  ne_50m_lakes ->  water_z2     
+    SELECT geom, 'lake' AS class FROM ne_50m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z4 AS (
