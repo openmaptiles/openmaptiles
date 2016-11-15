@@ -16,14 +16,14 @@ rm -f $log_file
 exec &> >(tee -a "$log_file")
 
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ] "
-echo "      : This will be logged to the $log_file file ( for debugging) and to the screen"
+echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
 echo "      : git version: $githash  / started: $STARTDATE "
 echo "      : Your system is:"
 lsb_release -a
 
 echo "====> : Please check the docker and docker-compose version!"
-echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/ "
-echo "      : (theoretically;not tested) minumum Docker version is 1.10.0+. "
+echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/"
+echo "      : (theoretically;not tested) minumum Docker version is 1.10.0+."
 echo "      : (theoretically;not tested) minimum Docker-compose version is 1.6.0+."
 echo "      : See the .travis testfile for the current supported versions "
 echo "      : Your docker systems is:"
@@ -33,14 +33,14 @@ docker-compose --version
 echo "====> : Checking OpenMapTiles docker images "
 docker images | grep openmaptiles
 
-echo "====> : Stop running services & Removing old containers "
+echo "====> : Stopping running services & removing old containers "
 docker-compose down
 docker-compose rm -fv
 
-echo "====> : For a clean start, We are removing old postgresql data volume ( if exists )"
+echo "====> : For a clean start, we are removing old postgresql data volume ( if it exists )"
 docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
 
-echo "====> : Making directories - if not exists (./build ./data ) "
+echo "====> : Making directories - if they don't exist ( ./build ./data ) "
 mkdir -p build
 mkdir -p data
 
@@ -50,41 +50,41 @@ rm -f ./data/*.mbtiles
 testdata=zurich_switzerland.osm.pbf
 testdataurl=https://s3.amazonaws.com/metro-extracts.mapzen.com/$testdata
 if [ !  -f ./data/${testdata} ]; then
-    echo "====> : The testdata downloading $testdata   "
+    echo "====> : Downloading testdata $testdata   "
     rm -f ./data/*
     wget $testdataurl  -P ./data
 else
-    echo "====> : The testdata ./data/$testdata exists, we don't download! "    
+    echo "====> : The testdata ./data/$testdata exists, we don't need to download! "    
 fi
 
 echo " "
-echo "====> : Clean old generated source files ( ./build/* ) ( if exists ) "
+echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
 docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make clean_build
 
 echo " "
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
-echo "      : the tool source code: https://github.com/openmaptiles/openmaptiles-tools "
-echo "      : but we generate code from this directory informations! "
+echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
+echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
 docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 
 echo " "
 echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
-echo "      : source code: https://github.com/openmaptiles/postgis "
+echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
 docker-compose up   -d postgres
 sleep 30
 
 echo " "
-echo "====> : Start Importing water data from http://openstreetmapdata.com  into PostgreSQL "
-echo "      : source code:  https://github.com/openmaptiles/import-water "
+echo "====> : Start importing water data from http://openstreetmapdata.com into PostgreSQL "
+echo "      : Source code:  https://github.com/openmaptiles/import-water "
 echo "      : Data license: http://openstreetmapdata.com/info/license  "
 echo "      : Thank you: http://openstreetmapdata.com/info/supporting "
 docker-compose run --rm import-water
 
 echo " "
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
-echo "      : source code: https://github.com/openmaptiles/import-natural-earth "
-echo "      : term-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
+echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
+echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
 docker-compose run --rm import-natural-earth
 
@@ -106,14 +106,14 @@ docker-compose run --rm import-osm
 
 echo " "
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
-echo "      : source code: https://github.com/openmaptiles/import-sql "
+echo "      : Source code: https://github.com/openmaptiles/import-sql "
 docker-compose run --rm import-sql
 
 echo " "
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
-echo "      : output MBTiles: ./data/tiles.mbtiles  "
-echo "      : source code: https://github.com/openmaptiles/generate-vectortiles "
+echo "      : Output MBTiles: ./data/tiles.mbtiles  "
+echo "      : Source code: https://github.com/openmaptiles/generate-vectortiles "
 echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
 echo "      : Thank you https://www.mapbox.com !"
 echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-tiles "
@@ -135,12 +135,12 @@ echo "------------------------------------------------------------"
 echo " "
 echo " "
 echo "====> : (disk space) We have created a lot of docker images: "
-echo "      : hint: you can remove with:  docker rmi IMAGE "
+echo "      : Hint: you can remove with:  docker rmi IMAGE "
 docker images | grep openmaptiles
 
 echo " "
-echo "====> : (disk space) We have created this new docker volumes for PostgreSQL data:"
-echo "      : hint: you can remove with : docker volume rm openmaptiles_pgdata "
+echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
+echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
 docker volume ls -q | grep openmaptiles 
 
 echo " "
@@ -156,7 +156,7 @@ echo "The quickstart.sh is finished! "
 echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) "
 echo " " 
-echo "Start experimenting -> see the documentations!  "
+echo "Start experimenting -> see the documentation!  "
 echo "============================================================"
 
 
