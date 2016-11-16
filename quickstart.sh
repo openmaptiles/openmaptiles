@@ -158,6 +158,10 @@ echo "      : Source code: https://github.com/openmaptiles/generate-vectortiles 
 echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
 echo "      : Thank you https://www.mapbox.com !"
 echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-tiles "
+echo "      :  "
+echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
+echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
+
 docker-compose -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
 
 echo " "
