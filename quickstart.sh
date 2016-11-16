@@ -30,6 +30,13 @@ echo "      : This is working on x86_64 ; Your kernel is:"
 uname -r
 uname -m
 
+echo "      : --- Memory, CPU info ---- "
+mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
+echo "system memory (GB): ${mem}  "
+grep SwapTotal /proc/meminfo
+echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
+cat /proc/meminfo  | grep Free
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Please check the docker and docker-compose version!"
