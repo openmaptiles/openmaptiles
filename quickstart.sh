@@ -4,7 +4,7 @@ set -o pipefail
 set -o nounset
 
 ##
-##  OpenMapTiles quickstart.sh 
+##  OpenMapTiles quickstart.sh for x86_64 linux
 ##  
 
 STARTTIME=$(date +%s)
@@ -15,12 +15,19 @@ log_file=quickstart.log
 rm -f $log_file
 exec &> >(tee -a "$log_file")
 
+echo " "
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ] "
 echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
-echo "      : git version: $githash  / started: $STARTDATE "
+echo "      : Git version: $githash  / Started: $STARTDATE "
+echo "      : Your bash version:  $BASH_VERSION"
 echo "      : Your system is:"
 lsb_release -a
 
+echo " "
+echo "      : This is working on x86_64 ; Your kernel is:"
+uname -a
+
+echo " "
 echo "====> : Please check the docker and docker-compose version!"
 echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/"
 echo "      : (theoretically;not tested) minumum Docker version is 1.10.0+."
@@ -30,20 +37,25 @@ echo "      : Your docker systems is:"
 docker         --version
 docker-compose --version
 
+echo " "
 echo "====> : Checking OpenMapTiles docker images "
 docker images | grep openmaptiles
 
+echo " "
 echo "====> : Stopping running services & removing old containers "
 docker-compose down
 docker-compose rm -fv
 
+echo " "
 echo "====> : For a clean start, we are removing old postgresql data volume ( if it exists )"
 docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
 
+echo " "
 echo "====> : Making directories - if they don't exist ( ./build ./data ) "
 mkdir -p build
 mkdir -p data
 
+echo " "
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
@@ -99,7 +111,7 @@ echo " "
 echo "====> : Start importing OpenStreetMap data: ./data/${testdata} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
 echo "      : Imposm3 documentation: https://imposm.org/docs/imposm3/latest/index.html "
 echo "      :   Thank you Omniscale! "
-echo "      :   source code: https://github.com/openmaptiles/import-osm "
+echo "      :   Source code: https://github.com/openmaptiles/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! " 
 docker-compose run --rm import-osm
