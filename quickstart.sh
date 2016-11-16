@@ -145,6 +145,15 @@ echo "------------------------------------------------------------"
 echo "--                        Summary                         --"
 echo "------------------------------------------------------------"
 echo " "
+echo "====> : Inputs - Outputs md5sum for debugging "
+rm -f quickstart_checklist.chk
+md5sum build/mapping.yaml                     >> quickstart_checklist.chk
+md5sum build/tileset.sql                      >> quickstart_checklist.chk
+md5sum build/testmaptiles.tm2source/data.yml  >> quickstart_checklist.chk
+md5sum ./data/${testdata}                     >> quickstart_checklist.chk
+md5sum ./data/tiles.mbtiles                   >> quickstart_checklist.chk
+cat quickstart_checklist.chk
+
 echo " "
 echo "====> : (disk space) We have created a lot of docker images: "
 echo "      : Hint: you can remove with:  docker rmi IMAGE "
@@ -166,7 +175,7 @@ echo " "
 echo "============================================================"
 echo "The quickstart.sh is finished! "
 echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
-echo "We saved the log file to $log_file  ( for debugging ) "
+echo "We saved the log file to $log_file  ( for debugging ) you can compare with the travis log !"
 echo " " 
 echo "Start experimenting -> see the documentation!  "
 echo "============================================================"
