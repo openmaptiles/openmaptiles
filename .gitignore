@@ -10,5 +10,5 @@ quickstart.log
 # imput / output data
 data/*
 
-# generated sourece files
+# generated source files
 build/*
