@@ -1,33 +1,33 @@
 
 generalized_tables:
 
-# etldoc: imposm3 -> osm_highway_linestring_gen4
-  highway_linestring_gen4:
-    source: highway_linestring_gen3
+# etldoc: imposm3 -> osm_transportation_linestring_gen4
+  transportation_linestring_gen4:
+    source: transportation_linestring_gen3
     sql_filter: highway IN ('motorway','trunk') AND NOT is_area
     tolerance: 200.0
 
-# etldoc: imposm3 -> osm_highway_linestring_gen3    
-  highway_linestring_gen3:
-    source: highway_linestring_gen2
+# etldoc: imposm3 -> osm_transportation_linestring_gen3
+  transportation_linestring_gen3:
+    source: transportation_linestring_gen2
     sql_filter: highway IN ('motorway','trunk', 'primary') AND NOT is_area
     tolerance: 120.0
 
-# etldoc: imposm3 -> osm_highway_linestring_gen2    
-  highway_linestring_gen2:
-    source: highway_linestring_gen1
+# etldoc: imposm3 -> osm_transportation_linestring_gen2
+  transportation_linestring_gen2:
+    source: transportation_linestring_gen1
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
     tolerance: 50.0
 
-# etldoc: imposm3 -> osm_highway_linestring_gen1    
-  highway_linestring_gen1:
-    source: highway_linestring
+# etldoc: imposm3 -> osm_transportation_linestring_gen1
+  transportation_linestring_gen1:
+    source: transportation_linestring
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
     tolerance: 20.0
 
 tables:
-# etldoc: imposm3 -> osm_highway_linestring
-  highway_linestring:
+# etldoc: imposm3 -> osm_transportation_linestring
+  transportation_linestring:
     type: linestring
     fields:
     - name: osm_id
@@ -36,6 +36,9 @@ tables:
       type: geometry
     - name: highway
       key: highway
+      type: string
+    - key: railway
+      name: railway
       type: string
     - key: ref
       name: ref
@@ -63,12 +66,21 @@ tables:
     - key: name
       name: name
       type: string
+    - key: short_name
+      name: short_name
+      type: string
     - name: name_en
       key: name:en
       type: string
     - name: is_area
       key: area
       type: bool
+    - key: service
+      name: service
+      type: string
+    - key: usage
+      name: usage
+      type: string
     mapping:
       highway:
       - motorway
@@ -96,9 +108,16 @@ tables:
       - corridor
       - crossing
       - pedestrian
+      railway:
+      - rail
+      - light_rail
+      - subway
+      - narrow_gauge
+      - preserved
+      - tram
 
-# etldoc: imposm3 -> osm_highway_polygon     
-  highway_polygon:
+# etldoc: imposm3 -> osm_transportation_polygon
+  transportation_polygon:
     type: polygon
     fields:
     - name: osm_id

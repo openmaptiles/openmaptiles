@@ -1,0 +1,39 @@
+digraph "Imposm Mapping" {
+	graph [rankdir=LR ranksep=3]
+		subgraph highway_polygon {
+			node [fixed_size=shape "width:"=20]
+				highway_polygon [shape=box]
+				key_highway [label=highway shape=box]
+					key_highway -> highway_polygon [label=pedestrian]
+		}
+		subgraph highway_linestring {
+			node [fixed_size=shape "width:"=20]
+				highway_linestring [shape=box]
+				key_highway [label=highway shape=box]
+					key_highway -> highway_linestring [label="motorway
+motorway_link
+trunk
+trunk_link
+primary
+primary_link
+secondary
+secondary_link
+tertiary
+tertiary_link
+unclassified
+residential
+road
+living_street
+raceway
+construction
+track
+service
+path
+cycleway
+bridleway
+footway
+corridor
+crossing
+pedestrian"]
+		}
+}

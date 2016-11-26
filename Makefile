@@ -1,7 +1,7 @@
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
 .PHONY: docs
-docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/highway/README.md layers/highway_name/README.md layers/poi/README.md layers/place/README.md layers/waterway/README.md layers/water_name/README.md layers/landcover/README.md layers/landuse/README.md layers/housenumber/README.md
+docs: layers/railway/README.md layers/boundary/README.md layers/water/README.md layers/building/README.md layers/transportation/README.md layers/transportation_name/README.md layers/poi/README.md layers/place/README.md layers/waterway/README.md layers/water_name/README.md layers/landcover/README.md layers/landuse/README.md layers/housenumber/README.md
 
 build/openmaptiles.tm2source/data.yml:
 	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
@@ -15,11 +15,11 @@ build/tileset.sql:
 layers/poi/README.md:
 	generate-doc layers/poi/poi.yaml --diagram layers/poi/mapping > layers/poi/README.md
 
-layers/highway/README.md:
-	generate-doc layers/highway/highway.yaml --diagram layers/highway/mapping > layers/highway/README.md
+layers/transportation/README.md:
+	generate-doc layers/transportation/transportation.yaml --diagram layers/transportation/mapping > layers/transportation/README.md
 
-layers/highway_name/README.md:
-	generate-doc layers/highway_name/highway_name.yaml > layers/highway_name/README.md
+layers/transportation_name/README.md:
+	generate-doc layers/transportation_name/transportation_name.yaml > layers/transportation_name/README.md
 
 layers/railway/README.md:
 	generate-doc layers/railway/railway.yaml --diagram layers/railway/mapping > layers/railway/README.md
@@ -52,4 +52,4 @@ layers/housenumber/README.md:
 	generate-doc layers/housenumber/housenumber.yaml > layers/housenumber/README.md
 
 clean:
-	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql && rm -f layers/**/README.md&& rm -f layers/**/*.png
+	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql

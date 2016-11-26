@@ -1,5 +1,5 @@
 layer:
-  id: "highway"
+  id: "transportation"
   description: |
       Roads or [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) in OpenStreetMap lingo.
       This layer is directly derived from the OSM road hierarchy which is why it is called `highway`. Only
@@ -29,7 +29,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class::text, subclass, properties::text FROM layer_highway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class::text, subclass, properties::text FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./types.sql
   - ./ne_global_roads.sql
