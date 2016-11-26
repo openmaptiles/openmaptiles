@@ -5,10 +5,10 @@
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14_ " ] ;
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
-RETURNS TABLE(geom geometry, osm_id bigint, render_height numeric, render_min_height numeric) AS $$
+RETURNS TABLE(geom geometry, osm_id bigint, render_height int, render_min_height int) AS $$
     SELECT geometry, osm_id,
-    least(greatest(3, COALESCE(height, levels*3.66,5)),400)^.7::int AS render_height,
-    least(greatest(0, COALESCE(min_height, min_level*3.66,5)),400)^.7::int AS render_min_height
+    greatest(5, COALESCE(height, levels*3.66,5))::int AS render_height,
+    greatest(0, COALESCE(min_height, min_level*3.66,0))::int AS render_min_height
     FROM (
 
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
