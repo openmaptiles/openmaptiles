@@ -33,7 +33,7 @@ layer:
 schema:
   - ./types.sql
   - ./ne_global_roads.sql
-  - ./highway.sql
+  - ./layer.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml
