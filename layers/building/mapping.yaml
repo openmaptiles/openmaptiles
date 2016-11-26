@@ -29,9 +29,6 @@ tables:
     - name: min_level
       key: building:min_level
       type: integer
-    - name: building_colour
-      key: building:colour
-      type: string
     mapping:
       building:part:
       - __any__
