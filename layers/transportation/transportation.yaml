@@ -29,7 +29,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class::text, subclass, properties::text FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class::text, subclass, oneway, ramp, brunnel FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./types.sql
   - ./ne_global_roads.sql

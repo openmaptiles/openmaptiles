@@ -6,14 +6,16 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_transportation |<z4z7> z4-z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14_" ] ;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
-RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass text, properties highway_properties) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass text, ramp int, oneway int, brunnel TEXT) AS $$
     SELECT
 		osm_id, geometry,
 		to_highway_class(highway) AS class, highway AS subclass,
-		to_highway_properties(is_bridge, is_tunnel, is_ford, is_ramp, is_oneway) AS properties
+        CASE WHEN highway_is_link(highway) THEN 1 ELSE is_ramp::int END AS ramp,
+        is_oneway::int AS oneway,
+        to_brunnel(is_bridge, is_tunnel, is_ford) AS brunnel
 	FROM (
 
-		-- etldoc: ne_10m_global_roads ->  layer_transportation:z4z7
+		-- etldoc: ne_10m_global_roads ->  layer_transportation:z4z6
 		SELECT
 			NULL::bigint AS osm_id, geometry, highway,
 			FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford, FALSE AS is_ramp, FALSE AS is_oneway,
@@ -22,7 +24,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
 		WHERE zoom_level BETWEEN 4 AND 6 AND scalerank <= 1 + zoom_level
 		UNION ALL
 
-		-- etldoc: osm_transportation_linestring_gen4  ->  layer_transportation:z8
+		-- etldoc: osm_transportation_linestring_gen4  ->  layer_transportation:z7z8
 		SELECT osm_id, geometry, highway, is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_transportation_linestring_gen4
 		WHERE zoom_level BETWEEN 7 AND 8

@@ -8,13 +8,14 @@ BEGIN
 END
 $$;
 
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'highway_properties') THEN
-        CREATE TYPE highway_properties AS ENUM ('bridge:oneway', 'tunnel:oneway', 'ramp', 'ford', 'bridge', 'tunnel', 'oneway');
-    END IF;
-END
-$$;
+CREATE OR REPLACE FUNCTION to_brunnel(is_bridge BOOL, is_tunnel BOOL, is_ford BOOL) RETURNS TEXT AS $$
+    SELECT CASE
+        WHEN is_bridge THEN 'bridge'
+        WHEN is_tunnel THEN 'tunnel'
+        WHEN is_ford THEN 'ford'
+        ELSE NULL
+    END;
+$$ LANGUAGE SQL IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class AS $$
     SELECT CASE
@@ -29,16 +30,3 @@ CREATE OR REPLACE FUNCTION to_highway_class(highway TEXT) RETURNS highway_class 
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION to_highway_properties(is_bridge boolean, is_tunnel boolean, is_ford boolean, is_ramp boolean, is_oneway boolean) RETURNS highway_properties AS $$
-    SELECT CASE
-         WHEN is_bridge AND is_oneway THEN 'bridge:oneway'::highway_properties
-         WHEN is_tunnel AND is_oneway THEN 'tunnel:oneway'::highway_properties
-         WHEN is_ramp THEN 'ramp'::highway_properties
-         WHEN is_ford THEN 'ford'::highway_properties
-         WHEN is_bridge THEN 'bridge'::highway_properties
-         WHEN is_tunnel THEN 'tunnel'::highway_properties
-         WHEN is_oneway THEN 'oneway'::highway_properties
-        ELSE NULL
-    END;
-$$ LANGUAGE SQL IMMUTABLE;
