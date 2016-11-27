@@ -28,19 +28,23 @@ if [ !  -f ./data/${testdata} ]; then
     wget https://s3.amazonaws.com/metro-extracts.mapzen.com/zurich_switzerland.osm.pbf -P ./data
 fi
 
+rm -f ./build/*.sql
+rm -f ./build/data.yml
+#rm -f ./build/openmaptiles.tm2source/*.*
+
 $DOCKER_EXEC run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 $DC_EXEC up   -d postgres
-sleep 30
+sleep 12
 
-$DC_EXEC run --rm import-water
-$DC_EXEC run --rm import-natural-earth
-$DC_EXEC run --rm import-lakelines
+#$DC_EXEC run --rm import-water
+#$DC_EXEC run --rm import-natural-earth
+#$DC_EXEC run --rm import-lakelines
 $DC_EXEC run --rm import-osm
 $DC_EXEC run --rm import-sql
 
 $DC_EXEC -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
 
-$DC_EXEC stop postgres
+#$DC_EXEC stop postgres
 echo "The vectortiles created from $testdata  "
 ls ./data/*.mbtiles -la
 echo "Hello ... start experimenting   - see docs !   "

@@ -18,171 +18,171 @@ tables:
     mapping:
       amenity:
       - arts_centre
-      - police
+      - bank
+      - bar
+      - bbq
+      - bicycle_rental
+      - biergarten
+      - bus_station
+      - cafe
+      - cinema
+      - college
+      - community_centre
+      - courthouse
+      - dentist
+      - doctors
+      - embassy
+      - fast_food
+      - ferry_terminal
       - fire_station
+      - food_court
+      - fuel
+      - grave_yard
+      - hospital
+      - kindergarten
+      - library
+      - marketplace
+      - nightclub
+      - nursing_home
+      - pharmacy
+      - place_of_worship
+      - police
       - post_box
       - post_office
-      - telephone
-      - library
-      - townhall
-      - courthouse
       - prison
-      - place_of_worship
-      - embassy
-      - community_centre
-      - nursing_home
-      - university
-      - school
-      - kindergarten
-      - college
-      - public_building
-      - pharmacy
-      - hospital
-      - doctors
-      - dentist
-      - veterinary
-      - theatre
-      - nightclub
-      - cinema
-      - restaurant
-      - recycling
-      - fast_food
-      - cafe
       - pub
-      - bar
-      - food_court
-      - biergarten
-      - swimming_pool
+      - public_building
+      - recycling
+      - restaurant
+      - school
       - shelter
-      - grave_yard
-      - bank
-      - ferry_terminal
-      - fuel
-      - waste_basket
-      - bicycle_rental
-      - bbq
-      - taxi
-      - bus_station
-      - marketplace
-      - toilets
-      leisure:
-      - park
-      - playground
-      - dog_park
-      - sports_centre
-      - pitch
       - swimming_pool
-      - swimming_area
-      - water_park
-      - golf_course
-      - miniature_golf
-      - marina
-      - stadium
-      - ice_rink
+      - taxi
+      - telephone
+      - theatre
+      - toilets
+      - townhall
+      - university
+      - veterinary
+      - waste_basket
+      leisure:
+      - dog_park
       - garden
+      - golf_course
+      - ice_rink
+      - marina
+      - miniature_golf
+      - park
+      - pitch
+      - playground
+      - sports_centre
+      - stadium
+      - swimming_area
+      - swimming_pool
+      - water_park
       landuse:
-      - cemetery
       - basin
-      - reservoir
       - brownfield
+      - cemetery
+      - reservoir
       sport:
-      - swimming
-      - tennis
-      - soccer
+      - american_football
+      - archery
+      - athletics
+      - australian_football
+      - badminton
       - baseball
       - basketball
-      - multi
-      - golf
-      - equestrian
-      - athletics
-      - volleyball
-      - climbing
-      - bowls
-      - american_football
-      - skateboard
-      - shooting
-      - skiing
-      - boules
       - beachvolleyball
-      - cricket
-      - table_tennis
-      - hockey
-      - gymnastics
-      - running
-      - canoe
-      - rugby_union
-      - skating
-      - scuba_diving
-      - motor
-      - horse_racing
-      - handball
-      - team_handball
-      - karting
-      - cycling
-      - archery
-      - motocross
-      - pelota
-      - rugby
-      - gaelic_games
-      - model_aerodrome
-      - netball
-      - rugby_league
-      - free_flying
-      - rowing
-      - chess
-      - australian_football
-      - cricket_nets
-      - racquet
-      - bmx
-      - sailing
-      - ice_stock
-      - badminton
-      - paddle_tennis
-      - dog_racing
-      - fatsal
       - billiards
-      - ice_hockey
-      - yoga
-      - disc_golf
-      - orienteering
-      - toboggan
-      - horseshoes
-      - paragliding
-      - korfball
-      - diving
-      - rc_car
-      - canadian_football
-      - field_hockey
-      - shooting_range
+      - bmx
+      - boules
+      - bowls
       - boxing
-      - curling
-      - surfing
-      - water_ski
-      - judo
-      - croquet
-      - paintball
+      - canadian_football
+      - canoe
+      - chess
+      - climbing
       - climbing_adventure
+      - cricket
+      - cricket_nets
+      - croquet
+      - curling
+      - cycling
+      - disc_golf
+      - diving
+      - dog_racing
+      - equestrian
+      - fatsal
+      - field_hockey
+      - free_flying
+      - gaelic_games
+      - golf
+      - gymnastics
+      - handball
+      - hockey
+      - horse_racing
+      - horseshoes
+      - ice_hockey
+      - ice_stock
+      - judo
+      - karting
+      - korfball
       - long_jump
+      - model_aerodrome
+      - motocross
+      - motor
+      - multi
+      - netball
+      - orienteering
+      - paddle_tennis
+      - paintball
+      - paragliding
+      - pelota
+      - racquet
+      - rc_car
+      - rowing
+      - rugby
+      - rugby_league
+      - rugby_union
+      - running
+      - sailing
+      - scuba_diving
+      - shooting
+      - shooting_range
+      - skateboard
+      - skating
+      - skiing
+      - soccer
+      - surfing
+      - swimming
       - table_soccer
+      - table_tennis
+      - team_handball
+      - tennis
+      - toboggan
+      - volleyball
+      - water_ski
+      - yoga
       tourism:
-      - attraction
+      - alpine_hut
       - artwork
-      - gallery
-      - hotel
-      - motel
+      - attraction
       - bed_and_breakfast
+      - camp_site
+      - caravan_site
+      - chalet
+      - gallery
       - guest_house
       - hostel
-      - chalet
-      - camp_site
-      - alpine_hut
-      - caravan_site
+      - hotel
+      - information
+      - motel
       - museum
+      - picnic_site
+      - theme_park
       - viewpoint
       - zoo
-      - theme_park
-      - information
-      - picnic_site
       shop:
       - accessories
       - alcohol
@@ -211,19 +211,17 @@ tables:
       - convenience
       - copyshop
       - cosmetics
-      - garden_centre
       - deli
       - delicatessen
       - department_store
       - doityourself
       - dry_cleaning
-      - video
       - electronics
       - erotic
       - fabric
       - florist
       - furniture
-      - video_games
+      - garden_centre
       - general
       - gift
       - greengrocer
@@ -246,8 +244,8 @@ tables:
       - newsagent
       - optician
       - outdoor
-      - perfumery
       - perfume
+      - perfumery
       - pet
       - photo
       - second_hand
@@ -261,6 +259,8 @@ tables:
       - tobacco
       - toys
       - travel_agency
+      - video
+      - video_games
       - watches
       - weapons
       - wholesale
@@ -268,14 +268,300 @@ tables:
       highway:
       - bus_stop
       barrier:
-      - sally_port
-      - lift_gate
-      - gate
       - bollard
-      - stile
-      - cycle_barrier
-      - toll_booth
       - border_control
+      - cycle_barrier
+      - gate
+      - lift_gate
+      - sally_port
+      - stile
+      - toll_booth
+      historic:
+      - monument
+      waterway:
+      - dock
+      aerialway:
+      - station
+
+
+
+  # etldoc: imposm3 -> osm_poi_polygon
+  poi_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: subclass
+      type: mapping_value
+    mapping:
+      amenity:
+      - arts_centre
+      - bank
+      - bar
+      - bbq
+      - bicycle_rental
+      - biergarten
+      - bus_station
+      - cafe
+      - cinema
+      - college
+      - community_centre
+      - courthouse
+      - dentist
+      - doctors
+      - embassy
+      - fast_food
+      - ferry_terminal
+      - fire_station
+      - food_court
+      - fuel
+      - grave_yard
+      - hospital
+      - kindergarten
+      - library
+      - marketplace
+      - nightclub
+      - nursing_home
+      - pharmacy
+      - place_of_worship
+      - police
+      - post_box
+      - post_office
+      - prison
+      - pub
+      - public_building
+      - recycling
+      - restaurant
+      - school
+      - shelter
+      - swimming_pool
+      - taxi
+      - telephone
+      - theatre
+      - toilets
+      - townhall
+      - university
+      - veterinary
+      - waste_basket
+      leisure:
+      - dog_park
+      - garden
+      - golf_course
+      - ice_rink
+      - marina
+      - miniature_golf
+      - park
+      - pitch
+      - playground
+      - sports_centre
+      - stadium
+      - swimming_area
+      - swimming_pool
+      - water_park
+      landuse:
+      - basin
+      - brownfield
+      - cemetery
+      - reservoir
+      sport:
+      - american_football
+      - archery
+      - athletics
+      - australian_football
+      - badminton
+      - baseball
+      - basketball
+      - beachvolleyball
+      - billiards
+      - bmx
+      - boules
+      - bowls
+      - boxing
+      - canadian_football
+      - canoe
+      - chess
+      - climbing
+      - climbing_adventure
+      - cricket
+      - cricket_nets
+      - croquet
+      - curling
+      - cycling
+      - disc_golf
+      - diving
+      - dog_racing
+      - equestrian
+      - fatsal
+      - field_hockey
+      - free_flying
+      - gaelic_games
+      - golf
+      - gymnastics
+      - handball
+      - hockey
+      - horse_racing
+      - horseshoes
+      - ice_hockey
+      - ice_stock
+      - judo
+      - karting
+      - korfball
+      - long_jump
+      - model_aerodrome
+      - motocross
+      - motor
+      - multi
+      - netball
+      - orienteering
+      - paddle_tennis
+      - paintball
+      - paragliding
+      - pelota
+      - racquet
+      - rc_car
+      - rowing
+      - rugby
+      - rugby_league
+      - rugby_union
+      - running
+      - sailing
+      - scuba_diving
+      - shooting
+      - shooting_range
+      - skateboard
+      - skating
+      - skiing
+      - soccer
+      - surfing
+      - swimming
+      - table_soccer
+      - table_tennis
+      - team_handball
+      - tennis
+      - toboggan
+      - volleyball
+      - water_ski
+      - yoga
+      tourism:
+      - alpine_hut
+      - artwork
+      - attraction
+      - bed_and_breakfast
+      - camp_site
+      - caravan_site
+      - chalet
+      - gallery
+      - guest_house
+      - hostel
+      - hotel
+      - information
+      - motel
+      - museum
+      - picnic_site
+      - theme_park
+      - viewpoint
+      - zoo
+      shop:
+      - accessories
+      - alcohol
+      - antiques
+      - art
+      - bag
+      - bakery
+      - beauty
+      - bed
+      - beverages
+      - bicycle
+      - books
+      - boutique
+      - butcher
+      - camera
+      - car
+      - car_repair
+      - carpet
+      - charity
+      - chemist
+      - chocolate
+      - clothes
+      - coffee
+      - computer
+      - confectionery
+      - convenience
+      - copyshop
+      - cosmetics
+      - deli
+      - delicatessen
+      - department_store
+      - doityourself
+      - dry_cleaning
+      - electronics
+      - erotic
+      - fabric
+      - florist
+      - furniture
+      - garden_centre
+      - general
+      - gift
+      - greengrocer
+      - hairdresser
+      - hardware
+      - hearing_aids
+      - hifi
+      - ice_cream
+      - interior_decoration
+      - jewelry
+      - kiosk
+      - lamps
+      - laundry
+      - mall
+      - massage
+      - mobile_phone
+      - motorcycle
+      - music
+      - musical_instrument
+      - newsagent
+      - optician
+      - outdoor
+      - perfume
+      - perfumery
+      - pet
+      - photo
+      - second_hand
+      - shoes
+      - sports
+      - stationery
+      - supermarket
+      - tailor
+      - tattoo
+      - ticket
+      - tobacco
+      - toys
+      - travel_agency
+      - video
+      - video_games
+      - watches
+      - weapons
+      - wholesale
+      - wine
+      highway:
+      - bus_stop
+      barrier:
+      - bollard
+      - border_control
+      - cycle_barrier
+      - gate
+      - lift_gate
+      - sally_port
+      - stile
+      - toll_booth
       historic:
       - monument
       waterway:
