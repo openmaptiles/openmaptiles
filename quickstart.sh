@@ -3,6 +3,12 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+#
+#  ./quickstart.sh  
+#  ./quickstart.sh 
+#
+#
+
 if [ $# -eq 0 ]; then
     echo "No parameter - set area=albania "
     osm_area=albania
@@ -12,9 +18,13 @@ fi
 
 testdata=${osm_area}.osm.pbf
 
+
 ##
 ##  OpenMapTiles quickstart.sh for x86_64 linux
 ##  
+MIN_COMPOSE_VER=1.7.1
+MIN_DOCKER_VER=1.10.0
+
 
 STARTTIME=$(date +%s)
 STARTDATE=$(date -Iminutes)
@@ -39,6 +49,13 @@ echo "      : This is working on x86_64 ; Your kernel is:"
 uname -r
 uname -m
 
+KERNEL_CPU_VER=$(uname -m)
+if [ "$KERNEL_CPU_VER" != "x86_64" ]; then
+  echo "ERR: Sorry this is working only on x86_64!"
+  exit 1
+fi
+
+
 echo "      : --- Memory, CPU info ---- "
 mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
 echo "system memory (GB): ${mem}  "
@@ -50,12 +67,25 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Please check the docker and docker-compose version!"
 echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/"
-echo "      : (theoretically;not tested) minumum Docker version is 1.10.0+."
-echo "      : (theoretically;not tested) minimum Docker-compose version is 1.6.0+."
+echo "      : (theoretically;not tested) minumum Docker version is $MIN_DOCKER_VER+."
+echo "      : (theoretically;not tested) minimum Docker-compose version is $MIN_COMPOSE_VER+."
 echo "      : See the .travis testfile for the current supported versions "
 echo "      : Your docker systems is:"
 docker         --version
 docker-compose --version
+
+COMPOSE_VER=$(docker-compose version --short)
+if [ $COMPOSE_VER "<" $MIN_COMPOSE_VER ]; then
+  echo "ERR: Your Docker-compose version is Known to have bugs , Please Update docker-compose!"
+  exit 1
+fi
+
+DOCKER_VER="$(docker -v | awk -F '[ ,]+' '{ print $3 }')"
+if [ $DOCKER_VER "<" $MIN_DOCKER_VER ]; then
+  echo "ERR: Your Docker version is not compatible , Please Update docker!"
+  exit 1
+fi
+
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -66,6 +96,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers "
 docker-compose down
+docker-compose kill
 docker-compose rm -fv
 
 echo " "
