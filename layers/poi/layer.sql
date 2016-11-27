@@ -9,10 +9,19 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY poi_class_rank(poi_class(subclass)) ASC, length(name) DESC
         )::int AS "rank"
-    -- etldoc: osm_poi_point ->  layer_poi:z14_        
-    FROM osm_poi_point
-    WHERE geometry && bbox
-      AND zoom_level >= 14
-      AND name <> ''
-    ORDER BY "rank";
+    FROM (    
+        -- etldoc: osm_poi_point ->  layer_poi:z14_        
+        SELECT * FROM osm_poi_point
+            WHERE geometry && bbox
+                AND zoom_level >= 14
+                AND name <> ''
+        UNION ALL
+        -- etldoc: osm_poi_polygon ->  layer_poi:z14_        
+        SELECT * FROM osm_poi_polygon
+            WHERE geometry && bbox
+                AND zoom_level >= 14
+                AND name <> ''    
+        ) as poi_union 
+    ORDER BY "rank"
+    ;
 $$ LANGUAGE SQL IMMUTABLE;
