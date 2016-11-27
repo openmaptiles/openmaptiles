@@ -1,6 +1,12 @@
 
-# imposm3 mapping file 
+# imposm3 mapping file for https://github.com/osm2vectortiles/imposm3 
+# Warning: this is not the official imposm3  
 
+# aerialway values , see http://taginfo.openstreetmap.org/keys/aerialway#values
+def_poi_mapping_aerialway: &poi_mapping_aerialway
+  - station
+
+# amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
   - bank
@@ -51,9 +57,33 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - veterinary
   - waste_basket
 
-def_poi_mapping_aerialway: &poi_mapping_aerialway
-  - station
+# barrier values , see http://taginfo.openstreetmap.org/keys/barrier#values
+def_poi_mapping_barrier: &poi_mapping_barrier
+  - bollard
+  - border_control
+  - cycle_barrier
+  - gate
+  - lift_gate
+  - sally_port
+  - stile
+  - toll_booth
 
+# highway values , see http://taginfo.openstreetmap.org/keys/highway#values
+def_poi_mapping_highway: &poi_mapping_highway
+  - bus_stop
+
+# historic values , see http://taginfo.openstreetmap.org/keys/historic#values
+def_poi_mapping_historic: &poi_mapping_historic
+  - monument
+
+# landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
+def_poi_mapping_landuse: &poi_mapping_landuse
+  - basin
+  - brownfield
+  - cemetery
+  - reservoir
+
+# leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
 def_poi_mapping_leisure: &poi_mapping_leisure
   - dog_park
   - garden
@@ -70,112 +100,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
   - swimming_pool
   - water_park
 
-def_poi_mapping_landuse: &poi_mapping_landuse
-  - basin
-  - brownfield
-  - cemetery
-  - reservoir
-
-def_poi_mapping_sport: &poi_mapping_sport
-  - american_football
-  - archery
-  - athletics
-  - australian_football
-  - badminton
-  - baseball
-  - basketball
-  - beachvolleyball
-  - billiards
-  - bmx
-  - boules
-  - bowls
-  - boxing
-  - canadian_football
-  - canoe
-  - chess
-  - climbing
-  - climbing_adventure
-  - cricket
-  - cricket_nets
-  - croquet
-  - curling
-  - cycling
-  - disc_golf
-  - diving
-  - dog_racing
-  - equestrian
-  - fatsal
-  - field_hockey
-  - free_flying
-  - gaelic_games
-  - golf
-  - gymnastics
-  - handball
-  - hockey
-  - horse_racing
-  - horseshoes
-  - ice_hockey
-  - ice_stock
-  - judo
-  - karting
-  - korfball
-  - long_jump
-  - model_aerodrome
-  - motocross
-  - motor
-  - multi
-  - netball
-  - orienteering
-  - paddle_tennis
-  - paintball
-  - paragliding
-  - pelota
-  - racquet
-  - rc_car
-  - rowing
-  - rugby
-  - rugby_league
-  - rugby_union
-  - running
-  - sailing
-  - scuba_diving
-  - shooting
-  - shooting_range
-  - skateboard
-  - skating
-  - skiing
-  - soccer
-  - surfing
-  - swimming
-  - table_soccer
-  - table_tennis
-  - team_handball
-  - tennis
-  - toboggan
-  - volleyball
-  - water_ski
-  - yoga
-
-def_poi_mapping_tourism: &poi_mapping_tourism
-  - alpine_hut
-  - artwork
-  - attraction
-  - bed_and_breakfast
-  - camp_site
-  - caravan_site
-  - chalet
-  - gallery
-  - guest_house
-  - hostel
-  - hotel
-  - information
-  - motel
-  - museum
-  - picnic_site
-  - theme_park
-  - viewpoint
-  - zoo
-
+# shop values , see http://taginfo.openstreetmap.org/keys/shop#values
 def_poi_mapping_shop: &poi_mapping_shop
   - accessories
   - alcohol
@@ -259,22 +184,109 @@ def_poi_mapping_shop: &poi_mapping_shop
   - wholesale
   - wine
 
-def_poi_mapping_highway: &poi_mapping_highway
-  - bus_stop
+# sport values , see http://taginfo.openstreetmap.org/keys/sport#values
+def_poi_mapping_sport: &poi_mapping_sport
+  - american_football
+  - archery
+  - athletics
+  - australian_football
+  - badminton
+  - baseball
+  - basketball
+  - beachvolleyball
+  - billiards
+  - bmx
+  - boules
+  - bowls
+  - boxing
+  - canadian_football
+  - canoe
+  - chess
+  - climbing
+  - climbing_adventure
+  - cricket
+  - cricket_nets
+  - croquet
+  - curling
+  - cycling
+  - disc_golf
+  - diving
+  - dog_racing
+  - equestrian
+  - fatsal
+  - field_hockey
+  - free_flying
+  - gaelic_games
+  - golf
+  - gymnastics
+  - handball
+  - hockey
+  - horse_racing
+  - horseshoes
+  - ice_hockey
+  - ice_stock
+  - judo
+  - karting
+  - korfball
+  - long_jump
+  - model_aerodrome
+  - motocross
+  - motor
+  - multi
+  - netball
+  - orienteering
+  - paddle_tennis
+  - paintball
+  - paragliding
+  - pelota
+  - racquet
+  - rc_car
+  - rowing
+  - rugby
+  - rugby_league
+  - rugby_union
+  - running
+  - sailing
+  - scuba_diving
+  - shooting
+  - shooting_range
+  - skateboard
+  - skating
+  - skiing
+  - soccer
+  - surfing
+  - swimming
+  - table_soccer
+  - table_tennis
+  - team_handball
+  - tennis
+  - toboggan
+  - volleyball
+  - water_ski
+  - yoga
 
-def_poi_mapping_barrier: &poi_mapping_barrier
-  - bollard
-  - border_control
-  - cycle_barrier
-  - gate
-  - lift_gate
-  - sally_port
-  - stile
-  - toll_booth
+# tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
+def_poi_mapping_tourism: &poi_mapping_tourism
+  - alpine_hut
+  - artwork
+  - attraction
+  - bed_and_breakfast
+  - camp_site
+  - caravan_site
+  - chalet
+  - gallery
+  - guest_house
+  - hostel
+  - hotel
+  - information
+  - motel
+  - museum
+  - picnic_site
+  - theme_park
+  - viewpoint
+  - zoo
 
-def_poi_mapping_historic: &poi_mapping_historic
-  - monument
-
+# waterway values , see http://taginfo.openstreetmap.org/keys/waterway#values
 def_poi_mapping_waterway: &poi_mapping_waterway
   - dock
 
@@ -337,5 +349,3 @@ tables:
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
       waterway: *poi_mapping_waterway
-
-      
