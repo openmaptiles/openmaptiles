@@ -14,13 +14,13 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
         SELECT * FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level >= 14
-                AND name <> ''
+                -- AND name <> ''
         UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z14_        
         SELECT * FROM osm_poi_polygon
             WHERE geometry && bbox
                 AND zoom_level >= 14
-                AND name <> ''    
+                -- AND name <> ''    
         ) as poi_union 
     ORDER BY "rank"
     ;
