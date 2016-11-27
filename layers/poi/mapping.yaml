@@ -30,6 +30,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - fuel
   - grave_yard
   - hospital
+  - ice_cream
   - kindergarten
   - library
   - marketplace
