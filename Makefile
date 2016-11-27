@@ -56,3 +56,37 @@ clean:
 
 clean_build:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
+
+psql:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh
+
+import-sql-dev:
+	docker-compose run --rm import-sql /bin/bash
+
+import-osm-dev:
+	docker-compose run --rm import-osm /bin/bash
+
+download-geofabrik:
+	@echo Download area :   $(area)
+	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
+	ls ./data/*
+
+download-geofabrik-list:
+	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+
+etlgraph:
+	generate-etlgraph layers/boundary/boundary.yaml
+	generate-etlgraph layers/highway/highway.yaml
+	generate-etlgraph layers/housenumber/housenumber.yaml
+	generate-etlgraph layers/landuse/landuse.yaml
+	generate-etlgraph layers/poi/poi.yaml
+	generate-etlgraph layers/water/water.yaml
+	generate-etlgraph layers/waterway/waterway.yaml
+	generate-etlgraph layers/building/building.yaml
+	generate-etlgraph layers/highway_name/highway_name.yaml
+	generate-etlgraph layers/landcover/landcover.yaml
+	generate-etlgraph layers/place/place.yaml
+	generate-etlgraph layers/railway/railway.yaml
+	generate-etlgraph layers/water_name/water_name.yaml
+	
+		

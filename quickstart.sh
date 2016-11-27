@@ -3,6 +3,15 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+if [ $# -eq 0 ]; then
+    echo "No parameter - set area=albania "
+    osm_area=albania
+else    
+    osm_area=$1
+fi
+
+testdata=${osm_area}.osm.pbf
+
 ##
 ##  OpenMapTiles quickstart.sh for x86_64 linux
 ##  
@@ -75,19 +84,29 @@ echo "--------------------------------------------------------------------------
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
-testdata=zurich_switzerland.osm.pbf
-testdataurl=https://s3.amazonaws.com/metro-extracts.mapzen.com/$testdata
+
 if [ !  -f ./data/${testdata} ]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "====> : Downloading testdata $testdata   "
     rm -f ./data/*
-    wget $testdataurl  -P ./data
+    #wget $testdataurl  -P ./data
+    docker-compose run --rm import-osm  ./download-geofabrik.sh ${osm_area}
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "====> : The testdata ./data/$testdata exists, we don't need to download! "    
 fi
+
+
+if [ !  -f ./data/${testdata} ]; then
+    echo " "
+    echo "Missing ./data/$testdata , Download error? "
+    exit 404
+fi
+
+
+
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -162,7 +181,7 @@ echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
-docker-compose -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
+docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --rm generate-vectortiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -209,6 +228,10 @@ echo "      : We created from $testdata ( file moddate: $MODDATE ) "
 echo "      : Size: "
 ls ./data/*.mbtiles -la
 
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo " Acknowledgments "
+echo " Thanks to all free, open source software developers and Open Data Contributors !    "  
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "The quickstart.sh is finished! "
