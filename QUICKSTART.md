@@ -1,6 +1,6 @@
 
 
-## Quickstart
+## Quickstart - for small extracts 
 
 ### Req:
 * linux x86_64
@@ -241,7 +241,11 @@ This is generating mbtiles for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
 ./quickstart.sh yukon 
 ```
 
-### Change MAX_ZOOM ...
+### Change MIN_ZOOM and MAX_ZOOM
 
-TODO  ...
+modify the settings in the `.env`  file 
+* QUICKSTART_MIN_ZOOM=0
+* QUICKSTART_MAX_ZOOM=7
 
+and re-start  `./quickstart.sh `
+*  the new config file re-generating to here  ./data/docker-compose-config.yml
