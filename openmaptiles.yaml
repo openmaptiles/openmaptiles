@@ -12,6 +12,7 @@ tileset:
     - layers/water/water.yaml
     - layers/waterway/waterway.yaml
     - layers/landcover/landcover.yaml
+    - layers/park/park.yaml
     - layers/landuse/landuse.yaml
   name: OpenMapTiles v1.0
   description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"
