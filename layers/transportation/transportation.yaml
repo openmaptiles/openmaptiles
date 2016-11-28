@@ -31,7 +31,7 @@ layer:
     srid: 900913
     query: (SELECT geometry, class, subclass, oneway, ramp, brunnel FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
-  - ./types.sql
+  - ./class.sql
   - ./ne_global_roads.sql
   - ./layer.sql
 datasources:
