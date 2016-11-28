@@ -74,6 +74,9 @@ download-geofabrik:
 download-geofabrik-list:
 	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
 
+start-mapbox-studio:
+	docker-compose up mapbox-studio
+
 etlgraph:
 	generate-etlgraph layers/boundary/boundary.yaml
 	generate-etlgraph layers/highway/highway.yaml

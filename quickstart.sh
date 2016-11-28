@@ -3,10 +3,18 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-#
-#  ./quickstart.sh  
-#  ./quickstart.sh 
-#
+# Example calls ...
+# ./quickstart.sh 
+# ./quickstart.sh africa 
+# ./quickstart.sh alabama 
+# ./quickstart.sh alaska 
+# ./quickstart.sh albania 
+# ./quickstart.sh alberta 
+# ./quickstart.sh alps 
+# ....
+# 
+# to list areas :  make download-geofabrik-list
+# see more QUICKSTART.md
 #
 
 if [ $# -eq 0 ]; then
@@ -228,6 +236,7 @@ md5sum build/tileset.sql                      >> quickstart_checklist.chk
 md5sum build/openmaptiles.tm2source/data.yml  >> quickstart_checklist.chk
 md5sum ./data/${testdata}                     >> quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> quickstart_checklist.chk
+md5sum ./data/docker-compose-config.yml       >> quickstart_checklist.chk
 cat quickstart_checklist.chk
 
 ENDTIME=$(date +%s) 
@@ -261,14 +270,30 @@ ls ./data/*.mbtiles -la
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo " Acknowledgments "
-echo " Thanks to all free, open source software developers and Open Data Contributors !    "  
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "The quickstart.sh is finished! "
+echo "The ./quickstart.sh $osm_area  is finished! "
 echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " " 
-echo "Start experimenting -> see the documentation!  "
+echo "Start experimenting !  And check the QUICKSTART.MD file !"
+echo "  "
+echo "Hints for testing other areas"
+echo "  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> "
+echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
+echo "  "
+echo "Hints for designers:"
+echo "  ....                                 # start Maputnik "
+echo "  ....                                 # start Tileserver-gl-light"
+echo "  make start-mapbox-studio             # start Mapbox Studio  "
+echo "  "
+echo "Hints for developers:"
+echo "  make download-geofabrik area=albania # download OSM data from geofabrik area=albania"
+echo "  make psql                            # start PostgreSQL console "
+echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
+echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
+echo "  ....                                 # start lukasmartinelli/postgis-editor"
+echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
+echo "  cat quickstart.log                   # backup ./quickstart.log for Technical Support :) "
 echo "-------------------------------------------------------------------------------------"
-
+echo " Acknowledgments "
+echo " Thanks to all free, open source software developers and Open Data Contributors !    "  
+echo "-------------------------------------------------------------------------------------"
