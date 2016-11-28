@@ -78,7 +78,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class highway_class, subclass te
 		SELECT osm_id, geometry, highway, FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford, FALSE AS is_ramp, FALSE AS is_oneway, z_order
         FROM osm_highway_polygon
         -- We do not want underground pedestrian areas for now
-		WHERE zoom_level BETWEEN 13 AND 14 AND is_area AND COALESCE(layer, 0) >= 0
+		WHERE zoom_level >= 13 AND is_area AND COALESCE(layer, 0) >= 0
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;
