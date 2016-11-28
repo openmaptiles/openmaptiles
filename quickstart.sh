@@ -95,7 +95,13 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Docker Space info: "
+docker info | grep Space
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Pulling or Refreshing OpenMapTiles docker images "
+#for developers is not perfect ...
 #make refresh-docker-images
 
 echo " "
@@ -291,6 +297,7 @@ echo "Start experimenting !  And check the QUICKSTART.MD file !"
 echo "  "
 echo "Hints for testing other areas"
 echo "  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> "
+echo "  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>> "
 echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
 echo "  "
 echo "Hints for designers:"
@@ -299,7 +306,7 @@ echo "  ....                                 # start Tileserver-gl-light"
 echo "  make start-mapbox-studio             # start Mapbox Studio"
 echo "  "
 echo "Hints for developers:"
-echo "  make download-geofabrik area=albania # download OSM data from geofabrik area=albania"
+echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
 echo "  make psql                            # start PostgreSQL console "
 echo "  make psql-list-tables                # list all PostgreSQL tables "
 echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
@@ -308,6 +315,8 @@ echo "  make clean-docker                    # remove docker containers, PG data
 echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment "
 echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 echo "  make remove-docker-images            # remove openmaptiles docker images"
+echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
+echo "  make pgclimb-list-tables             # list PostgreSQL public schema tabless"
 echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
 echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
 echo "  ....                                 # start lukasmartinelli/postgis-editor"

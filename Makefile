@@ -106,6 +106,12 @@ forced-clean-sql:
 	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;"
 	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "COMMENT ON SCHEMA public IS 'standard public schema';"
 
+pgclimb-list-views:
+	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
+
+pgclimb-list-tables:
+	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
+
 import-sql-dev:
 	docker-compose run --rm import-sql /bin/bash
 
@@ -113,9 +119,19 @@ import-osm-dev:
 	docker-compose run --rm import-osm /bin/bash
 
 download-geofabrik:
+	@echo ===============  download-geofabrik =======================
 	@echo Download area :   $(area)
+	@echo [[ example: make download-greofabrik  area=albania ]]
+	@echo [[ list areas:  make download-geofabrik-list       ]]
 	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
-	ls ./data/*
+	ls -la ./data/$(area).*
+	@echo "Generated config file: ./data/docker-compose-config.yml"
+	@echo " " 	
+	cat ./data/docker-compose-config.yml 
+	@echo " " 	
+
+list:
+	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
 
 download-geofabrik-list:
 	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
