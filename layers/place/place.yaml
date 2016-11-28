@@ -30,8 +30,6 @@ schema:
   - ./types.sql
   - ./class.sql
   - ./city.sql
-  - ./country.sql
-  - ./state.sql
   - ./merge_country_rank.sql
   - ./merge_city_rank.sql
   - ./merge_state_rank.sql

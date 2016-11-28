@@ -40,6 +40,5 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, place c
        OR (zoom_level = 9 AND (gridrank <= 8 OR "rank" IS NOT NULL))
        OR (zoom_level = 10 AND (gridrank <= 12 OR "rank" IS NOT NULL))
        OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 14 OR "rank" IS NOT NULL))
-       OR (zoom_level >= 13)
-    ORDER BY "rank" ASC;
+       OR (zoom_level >= 13);
 $$ LANGUAGE SQL IMMUTABLE;
