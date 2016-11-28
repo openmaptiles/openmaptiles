@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION landcover_class(landuse VARCHAR, "natural" VARCHAR, w
          WHEN landuse IN ('farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery') THEN 'farmland'
          WHEN "natural" IN ('glacier', 'ice_shelf') THEN 'ice'
          WHEN "natural"='wood' OR landuse IN ('forest', 'wood') THEN 'wood'
-         WHEN "natural"='grassland' OR landuse IN ('grass', 'meadow', 'village_green', 'allotments', 'park', 'recreation_ground', 'grassland') THEN 'grass'
+         WHEN "natural"='grassland' OR landuse IN ('grass', 'meadow', 'allotments', 'grassland') THEN 'grass'
          WHEN "natural"='wetland' OR wetland IN ('bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove') THEN 'wetland'
         ELSE NULL
     END;
