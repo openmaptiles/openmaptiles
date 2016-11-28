@@ -121,7 +121,7 @@ import-osm-dev:
 download-geofabrik:
 	@echo ===============  download-geofabrik =======================
 	@echo Download area :   $(area)
-	@echo [[ example: make download-greofabrik  area=albania ]]
+	@echo [[ example: make download-geofabrik  area=albania ]]
 	@echo [[ list areas:  make download-geofabrik-list       ]]
 	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
 	ls -la ./data/$(area).*

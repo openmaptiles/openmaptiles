@@ -139,7 +139,7 @@ if [ !  -f ./data/${testdata} ]; then
     echo "====> : Downloading testdata $testdata   "
     rm -f ./data/*
     #wget $testdataurl  -P ./data
-    docker-compose run --rm import-osm  ./download-geofabrik.sh ${osm_area}
+    make download-geofabrik      area=${osm_area}
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "====> : Osm metadata : $testdata   "
