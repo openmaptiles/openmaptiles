@@ -25,16 +25,17 @@ layer:
   buffer_size: 128
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class, rank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, class, subclass, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
+  - ./class.sql
   - ./city.sql
   - ./country.sql
   - ./state.sql
   - ./merge_country_rank.sql
   - ./merge_city_rank.sql
   - ./merge_state_rank.sql
-  - ./place.sql
+  - ./layer.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

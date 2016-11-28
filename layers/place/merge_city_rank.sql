@@ -18,7 +18,7 @@ WITH important_city_point AS (
         ne.nameascii ILIKE osm.name OR
         ne.nameascii ILIKE osm.name_en
     )
-    AND (osm.place = 'city'::city_class OR osm.place= 'town'::city_class OR osm.place = 'village'::city_class)
+    AND osm.place IN ('city', 'town', 'village')
     AND ST_DWithin(ne.geom, osm.geometry, 50000)
 )
 UPDATE osm_city_point AS osm
