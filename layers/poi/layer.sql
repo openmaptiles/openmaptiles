@@ -7,7 +7,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     SELECT osm_id, geometry, name, NULLIF(name_en, ''), poi_class(subclass) AS class, subclass,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY poi_class_rank(poi_class(subclass)) ASC, length(name) DESC
+            ORDER BY poi_class_rank(poi_class(subclass)) ASC,
+                     length(name) DESC NULLS LAST
         )::int AS "rank"
     FROM (    
         -- etldoc: osm_poi_point ->  layer_poi:z14_        
