@@ -10,20 +10,20 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: ne_50m_urban_areas -> landuse_z4
 CREATE OR REPLACE VIEW landuse_z4 AS (
-    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential' AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
+    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential'::text AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
     FROM ne_50m_urban_areas
     WHERE scalerank <= 2
 );
 
 -- etldoc: ne_50m_urban_areas -> landuse_z5
 CREATE OR REPLACE VIEW landuse_z5 AS (
-    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential' AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
+    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential'::text AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
     FROM ne_50m_urban_areas
 );
 
 -- etldoc: ne_10m_urban_areas -> landuse_z6
 CREATE OR REPLACE VIEW landuse_z6 AS (
-    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential' AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
+    SELECT NULL::bigint AS osm_id, geom AS geometry, 'residential'::text AS landuse, NULL::text AS amenity, NULL::text AS leisure, NULL::text AS boundary, scalerank
     FROM ne_10m_urban_areas
 );
 

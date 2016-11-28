@@ -5,10 +5,12 @@ layer:
       this is welcomed.
   buffer_size: 4
   datasource:
-    query: (SELECT geom FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geom, render_height, render_min_height FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
   fields:
     render_height: |
-        An approximated height from levels and height of building after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear). For future 3D rendering of buildings.
+        An approximated height from levels and height of the building or building:part after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear). For future 3D rendering of buildings.
+    render_min_height: |
+        An approximated height from levels and height of the bottom of the building or building:part after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear). For future 3D rendering of buildings.
 schema:
   - ./building.sql
 datasources:

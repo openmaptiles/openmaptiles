@@ -1,19 +1,19 @@
 
 -- etldoc: ne_110m_rivers_lake_centerlines ->  waterway_z3
 CREATE OR REPLACE VIEW waterway_z3 AS (
-    SELECT geom AS geometry, 'river' AS class, name FROM ne_110m_rivers_lake_centerlines
+    SELECT geom AS geometry, 'river'::text AS class, name FROM ne_110m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 
 -- etldoc: ne_50m_rivers_lake_centerlines ->  waterway_z4
 CREATE OR REPLACE VIEW waterway_z4 AS (
-    SELECT geom AS geometry, 'river' AS class, name FROM ne_50m_rivers_lake_centerlines
+    SELECT geom AS geometry, 'river'::text AS class, name FROM ne_50m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 
 -- etldoc: ne_10m_rivers_lake_centerlines ->  waterway_z6
 CREATE OR REPLACE VIEW waterway_z6 AS (
-    SELECT geom AS geometry, 'river' AS class, name FROM ne_10m_rivers_lake_centerlines
+    SELECT geom AS geometry, 'river'::text AS class, name FROM ne_10m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 

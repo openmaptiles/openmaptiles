@@ -6,55 +6,55 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 CREATE OR REPLACE VIEW water_z0 AS (
     -- etldoc:  ne_110m_ocean ->  water_z0 
-    SELECT geom, 'ocean' AS class FROM ne_110m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_110m_ocean
     UNION ALL
     -- etldoc:  ne_110m_lakes ->  water_z0     
-    SELECT geom, 'lake' AS class FROM ne_110m_lakes
+    SELECT geom, 'lake'::text AS class FROM ne_110m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z1 AS (
     -- etldoc:  ne_110m_ocean ->  water_z1    
-    SELECT geom, 'ocean' AS class FROM ne_110m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_110m_ocean
     UNION ALL   
     -- etldoc:  ne_110m_lakes ->  water_z1    
-    SELECT geom, 'lake' AS class FROM ne_110m_lakes
+    SELECT geom, 'lake'::text AS class FROM ne_110m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z2 AS (
     -- etldoc:  ne_50m_ocean ->  water_z2    
-    SELECT geom, 'ocean' AS class FROM ne_50m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_50m_ocean
     UNION ALL
-    -- etldoc:  ne_110m_lakes ->  water_z2     
-    SELECT geom, 'lake' AS class FROM ne_110m_lakes
+    -- etldoc:  ne_50m_lakes ->  water_z2     
+    SELECT geom, 'lake'::text AS class FROM ne_50m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z4 AS (
     -- etldoc:  ne_50m_ocean ->  water_z4       
-    SELECT geom, 'ocean' AS class FROM ne_50m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_50m_ocean
     UNION ALL
     -- etldoc:  ne_50m_lakes ->  water_z4     
-    SELECT geom, 'lake' AS class FROM ne_50m_lakes
+    SELECT geom, 'lake'::text AS class FROM ne_50m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z5 AS (
     -- etldoc:  ne_10m_ocean ->  water_z5    
-    SELECT geom, 'ocean' AS class FROM ne_10m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  ne_10m_lakes ->  water_z5    
-    SELECT geom, 'lake' AS class FROM ne_10m_lakes
+    SELECT geom, 'lake'::text AS class FROM ne_10m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z6 AS (
     -- etldoc:  ne_10m_ocean ->  water_z6     
-    SELECT geom, 'ocean' AS class FROM ne_10m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
    -- etldoc:  ne_10m_lakes ->  water_z6    
-    SELECT geom, 'lake' AS class FROM ne_10m_lakes
+    SELECT geom, 'lake'::text AS class FROM ne_10m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z7 AS (
     -- etldoc:  ne_10m_ocean ->  water_z7     
-    SELECT geom, 'ocean' AS class FROM ne_10m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  osm_water_polygon_gen3 ->  water_z7     
     SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon_gen3
@@ -62,7 +62,7 @@ CREATE OR REPLACE VIEW water_z7 AS (
 
 CREATE OR REPLACE VIEW water_z8 AS (
     -- etldoc:  ne_10m_ocean ->  water_z8     
-    SELECT geom, 'ocean' AS class FROM ne_10m_ocean
+    SELECT geom, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  osm_water_polygon_gen2 ->  water_z8         
     SELECT geometry AS geom, 'lake' AS class FROM osm_water_polygon_gen2
