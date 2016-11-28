@@ -3,42 +3,41 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+
+###########################################
+# OpenMapTiles quickstart.sh for x86_64 linux
+#
 # Example calls ...
-# ./quickstart.sh 
-# ./quickstart.sh africa 
-# ./quickstart.sh alabama 
-# ./quickstart.sh alaska 
-# ./quickstart.sh albania 
-# ./quickstart.sh alberta 
-# ./quickstart.sh alps 
+# ./quickstart.sh
+# ./quickstart.sh africa
+# ./quickstart.sh alabama
+# ./quickstart.sh alaska
+# ./quickstart.sh albania
+# ./quickstart.sh alberta
+# ./quickstart.sh alps
 # ....
-# 
+#
 # to list areas :  make download-geofabrik-list
 # see more QUICKSTART.md
 #
 
 if [ $# -eq 0 ]; then
-    echo "No parameter - set area=albania "
-    osm_area=albania
-else    
+    osm_area=albania                         #  default test country
+    echo "No parameter - set area=$osm_area "
+else
     osm_area=$1
 fi
-
 testdata=${osm_area}.osm.pbf
 
-
-##
-##  OpenMapTiles quickstart.sh for x86_64 linux
-##  
+##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
 MIN_DOCKER_VER=1.10.0
-
 
 STARTTIME=$(date +%s)
 STARTDATE=$(date -Iminutes)
 githash=$( git rev-parse HEAD )
 
-log_file=quickstart.log
+log_file=./quickstart.log
 rm -f $log_file
 exec &> >(tee -a "$log_file")
 
@@ -94,6 +93,10 @@ if [ $DOCKER_VER "<" $MIN_DOCKER_VER ]; then
   exit 1
 fi
 
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Pulling or Refreshing OpenMapTiles docker images "
+#make refresh-docker-images
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -103,18 +106,12 @@ docker images | grep openmaptiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers "
-docker-compose down
-docker-compose kill
-docker-compose rm -fv
+make clean-docker
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : For a clean start, we are removing old postgresql data volume ( if it exists )"
-docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Making directories - if they don't exist ( ./build ./data ) "
+echo "====> : Making directories - if they don't exist ( ./build ./data ./pgdata ) "
+mkdir -p pgdata
 mkdir -p build
 mkdir -p data
 
@@ -122,6 +119,12 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Removing pgdata  "
+# rm -rf ./pgdata/*
+
 
 
 if [ !  -f ./data/${testdata} ]; then
@@ -131,20 +134,26 @@ if [ !  -f ./data/${testdata} ]; then
     rm -f ./data/*
     #wget $testdataurl  -P ./data
     docker-compose run --rm import-osm  ./download-geofabrik.sh ${osm_area}
+    echo " "
+    echo "-------------------------------------------------------------------------------------"
+    echo "====> : Osm metadata : $testdata   "
+    cat ./data/osmstat.txt
+    echo " "
+    echo "-------------------------------------------------------------------------------------"
+    echo "====> : Generated docker-compose config  "
+    cat ./data/docker-compose-config.yml
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : The testdata ./data/$testdata exists, we don't need to download! "    
+    echo "====> : The testdata ./data/$testdata exists, we don't need to download! "
 fi
 
 
 if [ !  -f ./data/${testdata} ]; then
     echo " "
-    echo "Missing ./data/$testdata , Download error? "
+    echo "Missing ./data/$testdata , Download or Parameter error? "
     exit 404
 fi
-
-
 
 
 echo " "
@@ -165,7 +174,9 @@ echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
 echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
 docker-compose up   -d postgres
-sleep 30
+
+# Drop all PostgreSQL tables ...
+make forced-clean-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -198,7 +209,7 @@ echo "      : Imposm3 documentation: https://imposm.org/docs/imposm3/latest/inde
 echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
-echo "      : Thank you OpenStreetMap Contributors ! " 
+echo "      : Thank you OpenStreetMap Contributors ! "
 docker-compose run --rm import-osm
 
 echo " "
@@ -230,16 +241,17 @@ docker-compose stop postgres
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Inputs - Outputs md5sum for debugging "
-rm -f quickstart_checklist.chk
-md5sum build/mapping.yaml                     >> quickstart_checklist.chk
-md5sum build/tileset.sql                      >> quickstart_checklist.chk
-md5sum build/openmaptiles.tm2source/data.yml  >> quickstart_checklist.chk
-md5sum ./data/${testdata}                     >> quickstart_checklist.chk
-md5sum ./data/tiles.mbtiles                   >> quickstart_checklist.chk
-md5sum ./data/docker-compose-config.yml       >> quickstart_checklist.chk
-cat quickstart_checklist.chk
+rm -f ./data/quickstart_checklist.chk
+md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
+md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
+md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
+md5sum ./data/${testdata}                     >> ./data/quickstart_checklist.chk
+md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
+md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
+md5sum ./data/osmstat.txt                     >> ./data/quickstart_checklist.chk
+cat ./data/quickstart_checklist.chk
 
-ENDTIME=$(date +%s) 
+ENDTIME=$(date +%s)
 ENDDATE=$(date -Iminutes)
 MODDATE=$(stat -c  %y  ./data/${testdata} )
 
@@ -254,11 +266,12 @@ echo "====> : (disk space) We have created a lot of docker images: "
 echo "      : Hint: you can remove with:  docker rmi IMAGE "
 docker images | grep openmaptiles
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
-echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
-docker volume ls -q | grep openmaptiles 
+#
+# echo " "
+# echo "-------------------------------------------------------------------------------------"
+# echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
+# echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
+# docker volume ls -q | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -273,7 +286,7 @@ echo "--------------------------------------------------------------------------
 echo "The ./quickstart.sh $osm_area  is finished! "
 echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
-echo " " 
+echo " "
 echo "Start experimenting !  And check the QUICKSTART.MD file !"
 echo "  "
 echo "Hints for testing other areas"
@@ -283,17 +296,23 @@ echo "  "
 echo "Hints for designers:"
 echo "  ....                                 # start Maputnik "
 echo "  ....                                 # start Tileserver-gl-light"
-echo "  make start-mapbox-studio             # start Mapbox Studio  "
+echo "  make start-mapbox-studio             # start Mapbox Studio"
 echo "  "
 echo "Hints for developers:"
 echo "  make download-geofabrik area=albania # download OSM data from geofabrik area=albania"
 echo "  make psql                            # start PostgreSQL console "
+echo "  make psql-list-tables                # list all PostgreSQL tables "
 echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
 echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
-echo "  ....                                 # start lukasmartinelli/postgis-editor"
+echo "  make clean-docker                    # remove docker containers, PG data volume "
+echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment "
+echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
+echo "  make remove-docker-images            # remove openmaptiles docker images"
 echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
-echo "  cat quickstart.log                   # backup ./quickstart.log for Technical Support :) "
+echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
+echo "  ....                                 # start lukasmartinelli/postgis-editor"
+echo "  "
 echo "-------------------------------------------------------------------------------------"
 echo " Acknowledgments "
-echo " Thanks to all free, open source software developers and Open Data Contributors !    "  
+echo " Thanks to all free, open source software developers and Open Data Contributors !    "
 echo "-------------------------------------------------------------------------------------"

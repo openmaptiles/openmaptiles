@@ -57,8 +57,54 @@ clean:
 clean_build:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
 
+clean-docker:
+	docker-compose down -v --remove-orphans
+	docker-compose rm -fv
+	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
+
+list-docker-images:
+	docker images | grep openmaptiles
+
+refresh-docker-images:
+	docker pull openmaptiles/generate-vectortiles
+	docker pull openmaptiles/import-lakelines
+	docker pull openmaptiles/import-natural-earth
+	docker pull openmaptiles/import-osm
+	docker pull openmaptiles/import-sql
+	docker pull openmaptiles/import-water
+	docker pull openmaptiles/openmaptiles-tools
+	docker pull openmaptiles/postgis
+	docker pull osm2vectortiles/mapbox-studio
+
+remove-docker-images:
+	docker rmi openmaptiles/generate-vectortiles
+	docker rmi openmaptiles/import-lakelines
+	docker rmi openmaptiles/import-natural-earth
+	docker rmi openmaptiles/import-osm
+	docker rmi openmaptiles/import-sql
+	docker rmi openmaptiles/import-water
+	docker rmi openmaptiles/openmaptiles-tools
+	docker rmi openmaptiles/postgis
+	docker rmi osm2vectortiles/mapbox-studio
+
 psql:
 	docker-compose run --rm import-osm /usr/src/app/psql.sh
+
+psql-list-tables:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "\d+"
+
+psql-pg-stat-reset:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
+
+forced-clean-sql:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE SCHEMA IF NOT EXISTS public"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION hstore"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION postgis"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION pg_stat_statements"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO postgres;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "COMMENT ON SCHEMA public IS 'standard public schema';"
 
 import-sql-dev:
 	docker-compose run --rm import-sql /bin/bash
@@ -91,5 +137,4 @@ etlgraph:
 	generate-etlgraph layers/place/place.yaml
 	generate-etlgraph layers/railway/railway.yaml
 	generate-etlgraph layers/water_name/water_name.yaml
-	
-		
+
