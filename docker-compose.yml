@@ -1,9 +1,11 @@
 version: "2"
+volumes:
+- pgdata:
 services:
   postgres:
     image: "openmaptiles/postgis:2.2"
     volumes:
-     - ./pgdata:/var/lib/postgresql/data
+    - pgdata:/var/lib/postgresql/data
     ports:
      - "5432"
     env_file: .env
