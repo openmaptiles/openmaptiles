@@ -48,6 +48,9 @@ tables:
     - name: landuse
       key: landuse
       type: string
+    - name: leisure
+      key: leisure
+      type: string
     - name: natural
       key: natural
       type: string
@@ -68,9 +71,15 @@ tables:
       - grassland
       - meadow
       - forest
+      - village_green
+      - recreation_ground
+      # There are 600 parks tagged with landuse=park instead of leisure=park
+      - park
       natural:
       - wetland
       - grassland
+      leisure:
+      - park
       wetland:
       - bog
       - swamp

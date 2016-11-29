@@ -58,12 +58,7 @@ tables:
     - name: area
       type: pseudoarea
     mapping:
-      landuse:
-      - park
-      - village_green
-      - recreation_ground
       leisure:
       - nature_reserve
-      - park
       boundary:
       - national_park

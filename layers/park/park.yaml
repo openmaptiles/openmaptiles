@@ -13,9 +13,8 @@ layer:
         Use this to do more precise styling.
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_park(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM layer_park(!bbox!, z(!scale_denominator!))) AS t
 schema:
-  - ./class.sql
   - ./layer.sql
 datasources:
   - type: imposm3
