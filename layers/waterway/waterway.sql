@@ -55,7 +55,7 @@ CREATE OR REPLACE VIEW waterway_z14 AS (
 
 CREATE OR REPLACE FUNCTION layer_waterway(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, class text, name text) AS $$
-    SELECT geometry, class, name FROM (
+    SELECT geometry, class, NULLIF(name, '') AS name FROM (
         -- etldoc: waterway_z3 ->  layer_waterway:z3
         SELECT * FROM waterway_z3 WHERE zoom_level = 3
         UNION ALL
