@@ -165,7 +165,7 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
-docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make clean_build
+docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
