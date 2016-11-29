@@ -34,4 +34,9 @@ tables:
       - __any__
       building:
       - __any__
+    filters:
+      exclude_tags:
+      - [ "building", "no" ]
+      - [ "building", "none" ]
+      - [ "building", "No" ]
     type: polygon
