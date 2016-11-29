@@ -17,6 +17,9 @@ tables:
       type: validated_geometry
     - name: area
       type: pseudoarea
+    - name: building
+      key: building
+      type: string
     - name: height
       key: height
       type: integer
