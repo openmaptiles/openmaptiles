@@ -1,6 +1,6 @@
 version: "2"
 volumes:
-- pgdata:
+  pgdata:
 services:
   postgres:
     image: "openmaptiles/postgis:2.2"
