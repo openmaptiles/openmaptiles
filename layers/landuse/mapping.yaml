@@ -1,10 +1,14 @@
 generalized_tables:
+  # etldoc: imposm3 -> osm_landuse_polygon_gen3
+  landuse_polygon_gen2:
+    source: landuse_polygon_gen2
+    sql_filter: area>960000
+    tolerance: 160.0
   # etldoc: imposm3 -> osm_landuse_polygon_gen2
   landuse_polygon_gen2:
     source: landuse_polygon_gen1
     sql_filter: area>240000
-    tolerance: 50.0
-
+    tolerance: 40.0
   # etldoc: imposm3 -> osm_landuse_polygon_gen1
   landuse_polygon_gen1:
     source: landuse_polygon

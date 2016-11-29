@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION landuse_class(landuse TEXT, amenity TEXT, leisure TEX
          WHEN amenity IN ('school', 'university', 'kindergarten', 'college', 'library') THEN 'school'
          WHEN landuse IN('hospital', 'railway', 'cemetery', 'military', 'residential') THEN landuse
          ELSE NULL
-	 END;
+     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: ne_50m_urban_areas -> landuse_z4
@@ -26,15 +26,28 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
     FROM ne_10m_urban_areas
 );
 
+-- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
+CREATE OR REPLACE VIEW landuse_z10 AS (
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank FROM osm_landuse_polygon_gen3
+);
+
+-- etldoc: osm_landuse_polygon_gen2 -> landuse_z11
+CREATE OR REPLACE VIEW landuse_z11 AS (
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon_gen2
+);
+
 -- etldoc: osm_landuse_polygon_gen1 -> landuse_z12
 CREATE OR REPLACE VIEW landuse_z12 AS (
-    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank FROM osm_landuse_polygon_gen1
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon_gen1
 );
 
 -- etldoc: osm_landuse_polygon -> landuse_z13
 CREATE OR REPLACE VIEW landuse_z13 AS (
-    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank FROM osm_landuse_polygon
-    WHERE ST_Area(geometry) > 60000
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon
+    WHERE ST_Area(geometry) > 20000
 );
 
 -- etldoc: osm_landuse_polygon -> landuse_z14
@@ -43,7 +56,7 @@ CREATE OR REPLACE VIEW landuse_z14 AS (
 );
 
 -- etldoc: layer_landuse[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_landuse |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z12> z12|<z13> z13|<z14_> z14_" ] ;
+-- etldoc:     label="layer_landuse |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11|<z12> z12|<z13> z13|<z14_> z14_" ] ;
 
 CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
@@ -63,9 +76,14 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
         -- etldoc: landuse_z6 -> layer_landuse:z7
         -- etldoc: landuse_z6 -> layer_landuse:z8
         -- etldoc: landuse_z6 -> layer_landuse:z9
-        -- etldoc: landuse_z6 -> layer_landuse:z10
         SELECT * FROM landuse_z6
-        WHERE zoom_level BETWEEN 6 AND 10 AND scalerank-1 <= zoom_level
+        WHERE zoom_level BETWEEN 6 AND 9 AND scalerank-1 <= zoom_level
+        UNION ALL
+        -- etldoc: landuse_z10 -> layer_landuse:z10
+        SELECT * FROM landuse_z10 WHERE zoom_level = 10
+        UNION ALL
+        -- etldoc: landuse_z11 -> layer_landuse:z11
+        SELECT * FROM landuse_z11 WHERE zoom_level = 11
         UNION ALL
         -- etldoc: landuse_z12 -> layer_landuse:z12
         SELECT * FROM landuse_z12 WHERE zoom_level = 12
