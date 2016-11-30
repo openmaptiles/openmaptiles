@@ -1,5 +1,11 @@
 generalized_tables:
-  # etldoc: imposm3 -> osm_park_polygon_gen6
+  # etldoc: imposm3 -> osm_park_polygon_gen8
+  park_polygon_gen8:
+    source: park_polygon_gen6
+    sql_filter: area>240000000
+    tolerance: 600.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen7
   park_polygon_gen7:
     source: park_polygon_gen6
     sql_filter: area>60000000

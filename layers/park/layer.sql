@@ -1,11 +1,16 @@
 -- etldoc: layer_park[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_park |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14_" ] ;
+-- etldoc:     label="layer_park |<z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14" ] ;
 
 CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
     SELECT osm_id, geometry,
         COALESCE(NULLIF(leisure, ''), NULLIF(boundary, '')) AS class
         FROM (
+        -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
+        SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
+        FROM osm_park_polygon_gen6
+        WHERE zoom_level = 6
+        UNION ALL
         -- etldoc: osm_park_polygon_gen7 -> layer_park:z7
         SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
         FROM osm_park_polygon_gen7
