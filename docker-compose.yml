@@ -5,12 +5,12 @@ services:
   postgres:
     image: "openmaptiles/postgis:2.2"
     volumes:
-     - pgdata:/var/lib/postgresql/data
+    - pgdata:/var/lib/postgresql/data
     ports:
      - "5432"
     env_file: .env
   import-natural-earth:
-    image: "openmaptiles/import-natural-earth"
+    image: "openmaptiles/import-natural-earth:1.0"
     env_file: .env
     links:
     - postgres
@@ -20,7 +20,7 @@ services:
     links:
     - postgres
   import-lakelines:
-    image: "openmaptiles/import-lakelines"
+    image: "openmaptiles/import-lakelines:0.9"
     env_file: .env
     links:
     - postgres

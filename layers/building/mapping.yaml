@@ -17,13 +17,29 @@ tables:
       type: validated_geometry
     - name: area
       type: pseudoarea
+    - name: building
+      key: building
+      type: string
     - name: height
       key: height
       type: integer
+    - name: min_height
+      key: min_height
+      type: integer
     - name: levels
-      key: levels
+      key: building:levels
+      type: integer
+    - name: min_level
+      key: building:min_level
       type: integer
     mapping:
+      building:part:
+      - __any__
       building:
       - __any__
+    filters:
+      exclude_tags:
+      - [ "building", "no" ]
+      - [ "building", "none" ]
+      - [ "building", "No" ]
     type: polygon
