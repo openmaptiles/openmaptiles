@@ -1,11 +1,18 @@
 ## OpenMapTiles
 
-OpenMapTiles is a collection of vector tile layers you can mix and match to create your own vector tile sets
-It is used by [OSM2VectorTiles](http://osm2vectortiles.org/) and we encourage you to collaborate, reuse and adapt existing layers
-and add your own layers.
+OpenMapTiles is an extensible vector tile schema you can use or mix and match to create your own vector tile sets.
+It is used by [OSM2VectorTiles](http://osm2vectortiles.org/) and we encourage you to collaborate, reuse and adapt existing layers and add your own layers.
 
-You define a self contained **Layer** together with SQL files and layer and data source definitions (like a imposm3 mapping file)
-that you can then reference in a **Tileset** where you mix and match with other layers.
+You define a self contained **Layer** together with SQL files and layer and data source definitions (like an imposm3 mapping file) that you can then reference in a **Tileset** where you mix and match with other layers.
+
+## Styles
+
+You can start from several styles supporting the OpenMapTiles vector schema.
+
+- [OSM Bright](https://github.com/openmaptiles/osm-bright-gl-style)
+- [Positron](https://github.com/openmaptiles/positron-gl-style)
+- [Dark Matter](https://github.com/openmaptiles/dark-matter-gl-style)
+- [Klokantech Basic](https://github.com/openmaptiles/klokantech-basic-gl-style)
 
 ## Layers
 
@@ -19,14 +26,14 @@ Layers can be chosen to create a **Tileset** like the `openmaptiles.yaml` tilese
 
 - [boundary](https://github.com/openmaptiles/openmaptiles/wiki/boundary)
 - [building](https://github.com/openmaptiles/openmaptiles/wiki/building)
-- [highway](https://github.com/openmaptiles/openmaptiles/wiki/highway)
-- [highway_name](https://github.com/openmaptiles/openmaptiles/wiki/highway_name)
+- [transportation](https://github.com/openmaptiles/openmaptiles/wiki/transportation)
+- [transportation_name](https://github.com/openmaptiles/openmaptiles/wiki/transportation_name)
 - [housenumber](https://github.com/openmaptiles/openmaptiles/wiki/housenumber)
 - [landcover](https://github.com/openmaptiles/openmaptiles/wiki/landcover)
 - [landuse](https://github.com/openmaptiles/openmaptiles/wiki/landuse)
 - [place](https://github.com/openmaptiles/openmaptiles/wiki/place)
 - [poi](https://github.com/openmaptiles/openmaptiles/wiki/poi)
-- [railway](https://github.com/openmaptiles/openmaptiles/wiki/railway)
+- [park](https://github.com/openmaptiles/openmaptiles/wiki/park)
 - [water](https://github.com/openmaptiles/openmaptiles/wiki/water)
 - [water_name](https://github.com/openmaptiles/openmaptiles/wiki/water_name)
 - [waterway](https://github.com/openmaptiles/openmaptiles/wiki/waterway)
