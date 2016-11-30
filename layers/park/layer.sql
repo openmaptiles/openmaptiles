@@ -8,7 +8,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
         FROM (
         -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
         SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
-        FROM osm_park_polygon_gen6
+        FROM osm_park_polygon_gen8
         WHERE zoom_level = 6
         UNION ALL
         -- etldoc: osm_park_polygon_gen7 -> layer_park:z7

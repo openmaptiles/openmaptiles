@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
     FROM ne_10m_urban_areas
 );
 
--- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
+-- etldoc: osm_landuse_polygon_gen4 -> landuse_z10
 CREATE OR REPLACE VIEW landuse_z9 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen4
@@ -55,7 +55,7 @@ CREATE OR REPLACE VIEW landuse_z14 AS (
 );
 
 -- etldoc: layer_landuse[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_landuse |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11|<z12> z12|<z13> z13|<z14_> z14_" ] ;
+-- etldoc:     label="layer_landuse |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11|<z12> z12|<z13> z13|<z14> z14" ] ;
 
 CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$

@@ -42,32 +42,32 @@ CREATE OR REPLACE VIEW landcover_z5 AS (
 );
 
 CREATE OR REPLACE VIEW landcover_z8 AS (
-    -- etldoc: osm_landcover_polygon_gen5 ->  landcover_z8  
+    -- etldoc: osm_landcover_polygon_gen6 ->  landcover_z8  
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen6
 );
 
 CREATE OR REPLACE VIEW landcover_z9 AS (
-    -- etldoc: osm_landcover_polygon_gen4 ->  landcover_z9    
+    -- etldoc: osm_landcover_polygon_gen5 ->  landcover_z9    
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen5
 );
 
 CREATE OR REPLACE VIEW landcover_z10 AS (
-    -- etldoc: osm_landcover_polygon_gen3 ->  landcover_z10    
+    -- etldoc: osm_landcover_polygon_gen4 ->  landcover_z10    
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen4
 );
 
 CREATE OR REPLACE VIEW landcover_z11 AS (
-    -- etldoc: osm_landcover_polygon_gen2 ->  landcover_z11    
+    -- etldoc: osm_landcover_polygon_gen3 ->  landcover_z11    
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen3
 );
 
 CREATE OR REPLACE VIEW landcover_z12 AS (
-    -- etldoc: osm_landcover_polygon_gen1 ->  landcover_z12    
+    -- etldoc: osm_landcover_polygon_gen2 ->  landcover_z12    
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen2
 );
 
 CREATE OR REPLACE VIEW landcover_z13 AS (
-    -- etldoc: osm_landcover_polygon ->  landcover_z13
+    -- etldoc: osm_landcover_polygon_gen1 ->  landcover_z13
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen1
 );
 
