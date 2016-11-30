@@ -4,9 +4,9 @@ data.xml
 *.swp
 *.pbf
 
-# quickstart log chk
+# quickstart
 quickstart.log
-quickstart_checklist.chk
+
 
 # imput / output data
 data/*
