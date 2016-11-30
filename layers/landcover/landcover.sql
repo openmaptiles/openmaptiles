@@ -83,7 +83,10 @@ CREATE OR REPLACE FUNCTION layer_landcover(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
     SELECT osm_id, geometry,
         landcover_class(landuse, "natural", leisure, wetland) AS class,
-        COALESCE(NULLIF("natural", ''), NULLIF(landuse, ''), NULLIF('wetland', '')) AS subclass
+        COALESCE(
+            NULLIF("natural", ''), NULLIF(landuse, ''),
+            NULLIF(leisure, ''), NULLIF(wetland, '')
+        ) AS subclass
         FROM (
         -- etldoc:  landcover_z0 -> layer_landcover:z0
         SELECT * FROM landcover_z0
