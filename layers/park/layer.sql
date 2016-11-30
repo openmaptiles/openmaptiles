@@ -6,6 +6,11 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
     SELECT osm_id, geometry,
         COALESCE(NULLIF(leisure, ''), NULLIF(boundary, '')) AS class
         FROM (
+        -- etldoc: osm_park_polygon_gen7 -> layer_park:z7
+        SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
+        FROM osm_park_polygon_gen7
+        WHERE zoom_level = 7
+        UNION ALL
         -- etldoc: osm_park_polygon_gen6 -> layer_park:z8
         SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
         FROM osm_park_polygon_gen6
