@@ -32,3 +32,12 @@ CREATE OR REPLACE FUNCTION railway_class(railway TEXT) RETURNS TEXT AS $$
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
+
+-- Limit service to only the most important values to ensure
+-- we always know the values of service
+CREATE OR REPLACE FUNCTION service_value(service TEXT) RETURNS TEXT AS $$
+    SELECT CASE
+        WHEN service IN ('spur', 'yard', 'siding', 'crossover', 'driveway', 'alley', 'parking_aisle') THEN service
+        ELSE NULL
+    END;
+$$ LANGUAGE SQL IMMUTABLE STRICT;
