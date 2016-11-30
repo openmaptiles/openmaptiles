@@ -18,6 +18,12 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
 );
 
 -- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
+CREATE OR REPLACE VIEW landuse_z9 AS (
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon_gen4
+);
+
+-- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
 CREATE OR REPLACE VIEW landuse_z10 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen3
@@ -71,9 +77,11 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
         -- etldoc: landuse_z6 -> layer_landuse:z6
         -- etldoc: landuse_z6 -> layer_landuse:z7
         -- etldoc: landuse_z6 -> layer_landuse:z8
-        -- etldoc: landuse_z6 -> layer_landuse:z9
         SELECT * FROM landuse_z6
-        WHERE zoom_level BETWEEN 6 AND 9 AND scalerank-1 <= zoom_level
+        WHERE zoom_level BETWEEN 6 AND 8 AND scalerank-1 <= zoom_level
+        UNION ALL
+        -- etldoc: landuse_z9 -> layer_landuse:z9
+        SELECT * FROM landuse_z9 WHERE zoom_level = 9
         UNION ALL
         -- etldoc: landuse_z10 -> layer_landuse:z10
         SELECT * FROM landuse_z10 WHERE zoom_level = 10
