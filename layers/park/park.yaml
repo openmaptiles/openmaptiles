@@ -1,16 +1,11 @@
 layer:
   id: "park"
   description: |
-      Landuse is used to describe use of land by humans.At lower zoom levels this is
-      from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
+      The park layer contains parks from OpenStreetMap tagged with either [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park) or [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
   buffer_size: 4
   fields:
     class: |
-        More generalized groups of either `park`, `school`, `hospital`, `railway`,
-        `cemetery`, `military`, `residential`. Use this to assign general for landuse.
-    subclass: |
-        Original value of either the `amenity`, `landuse`, `leisure` or `boundary` tag.
-        Use this to do more precise styling.
+        Either `national_park` or `nature_reserve`.
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_park(!bbox!, z(!scale_denominator!))) AS t

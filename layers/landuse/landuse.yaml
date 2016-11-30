@@ -6,14 +6,19 @@ layer:
   buffer_size: 4
   fields:
     class: |
-        More generalized groups of either `park`, `school`, `hospital`, `railway`,
-        `cemetery`, `military`, `residential`. Use this to assign general for landuse.
-    subclass: |
-        Original value of either the `amenity`, `landuse`, `leisure` or `boundary` tag.
-        Use this to do more precise styling.
+        Original value of either the `amenity`, `landuse`, `leisure`
+        tag.  Use this to assign special colors to areas.
+        Either `school`, `university`, `kindergarten`, `college`,
+        `library`, `hospital` (from the
+        [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity) key)
+        or `railway`, `cemetery`, `military`, `residential`,
+        `commercial`, `industrial`, `retail` (from the
+        [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse) key)
+        as well as `stadium` (from the
+        [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure) key).
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landuse.sql
 datasources:
