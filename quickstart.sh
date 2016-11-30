@@ -47,28 +47,37 @@ echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmap
 echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
 echo "      : Git version: $githash  / Started: $STARTDATE "
 echo "      : Your bash version:  $BASH_VERSION"
-echo "      : Your system is:"
-lsb_release -a
+echo "      : Your OS:  $OSTYPE"
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "      : This is working on x86_64 ; Your kernel is:"
-uname -r
-uname -m
 
-KERNEL_CPU_VER=$(uname -m)
-if [ "$KERNEL_CPU_VER" != "x86_64" ]; then
-  echo "ERR: Sorry this is working only on x86_64!"
-  exit 1
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+
+    echo "      : Your system is:"
+    lsb_release -a
+    echo " "
+    echo "-------------------------------------------------------------------------------------"
+    echo "      : This is working on x86_64 ; Your kernel is:"
+    uname -r
+    uname -m
+
+    KERNEL_CPU_VER=$(uname -m)
+    if [ "$KERNEL_CPU_VER" != "x86_64" ]; then
+    echo "ERR: Sorry this is working only on x86_64!"
+    exit 1
+    fi
+    echo "      : --- Memory, CPU info ---- "
+    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
+    echo "system memory (GB): ${mem}  "
+    grep SwapTotal /proc/meminfo
+    echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
+    cat /proc/meminfo  | grep Free
+else
+    echo " "
+    echo "Warning : This is not a Linux ...  ( Less tested ... )  "   
+    echo " "
 fi
 
 
-echo "      : --- Memory, CPU info ---- "
-mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
-echo "system memory (GB): ${mem}  "
-grep SwapTotal /proc/meminfo
-echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
-cat /proc/meminfo  | grep Free
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
