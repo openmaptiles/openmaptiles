@@ -272,6 +272,11 @@ This is generating mbtiles for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
 ./quickstart.sh yukon
 ```
 
+### Check other commands
+
+`make help`
+
+
 ### Change MIN_ZOOM and MAX_ZOOM
 
 modify the settings in the `.env`  file
@@ -280,9 +285,10 @@ modify the settings in the `.env`  file
 
 and re-start  `./quickstart.sh `
 *  the new config file re-generating to here  ./data/docker-compose-config.yml
+*  Known problems:
+    * If you use same area - then the ./data/docker-compose-config.yml not re-generating, so you have to modify by hand! 
 
 Hints: 
 * Small increments! Never starts with the MAX_ZOOM = 14
 * The suggested  MAX_ZOOM = 14  - use only with small extracts
-
 

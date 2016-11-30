@@ -110,18 +110,17 @@ docker info | grep Space
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Pulling or Refreshing OpenMapTiles docker images "
-#for developers is not perfect ...
-#make refresh-docker-images
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Checking OpenMapTiles docker images "
-docker images | grep openmaptiles
+make refresh-docker-images
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers "
 make clean-docker
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Checking OpenMapTiles docker images "
+docker images | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -134,13 +133,6 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Removing pgdata  "
-# rm -rf ./pgdata/*
-
-
 
 if [ !  -f ./data/${testdata} ]; then
     echo " "
@@ -170,7 +162,6 @@ if [ !  -f ./data/${testdata} ]; then
     exit 404
 fi
 
-
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
@@ -190,7 +181,11 @@ echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
 docker-compose up   -d postgres
 
-# Drop all PostgreSQL tables ...
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Drop and Recreate PostgreSQL  public schema "
+# Drop all PostgreSQL tables
+# This is add an extra safe belt , if the user modify the docker volume seetings   
 make forced-clean-sql
 
 echo " "
@@ -281,12 +276,12 @@ echo "====> : (disk space) We have created a lot of docker images: "
 echo "      : Hint: you can remove with:  docker rmi IMAGE "
 docker images | grep openmaptiles
 
-#
-# echo " "
-# echo "-------------------------------------------------------------------------------------"
-# echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
-# echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
-# docker volume ls -q | grep openmaptiles
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
+echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
+docker volume ls -q | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -303,33 +298,9 @@ echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
 echo "Start experimenting !  And check the QUICKSTART.MD file !"
-echo "  "
-echo "Hints for testing other areas"
-echo "  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> "
-echo "  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>> "
-echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
-echo "  "
-echo "Hints for designers:"
-echo "  ....                                 # start Maputnik "
-echo "  ....                                 # start Tileserver-gl-light"
-echo "  make start-mapbox-studio             # start Mapbox Studio"
-echo "  "
-echo "Hints for developers:"
-echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
-echo "  make psql                            # start PostgreSQL console "
-echo "  make psql-list-tables                # list all PostgreSQL tables "
-echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
-echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
-echo "  make clean-docker                    # remove docker containers, PG data volume "
-echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment "
-echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
-echo "  make remove-docker-images            # remove openmaptiles docker images"
-echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
-echo "  make pgclimb-list-tables             # list PostgreSQL public schema tabless"
-echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
-echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
-echo "  ....                                 # start lukasmartinelli/postgis-editor"
-echo "  "
+echo "Avaialable help commands ( make help )  "
+make help
+
 echo "-------------------------------------------------------------------------------------"
 echo " Acknowledgments "
 echo " Thanks to all free, open source software developers and Open Data Contributors !    "
