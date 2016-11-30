@@ -28,7 +28,8 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
 
 -- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
 CREATE OR REPLACE VIEW landuse_z10 AS (
-    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank FROM osm_landuse_polygon_gen3
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon_gen3
 );
 
 -- etldoc: osm_landuse_polygon_gen2 -> landuse_z11
@@ -52,7 +53,8 @@ CREATE OR REPLACE VIEW landuse_z13 AS (
 
 -- etldoc: osm_landuse_polygon -> landuse_z14
 CREATE OR REPLACE VIEW landuse_z14 AS (
-    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank FROM osm_landuse_polygon
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon
 );
 
 -- etldoc: layer_landuse[shape=record fillcolor=lightpink, style="rounded,filled",

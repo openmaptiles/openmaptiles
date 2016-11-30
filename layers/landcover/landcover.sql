@@ -98,31 +98,31 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
         WHERE zoom_level BETWEEN 5 AND 7 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z8 -> layer_landcover:z8
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z8 WHERE zoom_level = 8 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z9 -> layer_landcover:z9        
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z9 WHERE zoom_level = 9 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z10 -> layer_landcover:z10
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z10 WHERE zoom_level = 10 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z11 -> layer_landcover:z11        
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z11 WHERE zoom_level = 11 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z12 -> layer_landcover:z12        
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z12 WHERE zoom_level = 12 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z13 -> layer_landcover:z13        
-        SELECT osm_id, ST_Simplify(geometry, 10) AS geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z13 WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z14 -> layer_landcover:z14_        
-        SELECT osm_id, geometry, landuse, "natural", wetland
+        SELECT *
         FROM landcover_z14 WHERE zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels;
 $$ LANGUAGE SQL IMMUTABLE;
