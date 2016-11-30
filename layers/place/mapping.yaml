@@ -47,7 +47,7 @@ tables:
       place:
       - country
 
-  # etldoc: imposm3 -> osm_state_point 
+  # etldoc: imposm3 -> osm_state_point
   state_point:
     type: point
     fields:
@@ -74,7 +74,7 @@ tables:
       place:
       - state
 
-  # etldoc: imposm3 -> osm_city_point      
+  # etldoc: imposm3 -> osm_city_point
   city_point:
     type: point
     fields:
