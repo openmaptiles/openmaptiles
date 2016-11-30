@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS (
 			highway,
 			min(z_order) AS z_order,
 			array_agg(DISTINCT osm_id) AS member_osm_ids
-	    FROM osm_transportation_linestring
+	    FROM osm_highway_linestring
         -- We only care about highways (not railways) for labeling
 	    WHERE (name <> '' OR ref <> '') AND NULLIF(highway, '') IS NOT NULL
 	    GROUP BY name, highway, ref
