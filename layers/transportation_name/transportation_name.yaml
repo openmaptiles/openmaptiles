@@ -11,12 +11,60 @@ layer:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Highways#Names_and_references) value of the highway.
     ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or road.
     ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
-    class: |
-        Either `motorway`, `major_road` (containing `trunk`, `primary`, `secondary` and `tertiary` roads) and `minor_road` (less important roads in the hierarchy like `residential` or `service`) or `path` for
-        non vehicle paths (such as `cycleway` or `footpath`).
-    subclass: |
-        Original value of the [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) tag. Use this to do more
-        precise styling.
+    network: The OSM [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+    class:
+      description: |
+          Distinguish between more and less important roads.
+      values:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - minor
+      - track
+      - service
+      - path
+    subclass:
+      description: |
+          Use **subclass** to do more precise styling.
+          Original value of the
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) or
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway) tag.
+      values:
+      - motorway
+      - motorway_link
+      - trunk
+      - trunk_link
+      - primary
+      - primary_link
+      - secondary
+      - secondary_link
+      - tertiary
+      - tertiary_link
+      - unclassified
+      - residential
+      - road
+      - living_street
+      - raceway
+      - construction
+      - track
+      - service
+      - path
+      - cycleway
+      - bridleway
+      - footway
+      - corridor
+      - crossing
+      - pedestrian
+      - rail
+      - narrow_gauge
+      - preserved
+      - funicular
+      - subway
+      - light_rail
+      - monorail
+      - tram
   datasource:
     geometry_field: geometry
     srid: 900913
