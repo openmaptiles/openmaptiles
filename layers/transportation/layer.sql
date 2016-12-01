@@ -20,16 +20,18 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, ramp 
         brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
         NULLIF(service, '') AS service
     FROM (
-        -- etldoc: ne_10m_global_roads ->  layer_transportation:z4z6
+        -- etldoc: ne_10m_roads -> layer_transportation:z4z6
         SELECT
-            NULL::bigint AS osm_id, geometry,
-            highway, NULL AS railway, NULL AS service,
+            NULL::bigint AS osm_id, geom AS geometry,
+            ne_highway(type) AS highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             0 AS z_order
-        FROM ne_10m_global_roads
-        WHERE zoom_level BETWEEN 4 AND 6 AND scalerank <= 1 + zoom_level
+        FROM ne_10m_roads
+        WHERE featurecla = 'Road'
+            AND type IN ('Major Highway', 'Secondary Highway', 'Road')
+            AND zoom_level BETWEEN 4 AND 6 AND scalerank <= 1 + zoom_level
         UNION ALL
 
         -- etldoc: osm_highway_linestring_gen4  ->  layer_transportation:z7z8
