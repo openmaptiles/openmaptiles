@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS ne_10m_global_roads AS (
       AND type IN ('Major Highway', 'Secondary Highway', 'Road')
     UNION ALL
 
-    -- etldoc: ne_10m_roads_north_america ->  ne_10m_global_roads  
+    -- etldoc: ne_10m_roads_north_america ->  ne_10m_global_roads
     SELECT geom AS geometry, scalerank, ne_highway(type) AS highway
     FROM ne_10m_roads_north_america
-    WHERE type IN ('Major Highway', 'Secondary Highway', 'Road')
+    WHERE class IN ('State', 'Federal', 'Interstate')
 );
 
 CREATE INDEX IF NOT EXISTS ne_10m_global_roads_geometry_idx ON ne_10m_global_roads USING gist(geometry);
