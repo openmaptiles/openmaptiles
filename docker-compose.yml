@@ -15,7 +15,7 @@ services:
     links:
     - postgres
   import-water:
-    image: "openmaptiles/import-water"
+    image: "openmaptiles/import-water:0.2"
     env_file: .env
     links:
     - postgres
