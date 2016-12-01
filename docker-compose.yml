@@ -1,7 +1,7 @@
 version: "2"
 services:
   postgres:
-    image: "openmaptiles/postgis:2.2"
+    image: "openmaptiles/postgis:2.3"
     volumes:
      - ./pgdata:/var/lib/postgresql/data
     ports:
