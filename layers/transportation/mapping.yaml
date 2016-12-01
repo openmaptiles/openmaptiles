@@ -1,0 +1,220 @@
+
+generalized_tables:
+
+# etldoc: imposm3 -> osm_highway_linestring_gen4
+  highway_linestring_gen4:
+    source: highway_linestring_gen3
+    sql_filter: highway IN ('motorway','trunk') AND NOT is_area
+    tolerance: 200.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen3
+  highway_linestring_gen3:
+    source: highway_linestring_gen2
+    sql_filter: highway IN ('motorway','trunk', 'primary') AND NOT is_area
+    tolerance: 120.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen2
+  highway_linestring_gen2:
+    source: highway_linestring_gen1
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
+    tolerance: 50.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen1
+  highway_linestring_gen1:
+    source: highway_linestring
+    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
+    tolerance: 20.0
+
+name_field: &name
+  name: name
+  key: name
+  type: string
+name_en_field: &name_en
+  name: name_en
+  key: name:en
+  type: string
+short_name_field: &short_name
+  key: short_name
+  name: short_name
+  type: string
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+ramp_field: &ramp
+  key: ramp
+  name: is_ramp
+  type: bool
+ford_field: &ford
+  key: ford
+  name: is_ford
+  type: bool
+oneway_field: &oneway
+  key: oneway
+  name: is_oneway
+  type: bool
+area_field: &area
+  name: is_area
+  key: area
+  type: bool
+service_field: &service
+  key: service
+  name: service
+  type: string
+usage_field: &usage
+  key: usage
+  name: usage
+  type: string
+ref_field: &ref
+  key: ref
+  name: ref
+  type: string
+network_field: &network
+  key: network
+  name: network
+  type: string
+layer_field: &layer
+  key: layer
+  name: layer
+  type: integer
+z_order_field: &z_order
+  name: z_order
+  type: wayzorder
+
+tables:
+# etldoc: imposm3 -> osm_highway_linestring
+  highway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - *ref
+    - *network
+    - *z_order
+    - *layer
+    - *name
+    - *name_en
+    - *short_name
+    - *tunnel
+    - *bridge
+    - *ramp
+    - *ford
+    - *oneway
+    - *area
+    - *service
+    - *usage
+    mapping:
+      highway:
+      - motorway
+      - motorway_link
+      - trunk
+      - trunk_link
+      - primary
+      - primary_link
+      - secondary
+      - secondary_link
+      - tertiary
+      - tertiary_link
+      - unclassified
+      - residential
+      - road
+      - living_street
+      - raceway
+      - construction
+      - track
+      - service
+      - path
+      - cycleway
+      - bridleway
+      - footway
+      - corridor
+      - crossing
+      - pedestrian
+
+# etldoc: imposm3 -> osm_railway_linestring
+  railway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: railway
+      name: railway
+      type: string
+    - *ref
+    - *network
+    - *z_order
+    - *layer
+    - *name
+    - *name_en
+    - *short_name
+    - *tunnel
+    - *bridge
+    - *ramp
+    - *ford
+    - *oneway
+    - *area
+    - *service
+    - *usage
+    mapping:
+      railway:
+      - rail
+      - narrow_gauge
+      - preserved
+      - funicular
+      - subway
+      - light_rail
+      - monorail
+      - tram
+
+# etldoc: imposm3 -> osm_highway_polygon
+  highway_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - name: layer
+      key: layer
+      type: integer
+    - name: is_area
+      key: area
+      type: bool
+    mapping:
+      highway:
+      - pedestrian
+
+# TODO: Future table for joining networks
+# etldoc: imposm3 -> osm_route_member
+  route_member:
+    type: relation_member
+    columns:
+    - name: osm_id
+      type: id
+    - name: member
+      type: member_id
+    - name: role
+      type: member_role
+    - name: type
+      type: member_type
+    - *ref
+    - *network
+    mapping:
+      route:
+      - road

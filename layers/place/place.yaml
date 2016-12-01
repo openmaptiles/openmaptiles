@@ -7,34 +7,71 @@ layer:
       We suggest you use different font styles and sizes to create a text hierarchy.
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
-    name_en: The english `name:en` value if available.
+    name_en: The English `name:en` value or local `name` if not available.
+    capital:
+      description: |
+          The **capital** field marks the
+          [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
+          of the boundary the place is a capital of.
+      values: [2, 4]
     class: |
-        Distinguish between `country`, `state` and other city classes like
-        `city`, `town`, `village`, `hamlet`, `suburb`, `neighbourhood` or `isolated_dwelling`.
-        Use this to separately style the different places according to their importance (usually country and state different
-        than cities).
-    rank: |
-        Countries, states and the most important cities all have a `rank` to boost their importance on the map.
-        The `rank` field for counries and states ranges from `1` to `6` while the `rank` field for
-        cities ranges from `1` to `10` for the most important cities and continues from `10` serially based
-        on the local importance of the city (derived from population and city class).
-        Use the `rank` field to build a text hierarchy.
-        The rank value is a combination of the Natural Earth `scalerank`, `labelrank` and `datarank` values for countries
-        and states and for cities consists out of a shifted Natural Earth `scalerank` combined with a local rank
-        within a grid for cities that do not have a Natural Earth `scalerank`.
+      description: |
+          Distinguish between continents, countries, states and
+          places like settlements or smaller entities.
+          Use this to separately style the different places and build
+          a text hierarchy according to their importance.
+          than cities).
+      values:
+      - continent
+      - country
+      - state
+      - settlement
+      - subregion
+      - other
+    subclass:
+      description: |
+          Use **subclass** to do more precise styling.
+          Original value of the
+          [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
+      values:
+      - continent
+      - country
+      - state
+      - city
+      - town
+      - village
+      - hamlet
+      - suburb
+      - neighbourhood
+      - isolated_dwelling
+    rank:
+      description: |
+          Countries, states and the most important cities all have a
+          **rank** to boost their importance on the map.
+          The **rank** field for counries and states ranges from
+          `1` to `6` while the **rank** field for cities ranges from
+          `1` to `10` for the most important cities
+          and continues from `10` serially based on the
+          local importance of the city (derived from population and city class).
+          You can use the **rank** to limit density of labels or improve
+          the text hierarchy.
+          The rank value is a combination of the Natural Earth
+          `scalerank`, `labelrank` and `datarank` values for countries
+          and states and for cities consists out of a shifted
+          Natural Earth `scalerank` combined with a local rank
+          within a grid for cities that do not have a Natural Earth `scalerank`.
   buffer_size: 128
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class, rank FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, class, subclass, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
+  - ./class.sql
   - ./city.sql
-  - ./country.sql
-  - ./state.sql
   - ./merge_country_rank.sql
   - ./merge_city_rank.sql
   - ./merge_state_rank.sql
-  - ./place.sql
+  - ./layer.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml
