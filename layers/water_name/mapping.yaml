@@ -1,0 +1,25 @@
+tables:
+  # etldoc: imposm3 -> osm_marine_point
+  marine_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: place
+      key: place
+      type: string
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - ocean
+      - sea
