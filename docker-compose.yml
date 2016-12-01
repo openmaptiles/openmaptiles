@@ -10,17 +10,17 @@ services:
      - "5432"
     env_file: .env
   import-natural-earth:
-    image: "openmaptiles/import-natural-earth"
+    image: "openmaptiles/import-natural-earth:1.0"
     env_file: .env
     links:
     - postgres
   import-water:
-    image: "openmaptiles/import-water"
+    image: "openmaptiles/import-water:0.2"
     env_file: .env
     links:
     - postgres
   import-lakelines:
-    image: "openmaptiles/import-lakelines"
+    image: "openmaptiles/import-lakelines:0.9"
     env_file: .env
     links:
     - postgres

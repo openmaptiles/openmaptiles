@@ -1,38 +1,44 @@
+
 generalized_tables:
-  
+
+  # etldoc: imposm3 -> osm_landcover_polygon_gen6
+  landcover_polygon_gen6:
+    source: landcover_polygon_gen5
+    sql_filter: area>15000000
+    tolerance: 300.0
+
   # etldoc: imposm3 -> osm_landcover_polygon_gen5
   landcover_polygon_gen5:
     source: landcover_polygon_gen4
-    sql_filter: area>15000000
-    tolerance: 300.0
+    sql_filter: area>4200000
+    tolerance: 200.0
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen4
   landcover_polygon_gen4:
     source: landcover_polygon_gen3
-    sql_filter: area>4200000
-    tolerance: 200.0
-
-  # etldoc: imposm3 -> osm_landcover_polygon_gen3  
-  landcover_polygon_gen3:
-    source: landcover_polygon_gen2
     sql_filter: area>1200000
     tolerance: 120.0
 
-  # etldoc: imposm3 -> osm_landcover_polygon_gen2  
-  landcover_polygon_gen2:
-    source: landcover_polygon_gen1
+  # etldoc: imposm3 -> osm_landcover_polygon_gen3
+  landcover_polygon_gen3:
+    source: landcover_polygon_gen2
     sql_filter: area>480000
     tolerance: 80.0
 
-  # etldoc: imposm3 -> osm_landcover_polygon_gen1  
-  landcover_polygon_gen1:
-    source: landcover_polygon
+  # etldoc: imposm3 -> osm_landcover_polygon_gen2
+  landcover_polygon_gen2:
+    source: landcover_polygon_gen1
     sql_filter: area>240000
     tolerance: 50.0
 
+  # etldoc: imposm3 -> osm_landcover_polygon_gen1
+  landcover_polygon_gen1:
+    source: landcover_polygon
+    sql_filter: area>60000
+    tolerance: 20.0
+
 tables:
-  
-  # etldoc: imposm3 -> osm_landcover_polygon 
+  # etldoc: imposm3 -> osm_landcover_polygon
   landcover_polygon:
     fields:
     - name: osm_id
@@ -41,6 +47,9 @@ tables:
       type: validated_geometry
     - name: landuse
       key: landuse
+      type: string
+    - name: leisure
+      key: leisure
       type: string
     - name: natural
       key: natural
@@ -61,13 +70,16 @@ tables:
       - grass
       - grassland
       - meadow
-      - park
+      - forest
       - village_green
       - recreation_ground
-      - forest
+      # There are 600 parks tagged with landuse=park instead of leisure=park
+      - park
       natural:
       - wetland
       - grassland
+      leisure:
+      - park
       wetland:
       - bog
       - swamp

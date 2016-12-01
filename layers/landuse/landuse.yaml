@@ -5,15 +5,31 @@ layer:
       from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
   buffer_size: 4
   fields:
-    class: |
-        More generalized groups of either `park`, `school`, `hospital`, `railway`,
-        `cemetery`, `military`, `residential`. Use this to assign general for landuse.
-    subclass: |
-        Original value of either the `amenity`, `landuse`, `leisure` or `boundary` tag.
-        Use this to do more precise styling.
+    class:
+      description: |
+          Use the **class** to assign special colors to areas.
+          Original value of either the
+          [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
+          [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+          or [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure) tag.
+      values:
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
+      - railway
+      - cemetery
+      - military
+      - residential
+      - commercial
+      - industrial
+      - retail
+      - stadium
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landuse.sql
 datasources:
