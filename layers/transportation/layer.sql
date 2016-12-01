@@ -95,7 +95,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, ramp 
         UNION ALL
 
         -- etldoc: osm_railway_linestring       ->  layer_transportation:z13
-        -- etldoc: osm_railway_linestring       ->  layer_transportation:z14
+        -- etldoc: osm_railway_linestring       ->  layer_transportation:z14_
         SELECT
             osm_id, geometry, NULL AS highway, railway,
             service_value(service) AS service,
