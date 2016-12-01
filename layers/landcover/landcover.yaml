@@ -2,16 +2,52 @@ layer:
   id: "landcover"
   description: |
       Landcover is used to describe the physical material at the surface of the earth. At lower zoom levels this is
-      from Natural Earth data for glaciers and ice shelves and at higher zoom levels the landcover is implied
-      by OSM tags (like `landuse` or `natural`).
+      from Natural Earth data for glaciers and ice shelves and at higher zoom levels the [landcover is [implied by OSM tags](http://wiki.openstreetmap.org/wiki/Landcover). The most common use case for this layer
+        is to style wood (`class=wood`) and grass (`class=`grass`) areas.
   buffer_size: 4
   fields:
-    class: |
-        More generalized groups of either `farmland`, `ice`, `wood`, `grass` or `wetland`.
-        Use this to assign general colors to the landcover.
-    subclass: |
-        Original value of either the `landuse`, `natural` or `wetland` tag.
-        Use this to do more precise styling.
+    class:
+      description: |
+          Use the **class** to assign natural colors for **landcover**.
+      values:
+      - farmland
+      - ice
+      - wood
+      - grass
+      - wetland
+    subclass:
+      description: |
+          Use **subclass** to do more precise styling.
+          Original value of either the
+          [`natural`](http://wiki.openstreetmap.org/wiki/Key:natural),
+          [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+          ,[`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+          or [`wetland`](http://wiki.openstreetmap.org/wiki/Key:wetland) tag.
+      values:
+      - allotments
+      - farm
+      - farmland
+      - orchard
+      - plant_nursery
+      - vineyard
+      - grass
+      - grassland
+      - meadow
+      - forest
+      - village_green
+      - recreation_ground
+      - park
+      - wetland
+      - grassland
+      - bog
+      - swamp
+      - wet_meadow
+      - marsh
+      - reedbed
+      - saltern
+      - tidalflat
+      - saltmarsh
+      - mangrove
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
