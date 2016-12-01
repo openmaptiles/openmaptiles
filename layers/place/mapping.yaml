@@ -6,10 +6,43 @@ name_en_field: &name_en
   name: name_en
   key: name:en
   type: string
+name_fr_field: &name_fr
+  name: name_fr
+  key: name:fr
+  type: string
+name_de_field: &name_de
+  name: name_de
+  key: name:de
+  type: string
+name_es_field: &name_es
+  name: name_es
+  key: name:es
+  type: string
+name_pt_field: &name_pt
+  name: name_pt
+  key: name:pt
+  type: string
+name_ru_field: &name_ru
+  name: name_ru
+  key: name:ru
+  type: string
+name_zh_field: &name_zh
+  name: name_zh
+  key: name:zh
+  type: string
+name_ar_field: &name_ar
+  name: name_ar
+  key: name:ar
+  type: string
+name_ja_field: &name_ja
+  name: name_ja
+  key: name:ja
+  type: string
 rank_field: &rank
   name: rank
   key: rank
   type: integer
+
 tables:
 
   # etldoc: imposm3 -> osm_continent_point
@@ -39,6 +72,14 @@ tables:
       type: geometry
     - *name
     - *name_en
+    - *name_de
+    - *name_fr
+    - *name_es
+    - *name_pt
+    - *name_ru
+    - *name_zh
+    - *name_ar
+    - *name_ja
     - *rank
     filters:
       exclude_tags:
@@ -46,6 +87,32 @@ tables:
     mapping:
       place:
       - country
+
+  # etldoc: imposm3 -> osm_island_point
+  island_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - *name_fr
+    - *name_es
+    - *name_pt
+    - *name_ru
+    - *name_zh
+    - *name_ar
+    - *name_ja
+    - *rank
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - island
 
   # etldoc: imposm3 -> osm_state_point
   state_point:
@@ -57,6 +124,14 @@ tables:
       type: geometry
     - *name
     - *name_en
+    - *name_de
+    - *name_fr
+    - *name_es
+    - *name_pt
+    - *name_ru
+    - *name_zh
+    - *name_ar
+    - *name_ja
     - name: is_in_country
       key: is_in:country
       type: string
@@ -84,6 +159,14 @@ tables:
       type: geometry
     - *name
     - *name_en
+    - *name_de
+    - *name_fr
+    - *name_es
+    - *name_pt
+    - *name_ru
+    - *name_zh
+    - *name_ar
+    - *name_ja
     - name: place
       key: place
       type: string

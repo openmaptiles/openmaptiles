@@ -17,6 +17,9 @@ tables:
       type: validated_geometry
     - name: area
       type: pseudoarea
+    - name: building
+      key: building
+      type: string
     - name: height
       key: height
       type: integer
@@ -34,4 +37,9 @@ tables:
       - __any__
       building:
       - __any__
+    filters:
+      exclude_tags:
+      - [ "building", "no" ]
+      - [ "building", "none" ]
+      - [ "building", "No" ]
     type: polygon

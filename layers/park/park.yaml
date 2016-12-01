@@ -1,0 +1,20 @@
+layer:
+  id: "park"
+  description: |
+      The park layer contains parks from OpenStreetMap tagged with either [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park) or [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
+  buffer_size: 4
+  fields:
+    class:
+      description: |
+          Use the **class** to differentiate between different parks.
+      values:
+      - national_park
+      - nature_reserve
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, class FROM layer_park(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

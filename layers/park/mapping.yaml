@@ -1,0 +1,75 @@
+generalized_tables:
+  # etldoc: imposm3 -> osm_park_polygon_gen8
+  park_polygon_gen8:
+    source: park_polygon_gen6
+    sql_filter: area>240000000
+    tolerance: 600.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen7
+  park_polygon_gen7:
+    source: park_polygon_gen6
+    sql_filter: area>60000000
+    tolerance: 400.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen6
+  park_polygon_gen6:
+    source: park_polygon_gen5
+    sql_filter: area>15000000
+    tolerance: 300.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen5
+  park_polygon_gen5:
+    source: park_polygon_gen4
+    sql_filter: area>4200000
+    tolerance: 200.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen4
+  park_polygon_gen4:
+    source: park_polygon_gen3
+    sql_filter: area>1200000
+    tolerance: 120.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen3
+  park_polygon_gen3:
+    source: park_polygon_gen2
+    sql_filter: area>480000
+    tolerance: 80.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen2
+  park_polygon_gen2:
+    source: park_polygon_gen1
+    sql_filter: area>240000
+    tolerance: 50.0
+
+  # etldoc: imposm3 -> osm_park_polygon_gen1
+  park_polygon_gen1:
+    source: park_polygon
+    sql_filter: area>60000
+    tolerance: 20.0
+
+tables:
+
+  # etldoc: imposm3 -> osm_park_polygon
+  park_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: landuse
+      key: landuse
+      type: string
+    - name: leisure
+      key: leisure
+      type: string
+    - name: boundary
+      key: boundary
+      type: string
+    - name: area
+      type: pseudoarea
+    mapping:
+      leisure:
+      - nature_reserve
+      boundary:
+      - national_park
