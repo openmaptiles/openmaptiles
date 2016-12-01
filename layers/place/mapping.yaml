@@ -30,6 +30,24 @@ tables:
       place:
       - country
 
+  # etldoc: imposm3 -> osm_island_point
+  island_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *rank
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - island
+
   # etldoc: imposm3 -> osm_state_point 
   state_point:
     type: point
