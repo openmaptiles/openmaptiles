@@ -102,7 +102,6 @@ layer:
     query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
-  - ./ne_global_roads.sql
   - ./layer.sql
 datasources:
   - type: imposm3

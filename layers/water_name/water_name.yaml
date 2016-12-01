@@ -22,3 +22,5 @@ schema:
 datasources:
   - type: imposm3
     mapping_file: ../water/mapping.yaml
+  - type: imposm3
+    mapping_file: ./mapping.yaml
