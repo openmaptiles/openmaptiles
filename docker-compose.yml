@@ -3,7 +3,7 @@ volumes:
   pgdata:
 services:
   postgres:
-    image: "openmaptiles/postgis:2.2"
+    image: "openmaptiles/postgis:2.3"
     volumes:
     - pgdata:/var/lib/postgresql/data
     ports:
@@ -25,7 +25,11 @@ services:
     links:
     - postgres
   import-osm:
+<<<<<<< HEAD
     image: "openmaptiles/import-osm:add_tools"
+=======
+    image: "openmaptiles/import-osm:0.1"
+>>>>>>> master
     env_file: .env
     environment:
       DIFF_MODE: "false"
@@ -35,7 +39,7 @@ services:
      - ./data:/import
      - ./build:/mapping
   import-sql:
-    image: "openmaptiles/import-sql"
+    image: "openmaptiles/import-sql:0.1"
     env_file: .env
     links:
     - postgres
@@ -50,7 +54,7 @@ services:
     ports:
      - "3000:3000"
   generate-vectortiles:
-    image: "openmaptiles/generate-vectortiles"
+    image: "openmaptiles/generate-vectortiles:0.1"
     volumes:
     - ./data:/export
     - ./build/openmaptiles.tm2source:/tm2source

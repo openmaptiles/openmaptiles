@@ -88,6 +88,34 @@ tables:
       place:
       - country
 
+  # etldoc: imposm3 -> osm_island_polygon
+  island_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: area
+      type: pseudoarea
+    - *name
+    - *name_en
+    - *name_de
+    - *name_fr
+    - *name_es
+    - *name_pt
+    - *name_ru
+    - *name_zh
+    - *name_ar
+    - *name_ja
+    - *rank
+    filters:
+      exclude_tags:
+      - [ "name", "__nil__" ]
+    mapping:
+      place:
+      - island
+
   # etldoc: imposm3 -> osm_island_point
   island_point:
     type: point
