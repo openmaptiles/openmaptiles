@@ -9,7 +9,7 @@ RETURNS TABLE(geom geometry, osm_id bigint, render_height int, render_min_height
         SELECT
             osm_id, geometry,
             NULL::int AS render_height, NULL::int AS render_min_height
-        FROM osm_building_polygon_gen1
+        FROM osm_buildings_large
         WHERE zoom_level = 13 AND geometry && bbox AND area > 1400
         UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
