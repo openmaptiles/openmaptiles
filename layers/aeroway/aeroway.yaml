@@ -1,0 +1,26 @@
+layer:
+  id: "aeroway"
+  description: |
+      Aeroway polygons based of OpenStreetMap [aeroways](http://wiki.openstreetmap.org/wiki/Aeroways).
+      Airport buildings are contained in the **building** layer but all
+      other airport related polygons can be found in the **aeroway** layer.
+  buffer_size: 4
+  fields:
+    class:
+      description: |
+          The original value of the [`aeroway`](http://wiki.openstreetmap.org/wiki/Key:aeroway) tag.
+      values:
+      - aerodrome
+      - heliport
+      - runway
+      - helipad
+      - taxiway
+      - apron
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, class FROM layer_aeroway(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

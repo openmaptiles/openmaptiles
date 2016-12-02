@@ -1,0 +1,34 @@
+generalized_tables:
+  # etldoc: imposm3 -> osm_landcover_polygon_gen2
+  aeroway_polygon_gen2:
+    source: aeroway_polygon_gen1
+    sql_filter: area>240000
+    tolerance: 50.0
+
+  # etldoc: imposm3 -> osm_aeroway_polygon_gen1
+  aeroway_polygon_gen1:
+    source: aeroway_polygon
+    sql_filter: area>60000
+    tolerance: 20.0
+tables:
+  # etldoc: imposm3 -> osm_aeroway_polygon
+  aeroway_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      key: aeroway
+      type: string
+    - name: area
+      type: pseudoarea
+    mapping:
+      aeroway:
+      - aerodrome
+      - heliport
+      - runway
+      - helipad
+      - taxiway
+      - apron
