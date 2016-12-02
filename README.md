@@ -31,6 +31,7 @@ Layers can be chosen to create a **Tileset** like the `openmaptiles.yaml` tilese
 - [housenumber](https://github.com/openmaptiles/openmaptiles/wiki/housenumber)
 - [landcover](https://github.com/openmaptiles/openmaptiles/wiki/landcover)
 - [landuse](https://github.com/openmaptiles/openmaptiles/wiki/landuse)
+- [aeroway](https://github.com/openmaptiles/openmaptiles/wiki/aeroway)
 - [place](https://github.com/openmaptiles/openmaptiles/wiki/place)
 - [poi](https://github.com/openmaptiles/openmaptiles/wiki/poi)
 - [park](https://github.com/openmaptiles/openmaptiles/wiki/park)
