@@ -1,23 +1,23 @@
 layer:
   id: "transportation"
   description: |
-      **transportation** containsrRoads and railways.
-      This layer is directly derived from the OSM road hierarchy which is why it is called `highway`. Only
-      at zoom level 4 to 7 some major highways from Natural Earth are used otherwise it is only OSM data.
-      It contains all roads from motorways to primary, secondary and tertiary roads to residential roads and
-      foot paths. Styling the roads is the most essential part of the map. If you can put enough effort into it
-      makes sense to carefully style each `subclass`. For more comfortable styling you can also just style the roads
-      by `class`. Roads can have different properties, a road can have `oneway=yes` and `bridge=yes` at the same time.
-      These properties are reflected in the field `properties`.
-      This layer is not meant for labelling the roads (the purpose of the layer `highway_name`).
-
+      **transportation** contains roads and railways.
+      This layer is directly derived from the OSM road hierarchy.
+      Only at zoom level 4 to 6 some major highways from Natural Earth
+      are used.
+      It contains all roads from motorways to primary, secondary and
+      tertiary roads to residential roads and
+      foot paths. Styling the roads is the most essential part of the map.
       The `highway` layer also contains polygons for things like plazas.
   buffer_size: 4
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
     class:
       description: |
-          Distinguish between more and less important roads.
+          Distinguish between more and less important roads or railways.
+          Class is derived from the value of the
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) or
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway) tag.
       values:
       - motorway
       - trunk
@@ -25,49 +25,12 @@ layer:
       - secondary
       - tertiary
       - minor
-      - track
       - service
+      - track
       - path
-    subclass:
-      description: |
-          Use **subclass** to do more precise styling.
-          Original value of the
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) or
-          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway) tag.
-      values:
-      - motorway
-      - motorway_link
-      - trunk
-      - trunk_link
-      - primary
-      - primary_link
-      - secondary
-      - secondary_link
-      - tertiary
-      - tertiary_link
-      - unclassified
-      - residential
-      - road
-      - living_street
       - raceway
-      - construction
-      - track
-      - service
-      - path
-      - cycleway
-      - bridleway
-      - footway
-      - corridor
-      - crossing
-      - pedestrian
       - rail
-      - narrow_gauge
-      - preserved
-      - funicular
-      - subway
-      - light_rail
-      - monorail
-      - tram
+      - transit
     brunnel:
       description: |
           Mark whether way is a tunnel or bridge.
@@ -99,7 +62,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
   - ./layer.sql

@@ -16,23 +16,12 @@ layer:
       values: [2, 4]
     class: |
       description: |
-          Distinguish between continents, countries, states and
-          places like settlements or smaller entities.
-          Use this to separately style the different places and build
-          a text hierarchy according to their importance.
-          than cities).
-      values:
-      - continent
-      - country
-      - state
-      - settlement
-      - subregion
-      - other
-    subclass:
-      description: |
-          Use **subclass** to do more precise styling.
           Original value of the
           [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
+          Distinguish between continents, countries, states and
+          places like settlements or smaller entities.
+          Use **class** to separately style the different places and build
+          a text hierarchy according to their importance.
       values:
       - continent
       - country
@@ -63,10 +52,10 @@ layer:
   buffer_size: 128
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class, subclass, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
-  - ./class.sql
+  - ./capital.sql
   - ./city.sql
   - ./merge_country_rank.sql
   - ./merge_city_rank.sql
