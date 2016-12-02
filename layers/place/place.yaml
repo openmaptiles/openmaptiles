@@ -57,6 +57,8 @@ schema:
   - ./types.sql
   - ./capital.sql
   - ./city.sql
+  - ./island_polygon_update.sql
+  - ./island_rank.sql
   - ./merge_country_rank.sql
   - ./merge_city_rank.sql
   - ./merge_state_rank.sql
