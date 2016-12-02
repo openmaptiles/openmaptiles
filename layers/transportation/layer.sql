@@ -6,14 +6,13 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_transportation |<z4z6> z4-z6 |<z7z8> z7-z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
-RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text, ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
     SELECT
         osm_id, geometry,
         CASE
             WHEN highway IS NOT NULL THEN highway_class(highway)
             WHEN railway IS NOT NULL THEN railway_class(railway)
         END AS class,
-        COALESCE(NULLIF(highway,''), NULLIF(railway, '')) AS subclass,
         -- All links are considered as ramps as well
         CASE WHEN highway_is_link(highway) OR highway = 'steps'
              THEN 1 ELSE is_ramp::int END AS ramp,
