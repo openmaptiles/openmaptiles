@@ -129,7 +129,6 @@ tables:
       - road
       - living_street
       - raceway
-      - construction
       - track
       - service
       - path
@@ -137,8 +136,8 @@ tables:
       - bridleway
       - footway
       - corridor
-      - crossing
       - pedestrian
+      - steps
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
