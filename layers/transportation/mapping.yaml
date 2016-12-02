@@ -137,6 +137,7 @@ tables:
       - footway
       - corridor
       - pedestrian
+      - steps
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
