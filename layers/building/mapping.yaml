@@ -37,6 +37,10 @@ tables:
       - __any__
       building:
       - __any__
+      # these aeroway polygons all imply building=yes
+      aeroway:
+      - terminal
+      - hangar
     filters:
       exclude_tags:
       - [ "building", "no" ]
