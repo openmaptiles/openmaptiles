@@ -10,7 +10,13 @@ layer:
     admin_level: |
         OSM [admin_level](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
         indicating the level of importance of this boundary.
+        The `admin_level` corresponds to the lowest `admin_level`
+        the line participates in.
         At low zoom levels the Natural Earth boundaries are mapped to the equivalent admin levels.
+    disputed:
+      description: |
+          Mark with `1` if the boundary is disputed.
+      values: [0, 1]
   buffer_size: 4
   datasource:
     geometry_field: geometry
