@@ -15,20 +15,20 @@ SQL=$(generate-qadoc  layers/${layerid}/${layerid}.yaml $z )
 
 read -r -d '' SQLCODE <<- EOMSQL
   SELECT 
-    count($var)    as count_$var
-   ,min($var)      as min_$var      
-   ,max($var)      as max_$var 
-   ,avg($var)      as avg_$var 
-   ,stddev($var)   as stddev_$var 
-   ,variance($var) as variance_$var 
+    count($var)    as count
+   ,min($var)      as min      
+   ,max($var)      as max 
+   ,avg($var)      as avg 
+   ,stddev($var)   as stddev 
+   ,variance($var) as variance 
   FROM  
    $SQL 
   ;
 EOMSQL
 
-echo "\`\`\`SQL"
-echo "$SQLCODE"
-echo "\`\`\`"
+#echo "\`\`\`SQL"
+#echo "$SQLCODE"
+#echo "\`\`\`"
 
 docker-compose run --rm import-osm /usr/src/app/psql.sh -q -P pager=off -P border=2 -P footer=off -P null='(null)' -c "$SQLCODE" \
    | sed '1d;$d'  | sed '$d' | sed 's/+--/|--/g' | sed 's/--+/--|/g' 
