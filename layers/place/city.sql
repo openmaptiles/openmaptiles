@@ -1,6 +1,6 @@
 
 -- etldoc: layer_city[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_city | <z2_14> z2-z14" ] ;
+-- etldoc:     label="layer_city | <z2_14> z2-z14+" ] ;
 
 -- etldoc: osm_city_point -> layer_city:z2_14
 CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width numeric)
