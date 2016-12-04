@@ -55,7 +55,7 @@ list-docker-images:
 	docker images | grep openmaptiles
 
 refresh-docker-images:
-	echo docker-compose pull 
+	docker-compose pull --ignore-pull-failures
 
 remove-docker-images:
 	docker rmi -f $(docker images | grep "openmaptiles" | awk "{print \$3}")

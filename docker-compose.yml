@@ -47,7 +47,7 @@ services:
     links:
     - postgres
     volumes:
-     - $(pwd):/tileset
+     - .:/tileset
      - ./build:/sql     
   mapbox-studio:
     image: "osm2vectortiles/mapbox-studio"
