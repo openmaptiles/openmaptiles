@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -o errexit
 set -o pipefail
@@ -16,15 +15,16 @@ echo "## $layerid z$z  - freq"
 
 SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
-read -r -d '' SQLCODE <<- EOMSQL
-  select $classvars , count(*) as _count_ from
-  $SQL 
-  GROUP BY $classvars
-  ORDER BY $classvars
-  ;
-EOMSQL
+SQLCODE=$(cat <<-END
+select $classvars , count(*) as _count_ from
+$SQL 
+GROUP BY $classvars
+ORDER BY $classvars
+;
+END
+)
 
-#echo "\`\`\`SQL"
+#echo "\`\`\`sql"
 #echo "$SQLCODE"
 #echo "\`\`\`"
 

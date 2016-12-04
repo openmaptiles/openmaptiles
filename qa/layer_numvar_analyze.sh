@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -o errexit
 set -o pipefail
@@ -16,20 +15,22 @@ echo "## $layerid z$z - $var "
 
 SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
-read -r -d '' SQLCODE <<- EOMSQL
-  SELECT 
-    count($var)    as count
-   ,min($var)      as min      
-   ,max($var)      as max 
-   ,avg($var)      as avg 
-   ,stddev($var)   as stddev 
-   ,variance($var) as variance 
-  FROM  
-   $SQL 
-  ;
-EOMSQL
+SQLCODE=$(cat <<-END
+SELECT 
+   count($var)    as count
+  ,min($var)      as min      
+  ,max($var)      as max 
+  ,avg($var)      as avg 
+  ,stddev($var)   as stddev 
+  ,variance($var) as variance 
+FROM  
+  $SQL 
+;
+END
+)
 
-#echo "\`\`\`SQL"
+
+#echo "\`\`\`sql"
 #echo "$SQLCODE"
 #echo "\`\`\`"
 

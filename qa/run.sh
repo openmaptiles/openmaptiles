@@ -1,4 +1,3 @@
-
 #!/bin/bash
 set -o errexit
 set -o pipefail
@@ -9,9 +8,18 @@ set -o nounset
 
 # ---- freq ---------------------------------------------------------------
     
-mkdir -p ./build/qadoc
+mkdir -p ./build/qareports
 rm -f    ./build/qareports/*.md
 
+./qa/layer_numvar_analyze.sh transportation_name  "ref_length"
+./qa/layer_toplength.sh place               "name"
+./qa/layer_freq.sh poi                 "class    " 
+
+echo "OKÉ"
+exit
+
+
+# -----
 ./qa/layer_freq.sh aeroway             "class"                    > ./build/qareports/freq_aeroway__class.md
 
 ./qa/layer_freq.sh boundary            "admin_level,disputed"     > ./build/qareports/freq_boundary__admin_level_disputed.md
