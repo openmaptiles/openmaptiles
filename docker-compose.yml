@@ -41,6 +41,14 @@ services:
     - postgres
     volumes:
      - ./build:/sql
+  openmaptiles-tools:
+    image: "openmaptiles/openmaptiles-tools:0.2"
+    env_file: .env
+    links:
+    - postgres
+    volumes:
+     - $(pwd):/tileset
+     - ./build:/sql     
   mapbox-studio:
     image: "osm2vectortiles/mapbox-studio"
     volumes:
