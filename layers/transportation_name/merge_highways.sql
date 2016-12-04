@@ -3,7 +3,7 @@
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
--- etldoc: osm_transportation_linestring ->  osm_transportation_name_linestring
+-- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS (
 	SELECT
 		(ST_Dump(geometry)).geom AS geometry,

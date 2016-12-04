@@ -1,4 +1,5 @@
--- etldoc:  osm_water_polygon ->  osm_water_lakeline
+-- etldoc:  osm_water_polygon ->  osm_water_point
+-- etldoc:  lake_centerline ->  osm_water_point
 CREATE TABLE IF NOT EXISTS osm_water_point AS (
     SELECT
         wp.osm_id, topoint(wp.geometry) AS geometry,

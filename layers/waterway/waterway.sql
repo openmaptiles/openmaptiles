@@ -17,17 +17,17 @@ CREATE OR REPLACE VIEW waterway_z6 AS (
     WHERE featurecla = 'River'
 );
 
--- etldoc: osm_waterway_linestring_gen3 ->  waterway_z9
+-- etldoc: osm_important_waterway_linestring_gen3 ->  waterway_z9
 CREATE OR REPLACE VIEW waterway_z9 AS (
     SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen3
 );
 
--- etldoc: osm_waterway_linestring_gen2 ->  waterway_z10
+-- etldoc: osm_important_waterway_linestring_gen2 ->  waterway_z10
 CREATE OR REPLACE VIEW waterway_z10 AS (
     SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen2
 );
 
--- etldoc: osm_waterway_linestring_gen1 ->  waterway_z11
+-- etldoc:osm_important_waterway_linestring_gen1 ->  waterway_z11
 CREATE OR REPLACE VIEW waterway_z11 AS (
     SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen1
 );
@@ -50,7 +50,7 @@ CREATE OR REPLACE VIEW waterway_z14 AS (
 );
 
 -- etldoc: layer_waterway[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_waterway | <z3> z3 |<z4_5> z4-z5 |<z6_8> z6-8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14" ];
+-- etldoc:     label="layer_waterway | <z3> z3 |<z4_5> z4-z5 |<z6_8> z6-8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ];
 
 CREATE OR REPLACE FUNCTION layer_waterway(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, class text, name text) AS $$
