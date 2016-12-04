@@ -2,7 +2,6 @@
 -- etldoc: layer_place[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_place | <z0_3> z0-3|<z4_7> z4-7|<z8_11> z8-11| <z12_14> z12-z14+" ] ;
 
-
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class text, "rank" int, capital INT) AS $$
 
@@ -14,11 +13,10 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     WHERE geometry && bbox AND zoom_level < 4
     UNION ALL
 
-
     -- etldoc: osm_country_point -> layer_place:z0_3
     -- etldoc: osm_country_point -> layer_place:z4_7
     -- etldoc: osm_country_point -> layer_place:z8_11
-    -- etldoc: osm_country_point -> layer_place:z12_14        
+    -- etldoc: osm_country_point -> layer_place:z12_14
     SELECT
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'country' AS class, "rank", NULL::int AS capital
@@ -29,7 +27,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: osm_state_point  -> layer_place:z0_3
     -- etldoc: osm_state_point  -> layer_place:z4_7
     -- etldoc: osm_state_point  -> layer_place:z8_11
-    -- etldoc: osm_state_point  -> layer_place:z12_14         
+    -- etldoc: osm_state_point  -> layer_place:z12_14
     SELECT
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'state' AS class, "rank", NULL::int AS capital
@@ -42,7 +40,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
               is_in_country_code IN ('AU', 'CN', 'IN', 'BR', 'US'))
     UNION ALL
 
-    -- etldoc: osm_island_point    -> layer_place:z12_14    
+    -- etldoc: osm_island_point    -> layer_place:z12_14
     SELECT
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'island' AS class, 7 AS "rank", NULL::int AS capital
@@ -52,7 +50,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     UNION ALL
 
     -- etldoc: osm_island_polygon  -> layer_place:z8_11
-    -- etldoc: osm_island_polygon  -> layer_place:z12_14        
+    -- etldoc: osm_island_polygon  -> layer_place:z12_14
     SELECT
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'island' AS class, island_rank(area) AS "rank", NULL::int AS capital
@@ -66,7 +64,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: layer_city          -> layer_place:z0_3
     -- etldoc: layer_city          -> layer_place:z4_7
     -- etldoc: layer_city          -> layer_place:z8_11
-    -- etldoc: layer_city          -> layer_place:z12_14                   
+    -- etldoc: layer_city          -> layer_place:z12_14
     SELECT
         osm_id, geometry, name, name_en,
         place::text AS class, "rank", capital
