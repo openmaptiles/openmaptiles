@@ -25,11 +25,7 @@ services:
     links:
     - postgres
   import-osm:
-<<<<<<< HEAD
-    image: "openmaptiles/import-osm:add_tools"
-=======
-    image: "openmaptiles/import-osm:0.1"
->>>>>>> master
+    image: "openmaptiles/import-osm:0.2"
     env_file: .env
     environment:
       DIFF_MODE: "false"

@@ -14,10 +14,12 @@ help:
 	@echo "  make start-mapbox-studio             # start Mapbox Studio"
 	@echo "  "
 	@echo "Hints for developers:"
-	@echo "  make                                 # build source code  "   
+	@echo "  make                                 # build source code  "
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
 	@echo "  make psql                            # start PostgreSQL console "
 	@echo "  make psql-list-tables                # list all PostgreSQL tables "
+	@echo "  make generate-qareports              # generate reports [./build/qareports]"
+	@echo "  make generate-devdoc                 # generate devdoc  [./build/devdoc]"
 	@echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
 	@echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
 	@echo "  make clean-docker                    # remove docker containers, PG data volume "
@@ -29,7 +31,7 @@ help:
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
 	@echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
 	@echo "  ....TODO....                         # start lukasmartinelli/postgis-editor"
-	@echo "  make help                            # help about avaialable commands"  
+	@echo "  make help                            # help about avaialable commands"
 	@echo "=============================================================================="
 
 build/openmaptiles.tm2source/data.yml:
@@ -53,7 +55,7 @@ list-docker-images:
 	docker images | grep openmaptiles
 
 refresh-docker-images:
-	docker-compose pull 
+	echo docker-compose pull 
 
 remove-docker-images:
 	docker rmi -f $(docker images | grep "openmaptiles" | awk "{print \$3}")
@@ -93,9 +95,9 @@ download-geofabrik:
 	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
 	ls -la ./data/$(area).*
 	@echo "Generated config file: ./data/docker-compose-config.yml"
-	@echo " " 	
-	cat ./data/docker-compose-config.yml 
-	@echo " " 	
+	@echo " "
+	cat ./data/docker-compose-config.yml
+	@echo " "
 
 # the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
 list:
@@ -108,18 +110,24 @@ download-geofabrik-list:
 start-mapbox-studio:
 	docker-compose up mapbox-studio
 
+generate-qareports:
+	./qa/run.sh
+
 # work in progress - please don't remove
-test_etlgraph:
-	generate-etlgraph layers/boundary/boundary.yaml
-	generate-etlgraph layers/highway/highway.yaml
-	generate-etlgraph layers/housenumber/housenumber.yaml
-	generate-etlgraph layers/landuse/landuse.yaml
-	generate-etlgraph layers/poi/poi.yaml
-	generate-etlgraph layers/water/water.yaml
-	generate-etlgraph layers/waterway/waterway.yaml
-	generate-etlgraph layers/building/building.yaml
-	generate-etlgraph layers/highway_name/highway_name.yaml
-	generate-etlgraph layers/landcover/landcover.yaml
-	generate-etlgraph layers/place/place.yaml
-	generate-etlgraph layers/railway/railway.yaml
-	generate-etlgraph layers/water_name/water_name.yaml
+generate-devdoc:
+	mkdir -p ./build/devdoc
+	generate-etlgraph layers/aeroway/aeroway.yaml               ./build/devdoc
+	generate-etlgraph layers/boundary/boundary.yaml             ./build/devdoc
+	generate-etlgraph layers/building/building.yaml             ./build/devdoc
+	generate-etlgraph layers/housenumber/housenumber.yaml       ./build/devdoc
+	generate-etlgraph layers/landcover/landcover.yaml           ./build/devdoc
+	generate-etlgraph layers/landuse/landuse.yaml               ./build/devdoc
+	generate-etlgraph layers/park/park.yaml                     ./build/devdoc
+	generate-etlgraph layers/place/place.yaml                   ./build/devdoc
+	generate-etlgraph layers/poi/poi.yaml                       ./build/devdoc
+	generate-etlgraph layers/transportation/transportation.yaml ./build/devdoc
+	generate-etlgraph layers/transportation_name/transportation_name.yaml ./build/devdoc
+	generate-etlgraph layers/water/water.yaml                   ./build/devdoc
+	generate-etlgraph layers/water_name/water_name.yaml         ./build/devdoc
+	generate-etlgraph layers/waterway/waterway.yaml             ./build/devdoc
+

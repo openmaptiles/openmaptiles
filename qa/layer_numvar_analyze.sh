@@ -1,5 +1,8 @@
 
 #!/bin/bash
+set -o errexit
+set -o pipefail
+set -o nounset
 
 layerid=$1
 var=$2
@@ -11,7 +14,7 @@ do
 echo " "
 echo "## $layerid z$z - $var "
 
-SQL=$(generate-qadoc  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
 read -r -d '' SQLCODE <<- EOMSQL
   SELECT 
@@ -34,4 +37,3 @@ docker-compose run --rm import-osm /usr/src/app/psql.sh -q -P pager=off -P borde
    | sed '1d;$d'  | sed '$d' | sed 's/+--/|--/g' | sed 's/--+/--|/g' 
      
 done
-

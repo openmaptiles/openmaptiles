@@ -1,5 +1,8 @@
 
 #!/bin/bash
+set -o errexit
+set -o pipefail
+set -o nounset
 
 layerid=$1
 classvars=$2
@@ -11,7 +14,7 @@ do
 echo " "
 echo "## $layerid z$z  - freq" 
 
-SQL=$(generate-qadoc  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
 read -r -d '' SQLCODE <<- EOMSQL
   select $classvars , count(*) as _count_ from

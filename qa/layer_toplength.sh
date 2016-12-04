@@ -1,5 +1,8 @@
 
 #!/bin/bash
+set -o errexit
+set -o pipefail
+set -o nounset
 
 
 layerid=$1
@@ -12,7 +15,7 @@ do
 echo " "
 echo "## $layerid z$z   max length ($classvar)"
 
-SQL=$(generate-qadoc  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(generate-sqlquery layers/${layerid}/${layerid}.yaml $z ) 
 
 read -r -d '' SQLCODE <<- EOMSQL
   select $classvar , length( $classvar ) as _length_ from
