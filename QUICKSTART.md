@@ -37,6 +37,7 @@ Important:  The ./quickstart.sh is for small extracts - not optimal for a Planet
 ```bash
 git clone https://github.com/openmaptiles/openmaptiles.git
 cd openmaptiles
+docker-compose pull
 ./quickstart.sh
 ```
 
