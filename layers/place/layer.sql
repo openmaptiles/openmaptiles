@@ -47,7 +47,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'island' AS class, 7 AS "rank", NULL::int AS capital
     FROM osm_island_point
-    WHERE zoom_level BETWEEN 12 AND 14
+    WHERE zoom_level >= 12
         AND geometry && bbox
     UNION ALL
 
