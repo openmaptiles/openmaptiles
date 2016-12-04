@@ -1,19 +1,19 @@
 tileset:
   layers:
-    - layers/boundary/boundary.yaml
-    - layers/transportation/transportation.yaml
-    - layers/transportation_name/transportation_name.yaml
-    - layers/building/building.yaml
-    - layers/housenumber/housenumber.yaml
-    - layers/place/place.yaml
-    - layers/poi/poi.yaml
-    - layers/water_name/water_name.yaml
     - layers/water/water.yaml
     - layers/waterway/waterway.yaml
     - layers/landcover/landcover.yaml
-    - layers/park/park.yaml
     - layers/landuse/landuse.yaml
+    - layers/park/park.yaml
+    - layers/boundary/boundary.yaml
     - layers/aeroway/aeroway.yaml
+    - layers/transportation/transportation.yaml
+    - layers/building/building.yaml
+    - layers/water_name/water_name.yaml
+    - layers/transportation_name/transportation_name.yaml
+    - layers/place/place.yaml
+    - layers/housenumber/housenumber.yaml
+    - layers/poi/poi.yaml
   name: OpenMapTiles v1.0
   description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"
   attribution: "<a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\">&copy; OpenStreetMap contributors</a>"
