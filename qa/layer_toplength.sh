@@ -14,10 +14,10 @@ echo "## $layerid z$z   max length ($classvar)"
 SQL=$(generate-sqlquery layers/${layerid}/${layerid}.yaml $z )
 
 SQLCODE=$(cat <<-END
-select $classvar , length( $classvar ) as _length_ from
+SELECT DISTINCT $classvar , length( $classvar ) AS _length_ from
 $SQL
 WHERE length( $classvar ) > 0
-ORDER BY length( $classvar )  DESC NULLS LAST
+ORDER BY length( $classvar ) DESC NULLS LAST
 LIMIT 30
 ;
 END

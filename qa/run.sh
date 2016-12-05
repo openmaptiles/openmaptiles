@@ -11,20 +11,13 @@ set -o nounset
 mkdir -p ./build/qareports
 rm -f    ./build/qareports/*.md
 
-./qa/layer_numvar_analyze.sh transportation_name  "ref_length"
-./qa/layer_toplength.sh place               "name"
-./qa/layer_freq.sh poi                 "class    " 
-
-echo "OKÉ"
-exit
-
-
 # -----
+
 ./qa/layer_freq.sh aeroway             "class"                    > ./build/qareports/freq_aeroway__class.md
 
-./qa/layer_freq.sh boundary            "admin_level,disputed"     > ./build/qareports/freq_boundary__admin_level_disputed.md
+###Todo:./qa/layer_freq.sh boundary            "admin_level,disputed"     > ./build/qareports/freq_boundary__admin_level_disputed.md
 ./qa/layer_freq.sh boundary            "admin_level"              > ./build/qareports/freq_boundary__admin_level.md
-./qa/layer_freq.sh boundary            "disputed"                 > ./build/qareports/freq_boundary__disputed.md
+###Todo: ./qa/layer_freq.sh boundary            "disputed"                 > ./build/qareports/freq_boundary__disputed.md
 
 ./qa/layer_freq.sh building            "render_min_height"        > ./build/qareports/freq_building__render_min_height.md
 
@@ -73,7 +66,7 @@ exit
 
 ./qa/layer_toplength.sh transportation_name "name"          > ./build/qareports/toplength_transportation_name__name.md    
 ./qa/layer_toplength.sh transportation_name "ref"           > ./build/qareports/toplength_transportation_name__ref.md 
-./qa/layer_toplength.sh transportation_name "network"       > ./build/qareports/toplength_transportation_name__network.md 
+###Todo: ./qa/layer_toplength.sh transportation_name "network"       > ./build/qareports/toplength_transportation_name__network.md 
 
 ./qa/layer_toplength.sh water_name          "name"          > ./build/qareports/toplength_water_name__name.md   
 ./qa/layer_toplength.sh water_name          "name_en"       > ./build/qareports/toplength_water_name__name_en.md 
