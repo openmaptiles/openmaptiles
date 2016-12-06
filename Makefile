@@ -24,6 +24,7 @@ help:
 	@echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
 	@echo "  make clean-docker                    # remove docker containers, PG data volume "
 	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment "
+	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
 	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
@@ -58,8 +59,17 @@ refresh-docker-images:
 	docker-compose pull --ignore-pull-failures
 
 remove-docker-images:
-	docker rmi -f $(docker images | grep "openmaptiles" | awk "{print \$3}")
-	docker rmi osm2vectortiles/mapbox-studio
+	@echo "Deleting all openmaptiles related docker image(s)..."
+	@docker-compose down
+	@docker images | grep "<none>" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi	
+	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
+	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
+
+docker-unnecessary-clean:
+	@echo "Deleting unnecessary container(s)..."
+	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
+	@echo "Deleting unnecessary image(s)..."
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
 
 psql:
 	docker-compose run --rm import-osm /usr/src/app/psql.sh
