@@ -146,15 +146,6 @@ you can limit the bounding box and zoom levels of what you want to generate (`do
 docker-compose run generate-vectortiles
 ```
 
-To look at the vector tiles you can start up Mapbox Studio Classic in a container
-and visit `localhost:3000` and open the vector source project under `/projects`.
-
-```bash
-docker-compose up mapbox-studio
-```
-
-![Develop on OSM2VectorTiles with Mapbox Studio Classic](./mapbox_studio_classic.gif)
-
 ## License
 
 All code in this repository is under the [MIT license](./LICENSE) and the cartography decisions encoded in the schema and SQL is licensed under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
