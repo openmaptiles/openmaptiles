@@ -1,5 +1,5 @@
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
--- etldoc:  custom_lakeline   ->  osm_water_lakeline
+-- etldoc:  lake_centerline  ->  osm_water_lakeline
 CREATE TABLE IF NOT EXISTS osm_water_lakeline AS (
 	SELECT wp.osm_id,
 		ll.wkb_geometry AS geometry,

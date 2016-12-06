@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
     FROM ne_10m_urban_areas
 );
 
--- etldoc: osm_landuse_polygon_gen4 -> landuse_z10
+-- etldoc: osm_landuse_polygon_gen4 -> landuse_z9
 CREATE OR REPLACE VIEW landuse_z9 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen4
