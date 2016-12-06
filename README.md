@@ -100,6 +100,8 @@ To work on OpenMapTiles you need Docker and Python.
 Build the tileset.
 
 ```bash
+git clone git@github.com:openmaptiles/openmaptiles.git
+cd openmaptiles
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
 # You can also run the build process inside a Docker container
@@ -143,15 +145,6 @@ you can limit the bounding box and zoom levels of what you want to generate (`do
 ```
 docker-compose run generate-vectortiles
 ```
-
-To look at the vector tiles you can start up Mapbox Studio Classic in a container
-and visit `localhost:3000` and open the vector source project under `/projects`.
-
-```bash
-docker-compose up mapbox-studio
-```
-
-![Develop on OSM2VectorTiles with Mapbox Studio Classic](./mapbox_studio_classic.gif)
 
 ## License
 

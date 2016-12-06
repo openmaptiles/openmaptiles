@@ -1,5 +1,5 @@
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_building | <z13> z13 | <z14_> z14_ " ] ;
+-- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
 RETURNS TABLE(geom geometry, osm_id bigint, render_height int, render_min_height int) AS $$

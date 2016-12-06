@@ -77,7 +77,7 @@ CREATE OR REPLACE VIEW landcover_z14 AS (
 );
 
 -- etldoc: layer_landcover[shape=record fillcolor=lightpink, style="rounded,filled",  
--- etldoc:     label="layer_landcover | <z0_1> z0-z1  | <z2_4> z2-z4  | <z5_7> z5-z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
+-- etldoc:     label="layer_landcover | <z0_1> z0-z1 | <z2_4> z2-z4 | <z5_7> z5-z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_landcover(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$

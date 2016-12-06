@@ -1,5 +1,5 @@
 generalized_tables:
-  # etldoc: imposm3 -> osm_landcover_polygon_gen2
+  # etldoc: imposm3 -> osm_aeroway_polygon_gen2
   aeroway_polygon_gen2:
     source: aeroway_polygon_gen1
     sql_filter: area>240000
