@@ -2,8 +2,8 @@ layer:
   id: "landcover"
   description: |
       Landcover is used to describe the physical material at the surface of the earth. At lower zoom levels this is
-      from Natural Earth data for glaciers and ice shelves and at higher zoom levels the [landcover is [implied by OSM tags](http://wiki.openstreetmap.org/wiki/Landcover). The most common use case for this layer
-        is to style wood (`class=wood`) and grass (`class=`grass`) areas.
+      from Natural Earth data for glaciers and ice shelves and at higher zoom levels the landcover is [implied by OSM tags](http://wiki.openstreetmap.org/wiki/Landcover). The most common use case for this layer
+        is to style wood (`class=wood`) and grass (`class=grass`) areas.
   buffer_size: 4
   fields:
     class:
@@ -21,7 +21,7 @@ layer:
           Original value of either the
           [`natural`](http://wiki.openstreetmap.org/wiki/Key:natural),
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
-          ,[`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+          [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
           or [`wetland`](http://wiki.openstreetmap.org/wiki/Key:wetland) tag.
       values:
       - allotments
