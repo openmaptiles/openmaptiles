@@ -32,54 +32,15 @@ testdata=${osm_area}.osm.pbf
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
 MIN_DOCKER_VER=1.10.0
-
 STARTTIME=$(date +%s)
 STARTDATE=$(date -Iminutes)
 githash=$( git rev-parse HEAD )
 
 log_file=./quickstart.log
 rm -f $log_file
-exec &> >(tee -a "$log_file")
-
 echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
-echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
-echo "      : Git version: $githash  / Started: $STARTDATE "
-echo "      : Your bash version:  $BASH_VERSION"
-echo "      : Your OS:  $OSTYPE"
-
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-
-    echo "      : Your system is:"
-    lsb_release -a
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
-    echo "      : This is working on x86_64 ; Your kernel is:"
-    uname -r
-    uname -m
-
-    KERNEL_CPU_VER=$(uname -m)
-    if [ "$KERNEL_CPU_VER" != "x86_64" ]; then
-    echo "ERR: Sorry this is working only on x86_64!"
-    exit 1
-    fi
-    echo "      : --- Memory, CPU info ---- "
-    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
-    echo "system memory (GB): ${mem}  "
-    grep SwapTotal /proc/meminfo
-    echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
-    cat /proc/meminfo  | grep Free
-else
-    echo " "
-    echo "Warning : This is not a Linux ...  ( Less tested ... )  "   
-    echo " "
-fi
-
-
-
-echo " "
+echo "====================================================================================="
+echo "                       Docker check & Download images                                "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Please check the docker and docker-compose version!"
 echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/"
@@ -104,13 +65,58 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Docker Space info: "
-docker info | grep Space
+echo "====> : Pulling or Refreshing OpenMapTiles docker images "
+make refresh-docker-images
+
+
+#####  backup log from here ...
+exec &> >(tee -a "$log_file")
+
+echo " "
+echo "====================================================================================="
+echo "                                Start processing                                     "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
+echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
+echo "      : Area             : $osm_area "
+echo "      : Git version      : $githash "
+echo "      : Started          : $STARTDATE "
+echo "      : Your bash version: $BASH_VERSION"
+echo "      : Your OS          : $OSTYPE"
+docker         --version
+docker-compose --version
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+
+    echo "      : Your system is:"
+    lsb_release -a
+    echo " "
+    echo "-------------------------------------------------------------------------------------"
+    echo "      : This is working on x86_64 ; Your kernel is:"
+    uname -r
+    uname -m
+
+    KERNEL_CPU_VER=$(uname -m)
+    if [ "$KERNEL_CPU_VER" != "x86_64" ]; then
+      echo "ERR: Sorry this is working only on x86_64!"
+      exit 1
+    fi
+    echo "      : --- Memory, CPU info ---- "
+    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
+    echo "system memory (GB): ${mem}  "
+    grep SwapTotal /proc/meminfo
+    echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
+    cat /proc/meminfo  | grep Free
+else
+    echo " "
+    echo "Warning : This is not a Linux ...  ( Less tested ... )  "
+    echo " "
+fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Pulling or Refreshing OpenMapTiles docker images "
-make refresh-docker-images
+echo "====> : Docker Space info: "
+docker info | grep Space
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -185,7 +191,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Drop and Recreate PostgreSQL  public schema "
 # Drop all PostgreSQL tables
-# This is add an extra safe belt , if the user modify the docker volume seetings   
+# This is add an extra safe belt , if the user modify the docker volume seetings
 make forced-clean-sql
 
 echo " "
