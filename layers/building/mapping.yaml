@@ -1,11 +1,3 @@
-generalized_tables:
-
-  # etldoc: imposm3 -> osm_building_polygon_gen1
-  building_polygon_gen1:
-    source: building_polygon
-    sql_filter: area>1400.0
-    tolerance: 10.0
-
 tables:
 
   # etldoc: imposm3 -> osm_building_polygon
