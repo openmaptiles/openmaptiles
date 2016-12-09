@@ -15,7 +15,7 @@ tileset:
     - layers/housenumber/housenumber.yaml
     - layers/poi/poi.yaml
   name: OpenMapTiles
-  version: 3.4.0
+  version: 3.3.0
   id: openmaptiles 
   description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"
   attribution: '<a href="http://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>'
