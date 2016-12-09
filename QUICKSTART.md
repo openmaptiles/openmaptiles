@@ -32,18 +32,17 @@
 
 Important:  The ./quickstart.sh is for small extracts - not optimal for a Planet rendering !!
 
-### First experiment - with albania ( small extracts! )
+### First experiment - with `albania` ( small extracts! )
 
 ```bash
 git clone https://github.com/openmaptiles/openmaptiles.git
 cd openmaptiles
-docker-compose pull
 ./quickstart.sh
 ```
 
 If you have problems with the quickstart
 * check the ./quickstart.log!
-* check again the system requirements
+* check again the system requirements!
 * check the current issues : https://github.com/openmaptiles/openmaptiles/issues 
 * create new issues: 
     * create a new gist https://gist.github.com/ from your ./quickstart.log
@@ -60,7 +59,7 @@ THAN you can test other available quickstart extracts ( based on geofabrik extra
  * We are using https://github.com/julien-noblet/download-geofabrik tool
  * The current extract list, and more informations  ->  `make list`
 
-This is generating mbtiles for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
+This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
 
 ```bash
 ./quickstart.sh africa
