@@ -115,11 +115,6 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Docker Space info: "
-docker info | grep Space
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers "
 make clean-docker
 
