@@ -13,11 +13,11 @@ do
 echo " "
 echo "## $layerid z$z  - freq" 
 
-SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
 SQLCODE=$(cat <<-END
 select $classvars , count(*) as _count_ from
-$SQL 
+( $SQL ) as t
 GROUP BY $classvars
 ORDER BY $classvars
 ;

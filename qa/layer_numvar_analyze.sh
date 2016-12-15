@@ -13,7 +13,7 @@ do
 echo " "
 echo "## $layerid z$z - $var "
 
-SQL=$(generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
 
 SQLCODE=$(cat <<-END
 SELECT 
@@ -24,7 +24,7 @@ SELECT
   ,stddev($var)   as stddev 
   ,variance($var) as variance 
 FROM  
-  $SQL 
+( $SQL ) as t
 ;
 END
 )
