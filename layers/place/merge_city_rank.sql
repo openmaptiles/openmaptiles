@@ -19,7 +19,7 @@ WITH important_city_point AS (
         ne.nameascii ILIKE osm.name_en
     )
     AND osm.place IN ('city', 'town', 'village')
-    AND ST_DWithin(ne.geom, osm.geometry, 50000)
+    AND ST_DWithin(ne.geometry, osm.geometry, 50000)
 )
 UPDATE osm_city_point AS osm
 -- Move scalerank to range 1 to 10 and merge scalerank 5 with 6 since not enough cities

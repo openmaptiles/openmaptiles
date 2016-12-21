@@ -22,23 +22,23 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: ne_110m_glaciated_areas ->  landcover_z0 
 CREATE OR REPLACE VIEW landcover_z0 AS (
-    SELECT NULL::bigint AS osm_id, geom AS geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_110m_glaciated_areas
+    SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_110m_glaciated_areas
 );
 
 CREATE OR REPLACE VIEW landcover_z2 AS (
     -- etldoc: ne_50m_glaciated_areas ->  landcover_z2 
-    SELECT NULL::bigint AS osm_id, geom AS geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_50m_glaciated_areas
+    SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_50m_glaciated_areas
     UNION ALL
     -- etldoc: ne_50m_antarctic_ice_shelves_polys ->  landcover_z2     
-    SELECT NULL::bigint AS osm_id, geom AS geometry, NULL::text AS landuse, 'ice_shelf'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_50m_antarctic_ice_shelves_polys
+    SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'ice_shelf'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_50m_antarctic_ice_shelves_polys
 );
 
 CREATE OR REPLACE VIEW landcover_z5 AS (
     -- etldoc: ne_10m_glaciated_areas ->  landcover_z5
-    SELECT NULL::bigint AS osm_id, geom AS geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_10m_glaciated_areas
+    SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'glacier'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_10m_glaciated_areas
     UNION ALL
     -- etldoc: ne_10m_antarctic_ice_shelves_polys ->  landcover_z5 
-    SELECT NULL::bigint AS osm_id, geom AS geometry, NULL::text AS landuse, 'ice_shelf'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_10m_antarctic_ice_shelves_polys
+    SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'ice_shelf'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_10m_antarctic_ice_shelves_polys
 );
 
 CREATE OR REPLACE VIEW landcover_z8 AS (

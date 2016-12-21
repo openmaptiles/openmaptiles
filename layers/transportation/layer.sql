@@ -22,7 +22,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
     FROM (
         -- etldoc: ne_10m_roads -> layer_transportation:z4z6
         SELECT
-            NULL::bigint AS osm_id, geom AS geometry,
+            NULL::bigint AS osm_id, geometry,
             ne_highway(type) AS highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
