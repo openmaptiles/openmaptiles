@@ -11,7 +11,7 @@ services:
      - "5432"
     env_file: .env
   import-natural-earth:
-    image: "openmaptiles/import-natural-earth:1.1"
+    image: "openmaptiles/import-natural-earth:1.2"
     env_file: .env
     links:
     - postgres
