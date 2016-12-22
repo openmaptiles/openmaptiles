@@ -3,7 +3,7 @@
 -- etldoc: ne_110m_admin_0_boundary_lines_land  -> boundary_z0
 
 CREATE OR REPLACE VIEW boundary_z0 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_110m_admin_0_boundary_lines_land
 );
 
@@ -11,10 +11,10 @@ CREATE OR REPLACE VIEW boundary_z0 AS (
 -- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z1
 
 CREATE OR REPLACE VIEW boundary_z1 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_50m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_50m_admin_1_states_provinces_lines
     WHERE scalerank <= 2
 );
@@ -24,10 +24,10 @@ CREATE OR REPLACE VIEW boundary_z1 AS (
 -- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z3
 
 CREATE OR REPLACE VIEW boundary_z3 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_50m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_50m_admin_1_states_provinces_lines
 );
 
@@ -36,10 +36,10 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
 -- etldoc: ne_10m_admin_1_states_provinces_lines_shp -> boundary_z4
 
 CREATE OR REPLACE VIEW boundary_z4 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE scalerank <= 3 AND featurecla = 'Adm-1 boundary'
 );
@@ -48,10 +48,10 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
 -- etldoc: ne_10m_admin_1_states_provinces_lines_shp -> boundary_z5
 
 CREATE OR REPLACE VIEW boundary_z5 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE scalerank <= 7 AND featurecla = 'Adm-1 boundary'
 );
@@ -60,10 +60,10 @@ CREATE OR REPLACE VIEW boundary_z5 AS (
 -- etldoc: ne_10m_admin_1_states_provinces_lines_shp -> boundary_z6
 
 CREATE OR REPLACE VIEW boundary_z6 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE scalerank <= 9 AND featurecla = 'Adm-1 boundary'
 );
@@ -71,10 +71,10 @@ CREATE OR REPLACE VIEW boundary_z6 AS (
 -- etldoc: ne_10m_admin_0_boundary_lines_land -> boundary_z7
 -- etldoc: ne_10m_admin_1_states_provinces_lines_shp -> boundary_z7
 CREATE OR REPLACE VIEW boundary_z7 AS (
-    SELECT geom, 2 AS admin_level
+    SELECT geometry, 2 AS admin_level
     FROM ne_10m_admin_0_boundary_lines_land
     UNION ALL
-    SELECT geom, 4 AS admin_level
+    SELECT geometry, 4 AS admin_level
     FROM ne_10m_admin_1_states_provinces_lines_shp
     WHERE featurecla = 'Adm-1 boundary'
 
@@ -82,35 +82,35 @@ CREATE OR REPLACE VIEW boundary_z7 AS (
 
 -- etldoc: osm_boundary_linestring_gen5 -> boundary_z8
 CREATE OR REPLACE VIEW boundary_z8 AS (
-    SELECT geometry AS geom, admin_level
+    SELECT geometry, admin_level
     FROM osm_boundary_linestring_gen5
     WHERE admin_level <= 4 AND ST_Length(geometry) > 1000
 );
 
 -- etldoc: osm_boundary_linestring_gen4 -> boundary_z9
 CREATE OR REPLACE VIEW boundary_z9 AS (
-    SELECT geometry AS geom, admin_level
+    SELECT geometry, admin_level
     FROM osm_boundary_linestring_gen4
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_boundary_linestring_gen3 -> boundary_z10
 CREATE OR REPLACE VIEW boundary_z10 AS (
-    SELECT geometry AS geom, admin_level
+    SELECT geometry, admin_level
     FROM osm_boundary_linestring_gen3
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_boundary_linestring_gen2 -> boundary_z11
 CREATE OR REPLACE VIEW boundary_z11 AS (
-    SELECT geometry AS geom, admin_level
+    SELECT geometry, admin_level
     FROM osm_boundary_linestring_gen2
     WHERE admin_level <= 8
 );
 
 -- etldoc: osm_boundary_linestring_gen1 -> boundary_z12
 CREATE OR REPLACE VIEW boundary_z12 AS (
-    SELECT geometry AS geom, admin_level
+    SELECT geometry, admin_level
     FROM osm_boundary_linestring_gen1
 );
 
@@ -119,44 +119,44 @@ CREATE OR REPLACE VIEW boundary_z12 AS (
 
 CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, admin_level int) AS $$
-    SELECT geom, admin_level FROM (
+    SELECT geometry, admin_level FROM (
         -- etldoc: boundary_z0 ->  layer_boundary:z0
-        SELECT * FROM boundary_z0 WHERE geom && bbox AND zoom_level = 0
+        SELECT * FROM boundary_z0 WHERE geometry && bbox AND zoom_level = 0
         UNION ALL
         -- etldoc: boundary_z1 ->  layer_boundary:z1_2
-        SELECT * FROM boundary_z1 WHERE geom && bbox AND zoom_level BETWEEN 1 AND 2
+        SELECT * FROM boundary_z1 WHERE geometry && bbox AND zoom_level BETWEEN 1 AND 2
         UNION ALL
         -- etldoc: boundary_z3 ->  layer_boundary:z3
-        SELECT * FROM boundary_z3 WHERE geom && bbox AND zoom_level = 3
+        SELECT * FROM boundary_z3 WHERE geometry && bbox AND zoom_level = 3
         UNION ALL
         -- etldoc: boundary_z4 ->  layer_boundary:z4
-        SELECT * FROM boundary_z4 WHERE geom && bbox AND zoom_level = 4
+        SELECT * FROM boundary_z4 WHERE geometry && bbox AND zoom_level = 4
         UNION ALL
         -- etldoc: boundary_z5 ->  layer_boundary:z5
-        SELECT * FROM boundary_z5 WHERE geom && bbox AND zoom_level = 5
+        SELECT * FROM boundary_z5 WHERE geometry && bbox AND zoom_level = 5
         UNION ALL
         -- etldoc: boundary_z6 ->  layer_boundary:z6
-        SELECT * FROM boundary_z6 WHERE geom && bbox AND zoom_level = 6
+        SELECT * FROM boundary_z6 WHERE geometry && bbox AND zoom_level = 6
         UNION ALL
         -- etldoc: boundary_z7 ->  layer_boundary:z7
-        SELECT * FROM boundary_z7 WHERE geom && bbox AND zoom_level = 7
+        SELECT * FROM boundary_z7 WHERE geometry && bbox AND zoom_level = 7
         UNION ALL
         -- etldoc: boundary_z8 ->  layer_boundary:z8
-        SELECT * FROM boundary_z8 WHERE geom && bbox AND zoom_level = 8
+        SELECT * FROM boundary_z8 WHERE geometry && bbox AND zoom_level = 8
         UNION ALL
         -- etldoc: boundary_z9 ->  layer_boundary:z9
-        SELECT * FROM boundary_z9 WHERE geom && bbox AND zoom_level = 9
+        SELECT * FROM boundary_z9 WHERE geometry && bbox AND zoom_level = 9
         UNION ALL
         -- etldoc: boundary_z10 ->  layer_boundary:z10
-        SELECT * FROM boundary_z10 WHERE geom && bbox AND zoom_level = 10
+        SELECT * FROM boundary_z10 WHERE geometry && bbox AND zoom_level = 10
         UNION ALL
         -- etldoc: boundary_z11 ->  layer_boundary:z11
-        SELECT * FROM boundary_z11 WHERE geom && bbox AND zoom_level = 11
+        SELECT * FROM boundary_z11 WHERE geometry && bbox AND zoom_level = 11
         UNION ALL
         -- etldoc: boundary_z12 ->  layer_boundary:z12
-        SELECT * FROM boundary_z12 WHERE geom && bbox AND zoom_level = 12
+        SELECT * FROM boundary_z12 WHERE geometry && bbox AND zoom_level = 12
         UNION ALL
         -- etldoc: boundary_z12 -> layer_boundary:z13
-        SELECT * FROM boundary_z12 WHERE geom && bbox AND zoom_level >= 13
+        SELECT * FROM boundary_z12 WHERE geometry && bbox AND zoom_level >= 13
     ) AS zoom_levels;
 $$ LANGUAGE SQL IMMUTABLE;

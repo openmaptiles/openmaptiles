@@ -10,7 +10,7 @@ WITH important_country_point AS (
     -- We only match whether the point is within the Natural Earth polygon
     -- because name matching is to difficult since OSM does not contain good
     -- enough coverage of ISO codesy
-    ST_Within(osm.geometry, ne.geom)
+    ST_Within(osm.geometry, ne.geometry)
     -- We leave out tiny countries
     AND ne.scalerank <= 1
 )

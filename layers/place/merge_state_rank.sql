@@ -9,7 +9,7 @@ WITH important_state_point AS (
     WHERE
     -- We only match whether the point is within the Natural Earth polygon
     -- because name matching is difficult
-    ST_Within(osm.geometry, ne.geom)
+    ST_Within(osm.geometry, ne.geometry)
     -- We leave out leess important states
     AND ne.scalerank <= 3 AND ne.labelrank <= 2
 )
