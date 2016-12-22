@@ -36,9 +36,13 @@ $DC_EXEC run --rm import-water
 $DC_EXEC run --rm import-natural-earth
 $DC_EXEC run --rm import-lakelines
 $DC_EXEC run --rm import-osm
-$DC_EXEC run --rm import-sql
+$DC_EXEC \
+    BBOX="8.25,46.97,9.58,47.52" \
+    MIN_ZOOM="0" \
+    MAX_ZOOM="7" \
+    run --rm import-sql
 
-$DC_EXEC -f docker-compose.yml -f docker-compose-test-override.yml  run --rm generate-vectortiles
+$DC_EXEC -f docker-compose.yml run --rm generate-vectortiles
 
 $DC_EXEC stop postgres
 echo "The vectortiles created from $testdata  "
