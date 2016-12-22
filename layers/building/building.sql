@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
-RETURNS TABLE(geom geometry, osm_id bigint, render_height int, render_min_height int) AS $$
+RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int) AS $$
     SELECT geometry, osm_id, render_height, render_min_height
     FROM (
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
