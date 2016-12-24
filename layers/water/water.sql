@@ -150,7 +150,7 @@ RETURNS TABLE(geometry geometry, class text) AS $$
         -- etldoc: water_z9 ->  layer_water:z9
         SELECT * FROM water_z9 WHERE zoom_level = 9
         UNION ALL
-        -- etldoc: water_z9 ->  layer_water:z10                   
+        -- etldoc: water_z10 ->  layer_water:z10                   
         SELECT * FROM water_z10 WHERE zoom_level = 10
         UNION ALL
         -- etldoc: water_z11 ->  layer_water:z11        
