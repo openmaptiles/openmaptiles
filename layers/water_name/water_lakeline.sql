@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS osm_water_lakeline;
+
+DROP TABLE IF EXISTS osm_water_lakeline CASCADE;
 
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline

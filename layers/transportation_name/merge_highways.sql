@@ -1,7 +1,8 @@
-DROP TABLE IF EXISTS osm_transportation_name_linestring;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen1;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen2;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen3;
+
+DROP TABLE IF EXISTS osm_transportation_name_linestring CASCADE;
+DROP TABLE IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
+DROP TABLE IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
+DROP TABLE IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
 
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
