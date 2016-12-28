@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS osm_important_waterway_linestring;
+DROP TABLE IF EXISTS osm_important_waterway_linestring_gen1;
+DROP TABLE IF EXISTS osm_important_waterway_linestring_gen2;
+DROP TABLE IF EXISTS osm_important_waterway_linestring_gen3;
+
 -- We merge the waterways by name like the highways
 -- This helps to drop not important rivers (since they do not have a name)
 -- and also makes it possible to filter out too short rivers
