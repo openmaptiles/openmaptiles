@@ -26,7 +26,7 @@ services:
     links:
     - postgres
   import-osm:
-    image: "openmaptiles/import-osm:0.1"
+    image: "openmaptiles/import-osm:latest"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -43,6 +43,14 @@ services:
     - postgres
     volumes:
      - ./build:/sql
+  openmaptiles-tools:
+    image: "openmaptiles/openmaptiles-tools:latest"
+    env_file: .env
+    links:
+    - postgres
+    volumes:
+     - .:/tileset
+     - ./build:/sql     
   mapbox-studio:
     image: "osm2vectortiles/mapbox-studio"
     volumes:

@@ -3,3 +3,13 @@ data.xml
 *.thumb.png
 *.swp
 *.pbf
+
+# quickstart
+quickstart.log
+
+
+# imput / output data
+data/*
+
+# generated source files
+build/*
