@@ -1,4 +1,10 @@
 
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+-- Clear  OSM key:rank ( https://github.com/openmaptiles/openmaptiles/issues/108 )
+-- etldoc: osm_city_point          -> osm_city_point 
+UPDATE osm_city_point AS osm  SET "rank" = NULL WHERE "rank" IS NOT NULL;
+
 -- etldoc: ne_10m_populated_places -> osm_city_point
 -- etldoc: osm_city_point          -> osm_city_point
 
@@ -16,7 +22,8 @@ WITH important_city_point AS (
         ne.gn_ascii ILIKE osm.name OR
         ne.gn_ascii ILIKE osm.name_en OR
         ne.nameascii ILIKE osm.name OR
-        ne.nameascii ILIKE osm.name_en
+        ne.nameascii ILIKE osm.name_en OR
+        ne.name = unaccent(osm.name)
     )
     AND osm.place IN ('city', 'town', 'village')
     AND ST_DWithin(ne.geometry, osm.geometry, 50000)
