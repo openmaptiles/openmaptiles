@@ -12,23 +12,23 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, ref text, ref_length 
     FROM (
 
         -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z8
-        SELECT * FROM osm_transportation_name_linestring_gen3
+        SELECT * FROM osm_transportation_name_linestring_gen3(bbox,zoom_level)
         WHERE zoom_level = 8
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z9
-        SELECT * FROM osm_transportation_name_linestring_gen2
+        SELECT * FROM osm_transportation_name_linestring_gen2(bbox,zoom_level)
         WHERE zoom_level = 9
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z10
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z11
-        SELECT * FROM osm_transportation_name_linestring_gen1
+        SELECT * FROM osm_transportation_name_linestring_gen1(bbox,zoom_level)
         WHERE zoom_level BETWEEN 10 AND 11
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12
-        SELECT * FROM osm_transportation_name_linestring
+        SELECT * FROM osm_transportation_name_linestring(bbox, zoom_level)
         WHERE zoom_level = 12
             AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
             AND highway_class(highway) NOT IN ('minor', 'track', 'path')
@@ -36,14 +36,14 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, ref text, ref_length 
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z13
-        SELECT * FROM osm_transportation_name_linestring
+        SELECT * FROM osm_transportation_name_linestring(bbox, zoom_level)
         WHERE zoom_level = 13
             AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
             AND highway_class(highway) NOT IN ('track', 'path')
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z14_
-        SELECT * FROM osm_transportation_name_linestring
+        SELECT * FROM osm_transportation_name_linestring(bbox, zoom_level)
         WHERE zoom_level >= 14
 
     ) AS zoom_levels

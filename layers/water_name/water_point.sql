@@ -1,15 +1,14 @@
 
-DROP TABLE IF EXISTS osm_water_point CASCADE;
-
 -- etldoc:  osm_water_polygon ->  osm_water_point
 -- etldoc:  lake_centerline ->  osm_water_point
-CREATE TABLE IF NOT EXISTS osm_water_point AS (
+
+CREATE OR REPLACE FUNCTION osm_water_point(bbox geometry, zoom_level int)
+    RETURNS TABLE(geometry geometry, osm_id bigint, name varchar, name_en varchar, area float) AS $$
     SELECT
-        wp.osm_id, topoint(wp.geometry) AS geometry,
+        topoint(wp.geometry) AS geometry, wp.osm_id, 
         wp.name, wp.name_en, ST_Area(wp.geometry) AS area
     FROM osm_water_polygon AS wp
     LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
-    WHERE ll.osm_id IS NULL AND wp.name <> ''
-);
+    WHERE ll.osm_id IS NULL AND wp.name <> '' AND geometry && bbox;
+$$ LANGUAGE SQL IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_water_point_geometry_idx ON osm_water_point USING gist (geometry);
