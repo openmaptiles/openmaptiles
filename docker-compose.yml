@@ -26,7 +26,7 @@ services:
     links:
     - postgres
   import-osm:
-    image: "openmaptiles/import-osm:0.1"
+    image: "openmaptiles/import-osm:0.2"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
