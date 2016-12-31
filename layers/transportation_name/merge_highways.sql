@@ -36,7 +36,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 CREATE OR REPLACE FUNCTION osm_transportation_name_linestring_gen1(bbox geometry, zoom_level int)
     RETURNS TABLE(geometry geometry, osm_id bigint, member_osm_ids bigint[], name varchar, ref varchar, highway varchar, z_order int) AS $$
     SELECT ST_Simplify(geometry, 50) AS geometry, osm_id, member_osm_ids, name, ref, highway, z_order
-    FROM osm_transportation_name_linestring
+    FROM osm_transportation_name_linestring(bbox, zoom_level)
     WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 8000 AND geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
 

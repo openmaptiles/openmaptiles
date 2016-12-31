@@ -23,7 +23,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 CREATE OR REPLACE FUNCTION osm_important_waterway_linestring_gen1(bbox geometry, zoom_level int)
     RETURNS TABLE(geometry geometry, name varchar) AS $$
     SELECT ST_Simplify(geometry, 60) AS geometry, name
-    FROM osm_important_waterway_linestring
+    FROM osm_important_waterway_linestring(bbox, zoom_level)
     WHERE ST_Length(geometry) > 1000 AND geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
 
@@ -31,7 +31,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 CREATE OR REPLACE FUNCTION osm_important_waterway_linestring_gen2(bbox geometry, zoom_level int)
     RETURNS TABLE(geometry geometry, name varchar) AS $$
     SELECT ST_Simplify(geometry, 100) AS geometry, name
-    FROM osm_important_waterway_linestring_gen1
+    FROM osm_important_waterway_linestring_gen1(bbox, zoom_level)
     WHERE ST_Length(geometry) > 4000 AND geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
 
@@ -39,6 +39,6 @@ $$ LANGUAGE SQL IMMUTABLE;
 CREATE OR REPLACE FUNCTION osm_important_waterway_linestring_gen3(bbox geometry, zoom_level int)
     RETURNS TABLE(geometry geometry, name varchar) AS $$
     SELECT ST_Simplify(geometry, 200) AS geometry, name
-    FROM osm_important_waterway_linestring_gen2
+    FROM osm_important_waterway_linestring_gen2(bbox, zoom_level)
     WHERE ST_Length(geometry) > 8000 AND geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
