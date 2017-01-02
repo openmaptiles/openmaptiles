@@ -1,15 +1,10 @@
 
-DROP TABLE IF EXISTS osm_important_waterway_linestring CASCADE;
-DROP TABLE IF EXISTS osm_important_waterway_linestring_gen1 CASCADE;
-DROP TABLE IF EXISTS osm_important_waterway_linestring_gen2 CASCADE;
-DROP TABLE IF EXISTS osm_important_waterway_linestring_gen3 CASCADE;
-
 -- We merge the waterways by name like the highways
 -- This helps to drop not important rivers (since they do not have a name)
 -- and also makes it possible to filter out too short rivers
 
 -- etldoc: osm_waterway_linestring ->  osm_important_waterway_linestring
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring AS (
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
         name
@@ -22,11 +17,10 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring AS (
         GROUP BY name
     ) AS waterway_union
 );
-
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_geometry_idx ON osm_important_waterway_linestring USING gist(geometry);
 
 -- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen1
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen1 AS (
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen1 AS (
     SELECT ST_Simplify(geometry, 60) AS geometry, name
     FROM osm_important_waterway_linestring
     WHERE ST_Length(geometry) > 1000
@@ -34,7 +28,7 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen1 AS (
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen1_geometry_idx ON osm_important_waterway_linestring_gen1 USING gist(geometry);
 
 -- etldoc: osm_important_waterway_linestring_gen1 -> osm_important_waterway_linestring_gen2
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen2 AS (
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen2 AS (
     SELECT ST_Simplify(geometry, 100) AS geometry, name
     FROM osm_important_waterway_linestring_gen1
     WHERE ST_Length(geometry) > 4000
@@ -42,9 +36,32 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen2 AS (
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen2_geometry_idx ON osm_important_waterway_linestring_gen2 USING gist(geometry);
 
 -- etldoc: osm_important_waterway_linestring_gen2 -> osm_important_waterway_linestring_gen3
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen3 AS (
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen3 AS (
     SELECT ST_Simplify(geometry, 200) AS geometry, name
     FROM osm_important_waterway_linestring_gen2
     WHERE ST_Length(geometry) > 8000
 );
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx ON osm_important_waterway_linestring_gen3 USING gist(geometry);
+
+--- Triggers
+
+CREATE OR REPLACE FUNCTION refresh_osm_important_waterway_linestring() RETURNS trigger AS
+  $BODY$
+  BEGIN
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1 CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2 CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3 CONCURRENTLY;
+      RETURN null;
+  END;
+  $BODY$
+language plpgsql
+
+CREATE TRIGGER trigger_refresh_osm_important_waterway_linestring
+    AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring
+
+
+
+
