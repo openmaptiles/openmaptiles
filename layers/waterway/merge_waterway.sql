@@ -48,19 +48,19 @@ CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx O
 CREATE OR REPLACE FUNCTION refresh_osm_important_waterway_linestring() RETURNS trigger AS
   $BODY$
   BEGIN
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1 CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2 CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3 CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3;
       RETURN null;
   END;
   $BODY$
-language plpgsql
+language plpgsql;
 
 CREATE TRIGGER trigger_refresh_osm_important_waterway_linestring
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring;
+    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring();
 
 
 

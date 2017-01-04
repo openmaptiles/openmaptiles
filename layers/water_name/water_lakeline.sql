@@ -16,13 +16,13 @@ CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline
 CREATE OR REPLACE FUNCTION refresh_osm_water_lakeline() RETURNS trigger AS
   $BODY$
   BEGIN
-    REFRESH MATERIALIZED VIEW osm_water_lakeline CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_water_lakeline;
       RETURN null;
   END;
   $BODY$
-language plpgsql
+language plpgsql;
 
 CREATE TRIGGER trigger_refresh_osm_water_lakeline
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_water_lakeline;
+    EXECUTE PROCEDURE refresh_osm_water_lakeline();

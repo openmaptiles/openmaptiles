@@ -61,19 +61,19 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx 
 CREATE OR REPLACE FUNCTION refresh_osm_transportation_name_linestring() RETURNS trigger AS
   $BODY$
   BEGIN
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1 CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2 CONCURRENTLY;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3 CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
       RETURN null;
   END;
   $BODY$
-language plpgsql
+language plpgsql;
 
 CREATE TRIGGER trigger_refresh_osm_transportation_name_linestring
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_transportation_name_linestring;
+    EXECUTE PROCEDURE refresh_osm_transportation_name_linestring();
 
 
 

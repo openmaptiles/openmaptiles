@@ -16,13 +16,13 @@ CREATE INDEX IF NOT EXISTS osm_water_point_geometry_idx ON osm_water_point USING
 CREATE OR REPLACE FUNCTION refresh_osm_water_point() RETURNS trigger AS
   $BODY$
   BEGIN
-    REFRESH MATERIALIZED VIEW osm_water_point CONCURRENTLY;
+    REFRESH MATERIALIZED VIEW osm_water_point;
       RETURN null;
   END;
   $BODY$
-language plpgsql
+language plpgsql;
 
 CREATE TRIGGER trigger_refresh_osm_water_point
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_water_point;
+    EXECUTE PROCEDURE refresh_osm_water_point();
