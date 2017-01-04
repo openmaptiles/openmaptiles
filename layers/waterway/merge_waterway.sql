@@ -69,12 +69,12 @@ CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER waterway.trigger_flag
+CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
     FOR EACH STATEMENT
     EXECUTE PROCEDURE waterway.flag();
 
-CREATE CONSTRAINT TRIGGER waterway.trigger_refresh
+CREATE CONSTRAINT TRIGGER trigger_refresh
     AFTER INSERT ON waterway.updates
     INITIALLY DEFERRED
     FOR EACH ROW

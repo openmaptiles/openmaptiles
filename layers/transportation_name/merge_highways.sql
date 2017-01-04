@@ -82,20 +82,13 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER transportation_name.trigger_flag
+CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
     EXECUTE PROCEDURE transportation_name.flag();
 
-CREATE CONSTRAINT TRIGGER transportation_name.trigger_refresh
+CREATE CONSTRAINT TRIGGER trigger_refresh
     AFTER INSERT ON transportation_name.updates
     INITIALLY DEFERRED
     FOR EACH ROW
     EXECUTE PROCEDURE transportation_name.refresh();
-
-
-
-
-
-
-

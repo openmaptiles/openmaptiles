@@ -34,12 +34,12 @@ CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER water_lakeline.trigger_flag
+CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
     EXECUTE PROCEDURE water_lakeline.flag();
 
-CREATE CONSTRAINT TRIGGER water_lakeline.trigger_refresh
+CREATE CONSTRAINT TRIGGER trigger_refresh
     AFTER INSERT ON water_lakeline.updates
     INITIALLY DEFERRED
     FOR EACH ROW
