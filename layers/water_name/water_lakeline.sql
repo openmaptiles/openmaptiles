@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION refresh_osm_water_lakeline() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh osm_water_lakeline based tables';
-    REFRESH MATERIALIZED VIEW osm_water_lakeline;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_lakeline;
       RETURN null;
   END;
   $BODY$

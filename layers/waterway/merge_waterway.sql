@@ -49,10 +49,10 @@ CREATE OR REPLACE FUNCTION refresh_osm_important_waterway_linestring() RETURNS t
   $BODY$
   BEGIN
     RAISE LOG 'Refresh osm_waterway_linestring based tables';
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen1;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen2;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen3;
       RETURN null;
   END;
   $BODY$

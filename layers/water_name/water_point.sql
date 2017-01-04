@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION refresh_osm_water_point() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh osm_water polygon based tables';
-    REFRESH MATERIALIZED VIEW osm_water_point;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_point;
       RETURN null;
   END;
   $BODY$

@@ -62,10 +62,10 @@ CREATE OR REPLACE FUNCTION refresh_osm_transportation_name_linestring() RETURNS 
   $BODY$
   BEGIN
     RAISE LOG 'Refresh osm_highway_linestring based tables';
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen3;
       RETURN null;
   END;
   $BODY$
