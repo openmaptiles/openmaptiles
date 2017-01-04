@@ -25,4 +25,4 @@ language plpgsql
 CREATE TRIGGER trigger_refresh_osm_water_point
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_water_point
+    EXECUTE PROCEDURE refresh_osm_water_point;

@@ -60,7 +60,7 @@ language plpgsql
 CREATE TRIGGER trigger_refresh_osm_important_waterway_linestring
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring
+    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring;
 
 
 

@@ -25,4 +25,4 @@ language plpgsql
 CREATE TRIGGER trigger_refresh_osm_water_lakeline
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_water_lakeline
+    EXECUTE PROCEDURE refresh_osm_water_lakeline;

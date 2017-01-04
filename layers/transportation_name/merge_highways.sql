@@ -73,7 +73,7 @@ language plpgsql
 CREATE TRIGGER trigger_refresh_osm_transportation_name_linestring
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_transportation_name_linestring
+    EXECUTE PROCEDURE refresh_osm_transportation_name_linestring;
 
 
 
