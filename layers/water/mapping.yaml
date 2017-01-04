@@ -27,7 +27,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_water_polygon_gen1
   water_polygon_gen1:
     source: water_polygon
-    sql_filter: area>500000 AND waterway = ''
+    sql_filter: area>500000
     tolerance: 20.0
 
 tables:
