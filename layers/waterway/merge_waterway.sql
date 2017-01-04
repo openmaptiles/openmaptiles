@@ -43,26 +43,42 @@ CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen3 AS (
 ) WITH NO DATA;
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx ON osm_important_waterway_linestring_gen3 USING gist(geometry);
 
---- Triggers
+-- Handle updates
 
-CREATE OR REPLACE FUNCTION refresh_osm_important_waterway_linestring() RETURNS trigger AS
+CREATE SCHEMA waterway;
+
+CREATE TABLE IF NOT EXISTS waterway.updates(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION waterway.flag() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO waterway.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    RETURN null;
+END;    
+$$ language plpgsql;
+
+CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh osm_waterway_linestring based tables';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen1;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen2;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen3;
-      RETURN null;
+    RAISE LOG 'Refresh transportation_name';
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3;
+    DELETE FROM waterway.updates;
+    RETURN null;
   END;
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_refresh_osm_important_waterway_linestring
+CREATE TRIGGER waterway.trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_important_waterway_linestring();
+    EXECUTE PROCEDURE waterway.flag();
 
+CREATE CONSTRAINT TRIGGER waterway.trigger_refresh
+    AFTER INSERT ON waterway.updates
+    INITIALLY DEFERRED
+    FOR EACH ROW
+    EXECUTE PROCEDURE waterway.refresh();
 
 
 

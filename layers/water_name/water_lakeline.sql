@@ -13,32 +13,34 @@ CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline
 
 -- Handle updates
 
-CREATE TABLE IF NOT EXISTS updates_osm_water_polygon(id serial primary key, t text, unique (t));
-CREATE OR REPLACE FUNCTION flag_update_osm_water_polygon() RETURNS trigger AS $$
+CREATE SCHEMA water_lakeline;
+
+CREATE TABLE IF NOT EXISTS water_lakeline.updates(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION water_lakeline.flag() RETURNS trigger AS $$
 BEGIN
-    INSERT INTO updates_osm_water_polygon(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    INSERT INTO water_lakeline.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
 END;    
 $$ language plpgsql;
 
-CREATE OR REPLACE FUNCTION refresh_osm_water_lakeline() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh osm_water_lakeline based tables';
+    RAISE LOG 'Refresh water_lakeline';
     REFRESH MATERIALIZED VIEW osm_water_lakeline;
-    DELETE FROM updates_osm_water_polygon;
+    DELETE FROM water_lakeline.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_refresh_osm_water_lakeline
+CREATE TRIGGER water_lakeline.trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE flag_update_osm_water_polygon();
+    EXECUTE PROCEDURE water_lakeline.flag();
 
-CREATE CONSTRAINT TRIGGER commit_osm_water_polygon 
-    AFTER INSERT ON updates_osm_water_polygon
+CREATE CONSTRAINT TRIGGER water_lakeline.trigger_refresh
+    AFTER INSERT ON water_lakeline.updates
     INITIALLY DEFERRED
     FOR EACH ROW
-    EXECUTE PROCEDURE refresh_osm_water_lakeline();
+    EXECUTE PROCEDURE water_lakeline.refresh();

@@ -11,19 +11,36 @@ CREATE MATERIALIZED VIEW osm_water_point AS (
 ) WITH NO DATA;
 CREATE INDEX IF NOT EXISTS osm_water_point_geometry_idx ON osm_water_point USING gist (geometry);
 
--- Triggers
+-- Handle updates
 
-CREATE OR REPLACE FUNCTION refresh_osm_water_point() RETURNS trigger AS
+CREATE SCHEMA water_name;
+
+CREATE TABLE IF NOT EXISTS water_name.updates(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION water_name.flag() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO water_name.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    RETURN null;
+END;    
+$$ language plpgsql;
+
+CREATE OR REPLACE FUNCTION water_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh osm_water polygon based tables';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_point;
-      RETURN null;
+    RAISE LOG 'Refresh water_name';
+    REFRESH MATERIALIZED VIEW osm_water_point;
+    DELETE FROM water_name.updates;
+    RETURN null;
   END;
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_refresh_osm_water_point
+CREATE TRIGGER water_name.trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_water_point();
+    EXECUTE PROCEDURE water_name.flag();
+
+CREATE CONSTRAINT TRIGGER water_name.trigger_refresh
+    AFTER INSERT ON water_name.updates
+    INITIALLY DEFERRED
+    FOR EACH ROW
+    EXECUTE PROCEDURE water_name.refresh();

@@ -56,25 +56,43 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen3 AS (
 ) WITH NO DATA;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist(geometry);
 
---- Triggers
+-- Handle updates
 
-CREATE OR REPLACE FUNCTION refresh_osm_transportation_name_linestring() RETURNS trigger AS
+CREATE SCHEMA transportation_name;
+
+CREATE TABLE IF NOT EXISTS transportation_name.updates(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION transportation_name.flag() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO transportation_name.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    RETURN null;
+END;    
+$$ language plpgsql;
+
+CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh osm_highway_linestring based tables';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen3;
-      RETURN null;
+    RAISE LOG 'Refresh transportation_name';
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
+    DELETE FROM transportation_name.updates;
+    RETURN null;
   END;
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_refresh_osm_transportation_name_linestring
+CREATE TRIGGER transportation_name.trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE refresh_osm_transportation_name_linestring();
+    EXECUTE PROCEDURE transportation_name.flag();
+
+CREATE CONSTRAINT TRIGGER transportation_name.trigger_refresh
+    AFTER INSERT ON transportation_name.updates
+    INITIALLY DEFERRED
+    FOR EACH ROW
+    EXECUTE PROCEDURE transportation_name.refresh();
+
 
 
 
