@@ -11,14 +11,23 @@ CREATE MATERIALIZED VIEW osm_water_lakeline AS (
 ) WITH NO DATA;
 CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline USING gist(geometry);
 
--- Triggers
+-- Handle updates
+
+CREATE TABLE IF NOT EXISTS updates_osm_water_polygon(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION flag_update_osm_water_polygon() RETURNS trigger AS $$
+BEGIN
+    INSERT INTO updates_osm_water_polygon(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    RETURN null;
+END;    
+$$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION refresh_osm_water_lakeline() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh osm_water_lakeline based tables';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_lakeline;
-      RETURN null;
+    REFRESH MATERIALIZED VIEW osm_water_lakeline;
+    DELETE FROM updates_osm_water_polygon;
+    RETURN null;
   END;
   $BODY$
 language plpgsql;
@@ -26,4 +35,10 @@ language plpgsql;
 CREATE TRIGGER trigger_refresh_osm_water_lakeline
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
     FOR EACH STATEMENT
+    EXECUTE PROCEDURE flag_update_osm_water_polygon();
+
+CREATE CONSTRAINT TRIGGER commit_osm_water_polygon 
+    AFTER INSERT ON updates_osm_water_polygon
+    INITIALLY DEFERRED
+    FOR EACH ROW
     EXECUTE PROCEDURE refresh_osm_water_lakeline();
