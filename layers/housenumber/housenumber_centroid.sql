@@ -1,6 +1,6 @@
 
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
-CREATE FUNCTION convert_housenumber_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION convert_housenumber_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_housenumber_point SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
 END;
@@ -10,7 +10,7 @@ SELECT convert_housenumber_point();
 
 -- Handle updates
 
-CREATE SCHEMA housenumber;
+CREATE SCHEMA IF NOT EXISTS housenumber;
 
 CREATE TABLE IF NOT EXISTS housenumber.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION housenumber.flag() RETURNS trigger AS $$
@@ -30,6 +30,9 @@ CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_housenumber_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON housenumber.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_housenumber_point
