@@ -1,7 +1,7 @@
 layer:
   id: "landuse"
   description: |
-      Landuse is used to describe use of land by humans.At lower zoom levels this is
+      Landuse is used to describe use of land by humans. At lower zoom levels this is
       from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
   buffer_size: 4
   fields:

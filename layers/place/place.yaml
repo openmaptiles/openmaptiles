@@ -14,7 +14,7 @@ layer:
           [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
           of the boundary the place is a capital of.
       values: [2, 4]
-    class: |
+    class:
       description: |
           Original value of the
           [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
