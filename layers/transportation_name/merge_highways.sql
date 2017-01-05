@@ -4,6 +4,11 @@
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
+
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
 CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
 	SELECT
@@ -58,7 +63,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx 
 
 -- Handle updates
 
-CREATE SCHEMA transportation_name;
+CREATE SCHEMA IF NOT EXISTS transportation_name;
 
 CREATE TABLE IF NOT EXISTS transportation_name.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION transportation_name.flag() RETURNS trigger AS $$
@@ -81,6 +86,9 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_highway_linestring;
+DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring

@@ -1,6 +1,8 @@
 
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline
+DROP MATERIALIZED VIEW IF EXISTS osm_water_lakeline CASCADE;
+
 CREATE MATERIALIZED VIEW osm_water_lakeline AS (
 	SELECT wp.osm_id,
 		ll.wkb_geometry AS geometry,
@@ -13,7 +15,7 @@ CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline
 
 -- Handle updates
 
-CREATE SCHEMA water_lakeline;
+CREATE SCHEMA IF NOT EXISTS water_lakeline;
 
 CREATE TABLE IF NOT EXISTS water_lakeline.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION water_lakeline.flag() RETURNS trigger AS $$
@@ -33,6 +35,9 @@ CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_water_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON water_lakeline.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon

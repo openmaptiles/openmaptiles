@@ -3,7 +3,7 @@ ALTER TABLE osm_country_point DROP CONSTRAINT IF EXISTS osm_country_point_rank_c
 -- etldoc: ne_10m_admin_0_countries   -> osm_country_point
 -- etldoc: osm_country_point          -> osm_country_point
 
-CREATE FUNCTION update_osm_country_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION update_osm_country_point() RETURNS VOID AS $$
 BEGIN
 
   WITH important_country_point AS (
@@ -43,7 +43,7 @@ CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point("rank
 
 -- Handle updates
 
-CREATE SCHEMA place_country;
+CREATE SCHEMA IF NOT EXISTS place_country;
 
 CREATE TABLE IF NOT EXISTS place_country.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION place_country.flag() RETURNS trigger AS $$
@@ -63,6 +63,9 @@ CREATE OR REPLACE FUNCTION place_country.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_country_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_country.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_country_point

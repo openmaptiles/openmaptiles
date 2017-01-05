@@ -1,5 +1,5 @@
 -- etldoc:  osm_island_polygon ->  osm_island_polygon
-CREATE FUNCTION convert_island_polygon_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION convert_island_polygon_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_island_polygon  SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
   ANALYZE osm_island_polygon;
@@ -10,7 +10,7 @@ SELECT convert_island_polygon_point();
 
 -- Handle updates
 
-CREATE SCHEMA place_island;
+CREATE SCHEMA IF NOT EXISTS place_island;
 
 CREATE TABLE IF NOT EXISTS place_island.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION place_island.flag() RETURNS trigger AS $$
@@ -30,6 +30,9 @@ CREATE OR REPLACE FUNCTION place_island.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_island_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_island.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_island_polygon

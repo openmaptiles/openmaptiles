@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
 
-CREATE FUNCTION update_osm_city_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION update_osm_city_point() RETURNS VOID AS $$
 BEGIN
 
   -- Clear  OSM key:rank ( https://github.com/openmaptiles/openmaptiles/issues/108 )
@@ -48,7 +48,7 @@ CREATE INDEX IF NOT EXISTS osm_city_point_rank_idx ON osm_city_point("rank");
 
 -- Handle updates
 
-CREATE SCHEMA place_city;
+CREATE SCHEMA IF NOT EXISTS place_city;
 
 CREATE TABLE IF NOT EXISTS place_city.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION place_city.flag() RETURNS trigger AS $$
@@ -68,6 +68,9 @@ CREATE OR REPLACE FUNCTION place_city.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_city_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_city.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_city_point

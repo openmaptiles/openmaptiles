@@ -1,6 +1,6 @@
 -- etldoc:  osm_poi_polygon ->  osm_poi_polygon
 
-CREATE FUNCTION convert_poi_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION convert_poi_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_poi_polygon SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
   ANALYZE osm_poi_polygon;
@@ -11,7 +11,7 @@ SELECT convert_poi_point();
 
 -- Handle updates
 
-CREATE SCHEMA poi;
+CREATE SCHEMA IF NOT EXISTS poi;
 
 CREATE TABLE IF NOT EXISTS poi.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION poi.flag() RETURNS trigger AS $$
@@ -31,6 +31,9 @@ CREATE OR REPLACE FUNCTION poi.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_poi_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON poi.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_poi_polygon

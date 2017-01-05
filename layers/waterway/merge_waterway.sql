@@ -4,6 +4,11 @@
 -- and also makes it possible to filter out too short rivers
 
 -- etldoc: osm_waterway_linestring ->  osm_important_waterway_linestring
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen1 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen2 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen3 CASCADE;
+
 CREATE MATERIALIZED VIEW osm_important_waterway_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
@@ -45,7 +50,7 @@ CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx O
 
 -- Handle updates
 
-CREATE SCHEMA waterway;
+CREATE SCHEMA IF NOT EXISTS waterway;
 
 CREATE TABLE IF NOT EXISTS waterway.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION waterway.flag() RETURNS trigger AS $$
@@ -68,6 +73,9 @@ CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
+DROP TRIGGER IF EXISTS trigger_refresh ON waterway.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring

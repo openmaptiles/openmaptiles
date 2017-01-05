@@ -1,6 +1,8 @@
 
 -- etldoc:  osm_water_polygon ->  osm_water_point
 -- etldoc:  lake_centerline ->  osm_water_point
+DROP MATERIALIZED VIEW IF EXISTS  osm_water_point CASCADE;
+
 CREATE MATERIALIZED VIEW osm_water_point AS (
     SELECT
         wp.osm_id, topoint(wp.geometry) AS geometry,
@@ -10,10 +12,10 @@ CREATE MATERIALIZED VIEW osm_water_point AS (
     WHERE ll.osm_id IS NULL AND wp.name <> ''
 ) WITH NO DATA;
 CREATE INDEX IF NOT EXISTS osm_water_point_geometry_idx ON osm_water_point USING gist (geometry);
-
+ 
 -- Handle updates
 
-CREATE SCHEMA water_name;
+CREATE SCHEMA IF NOT EXISTS water_name;
 
 CREATE TABLE IF NOT EXISTS water_name.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION water_name.flag() RETURNS trigger AS $$
@@ -33,6 +35,9 @@ CREATE OR REPLACE FUNCTION water_name.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_flag ON osm_water_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON water_name.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon
