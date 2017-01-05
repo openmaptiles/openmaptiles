@@ -1,8 +1,11 @@
 ## water
 
-http://openmaptiles.org/schema#water
+### Docs
+Read the layer documentation at **http://openmaptiles.org/schema#water**
 
-![ETL diagram for water](http://openmaptiles.org/media/etl_water.png)
-
+### Mapping Diagram
 ![Mapping diagram for water](http://openmaptiles.org/media/mapping_water.png)
+
+### ETL diagram
+![ETL diagram for water](http://openmaptiles.org/media/etl_water.png)
 

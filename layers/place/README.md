@@ -1,8 +1,11 @@
 ## place
 
-http://openmaptiles.org/schema#place
+### Docs
+Read the layer documentation at **http://openmaptiles.org/schema#place**
 
-![ETL diagram for place](http://openmaptiles.org/media/etl_place.png)
-
+### Mapping Diagram
 ![Mapping diagram for place](http://openmaptiles.org/media/mapping_place.png)
+
+### ETL diagram
+![ETL diagram for place](http://openmaptiles.org/media/etl_place.png)
 
