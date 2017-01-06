@@ -78,6 +78,13 @@ make
 docker run -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 ```
 
+You can execute the following manual steps (for better understanding)
+or use the provided `quickstart.sh` script.
+
+```
+./quickstart.sh
+```
+
 ### Prepare the Database
 
 Now start up the database container.
