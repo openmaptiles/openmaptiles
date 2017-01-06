@@ -284,8 +284,8 @@ docker volume ls -q | grep openmaptiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : (disk space) We have created the new vectortiles ( ./data/tiles.mbtiles ) "
-echo "      : The OpenMapTiles MBTILES license: ..... "
-echo "      : We created from $testdata ( file moddate: $MODDATE ) "
+echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
+echo "      : Created from $testdata ( file moddate: $MODDATE ) "
 echo "      : Size: "
 ls ./data/*.mbtiles -la
 
@@ -295,11 +295,11 @@ echo "The ./quickstart.sh $osm_area  is finished! "
 echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
-echo "Start experimenting !  And check the QUICKSTART.MD file !"
-echo "Avaialable help commands ( make help )  "
+echo "Start experimenting! And check the QUICKSTART.MD file!"
+echo "Available help commands (make help)  "
 make help
 
 echo "-------------------------------------------------------------------------------------"
 echo " Acknowledgments "
-echo " Thanks to all free, open source software developers and Open Data Contributors !    "
+echo " Thanks to all free, open source software developers and Open Data Contributors!    "
 echo "-------------------------------------------------------------------------------------"
