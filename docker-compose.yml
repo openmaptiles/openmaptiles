@@ -1,5 +1,6 @@
 version: "2"
-volumes: pgdata:
+volumes:
+  pgdata:
   cache:
 services:
   postgres:
