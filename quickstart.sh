@@ -42,12 +42,12 @@ echo " "
 echo "====================================================================================="
 echo "                       Docker check & Download images                                "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Please check the docker and docker-compose version!"
-echo "      : We are using docker-compose V2 file format !  see more: https://docs.docker.com/"
-echo "      : (theoretically;not tested) minumum Docker version is $MIN_DOCKER_VER+."
-echo "      : (theoretically;not tested) minimum Docker-compose version is $MIN_COMPOSE_VER+."
-echo "      : See the .travis testfile for the current supported versions "
-echo "      : Your docker systems is:"
+echo "====> : Please check the Docker and docker-compose version!"
+echo "      : We are using docker-compose v2 file format!  see more at https://docs.docker.com/"
+echo "      : Minimum required Docker version: $MIN_DOCKER_VER+"
+echo "      : Minimum required docker-compose version: $MIN_COMPOSE_VER+"
+echo "      : See the .travis build for the currently supported versions."
+echo "      : Your docker system:"
 docker         --version
 docker-compose --version
 
@@ -59,13 +59,13 @@ fi
 
 DOCKER_VER="$(docker -v | awk -F '[ ,]+' '{ print $3 }')"
 if [ $DOCKER_VER "<" $MIN_DOCKER_VER ]; then
-  echo "ERR: Your Docker version is not compatible , Please Update docker!"
+  echo "ERR: Your Docker version is not compatible. Please Update docker!"
   exit 1
 fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Pulling or Refreshing OpenMapTiles docker images "
+echo "====> : Pulling or refreshing OpenMapTiles docker images "
 make refresh-docker-images
 
 
