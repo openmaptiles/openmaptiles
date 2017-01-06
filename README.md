@@ -1,28 +1,46 @@
 ## OpenMapTiles
 
-OpenMapTiles is an extensible vector tile schema you can use or mix and match to create your own vector tile sets.
-It is used by [OSM2VectorTiles](http://osm2vectortiles.org/) and we encourage you to collaborate, reuse and adapt existing layers and add your own layers.
+OpenMapTiles is an extensible and open vector tile schema for a OpenStreetMap basemap. It is used to generate vector tiles for [openmaptiles.org](http://openmaptiles.org/) and [openmaptiles.com](http://openmaptiles.com/).
 
-You define a self contained **Layer** together with SQL files and layer and data source definitions (like an imposm3 mapping file) that you can then reference in a **Tileset** where you mix and match with other layers.
+We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. The repository is built on top of the [openmaptiles/tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
+
+- :link: Docs http://openmaptiles.org/docs
+- :link: Schema: http://openmaptiles.org/schema
+- :link: Production package: http://openmaptiles.com/
 
 ## Styles
 
-You can start from several styles supporting the OpenMapTiles vector schema.
+You can start from several GL styles supporting the OpenMapTiles vector schema.
+
+:link: [Learn how to create Mapbox GL styles with Maputnik and OpenMapTiles](http://openmaptiles.org/docs/style/maputnik/).
+
 
 - [OSM Bright](https://github.com/openmaptiles/osm-bright-gl-style)
 - [Positron](https://github.com/openmaptiles/positron-gl-style)
 - [Dark Matter](https://github.com/openmaptiles/dark-matter-gl-style)
 - [Klokantech Basic](https://github.com/openmaptiles/klokantech-basic-gl-style)
+- [Klokantech 3D](https://github.com/openmaptiles/klokantech-3d-gl-style)
+- [Fiord Color](https://github.com/openmaptiles/fiord-color-gl-style)
+- [Toner](https://github.com/openmaptiles/toner-gl-style)
 
-## Layers
+We also ported over our favorite old raster styles (TM2).
 
-### Standard Layers
+:link: [Learn how to create TM2 styles with Mapbox Studio Classic and OpenMapTiles](http://openmaptiles.org/docs/style/mapbox-studio-classic/).
 
-OpenMapTiles contains a collection of Natural Earth and OSM based layers (with imposm3 mapping) you can modify and adapt.
-We welcome new standard layers from other data sources or import tools (like osm2pgsql with ClearTables).
+- [Light](https://github.com/openmaptiles/mapbox-studio-light.tm2/)
+- [Dark](https://github.com/openmaptiles/mapbox-studio-dark.tm2/)
+- [OSM Bright](https://github.com/openmaptiles/mapbox-studio-osm-bright.tm2/)
+- [Pencil](https://github.com/openmaptiles/mapbox-studio-pencil.tm2/)
+- [Woodcut](https://github.com/openmaptiles/mapbox-studio-woodcut.tm2/)
+- [Pirates](https://github.com/openmaptiles/mapbox-studio-pirates.tm2/)
+- [Wheatpaste](https://github.com/openmaptiles/mapbox-studio-wheatpaste.tm2/)
 
-Each layer is documented and self contained. Click on the link for each layer to get more information.
-Layers can be chosen to create a **Tileset** like the `openmaptiles.yaml` tileset.
+## Schema
+
+OpenMapTiles consists out of a collection of documented and self contained layers you can modify and adapt.
+Together the layers make up the OpenMapTiles tileset.
+
+:link: [Study the vector tile schema](http://openmaptiles.org/schema)
 
 - [boundary](https://github.com/openmaptiles/openmaptiles/wiki/boundary)
 - [building](https://github.com/openmaptiles/openmaptiles/wiki/building)
@@ -38,54 +56,6 @@ Layers can be chosen to create a **Tileset** like the `openmaptiles.yaml` tilese
 - [water](https://github.com/openmaptiles/openmaptiles/wiki/water)
 - [water_name](https://github.com/openmaptiles/openmaptiles/wiki/water_name)
 - [waterway](https://github.com/openmaptiles/openmaptiles/wiki/waterway)
-
-### Define your own Layer
-
-Take a look or copy a standard layer like [building](layers/building/README.md) to get started with your own layer.
-A layer consists out of a **Layer** definition written in YAML format.
-
-There you specify the `layer` proerties like `id`, `buffer_size` and possible Markdown documentation (`description` and `fields`).
-You can also reference SQL files in `schema` for writing the necessary queries for your layer or create generalized tables.
-We encourage you to have a function per layer which takes the bounding box and zoom level. This makes it easy
-to test and reuse.
-
-If your data is based of OSM you can also directly
-reference a [imposm3 mapping file](https://imposm.org/docs/imposm3/latest/mapping.html) to choose the OSM data you need.
-
-```yaml
-layer:
-  id: "building"
-  description: Buildings from OpenStreetMap
-  buffer_size: 4
-  datasource:
-    query: (SELECT geometry FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
-  fields:
-    render_height: An approximated height from levels and height of building.
-schema:
-  - ./building.sql
-datasources:
-  - type: imposm3
-    mapping_file: ./mapping.yaml
-```
-
-### Define your own Tileset
-
-A **Tileset** defines which layer will be in your vector tile set (`layers`)
-and metadata used for generating a TM2Source project to actually generate the vector tiles.
-
-```yaml
-tileset:
-  layers:
-    - layers/building/building.yaml
-    - layers/housenumber/housenumber.yaml
-    - layers/poi/poi.yaml
-  name: Street Level
-  description: A tileset showing street level info like building, housenumbers and POIs.
-  attribution: "OpenStreetMap contributors"
-  maxzoom: 14
-  minzoom: 13
-  center: [-12.2168, 28.6135, 4]
-```
 
 ## Develop
 
@@ -147,5 +117,7 @@ docker-compose run generate-vectortiles
 ```
 
 ## License
+
+*LICENSE HAS NOT BEEN YET DECIDED*
 
 All code in this repository is under the [MIT license](./LICENSE) and the cartography decisions encoded in the schema and SQL is licensed under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
