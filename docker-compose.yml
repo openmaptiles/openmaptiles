@@ -1,6 +1,5 @@
 version: "2"
-volumes:
-  pgdata:
+volumes: pgdata:
   cache:
 services:
   postgres:
@@ -50,7 +49,7 @@ services:
     - postgres
     volumes:
      - .:/tileset
-     - ./build:/sql     
+     - ./build:/sql
   mapbox-studio:
     image: "osm2vectortiles/mapbox-studio"
     volumes:
@@ -70,5 +69,6 @@ services:
     environment:
       #BBOX: "8.25,46.97,9.58,47.52"
       #BBOX: "5.97,45.75,10.7,47.72"
-      MIN_ZOOM: "0"
-      MAX_ZOOM: "7"
+      BBOX: ${BBOX}
+      MIN_ZOOM: ${MIN_ZOOM}
+      MAX_ZOOM: ${MAX_ZOOM}
