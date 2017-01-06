@@ -77,7 +77,7 @@ echo "==========================================================================
 echo "                                Start processing                                     "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
-echo "      : This will be logged to the $log_file file ( for debugging ) and to the screen"
+echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $osm_area "
 echo "      : Git version      : $githash "
 echo "      : Started          : $STARTDATE "
@@ -87,9 +87,6 @@ docker         --version
 docker-compose --version
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-
-    echo "      : Your system is:"
-    lsb_release -a
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "      : This is working on x86_64 ; Your kernel is:"
@@ -109,13 +106,13 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     cat /proc/meminfo  | grep Free
 else
     echo " "
-    echo "Warning : This is not a Linux ...  ( Less tested ... )  "
+    echo "Warning : Platforms other than Linux are less tested"
     echo " "
 fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Stopping running services & removing old containers "
+echo "====> : Stopping running services & removing old containers"
 make clean-docker
 
 echo " "
