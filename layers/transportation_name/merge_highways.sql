@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_highway_linestring;
+DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
@@ -86,9 +88,6 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_highway_linestring;
-DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring

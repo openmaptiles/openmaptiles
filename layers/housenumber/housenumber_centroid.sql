@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_housenumber_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON housenumber.updates;
 
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
 CREATE OR REPLACE FUNCTION convert_housenumber_point() RETURNS VOID AS $$
@@ -24,15 +26,12 @@ CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh housenumber';
-    SELECT convert_housenumber_point();
+    PERFORM convert_housenumber_point();
     DELETE FROM housenumber.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_housenumber_point;
-DROP TRIGGER IF EXISTS trigger_refresh ON housenumber.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_housenumber_point

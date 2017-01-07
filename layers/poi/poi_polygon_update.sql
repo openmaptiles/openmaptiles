@@ -1,3 +1,6 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_poi_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON poi.updates;
+
 -- etldoc:  osm_poi_polygon ->  osm_poi_polygon
 
 CREATE OR REPLACE FUNCTION convert_poi_point() RETURNS VOID AS $$
@@ -25,15 +28,12 @@ CREATE OR REPLACE FUNCTION poi.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh poi';
-    SELECT convert_poi_point();
+    PERFORM convert_poi_point();
     DELETE FROM poi.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_poi_polygon;
-DROP TRIGGER IF EXISTS trigger_refresh ON poi.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_poi_polygon

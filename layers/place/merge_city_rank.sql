@@ -1,6 +1,7 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_city_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_city.updates;
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
-
 
 CREATE OR REPLACE FUNCTION update_osm_city_point() RETURNS VOID AS $$
 BEGIN
@@ -62,15 +63,12 @@ CREATE OR REPLACE FUNCTION place_city.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh place_city rank';
-    SELECT update_osm_city_point();
+    PERFORM update_osm_city_point();
     DELETE FROM place_city.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_city_point;
-DROP TRIGGER IF EXISTS trigger_refresh ON place_city.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_city_point

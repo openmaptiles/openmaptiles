@@ -1,3 +1,6 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_state_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_state.updates;
+
 ALTER TABLE osm_state_point DROP CONSTRAINT IF EXISTS osm_state_point_rank_constraint;
 
 -- etldoc: ne_10m_admin_1_states_provinces_shp   -> osm_state_point
@@ -53,15 +56,12 @@ CREATE OR REPLACE FUNCTION place_state.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh place_state rank';
-    SELECT update_osm_state_point();
+    PERFORM update_osm_state_point();
     DELETE FROM place_state.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_state_point;
-DROP TRIGGER IF EXISTS trigger_refresh ON place_state.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_state_point

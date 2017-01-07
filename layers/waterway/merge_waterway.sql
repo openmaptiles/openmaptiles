@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
+DROP TRIGGER IF EXISTS trigger_refresh ON waterway.updates;
 
 -- We merge the waterways by name like the highways
 -- This helps to drop not important rivers (since they do not have a name)
@@ -73,9 +75,6 @@ CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
-DROP TRIGGER IF EXISTS trigger_refresh ON waterway.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring

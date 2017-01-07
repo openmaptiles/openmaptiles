@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_water_polygon;
+DROP TRIGGER IF EXISTS trigger_refresh ON water_lakeline.updates;
 
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline
@@ -35,9 +37,6 @@ CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_water_polygon;
-DROP TRIGGER IF EXISTS trigger_refresh ON water_lakeline.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_water_polygon

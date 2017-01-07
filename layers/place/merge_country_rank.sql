@@ -1,3 +1,6 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_country_point;
+DROP TRIGGER IF EXISTS trigger_refresh ON place_country.updates;
+
 ALTER TABLE osm_country_point DROP CONSTRAINT IF EXISTS osm_country_point_rank_constraint;
 
 -- etldoc: ne_10m_admin_0_countries   -> osm_country_point
@@ -57,15 +60,12 @@ CREATE OR REPLACE FUNCTION place_country.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh place_country rank';
-    SELECT update_osm_country_point();
+    PERFORM update_osm_country_point();
     DELETE FROM place_country.updates;
     RETURN null;
   END;
   $BODY$
 language plpgsql;
-
-DROP TRIGGER IF EXISTS trigger_flag ON osm_country_point;
-DROP TRIGGER IF EXISTS trigger_refresh ON place_country.updates;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_country_point
