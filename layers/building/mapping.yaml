@@ -42,8 +42,10 @@ tables:
       - terminal
       - hangar
     filters:
-      exclude_tags:
-      - [ "building", "no" ]
-      - [ "building", "none" ]
-      - [ "building", "No" ]
+      # exclude_tags:
+      # - [ "building", "no" ]
+      # - [ "building", "none" ]
+      # - [ "building", "No" ]
+      reject:
+        building: ["no","none","No"]    
     type: polygon

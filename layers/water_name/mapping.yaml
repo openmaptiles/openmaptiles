@@ -17,8 +17,10 @@ tables:
       key: place
       type: string
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      #exclude_tags:
+      #- [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - ocean
