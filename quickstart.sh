@@ -243,6 +243,12 @@ docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Add special metadata to mbtiles! "
+docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles	
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
 docker-compose stop postgres
 
