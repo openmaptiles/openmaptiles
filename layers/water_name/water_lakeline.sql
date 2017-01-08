@@ -12,7 +12,7 @@ CREATE MATERIALIZED VIEW osm_water_lakeline AS (
     FROM osm_water_polygon AS wp
     INNER JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
     WHERE wp.name <> ''
-) WITH NO DATA;
+);
 CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline USING gist(geometry);
 
 -- Handle updates
@@ -31,7 +31,7 @@ CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh water_lakeline';
-    REFRESH MATERIALIZED VIEW osm_water_lakeline;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_lakeline;
     DELETE FROM water_lakeline.updates;
     RETURN null;
   END;
