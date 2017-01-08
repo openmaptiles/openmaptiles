@@ -44,7 +44,7 @@ services:
     volumes:
      - ./build:/sql
   openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:latest"
+    image: "openmaptiles/openmaptiles-tools:0.3"
     env_file: .env
     links:
     - postgres
