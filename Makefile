@@ -10,7 +10,7 @@ help:
 	@echo "  "
 	@echo "Hints for designers:"
 	@echo "  ....TODO....                         # start Maputnik "
-	@echo "  ....TODO....                         # start Tileserver-gl-light"
+	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] "
 	@echo "  make start-mapbox-studio             # start Mapbox Studio"
 	@echo "  "
 	@echo "Hints for developers:"
@@ -64,6 +64,7 @@ remove-docker-images:
 	@docker images | grep "<none>" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
 	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
 	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
+	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
 
 docker-unnecessary-clean:
 	@echo "Deleting unnecessary container(s)..."
@@ -116,6 +117,26 @@ list:
 # same as a `make list`
 download-geofabrik-list:
 	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+
+start-tileserver:
+	@echo " "	
+	@echo "***********************************************************"
+	@echo "* "		
+	@echo "* Download latest klokantech/tileserver-gl docker image    "
+	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"	
+	@echo "* "			
+	@echo "***********************************************************"
+	@echo " "	
+	docker pull klokantech/tileserver-gl
+	@echo " "	
+	@echo "***********************************************************"
+	@echo "* "	
+	@echo "* Start klokantech/tileserver-gl "
+	@echo "*       ----------------------------> check localhost:8080 "
+	@echo "* "		
+	@echo "***********************************************************"
+	@echo " "
+	docker run -it -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 start-mapbox-studio:
 	docker-compose up mapbox-studio
