@@ -61,10 +61,9 @@ refresh-docker-images:
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
 	@docker-compose down
-	@docker images | grep "<none>" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
-	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
-	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
-	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi
+	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f 
+	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 
 docker-unnecessary-clean:
 	@echo "Deleting unnecessary container(s)..."
