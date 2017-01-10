@@ -65,7 +65,7 @@ $$ language plpgsql;
 CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh transportation_name';
+    RAISE LOG 'Refresh waterway';
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring;
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen1;
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen2;
