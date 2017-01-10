@@ -135,7 +135,7 @@ start-tileserver:
 	@echo "* "		
 	@echo "***********************************************************"
 	@echo " "
-	docker run -it -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run -it --rm -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 start-mapbox-studio:
 	docker-compose up mapbox-studio
