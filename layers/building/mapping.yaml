@@ -47,3 +47,43 @@ tables:
       - [ "building", "none" ]
       - [ "building", "No" ]
     type: polygon
+
+  # etldoc: imposm3 -> osm_building_polygon_member
+  building_polygon_member:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: pseudoarea
+    - name: building
+      key: building
+      type: string
+    - name: height
+      key: height
+      type: integer
+    - name: min_height
+      key: min_height
+      type: integer
+    - name: levels
+      key: building:levels
+      type: integer
+    - name: min_level
+      key: building:min_level
+      type: integer
+    mapping:
+      building:part:
+      - __any__
+      building:
+      - __any__
+      # these aeroway polygons all imply building=yes
+      aeroway:
+      - terminal
+      - hangar
+    filters:
+      exclude_tags:
+      - [ "building", "no" ]
+      - [ "building", "none" ]
+      - [ "building", "No" ]
+    type: relation_member
