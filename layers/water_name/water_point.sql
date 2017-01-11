@@ -30,7 +30,7 @@ $$ language plpgsql;
 CREATE OR REPLACE FUNCTION water_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh water_name';
+    RAISE LOG 'Refresh water_point';
     REFRESH MATERIALIZED VIEW osm_water_point;
     DELETE FROM water_name.updates;
     RETURN null;
