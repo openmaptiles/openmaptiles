@@ -79,10 +79,10 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh transportation_name';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen3;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
     DELETE FROM transportation_name.updates;
     RETURN null;
   END;

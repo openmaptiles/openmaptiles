@@ -31,7 +31,7 @@ CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh water_lakeline';
-    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_water_lakeline;
+    REFRESH MATERIALIZED VIEW osm_water_lakeline;
     DELETE FROM water_lakeline.updates;
     RETURN null;
   END;
