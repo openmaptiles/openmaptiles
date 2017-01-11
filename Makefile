@@ -61,7 +61,7 @@ refresh-docker-images:
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
 	@docker-compose down
-	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f 
+	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 
@@ -118,21 +118,21 @@ download-geofabrik-list:
 	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
 
 start-tileserver:
-	@echo " "	
+	@echo " "
 	@echo "***********************************************************"
-	@echo "* "		
-	@echo "* Download latest klokantech/tileserver-gl docker image    "
-	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"	
-	@echo "* "			
+	@echo "* "
+	@echo "* Download/refresh klokantech/tileserver-gl docker image"
+	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"
+	@echo "* "
 	@echo "***********************************************************"
-	@echo " "	
+	@echo " "
 	docker pull klokantech/tileserver-gl
-	@echo " "	
+	@echo " "
 	@echo "***********************************************************"
-	@echo "* "	
+	@echo "* "
 	@echo "* Start klokantech/tileserver-gl "
 	@echo "*       ----------------------------> check localhost:8080 "
-	@echo "* "		
+	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
 	docker run -it --rm -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
