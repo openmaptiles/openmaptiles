@@ -17,38 +17,6 @@ CREATE OR REPLACE VIEW waterway_z6 AS (
     WHERE featurecla = 'River'
 );
 
--- etldoc: osm_important_waterway_linestring_gen3 ->  waterway_z9
-CREATE OR REPLACE VIEW waterway_z9 AS (
-    SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen3
-);
-
--- etldoc: osm_important_waterway_linestring_gen2 ->  waterway_z10
-CREATE OR REPLACE VIEW waterway_z10 AS (
-    SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen2
-);
-
--- etldoc:osm_important_waterway_linestring_gen1 ->  waterway_z11
-CREATE OR REPLACE VIEW waterway_z11 AS (
-    SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen1
-);
-
--- etldoc: osm_waterway_linestring ->  waterway_z12
-CREATE OR REPLACE VIEW waterway_z12 AS (
-    SELECT geometry, waterway AS class, name FROM osm_waterway_linestring
-    WHERE waterway IN ('river', 'canal')
-);
-
--- etldoc: osm_waterway_linestring ->  waterway_z13
-CREATE OR REPLACE VIEW waterway_z13 AS (
-    SELECT geometry, waterway::text AS class, name FROM osm_waterway_linestring
-    WHERE waterway IN ('river', 'canal', 'stream', 'drain', 'ditch')
-);
-
--- etldoc: osm_waterway_linestring ->  waterway_z14
-CREATE OR REPLACE VIEW waterway_z14 AS (
-    SELECT geometry, waterway::text AS class, name FROM osm_waterway_linestring
-);
-
 -- etldoc: layer_waterway[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_waterway | <z3> z3 |<z4_5> z4-z5 |<z6_8> z6-8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ];
 
@@ -65,22 +33,22 @@ RETURNS TABLE(geometry geometry, class text, name text) AS $$
         SELECT * FROM waterway_z6 WHERE zoom_level BETWEEN 6 AND 8
         UNION ALL
         -- etldoc: waterway_z9 ->  layer_waterway:z9
-        SELECT * FROM waterway_z9 WHERE zoom_level = 9
+        SELECT * FROM (SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen3(bbox, zoom_level)) AS waterway_z9 WHERE zoom_level = 9
         UNION ALL
         -- etldoc: waterway_z10 ->  layer_waterway:z10
-        SELECT * FROM waterway_z10 WHERE zoom_level = 10
+        SELECT * FROM (SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen2(bbox, zoom_level)) AS waterway_z10 WHERE zoom_level = 10
         UNION ALL
         -- etldoc: waterway_z11 ->  layer_waterway:z11
-        SELECT * FROM waterway_z11 WHERE zoom_level = 11
+        SELECT * FROM (SELECT geometry, 'river'::text AS class, name FROM osm_important_waterway_linestring_gen1(bbox, zoom_level)) AS waterway_z11  WHERE zoom_level = 11
         UNION ALL
         -- etldoc: waterway_z12 ->  layer_waterway:z12
-        SELECT * FROM waterway_z12 WHERE zoom_level = 12
+        SELECT * FROM (SELECT geometry, waterway AS class, name FROM osm_waterway_linestring WHERE waterway IN ('river', 'canal')) AS waterway_z12 WHERE zoom_level = 12
         UNION ALL
         -- etldoc: waterway_z13 ->  layer_waterway:z13
-        SELECT * FROM waterway_z13 WHERE zoom_level = 13
+        SELECT * FROM (SELECT geometry, waterway::text AS class, name FROM osm_waterway_linestring WHERE waterway IN ('river', 'canal', 'stream', 'drain', 'ditch')) AS waterway_z13 WHERE zoom_level = 13
         UNION ALL
         -- etldoc: waterway_z14 ->  layer_waterway:z14
-        SELECT * FROM waterway_z14 WHERE zoom_level >= 14
+        SELECT * FROM (SELECT geometry, waterway::text AS class, name FROM osm_waterway_linestring) AS waterway_z14 WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;

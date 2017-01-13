@@ -1,16 +1,12 @@
 
-DROP TABLE IF EXISTS osm_transportation_name_linestring CASCADE;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
-DROP TABLE IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
-
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS (
+CREATE OR REPLACE FUNCTION osm_transportation_name_linestring(bbox geometry, zoom_level int)
+    RETURNS TABLE(geometry geometry, osm_id bigint, member_osm_ids bigint[], name varchar, ref varchar, highway varchar, z_order int) AS $$
 	SELECT
 		(ST_Dump(geometry)).geom AS geometry,
         -- NOTE: The osm_id is no longer the original one which can make it difficult
@@ -31,33 +27,32 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS (
 			array_agg(DISTINCT osm_id) AS member_osm_ids
 	    FROM osm_highway_linestring
         -- We only care about highways (not railways) for labeling
-	    WHERE (name <> '' OR ref <> '') AND NULLIF(highway, '') IS NOT NULL
+	    WHERE (name <> '' OR ref <> '') AND NULLIF(highway, '') IS NOT NULL AND geometry && bbox
 	    GROUP BY name, highway, ref
-	) AS highway_union
-);
-
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);
+	) AS highway_union;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS (
+CREATE OR REPLACE FUNCTION osm_transportation_name_linestring_gen1(bbox geometry, zoom_level int)
+    RETURNS TABLE(geometry geometry, osm_id bigint, member_osm_ids bigint[], name varchar, ref varchar, highway varchar, z_order int) AS $$
     SELECT ST_Simplify(geometry, 50) AS geometry, osm_id, member_osm_ids, name, ref, highway, z_order
-    FROM osm_transportation_name_linestring
-    WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 8000
-);
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist(geometry);
+    FROM osm_transportation_name_linestring(bbox, zoom_level)
+    WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 8000 AND geometry && bbox;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS (
+CREATE OR REPLACE FUNCTION osm_transportation_name_linestring_gen2(bbox geometry, zoom_level int)
+    RETURNS TABLE(geometry geometry, osm_id bigint, member_osm_ids bigint[], name varchar, ref varchar, highway varchar, z_order int) AS $$
     SELECT ST_Simplify(geometry, 120) AS geometry, osm_id, member_osm_ids, name, ref, highway, z_order
-    FROM osm_transportation_name_linestring_gen1
-    WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 14000
-);
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist(geometry);
+    FROM osm_transportation_name_linestring_gen1(bbox, zoom_level)
+    WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 14000 AND geometry && bbox;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS (
+CREATE OR REPLACE FUNCTION osm_transportation_name_linestring_gen3(bbox geometry, zoom_level int)
+    RETURNS TABLE(geometry geometry, osm_id bigint, member_osm_ids bigint[], name varchar, ref varchar, highway varchar, z_order int) AS $$
     SELECT ST_Simplify(geometry, 120) AS geometry, osm_id, member_osm_ids, name, ref, highway, z_order
-    FROM osm_transportation_name_linestring_gen2
-    WHERE highway = 'motorway' AND ST_Length(geometry) > 20000
-);
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist(geometry);
+    FROM osm_transportation_name_linestring_gen2(bbox, zoom_level)
+    WHERE highway = 'motorway' AND ST_Length(geometry) > 20000 AND geometry && bbox;
+$$ LANGUAGE SQL IMMUTABLE;
+
