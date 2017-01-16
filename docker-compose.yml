@@ -37,7 +37,7 @@ services:
      - ./build:/mapping
      - cache:/cache
   import-osmborder:
-    image: "openmaptiles/import-osmborder:0.1"
+    image: "openmaptiles/import-osmborder:0.2"
     env_file: .env
     links:
     - postgres

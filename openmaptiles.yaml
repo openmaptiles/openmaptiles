@@ -1,19 +1,6 @@
 tileset:
   layers:
-    - layers/water/water.yaml
-    - layers/waterway/waterway.yaml
-    - layers/landcover/landcover.yaml
-    - layers/landuse/landuse.yaml
-    - layers/park/park.yaml
     - layers/boundary/boundary.yaml
-    - layers/aeroway/aeroway.yaml
-    - layers/transportation/transportation.yaml
-    - layers/building/building.yaml
-    - layers/water_name/water_name.yaml
-    - layers/transportation_name/transportation_name.yaml
-    - layers/place/place.yaml
-    - layers/housenumber/housenumber.yaml
-    - layers/poi/poi.yaml
   name: OpenMapTiles
   version: 3.3.0
   id: openmaptiles 
