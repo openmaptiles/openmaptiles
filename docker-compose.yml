@@ -36,6 +36,18 @@ services:
      - ./data:/import
      - ./build:/mapping
      - cache:/cache
+  import-osm-diff:
+    image: "openmaptiles/import-osm:latest"
+    env_file: .env
+    command: ./import_diff.sh
+    environment:
+      DIFF_MODE: ${DIFF_MODE}
+    links:
+    - postgres
+    volumes:
+     - ./data:/import
+     - ./build:/mapping
+     - cache:/cache
   update-osm:
     image: "openmaptiles/import-osm:latest"
     env_file: .env
