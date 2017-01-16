@@ -71,6 +71,15 @@ services:
      - postgres:db
     ports:
      - "3000:3000"
+  generate-changed-vectortiles:
+    image: "openmaptiles/generate-vectortiles:0.1"
+    command: ./export-list.sh
+    volumes:
+    - ./data:/export
+    - ./build/openmaptiles.tm2source:/tm2source
+    links:
+    - postgres:postgres
+    env_file: .env
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:0.1"
     volumes:
