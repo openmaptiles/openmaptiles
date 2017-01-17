@@ -196,6 +196,14 @@ docker-compose run --rm import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
+echo "      : Source code:  https://github.com/openmaptiles/import-osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you: https://github.com/pnorman/osmborder "
+docker-compose run --rm import-osmborder
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
