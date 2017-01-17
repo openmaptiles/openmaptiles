@@ -20,14 +20,14 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
 		member_osm_ids[0] AS osm_id,
 		member_osm_ids,
 		name,
-        ref,
+        	ref,
 		highway,
 		z_order
 	FROM (
 		SELECT
-			ST_LineMerge(ST_Union(geometry)) AS geometry,
+			ST_LineMerge(ST_Collect(geometry)) AS geometry,
 			name,
-            ref,
+            		ref,
 			highway,
 			min(z_order) AS z_order,
 			array_agg(DISTINCT osm_id) AS member_osm_ids
