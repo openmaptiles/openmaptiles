@@ -23,7 +23,7 @@ tables:
       key: aeroway
       type: string
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     mapping:
       aeroway:
       - aerodrome

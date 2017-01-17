@@ -39,7 +39,7 @@ tables:
       key: leisure
       type: string
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     mapping:
       amenity:
       - school
