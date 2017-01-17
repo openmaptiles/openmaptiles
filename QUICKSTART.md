@@ -272,14 +272,18 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh yukon
 ```
 
-### Check other commands
+### Check tileserver
 
-`make help`
+start: 
+*  ` make start-tileserver` 
+and the generated maps are going to be available in webbrowser on [localhost:8080](http://localhost:8080/).
+
+This is only a quick preview, because your mbtiles only generated to zoom level 7 !  
 
 
 ### Change MIN_ZOOM and MAX_ZOOM
 
-modify the settings in the `.env`  file
+modify the settings in the `.env`  file, the defaults :
 * QUICKSTART_MIN_ZOOM=0
 * QUICKSTART_MAX_ZOOM=7  
 
@@ -292,3 +296,6 @@ Hints:
 * Small increments! Never starts with the MAX_ZOOM = 14
 * The suggested  MAX_ZOOM = 14  - use only with small extracts
 
+### Check other commands
+
+`make help`
