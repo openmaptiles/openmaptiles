@@ -5,7 +5,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON poi.updates;
 
 CREATE OR REPLACE FUNCTION convert_poi_point() RETURNS VOID AS $$
 BEGIN
-  UPDATE osm_poi_polygon SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
+  UPDATE osm_poi_polygon SET geometry=ST_PointOnSurface(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
   ANALYZE osm_poi_polygon;
 END;
 $$ LANGUAGE plpgsql;

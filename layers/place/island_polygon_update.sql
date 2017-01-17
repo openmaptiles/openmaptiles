@@ -4,7 +4,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON place_island.updates;
 -- etldoc:  osm_island_polygon ->  osm_island_polygon
 CREATE OR REPLACE FUNCTION convert_island_polygon_point() RETURNS VOID AS $$
 BEGIN
-  UPDATE osm_island_polygon  SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
+  UPDATE osm_island_polygon  SET geometry=ST_PointOnSurface(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
   ANALYZE osm_island_polygon;
 END;
 $$ LANGUAGE plpgsql;
