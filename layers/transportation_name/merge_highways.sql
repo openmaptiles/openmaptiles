@@ -20,14 +20,16 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
 		member_osm_ids[0] AS osm_id,
 		member_osm_ids,
 		name,
-        	ref,
+		name_en,
+        ref,
 		highway,
 		z_order
 	FROM (
 		SELECT
 			ST_LineMerge(ST_Collect(geometry)) AS geometry,
 			name,
-            		ref,
+            COALESCE(NULLIF(name_en, ''), name) AS name_en,
+            ref,
 			highway,
 			min(z_order) AS z_order,
 			array_agg(DISTINCT osm_id) AS member_osm_ids
@@ -72,7 +74,7 @@ CREATE OR REPLACE FUNCTION transportation_name.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO transportation_name.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
