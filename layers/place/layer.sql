@@ -21,7 +21,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
         osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
         'country' AS class, "rank", NULL::int AS capital
     FROM osm_country_point
-    WHERE geometry && bbox AND "rank" <= zoom_level - 1 AND name <> ''
+    WHERE geometry && bbox AND "rank" <= zoom_level + 1 AND name <> ''
     UNION ALL
 
     -- etldoc: osm_state_point  -> layer_place:z0_3
