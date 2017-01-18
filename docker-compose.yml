@@ -41,8 +41,6 @@ services:
     env_file: .env
     links:
     - postgres
-    volumes:
-    - ./data:/import
   import-osm-diff:
     image: "openmaptiles/import-osm:latest"
     env_file: .env
