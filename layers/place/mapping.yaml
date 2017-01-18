@@ -56,8 +56,8 @@ tables:
     - *name
     - *name_en
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - continent
@@ -82,8 +82,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - country
@@ -110,8 +110,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - island
@@ -136,8 +136,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - island
@@ -171,8 +171,8 @@ tables:
       type: string
     - *rank
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - state
@@ -206,8 +206,8 @@ tables:
       type: string
     - *rank
     filters:
-      exclude_tags:
-      - [ "name", "__nil__" ]
+      require:
+        name: ["__any__"]
     mapping:
       place:
       - city
