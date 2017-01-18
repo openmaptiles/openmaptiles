@@ -196,6 +196,14 @@ docker-compose run --rm import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
+echo "      : Source code:  https://github.com/openmaptiles/import-osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you: https://github.com/pnorman/osmborder "
+docker-compose run --rm import-osmborder
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
@@ -240,6 +248,12 @@ echo "      : You will see a lot of deprecated warning in the log! This is norma
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
 docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --rm generate-vectortiles
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Add special metadata to mbtiles! "
+docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles	
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

@@ -16,6 +16,9 @@ tables:
     - name: place
       key: place
       type: string
+    - name: rank
+      key: rank
+      type: integer
     filters:
       require:
         name: ["__any__"]

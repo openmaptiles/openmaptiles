@@ -16,7 +16,7 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     - name: building
       key: building
       type: string

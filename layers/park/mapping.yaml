@@ -67,7 +67,7 @@ tables:
       key: boundary
       type: string
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     mapping:
       leisure:
       - nature_reserve

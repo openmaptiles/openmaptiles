@@ -12,12 +12,21 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
       AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
         OR (zoom_level >= 14))
     -- etldoc: osm_water_point ->  layer_water_name:z9_13
-    -- etldoc: osm_water_point ->  layer_water_name:z14_    
+    -- etldoc: osm_water_point ->  layer_water_name:z14_
     UNION ALL
     SELECT osm_id, geometry, name, name_en, 'lake'::text AS class
     FROM osm_water_point
     WHERE geometry && bbox AND (
         (zoom_level BETWEEN 9 AND 13 AND area > 70000*2^(20-zoom_level))
         OR (zoom_level >= 14)
+    )
+    -- etldoc: osm_marine_point ->  layer_water_name:z0_14_
+    UNION ALL
+    SELECT osm_id, geometry, name, name_en, place::text AS class
+    FROM osm_marine_point
+    WHERE geometry && bbox AND (
+        place = 'ocean'
+        OR (zoom_level >= 1 AND zoom_level <= "rank" AND "rank" IS NOT NULL)
+        OR (zoom_level >= 8)
     );
 $$ LANGUAGE SQL IMMUTABLE;
