@@ -57,8 +57,6 @@ tables:
       key: waterway
       type: string
     filters:
-      #exclude_tags:
-      #- [ "covered", "yes" ]
       reject:
         covered: ["yes"]
     mapping:

@@ -37,13 +37,10 @@ tables:
       name: admin_level
       type: integer
     filters:
-      #exclude_tags:
-      #- [ "admin_level", "__nil__" ]
-      #- [ "natural", "coastline" ]
       reject:
         natural:  ["coastline"]
       require:
-        admin_level: ["__any__"]  
+        admin_level: ["__any__"]
     mapping:
       boundary:
       - administrative
