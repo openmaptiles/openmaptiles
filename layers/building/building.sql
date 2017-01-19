@@ -28,7 +28,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
         WHERE zoom_level >= 14 AND 
         role <> 'outline' AND type = '1' AND
         ST_IsClosed(geometry) = 't' AND
-        ST_NPoints(geometry) > 3
+        ST_NPoints(geometry) > 3 AND
         geometry && bbox -- see http://wiki.openstreetmap.org/wiki/Relation:building for samples. May need to subtract outline from others if it overlaps with any members?
         -- need to handle multipolygons? Yes.
     ) AS zoom_levels
