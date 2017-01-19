@@ -6,6 +6,9 @@ generalized_tables:
     sql_filter: area>1400.0
     tolerance: 10.0
 
+tags:
+  load_all: true
+
 tables:
 
   # etldoc: imposm3 -> osm_building_polygon
@@ -16,7 +19,7 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     - name: building
       key: building
       type: string
@@ -42,10 +45,8 @@ tables:
       - terminal
       - hangar
     filters:
-      exclude_tags:
-      - [ "building", "no" ]
-      - [ "building", "none" ]
-      - [ "building", "No" ]
+      reject:
+        building: ["no","none","No"]    
     type: polygon
 
   # etldoc: imposm3 -> osm_building_polygon_member
@@ -56,7 +57,7 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     - name: building
       key: building
       type: string
@@ -72,18 +73,22 @@ tables:
     - name: min_level
       key: building:min_level
       type: integer
+    - name: member
+      type: member_id
+    - name: index
+      type: member_index
+    - name: role
+      type: member_role
+    - name: type
+      type: member_type
     mapping:
+      type: [building]
       building:part:
       - __any__
       building:
       - __any__
-      # these aeroway polygons all imply building=yes
-      aeroway:
-      - terminal
-      - hangar
     filters:
-      exclude_tags:
-      - [ "building", "no" ]
-      - [ "building", "none" ]
-      - [ "building", "No" ]
+      reject:
+        building: ["no","none","No"] 
     type: relation_member
+
