@@ -99,6 +99,7 @@ Import external data from [OpenStreetMapData](http://openstreetmapdata.com/), [N
 docker-compose run import-water
 docker-compose run import-natural-earth
 docker-compose run import-lakelines
+docker-compose run import-osmborder
 ```
 
 Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data with the mapping rules from
