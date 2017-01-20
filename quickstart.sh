@@ -51,14 +51,17 @@ echo "      : Your docker system:"
 docker         --version
 docker-compose --version
 
+# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers 
+function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
+
 COMPOSE_VER=$(docker-compose version --short)
-if [ $COMPOSE_VER "<" $MIN_COMPOSE_VER ]; then
+if [ "$(version "$COMPOSE_VER")" -lt "$(version "$MIN_COMPOSE_VER")" ]; then
   echo "ERR: Your Docker-compose version is Known to have bugs , Please Update docker-compose!"
   exit 1
 fi
 
 DOCKER_VER="$(docker -v | awk -F '[ ,]+' '{ print $3 }')"
-if [ $DOCKER_VER "<" $MIN_DOCKER_VER ]; then
+if [ "$(version "$DOCKER_VER")" -lt "$(version "$MIN_DOCKER_VER")" ]; then
   echo "ERR: Your Docker version is not compatible. Please Update docker!"
   exit 1
 fi
