@@ -18,6 +18,8 @@ help:
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
 	@echo "  make psql                            # start PostgreSQL console "
 	@echo "  make psql-list-tables                # list all PostgreSQL tables "
+	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
+	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
 	@echo "  make generate-devdoc                 # generate devdoc  [./build/devdoc]"
 	@echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
@@ -31,7 +33,6 @@ help:
 	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tabless"
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
 	@echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
-	@echo "  ....TODO....                         # start lukasmartinelli/postgis-editor"
 	@echo "  make help                            # help about avaialable commands"
 	@echo "=============================================================================="
 
@@ -90,6 +91,14 @@ pgclimb-list-views:
 
 pgclimb-list-tables:
 	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
+
+psql-vacuum-analyze:
+	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+
+psql-analyze:
+	@echo "Start - postgresql: ANALYZE VERBOSE ;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
 
 import-sql-dev:
 	docker-compose run --rm import-sql /bin/bash
