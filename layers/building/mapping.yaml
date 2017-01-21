@@ -25,16 +25,16 @@ tables:
       type: string
     - name: height
       key: height
-      type: integer
+      type: string
     - name: min_height
       key: min_height
-      type: integer
+      type: string
     - name: levels
       key: building:levels
-      type: integer
+      type: string
     - name: min_level
       key: building:min_level
-      type: integer
+      type: string
     mapping:
       building:part:
       - __any__
@@ -61,18 +61,63 @@ tables:
     - name: building
       key: building
       type: string
+      from_member: true
+    - name: buildingheight
+      key: building:height
+      type: string
+      from_member: true
     - name: height
       key: height
-      type: integer
+      type: string
+      from_member: true
+    - name: buildingmin_height
+      key: building:min_height
+      type: string
+      from_member: true
     - name: min_height
       key: min_height
-      type: integer
-    - name: levels
+      type: string
+      from_member: true
+    - name: buildinglevels
       key: building:levels
-      type: integer
-    - name: min_level
+      type: string
+      from_member: true
+    - name: levels
+      key: levels
+      type: string
+      from_member: true
+    - name: buildingmin_level
       key: building:min_level
-      type: integer
+      type: string
+      from_member: true
+    - name: min_level
+      key: min_level
+      type: string
+      from_member: true
+    - name: relbuildingheight
+      key: building:height
+      type: string
+    - name: relheight
+      key: height
+      type: string
+    - name: relbuildingmin_height
+      key: building:min_height
+      type: string
+    - name: relmin_height
+      key: min_height
+      type: string
+    - name: relbuildinglevels
+      key: building:levels
+      type: string
+    - name: rellevels
+      key: levels
+      type: string
+    - name: relbuildingmin_level
+      key: building:min_level
+      type: string
+    - name: relmin_level
+      key: min_level
+      type: string
     - name: member
       type: member_id
     - name: index
@@ -91,4 +136,40 @@ tables:
       reject:
         building: ["no","none","No"] 
     type: relation_member
+
+  # etldoc: imposm3 -> osm_building_polygon_relation
+  building_polygon_relation:
+    fields:
+    - name: osm_id
+      type: id
+    - name: building
+      key: building
+      type: string
+    - name: buildingheight
+      key: building:height
+      type: string
+    - name: height
+      key: height
+      type: string
+    - name: buildingmin_height
+      key: building:min_height
+      type: string
+    - name: min_height
+      key: min_height
+      type: string
+    - name: buildinglevels
+      key: building:levels
+      type: string
+    - name: levels
+      key: levels
+      type: string
+    - name: buildingmin_level
+      key: building:min_level
+      type: string
+    - name: min_level
+      key: min_level
+      type: string
+    mapping:
+      type: [building]
+    type: relation
 
