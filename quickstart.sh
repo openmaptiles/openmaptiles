@@ -239,6 +239,11 @@ docker-compose run --rm import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Analyze PostgreSQL tables"
+make psql-analyze
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/tiles.mbtiles  "
