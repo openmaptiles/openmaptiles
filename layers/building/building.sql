@@ -1,3 +1,6 @@
+
+DROP MATERIALIZED VIEW IF EXISTS all_buildings CASCADE;
+
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
@@ -23,13 +26,13 @@ CREATE MATERIALIZED VIEW all_buildings AS (
      greatest(as_numeric(obp.levels),as_numeric(obpm.levels),as_numeric(obpm.buildinglevels),as_numeric(obpm.rellevels),as_numeric(obpm.relbuildinglevels)) AS levels,
      greatest(as_numeric(obp.min_level),as_numeric(obpm.min_level),as_numeric(obpm.buildingmin_level),as_numeric(obpm.relmin_level),as_numeric(obpm.relbuildingmin_level)) AS min_level,
            COALESCE(obpm.role, '') AS role,
-           obpm.member AS member
+           obpm.member AS member,
+           COALESCE(obpm.building, '') AS building
         FROM osm_building_polygon AS obp
         FULL OUTER JOIN 
         osm_building_polygon_member AS obpm
-        ON obp.osm_id = obpm.member
-) AS joined
- WHERE role <> 'outline');
+        ON (obp.osm_id = obpm.member)
+) AS joined);
 CREATE INDEX IF NOT EXISTS osm_all_buildings_geometry_idx ON all_buildings USING gist(geometry);
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
@@ -49,7 +52,11 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            ceil(greatest(5, COALESCE(height, levels*3.66,5)))::int AS render_height,
            floor(greatest(0, COALESCE(min_height, min_level*3.66,0)))::int AS render_min_height FROM
         all_buildings
-        WHERE zoom_level >= 14 AND geometry && bbox
+        WHERE zoom_level >= 14 AND role <> 'outline' AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+-- check for building <> ''?
+-- handle multipolygon
+

@@ -46,7 +46,8 @@ tables:
       - hangar
     filters:
       reject:
-        building: ["no","none","No"]    
+        building: ["no","none","No"]
+        building:part: ["no","none","No"]     
     type: polygon
 
   # etldoc: imposm3 -> osm_building_polygon_member
@@ -122,19 +123,15 @@ tables:
       type: member_id
     - name: index
       type: member_index
+    - name: relrole
+      type: member_role
     - name: role
       type: member_role
+      from_member: true
     - name: type
       type: member_type
     mapping:
       type: [building]
-      building:part:
-      - __any__
-      building:
-      - __any__
-    filters:
-      reject:
-        building: ["no","none","No"] 
     type: relation_member
 
   # etldoc: imposm3 -> osm_building_polygon_relation
