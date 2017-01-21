@@ -25,7 +25,7 @@ CREATE MATERIALIZED VIEW all_buildings AS (
            COALESCE(obpm.role, '') AS role,
            obpm.member AS member
         FROM osm_building_polygon AS obp
-        LEFT JOIN 
+        FULL OUTER JOIN 
         osm_building_polygon_member AS obpm
         ON obp.osm_id = obpm.member
 ) AS joined
