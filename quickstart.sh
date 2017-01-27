@@ -51,14 +51,17 @@ echo "      : Your docker system:"
 docker         --version
 docker-compose --version
 
+# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers 
+function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
+
 COMPOSE_VER=$(docker-compose version --short)
-if [ $COMPOSE_VER "<" $MIN_COMPOSE_VER ]; then
+if [ "$(version "$COMPOSE_VER")" -lt "$(version "$MIN_COMPOSE_VER")" ]; then
   echo "ERR: Your Docker-compose version is Known to have bugs , Please Update docker-compose!"
   exit 1
 fi
 
 DOCKER_VER="$(docker -v | awk -F '[ ,]+' '{ print $3 }')"
-if [ $DOCKER_VER "<" $MIN_DOCKER_VER ]; then
+if [ "$(version "$DOCKER_VER")" -lt "$(version "$MIN_DOCKER_VER")" ]; then
   echo "ERR: Your Docker version is not compatible. Please Update docker!"
   exit 1
 fi
@@ -196,6 +199,14 @@ docker-compose run --rm import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
+echo "      : Source code:  https://github.com/openmaptiles/import-osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you: https://github.com/pnorman/osmborder "
+docker-compose run --rm import-osmborder
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
@@ -228,6 +239,11 @@ docker-compose run --rm import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Analyze PostgreSQL tables"
+make psql-analyze
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/tiles.mbtiles  "
@@ -240,6 +256,12 @@ echo "      : You will see a lot of deprecated warning in the log! This is norma
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
 docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --rm generate-vectortiles
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Add special metadata to mbtiles! "
+docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles	
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
