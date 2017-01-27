@@ -34,6 +34,7 @@ CREATE MATERIALIZED VIEW all_buildings AS (
         ON (obp.osm_id = obpm.member)
 ) AS joined);
 CREATE INDEX IF NOT EXISTS osm_all_buildings_geometry_idx ON all_buildings USING gist(geometry);
+CREATE INDEX IF NOT EXISTS osm_all_buildings_role_idx ON all_buildings(role);
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int) AS $$
@@ -57,6 +58,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
 
--- check for building <> ''?
--- handle multipolygon
+-- drop buildings that overlap obpm, but keep the parts? Or something. Or ignore because of crummy data
+-- building:height and height for obp
+-- coalesce instead of greatest
 
