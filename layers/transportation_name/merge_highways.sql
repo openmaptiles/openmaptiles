@@ -8,10 +8,10 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS transportation_name.osm_transportation_name_linestring CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS transportation_name.osm_transportation_name_linestring_gen1 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS transportation_name.osm_transportation_name_linestring_gen2 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS transportation_name.osm_transportation_name_linestring_gen3 CASCADE;
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
 CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring AS (
@@ -41,7 +41,7 @@ CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring 
         GROUP BY name, name_en, highway, ref
     ) AS highway_union
 );
-CREATE INDEX IF NOT EXISTS transportation_name.osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);
 
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
 CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen1 AS (
@@ -49,7 +49,7 @@ CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_
     FROM osm_transportation_name_linestring
     WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 8000
 );
-CREATE INDEX IF NOT EXISTS transportation_name.osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist(geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist(geometry);
 
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
 CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen2 AS (
@@ -57,7 +57,7 @@ CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_
     FROM osm_transportation_name_linestring_gen1
     WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 14000
 );
-CREATE INDEX IF NOT EXISTS transportation_name.osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist(geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist(geometry);
 
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
 CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen3 AS (
@@ -65,7 +65,7 @@ CREATE MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_
     FROM osm_transportation_name_linestring_gen2
     WHERE highway = 'motorway' AND ST_Length(geometry) > 20000
 );
-CREATE INDEX IF NOT EXISTS transportation_name.osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist(geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist(geometry);
 
 -- Handle updates
 
@@ -81,10 +81,10 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh transportation_name';
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
+    REFRESH MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring;
+    REFRESH MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW transportation_name.osm_transportation_name_linestring_gen3;
     DELETE FROM transportation_name.updates;
     RETURN null;
   END;

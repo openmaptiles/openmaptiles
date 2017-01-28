@@ -89,7 +89,7 @@ CREATE OR REPLACE VIEW water.water_z11 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen1
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z11
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen1 WHERE area > 40000
+    SELECT geometry, water.water_class(waterway) AS class FROM osm_water_polygon_gen1 WHERE area > 40000
 );
 
 CREATE OR REPLACE VIEW water.water_z12 AS (
@@ -97,7 +97,7 @@ CREATE OR REPLACE VIEW water.water_z12 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z12     
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon WHERE area > 10000
+    SELECT geometry, water.water_class(waterway) AS class FROM osm_water_polygon WHERE area > 10000
 );
 
 CREATE OR REPLACE VIEW water.water_z13 AS (
@@ -105,7 +105,7 @@ CREATE OR REPLACE VIEW water.water_z13 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z13    
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon WHERE area > 5000
+    SELECT geometry, water.water_class(waterway) AS class FROM osm_water_polygon WHERE area > 5000
 );
 
 CREATE OR REPLACE VIEW water.water_z14 AS (
@@ -126,7 +126,7 @@ RETURNS TABLE(geometry geometry, class text) AS $$
         SELECT * FROM water.water_z0 WHERE zoom_level = 0
         UNION ALL
         -- etldoc: water_z1 ->  layer_water:z1        
-        SELECT * FROMwater. water_z1 WHERE zoom_level = 1
+        SELECT * FROM water. water_z1 WHERE zoom_level = 1
         UNION ALL
         -- etldoc: water_z2 ->  layer_water:z2
         -- etldoc: water_z2 ->  layer_water:z3          
