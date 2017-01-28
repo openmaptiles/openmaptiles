@@ -17,13 +17,13 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         CASE WHEN transportation.highway_is_link(highway) OR highway = 'steps'
              THEN 1 ELSE is_ramp::int END AS ramp,
         is_oneway::int AS oneway,
-        brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
+        transportation.brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
         NULLIF(service, '') AS service
     FROM (
         -- etldoc: ne_10m_roads -> layer_transportation:z4z6
         SELECT
             NULL::bigint AS osm_id, geometry,
-            ne_highway(type) AS highway, NULL AS railway, NULL AS service,
+            transportation.ne_highway(type) AS highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -83,15 +83,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         -- etldoc: osm_highway_linestring       ->  layer_transportation:z14_
         SELECT
             osm_id, geometry, highway, NULL AS railway,
-            service_value(service) AS service,
+            transportation.service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
         WHERE NOT is_area AND (
             zoom_level = 12 AND (
-                highway_class(highway) NOT IN ('track', 'path', 'minor')
+                transportation.highway_class(highway) NOT IN ('track', 'path', 'minor')
                 OR highway IN ('unclassified', 'residential')
             )
-            OR zoom_level = 13 AND highway_class(highway) NOT IN ('track', 'path')
+            OR zoom_level = 13 AND transportation.highway_class(highway) NOT IN ('track', 'path')
             OR zoom_level >= 14
         )
         UNION ALL
@@ -99,7 +99,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11"
         SELECT
             osm_id, geometry, NULL AS highway, railway,
-            service_value(service) AS service,
+            transportation.service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen2
         WHERE zoom_level = 11 AND (railway='rail' AND service = '')
@@ -108,7 +108,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         -- etldoc: osm_railway_linestring_gen1  ->  layer_transportation:z12"
         SELECT
             osm_id, geometry, NULL AS highway, railway,
-            service_value(service) AS service,
+            transportation.service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen1
         WHERE zoom_level = 12 AND (railway='rail' AND service = '')
@@ -118,7 +118,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         -- etldoc: osm_railway_linestring       ->  layer_transportation:z14_
         SELECT
             osm_id, geometry, NULL AS highway, railway,
-            service_value(service) AS service,
+            transportation.service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring
         WHERE zoom_level = 13 AND (railway='rail' AND service = '')
@@ -146,7 +146,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION transportation.delete() RETURNS VOID AS $$
 BEGIN
-  DROP SCHEMA IF EXISTS park CASCADE;
+  DROP SCHEMA IF EXISTS transportation CASCADE;
   DROP TABLE IF EXISTS osm_railway_linestring_gen2 CASCADE;
   DROP TABLE IF EXISTS osm_railway_linestring_gen1 CASCADE;
   DROP TABLE IF EXISTS osm_railway_linestring CASCADE;

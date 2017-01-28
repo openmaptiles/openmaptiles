@@ -88,34 +88,34 @@ CREATE OR REPLACE VIEW boundary.boundary_z8 AS (
 );
 
 -- etldoc: osm_border_linestring_gen5 -> boundary_z9
-CREATE OR REPLACE VIEW boundary.boundary.boundary_z9 AS (
+CREATE OR REPLACE VIEW boundary.boundary_z9 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen5
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen4 -> boundary_z10
-CREATE OR REPLACE VIEW boundary.boundary.boundary_z10 AS (
+CREATE OR REPLACE VIEW boundary.boundary_z10 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen4
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen3 -> boundary_z11
-CREATE OR REPLACE VIEW boundary.boundary.boundary_z11 AS (
+CREATE OR REPLACE VIEW boundary.boundary_z11 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen3
     WHERE admin_level <= 8
 );
 
 -- etldoc: osm_border_linestring_gen2 -> boundary_z12
-CREATE OR REPLACE VIEW boundary.boundary.boundary_z12 AS (
+CREATE OR REPLACE VIEW boundary.boundary_z12 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen2
 );
 
 -- etldoc: osm_border_linestring_gen1 -> boundary_z12
-CREATE OR REPLACE VIEW boundary.boundary.boundary_z13 AS (
+CREATE OR REPLACE VIEW boundary.boundary_z13 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen1
 );

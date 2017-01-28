@@ -4,7 +4,7 @@
 
 CREATE OR REPLACE FUNCTION poi.layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class text, subclass text, "rank" int) AS $$
-    SELECT osm_id, geometry, NULLIF(name, '') AS name, NULLIF(name_en, '') AS name_en, poi_class(subclass) AS class, subclass,
+    SELECT osm_id, geometry, NULLIF(name, '') AS name, NULLIF(name_en, '') AS name_en, poi.poi_class(subclass) AS class, subclass,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi.poi_class_rank(poi.poi_class(subclass)) END ASC

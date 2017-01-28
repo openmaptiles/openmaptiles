@@ -10,7 +10,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT convert_housenumber_point();
+SELECT housenumber.convert_housenumber_point();
 
 -- Handle updates
 
