@@ -90,3 +90,15 @@ RETURNS TABLE(geometry geometry, class text, name text, name_en text) AS $$
     ) AS zoom_levels
     WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION waterway.delete() RETURNS VOID AS $$
+BEGIN
+  DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
+  DROP TRIGGER IF EXISTS trigger_refresh ON waterway.updates;
+  DROP SCHEMA IF EXISTS waterway CASCADE;
+  DROP TABLE IF EXISTS osm_waterway_linestring_gen3 CASCADE;
+  DROP TABLE IF EXISTS osm_waterway_linestring_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_waterway_linestring_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_waterway_linestring CASCADE;
+END;
+$$ LANGUAGE plpgsql;

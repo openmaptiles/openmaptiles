@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION poi_class_rank(class TEXT)
+CREATE OR REPLACE FUNCTION poi.poi_class_rank(class TEXT)
 RETURNS INT AS $$
     SELECT CASE class
         WHEN 'hospital' THEN 20
@@ -28,7 +28,7 @@ RETURNS INT AS $$
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION poi_class(subclass TEXT)
+CREATE OR REPLACE FUNCTION poi.poi_class(subclass TEXT)
 RETURNS TEXT AS $$
     SELECT CASE
         WHEN subclass IN ('accessories','antiques','art','beauty','bed','boutique','camera','carpet','charity','chemist','chocolate','coffee','computer','confectionery','convenience','copyshop','cosmetics','garden_centre','doityourself','erotic','electronics','fabric','florist','furniture','video_games','video','general','gift','hardware','hearing_aids','hifi','ice_cream','interior_decoration','jewelry','kiosk','lamps','mall','massage','motorcycle','mobile_phone','newsagent','optician','outdoor','perfumery','perfume','pet','photo','second_hand','shoes','sports','stationery','tailor','tattoo','ticket','tobacco','toys','travel_agency','watches','weapons','wholesale') THEN 'shop'

@@ -1,20 +1,20 @@
-CREATE OR REPLACE FUNCTION highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
+CREATE OR REPLACE FUNCTION transportation.highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
     SELECT highway LIKE '%_link';
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_transportation |<z4z6> z4-z6 |<z7z8> z7-z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
-CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION transportation.layer_transportation(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
     SELECT
         osm_id, geometry,
         CASE
-            WHEN highway IS NOT NULL THEN highway_class(highway)
-            WHEN railway IS NOT NULL THEN railway_class(railway)
+            WHEN highway IS NOT NULL THEN transportation.highway_class(highway)
+            WHEN railway IS NOT NULL THEN transportation.railway_class(railway)
         END AS class,
         -- All links are considered as ramps as well
-        CASE WHEN highway_is_link(highway) OR highway = 'steps'
+        CASE WHEN transportation.highway_is_link(highway) OR highway = 'steps'
              THEN 1 ELSE is_ramp::int END AS ramp,
         is_oneway::int AS oneway,
         brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
@@ -143,3 +143,19 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
     WHERE geometry && bbox
     ORDER BY z_order ASC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION transportation.delete() RETURNS VOID AS $$
+BEGIN
+  DROP SCHEMA IF EXISTS park CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring CASCADE;
+  DROP TABLE IF EXISTS osm_highway_linestring_gen4 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring_gen3 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_railway_linestring CASCADE;
+  DROP TABLE IF EXISTS osm_highway_polygon CASCADE;
+  DROP TABLE IF EXISTS osm_route_member CASCADE;
+END;
+$$ LANGUAGE plpgsql;

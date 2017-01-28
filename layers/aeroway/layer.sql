@@ -1,7 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS aeroway;
+
 -- etldoc: layer_aeroway[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_aeroway |<z12> z12|<z13> z13|<z14_> z14+" ];
 
-CREATE OR REPLACE FUNCTION layer_aeroway(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION aeroway.layer_aeroway(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, class text) AS $$
     SELECT geometry, aeroway AS class FROM (
         -- etldoc:  osm_aeroway_polygon_gen2 -> layer_aeroway:z12
@@ -18,3 +20,15 @@ RETURNS TABLE(geometry geometry, class text) AS $$
     ) AS zoom_levels
     WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE SCHEMA IF NOT EXISTS aeroway;
+
+CREATE OR REPLACE FUNCTION aeroway.delete() RETURNS VOID AS $$
+BEGIN
+  DROP SCHEMA IF EXISTS aeroway CASCADE;
+
+  DROP TABLE IF EXISTS osm_aeroway_polygon_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_aeroway_polygon_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_aeroway_polygon CASCADE;
+END;
+$$ LANGUAGE plpgsql;

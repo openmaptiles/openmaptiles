@@ -52,3 +52,11 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref tex
     WHERE geometry && bbox
     ORDER BY z_order ASC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION poi.delete() RETURNS VOID AS $$
+BEGIN
+  DROP TRIGGER IF EXISTS trigger_flag ON osm_highway_linestring;
+  DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
+  DROP SCHEMA IF EXISTS transportation_name CASCADE;
+END;
+$$ LANGUAGE plpgsql;

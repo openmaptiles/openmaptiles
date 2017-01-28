@@ -1,7 +1,8 @@
 -- etldoc: layer_park[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_park |<z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ] ;
+CREATE SCHEMA IF NOT EXISTS park;
 
-CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION park.layer_park(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
     SELECT osm_id, geometry,
         COALESCE(NULLIF(leisure, ''), NULLIF(boundary, '')) AS class
@@ -53,3 +54,18 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
     ) AS zoom_levels
     WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION park.delete() RETURNS VOID AS $$
+BEGIN
+  DROP SCHEMA IF EXISTS park CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen8 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen7 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen6 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen5 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen4 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen3 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_park_polygon CASCADE;
+END;
+$$ LANGUAGE plpgsql;

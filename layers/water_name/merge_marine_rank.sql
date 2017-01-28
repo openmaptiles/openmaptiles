@@ -1,9 +1,11 @@
+CREATE SCHEMA IF NOT EXISTS water_name;
+
 DROP TRIGGER IF EXISTS trigger_flag ON osm_marine_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON water_name_marine.updates;
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
-CREATE OR REPLACE FUNCTION update_osm_marine_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION water_name.update_osm_marine_point() RETURNS VOID AS $$
 BEGIN
   -- etldoc: osm_marine_point          -> osm_marine_point 
   UPDATE osm_marine_point AS osm SET "rank" = NULL WHERE "rank" IS NOT NULL;
@@ -18,14 +20,14 @@ BEGIN
   )
   UPDATE osm_marine_point AS osm
   SET "rank" = scalerank
-  FROM important_marine_point AS ne
+  FROM water_name.important_marine_point AS ne
   WHERE osm.osm_id = ne.osm_id;
 END;
 $$ LANGUAGE plpgsql;
 
 SELECT update_osm_marine_point();
 
-CREATE INDEX IF NOT EXISTS osm_marine_point_rank_idx ON osm_marine_point("rank");
+CREATE INDEX IF NOT EXISTS water_name.osm_marine_point_rank_idx ON osm_marine_point("rank");
 
 -- Handle updates
 CREATE SCHEMA IF NOT EXISTS water_name_marine;
