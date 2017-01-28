@@ -30,3 +30,23 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
         OR (zoom_level >= 8)
     );
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION water_name.delete() RETURNS VOID AS $$
+BEGIN
+  DROP TRIGGER IF EXISTS trigger_flag_line ON osm_water_polygon;
+  DROP TRIGGER IF EXISTS trigger_refresh ON water_lakeline.updates;
+  DROP SCHEMA IF EXISTS water_lakeline CASCADE;
+
+  DROP TRIGGER IF EXISTS trigger_flag_point ON osm_water_polygon;
+  DROP TRIGGER IF EXISTS trigger_refresh ON water_point.updates;
+  DROP SCHEMA IF EXISTS water_point CASCADE;
+
+  DROP TRIGGER IF EXISTS trigger_flag ON osm_marine_point;
+  DROP TRIGGER IF EXISTS trigger_refresh ON water_name_marine.updates;
+  DROP SCHEMA IF EXISTS water_name_marine CASCADE;
+
+  DROP SCHEMA IF EXISTS water_name CASCADE;
+
+  DROP TABLE IF EXISTS osm_marine_point CASCADE;
+END;
+$$ LANGUAGE plpgsql;

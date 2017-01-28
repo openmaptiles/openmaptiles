@@ -151,10 +151,10 @@ BEGIN
   DROP TABLE IF EXISTS osm_railway_linestring_gen1 CASCADE;
   DROP TABLE IF EXISTS osm_railway_linestring CASCADE;
   DROP TABLE IF EXISTS osm_highway_linestring_gen4 CASCADE;
-  DROP TABLE IF EXISTS osm_railway_linestring_gen3 CASCADE;
-  DROP TABLE IF EXISTS osm_railway_linestring_gen2 CASCADE;
-  DROP TABLE IF EXISTS osm_railway_linestring_gen1 CASCADE;
-  DROP TABLE IF EXISTS osm_railway_linestring CASCADE;
+  DROP TABLE IF EXISTS osm_highway_linestring_gen3 CASCADE;
+  DROP TABLE IF EXISTS osm_highway_linestring_gen2 CASCADE;
+  DROP TABLE IF EXISTS osm_highway_linestring_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_highway_linestring CASCADE;
   DROP TABLE IF EXISTS osm_highway_polygon CASCADE;
   DROP TABLE IF EXISTS osm_route_member CASCADE;
 END;
