@@ -40,7 +40,7 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
-      type: pseudoarea
+      type: webmerc_area
     - key: name
       name: name
       type: string
@@ -57,8 +57,8 @@ tables:
       key: waterway
       type: string
     filters:
-      exclude_tags:
-      - [ "covered", "yes" ]
+      reject:
+        covered: ["yes"]
     mapping:
       landuse:
       - reservoir

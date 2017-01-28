@@ -99,6 +99,14 @@ Import external data from [OpenStreetMapData](http://openstreetmapdata.com/), [N
 docker-compose run import-water
 docker-compose run import-natural-earth
 docker-compose run import-lakelines
+docker-compose run import-osmborder
+```
+
+[Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
+
+```bash
+cd data
+wget http://download.geofabrik.de/europe/albania-latest.osm.pbf
 ```
 
 Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data with the mapping rules from
