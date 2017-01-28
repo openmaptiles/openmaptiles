@@ -20,8 +20,8 @@ tables:
       key: rank
       type: integer
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - ocean

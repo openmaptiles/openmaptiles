@@ -56,8 +56,8 @@ tables:
     - *name
     - *name_en
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - continent
@@ -82,8 +82,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - country
@@ -97,7 +97,7 @@ tables:
     - name: geometry
       type: geometry
     - name: area
-      type: webmerc_area
+      type: pseudoarea
     - *name
     - *name_en
     - *name_de
@@ -110,8 +110,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - island
@@ -136,8 +136,8 @@ tables:
     - *name_ja
     - *rank
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - island
@@ -171,8 +171,8 @@ tables:
       type: string
     - *rank
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - state
@@ -206,8 +206,8 @@ tables:
       type: string
     - *rank
     filters:
-      require:
-        name: ["__any__"]
+      exclude_tags:
+      - [ "name", "__nil__" ]
     mapping:
       place:
       - city

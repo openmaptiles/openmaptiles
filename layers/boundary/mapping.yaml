@@ -37,10 +37,9 @@ tables:
       name: admin_level
       type: integer
     filters:
-      reject:
-        natural:  ["coastline"]
-      require:
-        admin_level: ["__any__"]
+      exclude_tags:
+      - [ "admin_level", "__nil__" ]
+      - [ "natural", "coastline" ]
     mapping:
       boundary:
       - administrative

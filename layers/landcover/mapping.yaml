@@ -58,7 +58,7 @@ tables:
       key: wetland
       type: string
     - name: area
-      type: webmerc_area
+      type: pseudoarea
     mapping:
       landuse:
       - allotments

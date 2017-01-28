@@ -15,16 +15,12 @@ layer:
         At low zoom levels the Natural Earth boundaries are mapped to the equivalent admin levels.
     disputed:
       description: |
-          Mark with `1` if the border is disputed.
-      values: [0, 1]
-    maritime:
-      description: |
-          Mark with `1` if it is a maritime border.
+          Mark with `1` if the boundary is disputed.
       values: [0, 1]
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
 datasources:

@@ -26,7 +26,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     FROM osm_marine_point
     WHERE geometry && bbox AND (
         place = 'ocean'
-        OR (zoom_level >= 1 AND zoom_level <= "rank" AND "rank" IS NOT NULL)
+        OR (zoom_level <= "rank" AND "rank" IS NOT NULL)
         OR (zoom_level >= 8)
     );
 $$ LANGUAGE SQL IMMUTABLE;
