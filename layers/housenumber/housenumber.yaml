@@ -10,7 +10,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, housenumber FROM layer_housenumber(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, housenumber FROM housenumber.layer_housenumber(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./housenumber_centroid.sql
   - ./layer.sql
