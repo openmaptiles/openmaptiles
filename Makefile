@@ -34,6 +34,7 @@ help:
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
 	@echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
 	@echo "  make help                            # help about avaialable commands"
+	@echo "  make delete-layer L=poi              # remove POI layer"
 	@echo "=============================================================================="
 
 build/openmaptiles.tm2source/data.yml:
