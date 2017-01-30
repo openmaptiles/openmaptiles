@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION transportation_name.highway_is_link(highway TEXT) RET
     SELECT highway LIKE '%_link';
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
+CREATE OR REPLACE FUNCTION transportation_name.layer_transportation_name(bbox geometry, zoom_level integer)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref text, ref_length int, network text, class text) AS $$
     SELECT osm_id, geometry,
       NULLIF(name, '') AS name,

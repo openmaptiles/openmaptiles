@@ -55,7 +55,7 @@ CREATE OR REPLACE VIEW waterway.waterway_z14 AS (
 -- etldoc: layer_waterway[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_waterway | <z3> z3 |<z4_5> z4-z5 |<z6_8> z6-8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ];
 
-CREATE OR REPLACE FUNCTION layer_waterway(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION waterway.layer_waterway(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, class text, name text, name_en text) AS $$
     SELECT geometry, class,
         NULLIF(name, '') AS name,
