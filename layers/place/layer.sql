@@ -68,7 +68,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     SELECT
         osm_id, geometry, name, name_en,
         place::text AS class, "rank", capital
-    FROM layer_city(bbox, zoom_level, pixel_width)
+    FROM place.layer_city(bbox, zoom_level, pixel_width)
     ORDER BY "rank" ASC
 $$ LANGUAGE SQL IMMUTABLE;
 
