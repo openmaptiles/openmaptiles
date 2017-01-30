@@ -149,6 +149,10 @@ start-tileserver:
 start-mapbox-studio:
 	docker-compose up mapbox-studio
 
+delete-layer:
+	@echo "Delete-layer: $L"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "SELECT $L.delete();"
+
 generate-qareports:
 	./qa/run.sh
 
