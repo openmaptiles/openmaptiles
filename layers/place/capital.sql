@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION normalize_capital_level(capital TEXT)
+CREATE OR REPLACE FUNCTION place.normalize_capital_level(capital TEXT)
 RETURNS INT AS $$
     SELECT CASE
         WHEN capital IN ('yes', '2') THEN 2

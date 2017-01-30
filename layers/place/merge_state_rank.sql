@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS place_state;
+
 DROP TRIGGER IF EXISTS trigger_flag ON osm_state_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON place_state.updates;
 
@@ -6,7 +8,7 @@ ALTER TABLE osm_state_point DROP CONSTRAINT IF EXISTS osm_state_point_rank_const
 -- etldoc: ne_10m_admin_1_states_provinces_shp   -> osm_state_point
 -- etldoc: osm_state_point                       -> osm_state_point
 
-CREATE OR REPLACE FUNCTION update_osm_state_point() RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION place_state.update_osm_state_point() RETURNS VOID AS $$
 BEGIN
 
   WITH important_state_point AS (
@@ -35,14 +37,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT update_osm_state_point();
+SELECT place_state.update_osm_state_point();
 
 -- ALTER TABLE osm_state_point ADD CONSTRAINT osm_state_point_rank_constraint CHECK("rank" BETWEEN 1 AND 6);
 CREATE INDEX IF NOT EXISTS osm_state_point_rank_idx ON osm_state_point("rank");
 
 -- Handle updates
-
-CREATE SCHEMA IF NOT EXISTS place_state;
 
 CREATE TABLE IF NOT EXISTS place_state.updates(id serial primary key, t text, unique (t));
 CREATE OR REPLACE FUNCTION place_state.flag() RETURNS trigger AS $$
