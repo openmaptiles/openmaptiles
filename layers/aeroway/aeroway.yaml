@@ -18,7 +18,7 @@ layer:
       - apron
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class FROM layer_aeroway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM aeroway.layer_aeroway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./layer.sql
 datasources:

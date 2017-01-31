@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS place;
+
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'city_place') THEN

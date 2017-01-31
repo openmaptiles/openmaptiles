@@ -34,6 +34,7 @@ help:
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
 	@echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
 	@echo "  make help                            # help about avaialable commands"
+	@echo "  make delete-layer L=poi              # remove POI layer"
 	@echo "=============================================================================="
 
 build/openmaptiles.tm2source/data.yml:
@@ -44,6 +45,11 @@ build/mapping.yaml:
 
 build/tileset.sql:
 	mkdir -p build && generate-sql openmaptiles.yaml > build/tileset.sql
+
+replace-layer:
+	replace-layer openmaptiles.yaml $L > layer.yaml
+	mv openmaptiles.yaml back.yaml
+	mv layer.yaml openmaptiles.yaml
 
 clean:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
@@ -148,6 +154,18 @@ start-tileserver:
 
 start-mapbox-studio:
 	docker-compose up mapbox-studio
+
+delete-layer:
+	@echo "Delete-layer: $L"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "SELECT $L.delete();"
+
+
+add-layer:
+	@echo "Using directory $D"
+	@echo "Add-layer: $L"
+	docker run --rm -v $D:/tileset openmaptiles/openmaptiles-tools make replace-layer L=$L
+	docker run --rm -v $D:/tileset openmaptiles/openmaptiles-tools make clean
+	docker run --rm -v $D:/tileset openmaptiles/openmaptiles-tools make
 
 generate-qareports:
 	./qa/run.sh

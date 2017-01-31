@@ -1,7 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS building;
+
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
-CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION building.layer_building(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int) AS $$
     SELECT geometry, osm_id, render_height, render_min_height
     FROM (
@@ -22,3 +24,11 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION building.delete() RETURNS VOID AS $$
+BEGIN
+  DROP SCHEMA IF EXISTS building CASCADE;
+  DROP TABLE IF EXISTS osm_building_polygon_gen1 CASCADE;
+  DROP TABLE IF EXISTS osm_building_polygon CASCADE;
+END;
+$$ LANGUAGE plpgsql;

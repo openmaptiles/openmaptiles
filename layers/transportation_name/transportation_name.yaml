@@ -32,7 +32,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, ref, ref_length, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, ref, ref_length, class::text FROM transportation_name.layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_highways.sql
   - ./layer.sql

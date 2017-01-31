@@ -24,7 +24,7 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, disputed, maritime FROM boundary.layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
 datasources:

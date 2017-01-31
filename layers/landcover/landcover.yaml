@@ -50,7 +50,7 @@ layer:
       - mangrove
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass FROM landcover.layer_landcover(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landcover.sql
 datasources:

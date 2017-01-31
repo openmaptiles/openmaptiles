@@ -19,7 +19,7 @@ layer:
       - river
   buffer_size: 4
   datasource:
-    query: (SELECT geometry, class FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM water.layer_water(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./water.sql
 datasources:
