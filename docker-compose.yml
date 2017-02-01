@@ -7,31 +7,33 @@ services:
     image: "openmaptiles/postgis:2.3"
     volumes:
     - pgdata:/var/lib/postgresql/data
+    networks:
+    - postgres_conn
     ports:
      - "5432"
     env_file: .env
   import-natural-earth:
     image: "openmaptiles/import-natural-earth:1.2"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
   import-water:
     image: "openmaptiles/import-water:0.2"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
   import-lakelines:
     image: "openmaptiles/import-lakelines:0.9"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
   import-osm:
     image: "openmaptiles/import-osm:0.3"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
-    links:
-    - postgres
+    networks:
+    - postgres_conn
     volumes:
      - ./data:/import
      - ./build:/mapping
@@ -39,16 +41,16 @@ services:
   import-osmborder:
     image: "openmaptiles/import-osmborder:0.2"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
   import-osm-diff:
     image: "openmaptiles/import-osm:latest"
     env_file: .env
     command: ./import_diff.sh
     environment:
       DIFF_MODE: ${DIFF_MODE}
-    links:
-    - postgres
+    networks:
+    - postgres_conn
     volumes:
      - ./data:/import
      - ./build:/mapping
@@ -59,8 +61,8 @@ services:
     environment:
       DIFF_MODE: ${DIFF_MODE}
     command: ./import_update.sh
-    links:
-    - postgres
+    networks:
+    - postgres_conn
     volumes:
      - ./data:/import
      - ./build:/mapping
@@ -68,15 +70,15 @@ services:
   import-sql:
     image: "openmaptiles/import-sql:0.1"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
     volumes:
      - ./build:/sql
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:latest"
     env_file: .env
-    links:
-    - postgres
+    networks:
+    - postgres_conn
     volumes:
      - .:/tileset
      - ./build:/sql
@@ -84,8 +86,8 @@ services:
     image: "osm2vectortiles/mapbox-studio"
     volumes:
      - ./build/openmaptiles.tm2source:/projects/openmaptiles.tm2source
-    links:
-     - postgres:db
+    networks:
+     - postgres_conn
     ports:
      - "3000:3000"
   generate-changed-vectortiles:
@@ -94,16 +96,16 @@ services:
     volumes:
     - ./data:/export
     - ./build/openmaptiles.tm2source:/tm2source
-    links:
-    - postgres:postgres
+    networks:
+    - postgres_conn
     env_file: .env
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:0.1"
     volumes:
     - ./data:/export
     - ./build/openmaptiles.tm2source:/tm2source
-    links:
-    - postgres:postgres
+    networks:
+    - postgres_conn
     env_file: .env
     environment:
       #BBOX: "8.25,46.97,9.58,47.52"
@@ -111,3 +113,7 @@ services:
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
+
+networks:
+  postgres_conn:
+    driver: bridge
