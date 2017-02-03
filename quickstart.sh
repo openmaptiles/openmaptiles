@@ -282,7 +282,7 @@ md5sum ./data/osmstat.txt                     >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
-ENDDATE=$(date -Iminutes)
+ENDDATE=$(date +"%Y-%m-%dT%H:%M%z")
 MODDATE=$(stat -c  %y  ./data/${testdata} )
 
 echo " "
