@@ -33,7 +33,7 @@ testdata=${osm_area}.osm.pbf
 MIN_COMPOSE_VER=1.7.1
 MIN_DOCKER_VER=1.10.0
 STARTTIME=$(date +%s)
-STARTDATE=$(date -Iminutes)
+STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
 
 log_file=./quickstart.log
