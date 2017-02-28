@@ -32,7 +32,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
           COALESCE(NULLIF(hl.name_en, ''), hl.name) AS name_en,
           hl.ref,
           hl.highway,
-          min(rm.network) AS network, -- should be improved, may be part of more networks
+          min(rm.network) AS network, --should be improved, may be part of more networks
           min(hl.z_order) AS z_order,
           array_agg(DISTINCT hl.osm_id) AS member_osm_ids
       FROM osm_highway_linestring hl
