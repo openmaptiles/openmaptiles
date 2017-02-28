@@ -1,0 +1,20 @@
+layer:
+  id: "mountain_peak"
+  description: |
+      [Peaks](http://wiki.openstreetmap.org/wiki/Tag:natural%3Dpeak)
+      or [volcanoes](http://wiki.openstreetmap.org/wiki/Tag:natural%3Dvolcano)
+  buffer_size: 64
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  fields:
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the peak.
+    name_en: The english `name:en` value if available.
+    elev_m: Elevation (`ele`) in meters.
+  datasource:
+    geometry_field: geometry
+    srid: 900913
+    query: (SELECT osm_id, geometry, name, name_en, ele, ele_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+schema:
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml
