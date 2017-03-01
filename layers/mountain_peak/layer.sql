@@ -1,6 +1,10 @@
+
+-- etldoc: layer_mountain_peak[shape=record fillcolor=lightpink,
+-- etldoc:     style="rounded,filled", label="layer_mountain_peak | <z7_> z7+" ] ;
+
 CREATE OR REPLACE FUNCTION layer_mountain_peak(bbox geometry, zoom_level integer, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ele int, ele_ft int, "rank" int) AS $$
-   -- etldoc: osm_housenumber_point -> layer_housenumber:z14_
+   -- etldoc: osm_peak_point -> layer_mountain_peak:z7_
    SELECT osm_id, geometry, name, name_en, ele::int, ele_ft::int, rank::int
    FROM (
      SELECT osm_id, geometry, name, name_en,
