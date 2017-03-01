@@ -6,10 +6,28 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
+
+CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
+  SELECT
+      hl.geometry,
+      hl.osm_id,
+      hl.name,
+      COALESCE(NULLIF(hl.name_en, ''), hl.name) AS name_en,
+      rm.network_type,
+      CASE
+        WHEN rm.network_type is not null
+          then rm.ref::text
+        else hl.ref
+      end as ref,
+      hl.highway,
+      ROW_NUMBER() OVER(PARTITION BY hl.osm_id
+                                   ORDER BY rm.network_type) AS "rank",
+      hl.z_order
+  FROM osm_highway_linestring hl
+  left join osm_route_member rm on (rm.member = hl.osm_id)
+);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist(geometry);
+
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
 CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
@@ -17,28 +35,29 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
         (ST_Dump(geometry)).geom AS geometry,
         -- NOTE: The osm_id is no longer the original one which can make it difficult
         -- to lookup road names by OSM ID
-        member_osm_ids[0] AS osm_id,
+        member_osm_ids[1] AS osm_id,
         member_osm_ids,
         name,
         name_en,
         ref,
         highway,
-        network,
+        network_type AS network,
         z_order
     FROM (
       SELECT
           ST_LineMerge(ST_Collect(geometry)) AS geometry,
-          hl.name,
-          COALESCE(NULLIF(hl.name_en, ''), hl.name) AS name_en,
-          hl.ref,
-          hl.highway,
-          min(rm.network) AS network, --should be improved, may be part of more networks
-          min(hl.z_order) AS z_order,
-          array_agg(DISTINCT hl.osm_id) AS member_osm_ids
-      FROM osm_highway_linestring hl
-      left join osm_route_member rm on (rm.member = hl.osm_id)
-      WHERE (hl.name <> '' OR hl.ref <> '')
-      group by hl.name, name_en, hl.ref, hl.highway
+          name,
+          name_en,
+          ref,
+          highway,
+          network_type,
+          min(z_order) AS z_order,
+          array_agg(DISTINCT osm_id) AS member_osm_ids
+      FROM osm_transportation_name_network
+      WHERE ("rank"=1 OR "rank" is null)
+        AND (name <> '' OR ref <> '')
+        AND NULLIF(highway, '') IS NOT NULL
+      group by name, name_en, ref, highway, network_type
     ) AS highway_union
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);

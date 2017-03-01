@@ -12,7 +12,7 @@ layer:
     name_en: The english `name:en` value if available.
     ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or road.
     ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
-    network: The OSM [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+    network: The network type derived from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
     class:
       description: |
           Distinguish between more and less important roads.
@@ -32,7 +32,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, ref, ref_length, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, ref, ref_length, network::text, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./merge_highways.sql

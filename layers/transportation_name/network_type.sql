@@ -1,9 +1,15 @@
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_network CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
+
 DO $$
     BEGIN
         BEGIN
             ALTER TABLE osm_route_member ADD COLUMN network_type text;
         EXCEPTION
-            WHEN duplicate_column THEN RAISE NOTICE 'column omt_type already exists in network_type.';
+            WHEN duplicate_column THEN RAISE NOTICE 'column network_type already exists in network_type.';
         END;
     END;
 $$
@@ -13,9 +19,9 @@ $$
 UPDATE osm_route_member
 SET network_type =
     CASE
-      WHEN network = 'US:I' THEN 'us-interstate'
-      WHEN network = 'US:US' THEN 'us-highway'
-      WHEN network LIKE 'US:__' THEN 'us-state'
+      WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
+      WHEN network = 'US:US' THEN 'us-highway'::route_network_type
+      WHEN network LIKE 'US:__' THEN 'us-state'::route_network_type
       ELSE NULL
     END
 ;
