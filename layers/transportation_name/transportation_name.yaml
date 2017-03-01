@@ -34,6 +34,7 @@ layer:
     srid: 900913
     query: (SELECT geometry, name, name_en, ref, ref_length, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./network_type.sql
   - ./merge_highways.sql
   - ./layer.sql
 datasources:
