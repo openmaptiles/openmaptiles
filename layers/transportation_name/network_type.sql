@@ -16,7 +16,7 @@ SET network_type =
       WHEN network = 'US:I' THEN 'us-interstate'
       WHEN network = 'US:US' THEN 'us-highway'
       WHEN network LIKE 'US:__' THEN 'us-state'
-      ELSE ''
+      ELSE NULL
     END
 ;
 
@@ -24,7 +24,7 @@ SET network_type =
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'route_network_type') THEN
-        CREATE TYPE route_network_type AS ENUM ('us-interstate', 'us-highway', 'us-state', '');
+        CREATE TYPE route_network_type AS ENUM ('us-interstate', 'us-highway', 'us-state');
     END IF;
 END
 $$
