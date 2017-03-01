@@ -9,7 +9,12 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref tex
       COALESCE(NULLIF(name_en, ''), NULLIF(name, '')) AS name_en,
       NULLIF(ref, ''), NULLIF(LENGTH(ref), 0) AS ref_length,
       --TODO: The road network of the road is not yet implemented
-      network::text,
+      case
+        when network is not null
+          then network::text
+        when length(coalesce(ref, ''))>0
+          then 'motorway'
+      end as network,
       highway_class(highway) AS class
     FROM (
 
