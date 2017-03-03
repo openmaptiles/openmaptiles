@@ -5,9 +5,20 @@ DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
 
 DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'route_network_type') THEN
+        CREATE TYPE route_network_type AS ENUM (
+          'us-interstate', 'us-highway', 'us-state'
+        );
+    END IF;
+END
+$$
+;
+
+DO $$
     BEGIN
         BEGIN
-            ALTER TABLE osm_route_member ADD COLUMN network_type text;
+            ALTER TABLE osm_route_member ADD COLUMN network_type route_network_type;
         EXCEPTION
             WHEN duplicate_column THEN RAISE NOTICE 'column network_type already exists in network_type.';
         END;
@@ -25,22 +36,3 @@ SET network_type =
       ELSE NULL
     END
 ;
-
-
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'route_network_type') THEN
-        CREATE TYPE route_network_type AS ENUM ('us-interstate', 'us-highway', 'us-state');
-    END IF;
-END
-$$
-;
-
-ALTER TABLE osm_route_member ALTER COLUMN network_type TYPE route_network_type USING network_type::route_network_type;
-
--- select network_type, count(*)
--- from osm_route_member
--- WHERE network_type <> ''
--- group by network_type
--- order by network_type
--- ;
