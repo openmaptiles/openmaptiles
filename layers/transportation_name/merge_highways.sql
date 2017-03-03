@@ -15,7 +15,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
       COALESCE(NULLIF(hl.name_en, ''), hl.name) AS name_en,
       rm.network_type,
       CASE
-        WHEN rm.network_type is not null
+        WHEN (rm.network_type is not null AND nullif(rm.ref::text, '') is not null)
           then rm.ref::text
         else hl.ref
       end as ref,

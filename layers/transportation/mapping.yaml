@@ -224,6 +224,7 @@ tables:
       type: member_type
     - *ref
     - *network
+    - *name
     mapping:
       route:
       - road
