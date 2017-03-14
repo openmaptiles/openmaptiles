@@ -9,7 +9,8 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'route_network_type') THEN
         CREATE TYPE route_network_type AS ENUM (
           'us-interstate', 'us-highway', 'us-state',
-          'ca-transcanada'
+          'ca-transcanada',
+          'gb-motorway', 'gb-trunk'
         );
     END IF;
 END
@@ -26,6 +27,30 @@ DO $$
     END;
 $$
 ;
+
+-- create GBR relations (so we can use it in the same way as other relations)
+DO $$
+DECLARE gbr_geom geometry;
+BEGIN
+  select st_buffer(geometry, 10000) into gbr_geom from ne_10m_admin_0_countries where iso_a2 = 'GB';
+  delete from osm_route_member where network IN('omt-gb-motorway', 'omt-gb-trunk');
+
+  insert into osm_route_member (member, ref, network)
+    (
+      SELECT hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-motorway'
+      from osm_highway_linestring hw
+      where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
+        and hw.highway IN ('motorway')
+    ) UNION (
+      SELECT hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-trunk'
+      from osm_highway_linestring hw
+      where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
+        and hw.highway IN ('trunk')
+    )
+  ;
+END $$;
+
+
 
 -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
 UPDATE osm_route_member
@@ -51,6 +76,8 @@ SET network_type =
           (network = 'CA:NL:R' AND ref IN ('1')) OR
           (name = '	Trans-Canada Highway (Super)')
         THEN 'ca-transcanada'::route_network_type
+      WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
+      WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
       ELSE NULL
     END
 ;
