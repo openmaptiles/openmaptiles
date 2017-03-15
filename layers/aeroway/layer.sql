@@ -15,6 +15,10 @@ RETURNS TABLE(geometry geometry, class text) AS $$
         -- etldoc:  osm_aeroway_polygon -> layer_aeroway:z14_
         SELECT geometry, aeroway
         FROM osm_aeroway_polygon WHERE zoom_level >= 14
+        UNION ALL
+        -- etldoc:  osm_aeroway_linestring -> layer_aeroway:z11_
+        SELECT geometry, aeroway
+        FROM osm_aeroway_linestring WHERE zoom_level >= 11
     ) AS zoom_levels
     WHERE geometry && bbox;
 $$ LANGUAGE SQL IMMUTABLE;
