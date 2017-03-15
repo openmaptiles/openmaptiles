@@ -25,7 +25,7 @@ layer:
       - ca-transcanada
       - gb-motorway
       - gb-trunk
-      - motorway (default)
+      - road (default)
     class:
       description: |
           Distinguish between more and less important roads.

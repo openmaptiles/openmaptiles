@@ -13,7 +13,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref tex
         when network is not null
           then network::text
         when length(coalesce(ref, ''))>0
-          then 'motorway'
+          then 'road'
       end as network,
       highway_class(highway) AS class
     FROM (
