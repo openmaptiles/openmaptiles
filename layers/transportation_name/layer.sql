@@ -18,9 +18,14 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref tex
       highway_class(highway) AS class
     FROM (
 
-        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z8
+        -- etldoc: osm_transportation_name_linestring_gen4 ->  layer_transportation_name:z6
+        SELECT * FROM osm_transportation_name_linestring_gen4
+        WHERE zoom_level = 6
+        UNION ALL
+
+        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z7z8
         SELECT * FROM osm_transportation_name_linestring_gen3
-        WHERE zoom_level = 8
+        WHERE zoom_level BETWEEN 7 AND 8
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z9
