@@ -1,6 +1,6 @@
 
 -- etldoc: layer_transportation_name[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_transportation_name | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
+-- etldoc:     label="layer_transportation_name | <z6> z6 | <z7> z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref text, ref_length int, network text, class text) AS $$
@@ -23,20 +23,21 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref tex
         WHERE zoom_level = 6
         UNION ALL
 
-        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z7z8
+        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z7
         SELECT * FROM osm_transportation_name_linestring_gen3
-        WHERE zoom_level BETWEEN 7 AND 8
+        WHERE zoom_level = 7
         UNION ALL
 
-        -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z9
+        -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z8
         SELECT * FROM osm_transportation_name_linestring_gen2
-        WHERE zoom_level = 9
+        WHERE zoom_level = 8
         UNION ALL
 
+        -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z9
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z10
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z11
         SELECT * FROM osm_transportation_name_linestring_gen1
-        WHERE zoom_level BETWEEN 10 AND 11
+        WHERE zoom_level BETWEEN 9 AND 11
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12

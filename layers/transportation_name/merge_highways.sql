@@ -7,6 +7,8 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 -- Because this works well for roads that do not have relations as well
 
 
+-- etldoc: osm_highway_linestring ->  osm_transportation_name_network
+-- etldoc: osm_route_member ->  osm_transportation_name_network
 CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
   SELECT
       hl.geometry,
@@ -29,7 +31,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist(geometry);
 
 
--- etldoc: osm_highway_linestring ->  osm_transportation_name_linestring
+-- etldoc: osm_transportation_name_network ->  osm_transportation_name_linestring
 CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
