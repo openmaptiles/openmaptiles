@@ -222,7 +222,7 @@ tables:
       - pedestrian
 
 # TODO: Future table for joining networks
-# etldoc: imposm3 -> osm_route_member -> "!!!todo:Networks!!!"
+# etldoc: imposm3 -> osm_route_member
   route_member:
     type: relation_member
     columns:

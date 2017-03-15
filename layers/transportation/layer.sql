@@ -4,7 +4,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="<sql> layer_transportation |<z4z6> z4-z6 |<z7z8> z7-z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
+-- etldoc:     label="<sql> layer_transportation |<z4> z4 |<z5z6> z5-z6 |<z7> z7 |<z8> z8 |<z9z10> z9-z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
     SELECT
@@ -42,7 +42,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         WHERE zoom_level BETWEEN 5 AND 6
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen4  ->  layer_transportation:z7z8
+        -- etldoc: osm_highway_linestring_gen4  ->  layer_transportation:z7
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
@@ -53,7 +53,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         WHERE zoom_level = 7
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen3  ->  layer_transportation:z9
+        -- etldoc: osm_highway_linestring_gen3  ->  layer_transportation:z8
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
@@ -64,7 +64,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         WHERE zoom_level = 8
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen2  ->  layer_transportation:z10
+        -- etldoc: osm_highway_linestring_gen2  ->  layer_transportation:z9z10
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
@@ -104,7 +104,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         )
         UNION ALL
 
-        -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11"
+        -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11
         SELECT
             osm_id, geometry, NULL AS highway, railway,
             service_value(service) AS service,
@@ -113,7 +113,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         WHERE zoom_level = 11 AND (railway='rail' AND service = '')
         UNION ALL
 
-        -- etldoc: osm_railway_linestring_gen1  ->  layer_transportation:z12"
+        -- etldoc: osm_railway_linestring_gen1  ->  layer_transportation:z12
         SELECT
             osm_id, geometry, NULL AS highway, railway,
             service_value(service) AS service,
