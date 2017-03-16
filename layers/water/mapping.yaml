@@ -1,5 +1,11 @@
 generalized_tables:
 
+  # etldoc: imposm3 -> osm_water_polygon_gen6
+  water_polygon_gen6:
+    source: water_polygon_gen5
+    sql_filter: area>20000000.0
+    tolerance: 640.0
+
   # etldoc: imposm3 -> osm_water_polygon_gen5
   water_polygon_gen5:
     source: water_polygon_gen4
