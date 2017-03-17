@@ -17,7 +17,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_marine_rank.sql
   - ./water_lakeline.sql

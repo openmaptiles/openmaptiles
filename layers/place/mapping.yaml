@@ -55,6 +55,7 @@ tables:
       type: geometry
     - *name
     - *name_en
+    - *name_de
     filters:
       require:
         name: ["__any__"]

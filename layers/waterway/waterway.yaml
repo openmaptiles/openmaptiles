@@ -22,7 +22,7 @@ layer:
       - ditch
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, class FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_waterway.sql
   - ./waterway.sql
