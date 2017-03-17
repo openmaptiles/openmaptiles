@@ -14,8 +14,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ele int
            PARTITION BY LabelGrid(geometry, 100 * pixel_width)
            ORDER BY (
              substring(ele from E'^(-?\\d+)(\\D|$)')::int +
-             (CASE WHEN length(NULLIF(wikipedia, '')) > 0 THEN 10000 ELSE 0 END) +
-             (CASE WHEN length(NULLIF(name, '')) > 0 THEN 10000 ELSE 0 END)
+             (CASE WHEN NULLIF(wikipedia, '') is not null THEN 10000 ELSE 0 END) +
+             (CASE WHEN NULLIF(name, '') is not null THEN 10000 ELSE 0 END)
            ) DESC
        )::int AS "rank"
      FROM osm_peak_point
