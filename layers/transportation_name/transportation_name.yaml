@@ -10,9 +10,22 @@ layer:
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Highways#Names_and_references) value of the highway.
     name_en: The english `name:en` value if available.
-    ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or road.
+    ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or its network.
     ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
-    network: The OSM [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+    network:
+      description: |
+          The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+          See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
+          [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
+          or [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads).
+      values:
+      - us-interstate
+      - us-highway
+      - us-state
+      - ca-transcanada
+      - gb-motorway
+      - gb-trunk
+      - road (default)
     class:
       description: |
           Distinguish between more and less important roads.
@@ -32,8 +45,9 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, ref, ref_length, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, ref, ref_length, network::text, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./network_type.sql
   - ./merge_highways.sql
   - ./layer.sql
 datasources:
