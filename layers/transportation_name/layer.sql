@@ -1,32 +1,44 @@
 
 -- etldoc: layer_transportation_name[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_transportation_name | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
+-- etldoc:     label="layer_transportation_name | <z6> z6 | <z7> z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ref text, ref_length int, network text, class text) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, ref text, ref_length int, network text, class text) AS $$
     SELECT osm_id, geometry,
       NULLIF(name, '') AS name,
-      COALESCE(NULLIF(name_en, ''), NULLIF(name, '')) AS name_en,
+      COALESCE(NULLIF(name_en, ''), name) AS name_en,
+      COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
       NULLIF(ref, ''), NULLIF(LENGTH(ref), 0) AS ref_length,
       --TODO: The road network of the road is not yet implemented
-      NULL::text AS network,
+      case
+        when network is not null
+          then network::text
+        when length(coalesce(ref, ''))>0
+          then 'road'
+      end as network,
       highway_class(highway) AS class
     FROM (
 
-        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z8
+        -- etldoc: osm_transportation_name_linestring_gen4 ->  layer_transportation_name:z6
+        SELECT * FROM osm_transportation_name_linestring_gen4
+        WHERE zoom_level = 6
+        UNION ALL
+
+        -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z7
         SELECT * FROM osm_transportation_name_linestring_gen3
+        WHERE zoom_level = 7
+        UNION ALL
+
+        -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z8
+        SELECT * FROM osm_transportation_name_linestring_gen2
         WHERE zoom_level = 8
         UNION ALL
 
-        -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z9
-        SELECT * FROM osm_transportation_name_linestring_gen2
-        WHERE zoom_level = 9
-        UNION ALL
-
+        -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z9
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z10
         -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z11
         SELECT * FROM osm_transportation_name_linestring_gen1
-        WHERE zoom_level BETWEEN 10 AND 11
+        WHERE zoom_level BETWEEN 9 AND 11
         UNION ALL
 
         -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12

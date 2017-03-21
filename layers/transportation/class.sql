@@ -42,13 +42,3 @@ CREATE OR REPLACE FUNCTION service_value(service TEXT) RETURNS TEXT AS $$
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
-
--- Map Natural Earth types to OSM highway
-CREATE OR REPLACE FUNCTION ne_highway(type VARCHAR) RETURNS VARCHAR AS $$
-  SELECT CASE type
-    WHEN 'Major Highway' THEN 'motorway'
-    WHEN 'Secondary Highway' THEN 'trunk'
-    WHEN 'Road' THEN 'primary'
-    ELSE type
-  END;
-$$ LANGUAGE SQL IMMUTABLE;

@@ -11,6 +11,18 @@ generalized_tables:
     sql_filter: railway='rail' AND service=''
     tolerance: 20.0
 
+# etldoc: imposm3 -> osm_highway_linestring_gen6
+  highway_linestring_gen6:
+    source: highway_linestring_gen5
+    sql_filter: highway IN ('motorway') AND NOT is_area
+    tolerance: 2000.0
+
+# etldoc: imposm3 -> osm_highway_linestring_gen5
+  highway_linestring_gen5:
+    source: highway_linestring_gen4
+    sql_filter: highway IN ('motorway','trunk') AND NOT is_area
+    tolerance: 500.0
+
 # etldoc: imposm3 -> osm_highway_linestring_gen4
   highway_linestring_gen4:
     source: highway_linestring_gen3
@@ -42,6 +54,10 @@ name_field: &name
 name_en_field: &name_en
   name: name_en
   key: name:en
+  type: string
+name_de_field: &name_de
+  name: name_de
+  key: name:de
   type: string
 short_name_field: &short_name
   key: short_name
@@ -113,6 +129,7 @@ tables:
     - *layer
     - *name
     - *name_en
+    - *name_de
     - *short_name
     - *tunnel
     - *bridge
@@ -166,6 +183,7 @@ tables:
     - *layer
     - *name
     - *name_en
+    - *name_de
     - *short_name
     - *tunnel
     - *bridge
@@ -210,7 +228,7 @@ tables:
       - pedestrian
 
 # TODO: Future table for joining networks
-# etldoc: imposm3 -> osm_route_member -> "!!!todo:Networks!!!"
+# etldoc: imposm3 -> osm_route_member
   route_member:
     type: relation_member
     columns:
@@ -224,6 +242,7 @@ tables:
       type: member_type
     - *ref
     - *network
+    - *name
     mapping:
       route:
       - road

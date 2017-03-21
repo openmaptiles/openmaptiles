@@ -6,18 +6,19 @@ layer:
       which derives nice centerlines from OSM water bodies. Only the most important lakes contain labels.
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the water body.
-    name_en: The english `name:en` value if available.
+    name_en: English name `name:en` if available, otherwise `name`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
           At the moment only `lake` since no ocean parts are labelled. *Reserved for future use*.
       values:
       - lake
-  buffer_size: 64
+  buffer_size: 256
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_marine_rank.sql
   - ./water_lakeline.sql

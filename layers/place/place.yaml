@@ -7,7 +7,8 @@ layer:
       We suggest you use different font styles and sizes to create a text hierarchy.
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
-    name_en: The English `name:en` value or local `name` if not available.
+    name_en: English name `name:en` if available, otherwise `name`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     capital:
       description: |
           The **capital** field marks the
@@ -49,10 +50,10 @@ layer:
           and states and for cities consists out of a shifted
           Natural Earth `scalerank` combined with a local rank
           within a grid for cities that do not have a Natural Earth `scalerank`.
-  buffer_size: 128
+  buffer_size: 256
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, name_de, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
   - ./capital.sql

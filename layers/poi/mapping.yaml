@@ -1,6 +1,6 @@
 
-# imposm3 mapping file for https://github.com/osm2vectortiles/imposm3 
-# Warning: this is not the official imposm3  
+# imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
+# Warning: this is not the official imposm3
 
 # aerialway values , see http://taginfo.openstreetmap.org/keys/aerialway#values
 def_poi_mapping_aerialway: &poi_mapping_aerialway
@@ -306,6 +306,9 @@ tables:
     - name: name_en
       key: name:en
       type: string
+    - name: name_de
+      key: name:de
+      type: string
     - name: subclass
       type: mapping_value
     mapping:
@@ -335,6 +338,9 @@ tables:
       type: string
     - name: name_en
       key: name:en
+      type: string
+    - name: name_de
+      key: name:de
       type: string
     - name: subclass
       type: mapping_value
