@@ -3,11 +3,13 @@
 -- etldoc:     label="layer_place | <z0_3> z0-3|<z4_7> z4-7|<z8_11> z8-11| <z12_14> z12-z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class text, "rank" int, capital INT) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, class text, "rank" int, capital INT) AS $$
 
     -- etldoc: osm_continent_point -> layer_place:z0_3
     SELECT
-        osm_id, geometry, name, name_en,
+        osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         'continent' AS class, 1 AS "rank", NULL::int AS capital
     FROM osm_continent_point
     WHERE geometry && bbox AND zoom_level < 4
@@ -18,7 +20,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: osm_country_point -> layer_place:z8_11
     -- etldoc: osm_country_point -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         'country' AS class, "rank", NULL::int AS capital
     FROM osm_country_point
     WHERE geometry && bbox AND "rank" <= zoom_level + 1 AND name <> ''
@@ -29,7 +33,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: osm_state_point  -> layer_place:z8_11
     -- etldoc: osm_state_point  -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         'state' AS class, "rank", NULL::int AS capital
     FROM osm_state_point
     WHERE geometry && bbox AND
@@ -42,7 +48,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
 
     -- etldoc: osm_island_point    -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         'island' AS class, 7 AS "rank", NULL::int AS capital
     FROM osm_island_point
     WHERE zoom_level >= 12
@@ -52,7 +60,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: osm_island_polygon  -> layer_place:z8_11
     -- etldoc: osm_island_polygon  -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        osm_id, geometry, name,
+        COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         'island' AS class, island_rank(area) AS "rank", NULL::int AS capital
     FROM osm_island_polygon
     WHERE geometry && bbox AND
@@ -66,7 +76,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, class t
     -- etldoc: layer_city          -> layer_place:z8_11
     -- etldoc: layer_city          -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, name_en,
+        osm_id, geometry, name, name_en, name_de,
         place::text AS class, "rank", capital
     FROM layer_city(bbox, zoom_level, pixel_width)
     ORDER BY "rank" ASC

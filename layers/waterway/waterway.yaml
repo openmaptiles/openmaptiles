@@ -10,7 +10,8 @@ layer:
     name: |
         The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the waterway.
         The `name` field may be empty for NaturalEarth data or at lower zoom levels.
-    name_en: The english `name:en` value if available.
+    name_en: English name `name:en` if available, otherwise `name`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
         The original value of the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
@@ -22,7 +23,7 @@ layer:
       - ditch
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, class FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, class FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./merge_waterway.sql
   - ./waterway.sql

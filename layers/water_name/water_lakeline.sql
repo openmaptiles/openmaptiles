@@ -8,7 +8,7 @@ DROP MATERIALIZED VIEW IF EXISTS osm_water_lakeline CASCADE;
 CREATE MATERIALIZED VIEW osm_water_lakeline AS (
 	SELECT wp.osm_id,
 		ll.wkb_geometry AS geometry,
-		name, name_en, ST_Area(wp.geometry) AS area
+		name, name_en, name_de, ST_Area(wp.geometry) AS area
     FROM osm_water_polygon AS wp
     INNER JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
     WHERE wp.name <> ''
@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION water_lakeline.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO water_lakeline.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION water_lakeline.refresh() RETURNS trigger AS

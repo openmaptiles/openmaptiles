@@ -4,8 +4,11 @@
 
 -- etldoc: osm_city_point -> layer_city:z2_14
 CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, place city_place, "rank" int, capital int) AS $$
-    SELECT osm_id, geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, place, "rank", normalize_capital_level(capital) AS capital
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, place city_place, "rank" int, capital int) AS $$
+    SELECT osm_id, geometry, name,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
+    COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
+    place, "rank", normalize_capital_level(capital) AS capital
     FROM osm_city_point
     WHERE geometry && bbox
       AND ((zoom_level = 2 AND "rank" = 1)
@@ -14,11 +17,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, place c
     UNION ALL
     SELECT osm_id, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
+        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         place,
         COALESCE("rank", gridrank + 10),
         normalize_capital_level(capital) AS capital
     FROM (
-      SELECT osm_id, geometry, name, name_en, place, "rank", capital,
+      SELECT osm_id, geometry, name,
+      COALESCE(NULLIF(name_en, ''), name) AS name_en,
+      COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
+      place, "rank", capital,
       row_number() OVER (
         PARTITION BY LabelGrid(geometry, 128 * pixel_width)
         ORDER BY "rank" ASC NULLS LAST,

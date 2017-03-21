@@ -13,6 +13,9 @@ tables:
     - name: name_en
       key: name:en
       type: string
+    - name: name_de
+      key: name:de
+      type: string
     - name: place
       key: place
       type: string
