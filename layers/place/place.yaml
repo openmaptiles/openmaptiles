@@ -50,7 +50,7 @@ layer:
           and states and for cities consists out of a shifted
           Natural Earth `scalerank` combined with a local rank
           within a grid for cities that do not have a Natural Earth `scalerank`.
-  buffer_size: 128
+  buffer_size: 256
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, name, name_en, name_de, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
