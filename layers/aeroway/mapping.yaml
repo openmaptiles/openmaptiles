@@ -32,3 +32,19 @@ tables:
       - helipad
       - taxiway
       - apron
+
+  # etldoc: imposm3 -> osm_aeroway_linestring
+  aeroway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      key: aeroway
+      type: string
+    mapping:
+      aeroway:
+      - runway
+      - taxiway
