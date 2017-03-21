@@ -28,7 +28,9 @@ tables:
       aeroway:
       - aerodrome
       - heliport
+      - runway
       - helipad
+      - taxiway
       - apron
 
   # etldoc: imposm3 -> osm_aeroway_linestring
