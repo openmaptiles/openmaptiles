@@ -17,6 +17,8 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
+      type: area
+    - name: webmerc_area
       type: webmerc_area
     - name: building
       key: building
@@ -60,7 +62,7 @@ tables:
     filters:
       reject:
         building: ["no","none","No"]
-        building:part: ["no","none","No"]     
+        building:part: ["no","none","No"]
     type: polygon
 
   # etldoc: imposm3 -> osm_building_relation
@@ -71,6 +73,8 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
+      type: area
+    - name: webmerc_area
       type: webmerc_area
     - name: building
       key: building
@@ -157,6 +161,8 @@ tables:
     - name: geometry
       type: validated_geometry
     - name: area
+      type: area
+    - name: webmerc_area
       type: webmerc_area
     - name: building
       key: building
@@ -212,6 +218,5 @@ tables:
     filters:
       reject:
         building: ["no","none","No"]
-        building:part: ["no","none","No"]    
+        building:part: ["no","none","No"]
     type: relation_member
-

@@ -39,6 +39,8 @@ tables:
       key: leisure
       type: string
     - name: area
+      type: area
+    - name: webmerc_area
       type: webmerc_area
     mapping:
       amenity:
