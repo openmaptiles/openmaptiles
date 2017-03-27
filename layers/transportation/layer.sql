@@ -20,25 +20,25 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
         NULLIF(service, '') AS service
     FROM (
-        -- etldoc: osm_highway_linestring_gen6 -> layer_transportation:z4
+        -- etldoc: osm_transportation_merge_linestring_gen6 -> layer_transportation:z4
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen6
+        FROM osm_transportation_merge_linestring_gen6
         WHERE zoom_level = 4
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen5 -> layer_transportation:z5z6
+        -- etldoc: osm_transportation_merge_linestring_gen5 -> layer_transportation:z5z6
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen5
+        FROM osm_transportation_merge_linestring_gen5
         WHERE zoom_level BETWEEN 5 AND 6
         UNION ALL
 
