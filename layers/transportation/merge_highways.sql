@@ -13,6 +13,16 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
+
+-- Improve performance of the sql in transportation_name/network_type.sql
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
+  ON osm_highway_linestring(highway);
+
+-- Improve performance of the sql below
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
+  ON osm_highway_linestring(highway)
+  WHERE highway IN ('motorway','trunk');
+
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
@@ -30,6 +40,10 @@ CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
     ) AS highway_union
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx ON osm_transportation_merge_linestring USING gist(geometry);
+-- Improve performance of the sql below
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_highway_partial_idx
+  ON osm_transportation_merge_linestring(highway)
+  WHERE highway IN ('motorway','trunk');
 
 -- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen5
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS (
@@ -38,6 +52,10 @@ CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS (
     WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 20000
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_geometry_idx ON osm_transportation_merge_linestring_gen5 USING gist(geometry);
+-- Improve performance of the sql below
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_highway_partial_idx
+  ON osm_transportation_merge_linestring_gen5(highway)
+  WHERE highway IN ('motorway');
 
 -- etldoc: osm_transportation_merge_linestring_gen5 -> osm_transportation_merge_linestring_gen6
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen6 AS (

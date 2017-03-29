@@ -11,6 +11,14 @@ DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen1 CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen2 CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen3 CASCADE;
 
+CREATE INDEX IF NOT EXISTS osm_waterway_linestring_waterway_partial_idx
+    ON osm_waterway_linestring(waterway)
+    WHERE waterway = 'river';
+
+CREATE INDEX IF NOT EXISTS osm_waterway_linestring_name_partial_idx
+    ON osm_waterway_linestring(name)
+    WHERE name <> '';
+
 CREATE MATERIALIZED VIEW osm_important_waterway_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
