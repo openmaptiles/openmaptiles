@@ -24,7 +24,7 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
 -- Improve performance of the sql below
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
   ON osm_highway_linestring(highway)
-  WHERE highway IN ('motorway','trunk');
+  WHERE highway IN ('motorway','trunk', 'primary');
 
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
     SELECT
