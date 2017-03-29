@@ -16,18 +16,14 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
-        -- NOTE: The osm_id is no longer the original one which can make it difficult
-        -- to lookup road names by OSM ID
-        member_osm_ids[1] AS osm_id,
-        member_osm_ids,
+        NULL::bigint AS osm_id,
         highway,
         z_order
     FROM (
       SELECT
           ST_LineMerge(ST_Collect(geometry)) AS geometry,
           highway,
-          min(z_order) AS z_order,
-          array_agg(DISTINCT osm_id) AS member_osm_ids
+          min(z_order) AS z_order
       FROM osm_highway_linestring
       WHERE highway IN ('motorway','trunk')
       group by highway
@@ -37,7 +33,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx ON o
 
 -- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen5
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS (
-    SELECT ST_Simplify(geometry, 500) AS geometry, osm_id, member_osm_ids, highway, z_order
+    SELECT ST_Simplify(geometry, 500) AS geometry, osm_id, highway, z_order
     FROM osm_transportation_merge_linestring
     WHERE highway IN ('motorway','trunk')  AND ST_Length(geometry) > 20000
 );
@@ -45,7 +41,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_geometry_idx
 
 -- etldoc: osm_transportation_merge_linestring_gen5 -> osm_transportation_merge_linestring_gen6
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen6 AS (
-    SELECT ST_Simplify(geometry, 2000) AS geometry, osm_id, member_osm_ids, highway, z_order
+    SELECT ST_Simplify(geometry, 2000) AS geometry, osm_id, highway, z_order
     FROM osm_transportation_merge_linestring_gen5
     WHERE highway IN ('motorway') AND ST_Length(geometry) > 20000
 );
