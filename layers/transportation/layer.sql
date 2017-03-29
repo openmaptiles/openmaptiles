@@ -71,7 +71,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen3
+        FROM osm_transportation_merge_linestring_gen3
         WHERE zoom_level = 8
         UNION ALL
 
