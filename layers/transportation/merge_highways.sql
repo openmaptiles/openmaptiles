@@ -15,8 +15,6 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 -- Because this works well for roads that do not have relations as well
 
 
--- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
-
 -- Improve performance of the sql in transportation_name/network_type.sql
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
   ON osm_highway_linestring(highway);
@@ -26,6 +24,7 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
   ON osm_highway_linestring(highway)
   WHERE highway IN ('motorway','trunk', 'primary');
 
+  -- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
     SELECT
         (ST_Dump(geometry)).geom AS geometry,
