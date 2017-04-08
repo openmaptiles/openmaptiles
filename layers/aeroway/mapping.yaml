@@ -1,15 +1,21 @@
 generalized_tables:
+  # etldoc: imposm3 -> osm_aeroway_polygon_gen3
+  aeroway_polygon_gen3:
+    source: aeroway_polygon_gen2
+    sql_filter: sqrt(area)<ZRes(11)
+    tolerance: ZRes(11)
+
   # etldoc: imposm3 -> osm_aeroway_polygon_gen2
   aeroway_polygon_gen2:
     source: aeroway_polygon_gen1
-    sql_filter: area>240000
-    tolerance: 50.0
+    sql_filter: sqrt(area)<ZRes(12)
+    tolerance: ZRes(12)
 
   # etldoc: imposm3 -> osm_aeroway_polygon_gen1
   aeroway_polygon_gen1:
     source: aeroway_polygon
-    sql_filter: area>60000
-    tolerance: 20.0
+    sql_filter: sqrt(area)<ZRes(13)
+    tolerance: ZRes(13)
 tables:
   # etldoc: imposm3 -> osm_aeroway_polygon
   aeroway_polygon:
