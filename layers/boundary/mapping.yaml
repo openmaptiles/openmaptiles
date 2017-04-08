@@ -3,27 +3,27 @@ generalized_tables:
   # etldoc: imposm3 -> osm_boundary_linestring_gen5 
   boundary_linestring_gen5:
     source: boundary_linestring
-    tolerance: 480.0
+    tolerance: ZRes(9)
 
   # etldoc: imposm3 -> osm_boundary_linestring_gen4
   boundary_linestring_gen4:
     source: boundary_linestring
-    tolerance: 240.0
+    tolerance: ZRes(10)
 
   # etldoc: imposm3 -> osm_boundary_linestring_gen3    
   boundary_linestring_gen3:
     source: boundary_linestring
-    tolerance: 120.0
+    tolerance: ZRes(11)
 
   # etldoc: imposm3 -> osm_boundary_linestring_gen2    
   boundary_linestring_gen2:
     source: boundary_linestring
-    tolerance: 60.0
+    tolerance: ZRes(12)
 
   # etldoc: imposm3 -> osm_boundary_linestring_gen1    
   boundary_linestring_gen1:
     source: boundary_linestring
-    tolerance: 30.0
+    tolerance: ZRes(13)
 
 tables:
   # etldoc: imposm3 -> osm_boundary_linestring
