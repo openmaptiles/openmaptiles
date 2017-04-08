@@ -17,35 +17,35 @@ CREATE OR REPLACE VIEW landuse_z6 AS (
     FROM ne_10m_urban_areas
 );
 
--- etldoc: osm_landuse_polygon_gen4 -> landuse_z9
+-- etldoc: osm_landuse_polygon_gen5 -> landuse_z9
 CREATE OR REPLACE VIEW landuse_z9 AS (
+    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
+    FROM osm_landuse_polygon_gen5
+);
+
+-- etldoc: osm_landuse_polygon_gen4 -> landuse_z10
+CREATE OR REPLACE VIEW landuse_z10 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen4
 );
 
--- etldoc: osm_landuse_polygon_gen3 -> landuse_z10
-CREATE OR REPLACE VIEW landuse_z10 AS (
+-- etldoc: osm_landuse_polygon_gen3 -> landuse_z11
+CREATE OR REPLACE VIEW landuse_z11 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen3
 );
 
--- etldoc: osm_landuse_polygon_gen2 -> landuse_z11
-CREATE OR REPLACE VIEW landuse_z11 AS (
+-- etldoc: osm_landuse_polygon_gen2 -> landuse_z12
+CREATE OR REPLACE VIEW landuse_z12 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen2
 );
 
--- etldoc: osm_landuse_polygon_gen1 -> landuse_z12
-CREATE OR REPLACE VIEW landuse_z12 AS (
-    SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
-    FROM osm_landuse_polygon_gen1
-);
-
--- etldoc: osm_landuse_polygon -> landuse_z13
+-- etldoc: osm_landuse_polygon_gen1 -> landuse_z13
 CREATE OR REPLACE VIEW landuse_z13 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
-    FROM osm_landuse_polygon
-    WHERE ST_Area(geometry) > 20000
+    FROM osm_landuse_polygon_gen1
+    WHERE sqrt(ST_Area(geometry)) < ZRes(13)
 );
 
 -- etldoc: osm_landuse_polygon -> landuse_z14
