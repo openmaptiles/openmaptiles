@@ -6,7 +6,7 @@ generalized_tables:
   building_polygon_gen1:
     source: building_polygon
     sql_filter: sqrt(area)<ZRes(13)
-    tolerance: ZRes(13)
+    tolerance: Z13
 
 tables:
   # etldoc: imposm3 -> osm_building_polygon

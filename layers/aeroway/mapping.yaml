@@ -3,19 +3,19 @@ generalized_tables:
   aeroway_polygon_gen3:
     source: aeroway_polygon_gen2
     sql_filter: sqrt(area)<ZRes(11)
-    tolerance: ZRes(11)
+    tolerance: Z11
 
   # etldoc: imposm3 -> osm_aeroway_polygon_gen2
   aeroway_polygon_gen2:
     source: aeroway_polygon_gen1
     sql_filter: sqrt(area)<ZRes(12)
-    tolerance: ZRes(12)
+    tolerance: Z12
 
   # etldoc: imposm3 -> osm_aeroway_polygon_gen1
   aeroway_polygon_gen1:
     source: aeroway_polygon
     sql_filter: sqrt(area)<ZRes(13)
-    tolerance: ZRes(13)
+    tolerance: Z13
 tables:
   # etldoc: imposm3 -> osm_aeroway_polygon
   aeroway_polygon:
