@@ -3,25 +3,25 @@ generalized_tables:
 # etldoc: imposm3 -> osm_railway_linestring_gen2
   railway_linestring_gen2:
     source: railway_linestring_gen1
-    tolerance: 40.0
+    tolerance: Z11
 
 # etldoc: imposm3 -> osm_railway_linestring_gen1
   railway_linestring_gen1:
     source: railway_linestring
     sql_filter: railway='rail' AND service=''
-    tolerance: 20.0
+    tolerance: Z12
 
 # etldoc: imposm3 -> osm_highway_linestring_gen2
   highway_linestring_gen2:
     source: highway_linestring_gen1
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
-    tolerance: 50.0
+    tolerance: Z10
 
 # etldoc: imposm3 -> osm_highway_linestring_gen1
   highway_linestring_gen1:
     source: highway_linestring
     sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
-    tolerance: 20.0
+    tolerance: Z11
 
 name_field: &name
   name: name
