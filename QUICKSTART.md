@@ -361,6 +361,14 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh wyoming          # Wyoming,us
 ./quickstart.sh yukon          # Yukon,canada
 ```
+### Using your own OSM data
+Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an osm.pbf inside/
+
+```
+mkdir -p data
+mv my.osm.pbf data/
+./quickstart.sh my
+```
 
 ### Check tileserver
 
