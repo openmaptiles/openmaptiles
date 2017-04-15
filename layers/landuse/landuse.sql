@@ -45,7 +45,6 @@ CREATE OR REPLACE VIEW landuse_z12 AS (
 CREATE OR REPLACE VIEW landuse_z13 AS (
     SELECT osm_id, geometry, landuse, amenity, leisure, NULL::int as scalerank
     FROM osm_landuse_polygon_gen1
-    WHERE sqrt(ST_Area(geometry)) < ZRes(13)
 );
 
 -- etldoc: osm_landuse_polygon -> landuse_z14

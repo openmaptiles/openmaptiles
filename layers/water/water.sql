@@ -89,7 +89,7 @@ CREATE OR REPLACE VIEW water_z11 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen1
     UNION ALL
     -- etldoc:  osm_water_polygon_gen1 ->  water_z11
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen1 WHERE sqrt(area)<ZRes(11)
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen1
 );
 
 CREATE OR REPLACE VIEW water_z12 AS (
@@ -97,7 +97,7 @@ CREATE OR REPLACE VIEW water_z12 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z12
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon WHERE sqrt(area)<ZRes(12)
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon
 );
 
 CREATE OR REPLACE VIEW water_z13 AS (
@@ -105,7 +105,7 @@ CREATE OR REPLACE VIEW water_z13 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z13
-    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon WHERE sqrt(area)<ZRes(13)
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon
 );
 
 CREATE OR REPLACE VIEW water_z14 AS (
