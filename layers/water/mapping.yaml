@@ -3,38 +3,38 @@ generalized_tables:
   # etldoc: imposm3 -> osm_water_polygon_gen6
   water_polygon_gen6:
     source: water_polygon_gen5
-    sql_filter: sqrt(area)<ZRes(6)
-    tolerance: Z6
+    sql_filter: area>power(GEOUNIT6,2)
+    tolerance: GEOUNIT6
 
   # etldoc: imposm3 -> osm_water_polygon_gen5
   water_polygon_gen5:
     source: water_polygon_gen4
-    sql_filter: sqrt(area)<ZRes(7)
-    tolerance: Z7
+    sql_filter: area>power(GEOUNIT7,2)
+    tolerance: GEOUNIT7
 
   # etldoc: imposm3 -> osm_water_polygon_gen4
   water_polygon_gen4:
     source: water_polygon_gen3
-    sql_filter: sqrt(area)<ZRes(8)
-    tolerance: Z8
+    sql_filter: area>power(GEOUNIT8,2)
+    tolerance: GEOUNIT8
 
   # etldoc: imposm3 -> osm_water_polygon_gen3
   water_polygon_gen3:
     source: water_polygon_gen2
-    sql_filter: sqrt(area)<ZRes(9)
-    tolerance: Z9
+    sql_filter: area>power(GEOUNIT9,2)
+    tolerance: GEOUNIT9
 
   # etldoc: imposm3 -> osm_water_polygon_gen2
   water_polygon_gen2:
     source: water_polygon_gen1
-    sql_filter: sqrt(area)<ZRes(10)
-    tolerance: Z10
+    sql_filter: area>power(GEOUNIT10,2)
+    tolerance: GEOUNIT10
 
   # etldoc: imposm3 -> osm_water_polygon_gen1
   water_polygon_gen1:
     source: water_polygon
-    sql_filter: sqrt(area)<ZRes(11)
-    tolerance: Z11
+    sql_filter: area>power(GEOUNIT11,2)
+    tolerance: GEOUNIT11
 
 tables:
 

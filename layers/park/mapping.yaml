@@ -2,50 +2,50 @@ generalized_tables:
   # etldoc: imposm3 -> osm_park_polygon_gen8
   park_polygon_gen8:
     source: park_polygon_gen6
-    sql_filter: sqrt(area)<ZRes(6)
-    tolerance: Z6
+    sql_filter: area>power(GEOUNIT6,2)
+    tolerance: GEOUNIT6
 
   # etldoc: imposm3 -> osm_park_polygon_gen7
   park_polygon_gen7:
     source: park_polygon_gen6
-    sql_filter: sqrt(area)<ZRes(7)
-    tolerance: Z7
+    sql_filter: area>power(GEOUNIT7,2)
+    tolerance: GEOUNIT7
 
   # etldoc: imposm3 -> osm_park_polygon_gen6
   park_polygon_gen6:
     source: park_polygon_gen5
-    sql_filter: sqrt(area)<ZRes(8)
-    tolerance: Z8
+    sql_filter: area>power(GEOUNIT8,2)
+    tolerance: GEOUNIT8
 
   # etldoc: imposm3 -> osm_park_polygon_gen5
   park_polygon_gen5:
     source: park_polygon_gen4
-    sql_filter: sqrt(area)<ZRes(9)
-    tolerance: Z9
+    sql_filter: area>power(GEOUNIT9,2)
+    tolerance: GEOUNIT9
 
   # etldoc: imposm3 -> osm_park_polygon_gen4
   park_polygon_gen4:
     source: park_polygon_gen3
-    sql_filter: sqrt(area)<ZRes(10)
-    tolerance: Z10
+    sql_filter: area>power(GEOUNIT10,2)
+    tolerance: GEOUNIT10
 
   # etldoc: imposm3 -> osm_park_polygon_gen3
   park_polygon_gen3:
     source: park_polygon_gen2
-    sql_filter: sqrt(area)<ZRes(11)
-    tolerance: Z11
+    sql_filter: area>power(GEOUNIT11,2)
+    tolerance: GEOUNIT11
 
   # etldoc: imposm3 -> osm_park_polygon_gen2
   park_polygon_gen2:
     source: park_polygon_gen1
-    sql_filter: sqrt(area)<ZRes(12)
-    tolerance: Z12
+    sql_filter: area>power(GEOUNIT12,2)
+    tolerance: GEOUNIT12
 
   # etldoc: imposm3 -> osm_park_polygon_gen1
   park_polygon_gen1:
     source: park_polygon
-    sql_filter: sqrt(area)<ZRes(13)
-    tolerance: Z13
+    sql_filter: area>power(GEOUNIT13,2)
+    tolerance: GEOUNIT13
 
 tables:
 
