@@ -57,19 +57,19 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen3_geometry_idx
   ON osm_transportation_merge_linestring_gen3 USING gist(geometry);
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen3_highway_partial_idx
   ON osm_transportation_merge_linestring_gen3(highway)
-  WHERE highway IN ('motorway', 'trunk');
+  WHERE highway IN ('motorway','trunk', 'primary');
 
 -- etldoc: osm_transportation_merge_linestring_gen3 -> osm_transportation_merge_linestring_gen4
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen4 AS (
     SELECT ST_Simplify(geometry, 200) AS geometry, osm_id, highway, z_order
     FROM osm_transportation_merge_linestring_gen3
-    WHERE highway IN ('motorway','trunk') AND ST_Length(geometry) > 50
+    WHERE highway IN ('motorway','trunk', 'primary') AND ST_Length(geometry) > 50
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen4_geometry_idx
   ON osm_transportation_merge_linestring_gen4 USING gist(geometry);
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen4_highway_partial_idx
   ON osm_transportation_merge_linestring_gen4(highway)
-  WHERE highway IN ('motorway', 'trunk');
+  WHERE highway IN ('motorway','trunk', 'primary');
 
 -- etldoc: osm_transportation_merge_linestring_gen4 -> osm_transportation_merge_linestring_gen5
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS (
@@ -93,7 +93,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen6_geometry_idx
   ON osm_transportation_merge_linestring_gen6 USING gist(geometry);
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen6_highway_partial_idx
   ON osm_transportation_merge_linestring_gen6(highway)
-  WHERE highway IN ('motorway');
+  WHERE highway IN ('motorway','trunk');
 
 -- etldoc: osm_transportation_merge_linestring_gen6 -> osm_transportation_merge_linestring_gen7
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen7 AS (
