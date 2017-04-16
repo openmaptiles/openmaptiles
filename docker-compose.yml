@@ -4,7 +4,7 @@ volumes:
   cache:
 services:
   postgres:
-    image: "openmaptiles/postgis"
+    image: "openmaptiles/postgis:2.3"
     volumes:
     - pgdata:/var/lib/postgresql/data
     networks:
