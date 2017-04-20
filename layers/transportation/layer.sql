@@ -4,7 +4,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="<sql> layer_transportation |<z4> z4 |<z5z6> z5-z6 |<z7> z7 |<z8> z8 |<z9z10> z9-z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
+-- etldoc:     label="<sql> layer_transportation |<z4> z4 |<z5> z5 |<z6> z6 |<z7> z7 |<z8> z8 |<z9z10> z9-z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
     SELECT
@@ -20,47 +20,58 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
         NULLIF(service, '') AS service
     FROM (
-        -- etldoc: osm_highway_linestring_gen6 -> layer_transportation:z4
+        -- etldoc: osm_transportation_merge_linestring_gen7 -> layer_transportation:z4
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen6
+        FROM osm_transportation_merge_linestring_gen7
         WHERE zoom_level = 4
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen5 -> layer_transportation:z5z6
+        -- etldoc: osm_transportation_merge_linestring_gen6 -> layer_transportation:z5
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen5
-        WHERE zoom_level BETWEEN 5 AND 6
+        FROM osm_transportation_merge_linestring_gen6
+        WHERE zoom_level = 5
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen4  ->  layer_transportation:z7
+        -- etldoc: osm_transportation_merge_linestring_gen5 -> layer_transportation:z6
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen4
+        FROM osm_transportation_merge_linestring_gen5
+        WHERE zoom_level = 6
+        UNION ALL
+
+        -- etldoc: osm_transportation_merge_linestring_gen4  ->  layer_transportation:z7
+        SELECT
+            osm_id, geometry, highway, NULL AS railway, NULL AS service,
+            NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
+            NULL::boolean AS is_ford,
+            NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen4
         WHERE zoom_level = 7
         UNION ALL
 
-        -- etldoc: osm_highway_linestring_gen3  ->  layer_transportation:z8
+        -- etldoc: osm_transportation_merge_linestring_gen3  ->  layer_transportation:z8
         SELECT
             osm_id, geometry, highway, NULL AS railway, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
             z_order
-        FROM osm_highway_linestring_gen3
+        FROM osm_transportation_merge_linestring_gen3
         WHERE zoom_level = 8
         UNION ALL
 

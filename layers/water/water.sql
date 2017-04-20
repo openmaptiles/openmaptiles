@@ -61,8 +61,8 @@ CREATE OR REPLACE VIEW water_z7 AS (
 );
 
 CREATE OR REPLACE VIEW water_z8 AS (
-    -- etldoc:  ne_10m_ocean ->  water_z8
-    SELECT geometry, 'ocean'::text AS class FROM ne_10m_ocean
+    -- etldoc:  osm_ocean_polygon_gen4 ->  water_z8
+    SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen4
     UNION ALL
     -- etldoc:  osm_water_polygon_gen4 ->  water_z8
     SELECT geometry, 'lake' AS class FROM osm_water_polygon_gen4

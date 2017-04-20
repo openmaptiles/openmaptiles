@@ -42,27 +42,28 @@ Together the layers make up the OpenMapTiles tileset.
 
 :link: [Study the vector tile schema](http://openmaptiles.org/schema)
 
-- [boundary](https://github.com/openmaptiles/openmaptiles/wiki/boundary)
-- [building](https://github.com/openmaptiles/openmaptiles/wiki/building)
-- [transportation](https://github.com/openmaptiles/openmaptiles/wiki/transportation)
-- [transportation_name](https://github.com/openmaptiles/openmaptiles/wiki/transportation_name)
-- [housenumber](https://github.com/openmaptiles/openmaptiles/wiki/housenumber)
-- [landcover](https://github.com/openmaptiles/openmaptiles/wiki/landcover)
-- [landuse](https://github.com/openmaptiles/openmaptiles/wiki/landuse)
-- [aeroway](https://github.com/openmaptiles/openmaptiles/wiki/aeroway)
-- [place](https://github.com/openmaptiles/openmaptiles/wiki/place)
-- [poi](https://github.com/openmaptiles/openmaptiles/wiki/poi)
-- [park](https://github.com/openmaptiles/openmaptiles/wiki/park)
-- [water](https://github.com/openmaptiles/openmaptiles/wiki/water)
-- [water_name](https://github.com/openmaptiles/openmaptiles/wiki/water_name)
-- [waterway](https://github.com/openmaptiles/openmaptiles/wiki/waterway)
+- [aeroway](https://openmaptiles.org/schema/#aeroway)
+- [boundary](https://openmaptiles.org/schema/#boundary)
+- [building](https://openmaptiles.org/schema/#building)
+- [housenumber](https://openmaptiles.org/schema/#housenumber)
+- [landcover](https://openmaptiles.org/schema/#landcover)
+- [landuse](https://openmaptiles.org/schema/#landuse)
+- [mountain_peak](https://openmaptiles.org/schema/#mountain_peak)
+- [park](https://openmaptiles.org/schema/#park)
+- [place](https://openmaptiles.org/schema/#place)
+- [poi](https://openmaptiles.org/schema/#poi)
+- [transportation](https://openmaptiles.org/schema/#transportation)
+- [transportation_name](https://openmaptiles.org/schema/#transportation_name)
+- [water](https://openmaptiles.org/schema/#water)
+- [water_name](https://openmaptiles.org/schema/#water_name)
+- [waterway](https://openmaptiles.org/schema/#waterway)
 
 ## Develop
 
 To work on OpenMapTiles you need Docker and Python.
 
-- Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.10.0+.
-- Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.6.0+.
+- Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.11.0+.
+- Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
 - Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
 
 ### Build
