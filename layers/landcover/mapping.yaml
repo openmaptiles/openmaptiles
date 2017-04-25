@@ -4,38 +4,38 @@ generalized_tables:
   # etldoc: imposm3 -> osm_landcover_polygon_gen6
   landcover_polygon_gen6:
     source: landcover_polygon_gen5
-    sql_filter: area>15000000
-    tolerance: 300.0
+    sql_filter: area>power(ZRES8,2)
+    tolerance: ZRES8
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen5
   landcover_polygon_gen5:
     source: landcover_polygon_gen4
-    sql_filter: area>4200000
-    tolerance: 200.0
+    sql_filter: area>power(ZRES9,2)
+    tolerance: ZRES9
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen4
   landcover_polygon_gen4:
     source: landcover_polygon_gen3
-    sql_filter: area>1200000
-    tolerance: 120.0
+    sql_filter: area>power(ZRES10,2)
+    tolerance: ZRES10
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen3
   landcover_polygon_gen3:
     source: landcover_polygon_gen2
-    sql_filter: area>480000
-    tolerance: 80.0
+    sql_filter: area>power(ZRES11,2)
+    tolerance: ZRES11
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen2
   landcover_polygon_gen2:
     source: landcover_polygon_gen1
-    sql_filter: area>240000
-    tolerance: 50.0
+    sql_filter: area>power(ZRES12,2)
+    tolerance: ZRES12
 
   # etldoc: imposm3 -> osm_landcover_polygon_gen1
   landcover_polygon_gen1:
     source: landcover_polygon
-    sql_filter: area>60000
-    tolerance: 20.0
+    sql_filter: area>power(ZRES13,2)
+    tolerance: ZRES13
 
 tables:
   # etldoc: imposm3 -> osm_landcover_polygon
