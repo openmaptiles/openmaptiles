@@ -16,6 +16,8 @@ tables:
     - name: name_de
       key: name:de
       type: string
+    - name: tags
+      type: hstore_tags
     - name: place
       key: place
       type: string

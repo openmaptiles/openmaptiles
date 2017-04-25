@@ -106,6 +106,8 @@ tables:
     - *name
     - *name_en
     - *name_de
+    - name: tags
+      type: hstore_tags
     - *short_name
     - *tunnel
     - *bridge
@@ -160,6 +162,8 @@ tables:
     - *name
     - *name_en
     - *name_de
+    - name: tags
+      type: hstore_tags
     - *short_name
     - *tunnel
     - *bridge
