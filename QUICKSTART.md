@@ -339,7 +339,6 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh ukraine          # Ukraine,europe
 ./quickstart.sh unterfranken          # Unterfranken,bayern
 ./quickstart.sh uruguay          # Uruguay,south-america
-./quickstart.sh us          # United States of America,north-america
 ./quickstart.sh us-midwest          # US Midwest,north-america
 ./quickstart.sh us-northeast          # US Northeast,north-america
 ./quickstart.sh us-pacific          # US Pacific,north-america
