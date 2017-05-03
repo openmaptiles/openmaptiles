@@ -4,7 +4,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON housenumber.updates;
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
 CREATE OR REPLACE FUNCTION convert_housenumber_point() RETURNS VOID AS $$
 BEGIN
-  UPDATE osm_housenumber_point SET geometry=ST_PointOnSurface(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
+  UPDATE osm_housenumber_point SET geometry=topoint(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
 END;
 $$ LANGUAGE plpgsql;
 
