@@ -54,7 +54,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
             osm_id, geometry,
             NULL::int AS render_height, NULL::int AS render_min_height
         FROM osm_building_polygon_gen1
-        WHERE zoom_level = 13 AND geometry && bbox AND area > 1400
+        WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
         SELECT DISTINCT ON (osm_id) 
