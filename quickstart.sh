@@ -51,7 +51,7 @@ echo "      : Your docker system:"
 docker         --version
 docker-compose --version
 
-# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers 
+# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers
 function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
 
 COMPOSE_VER=$(docker-compose version --short)
@@ -261,7 +261,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Add special metadata to mbtiles! "
 docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles	
+docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -323,5 +323,11 @@ make help
 
 echo "-------------------------------------------------------------------------------------"
 echo " Acknowledgments "
+echo " Generated vector tiles are produced work of OpenStreetMap data. "
+echo " Such tiles are reusable under CC-BY license granted by OpenMapTiles team: "
+echo "   https://github.com/openmaptiles/openmaptiles/#license "
+echo " Maps made with these vector tiles must display a visible credit: "
+echo "   © OpenMapTiles © OpenStreetMap contributors "
+echo " "
 echo " Thanks to all free, open source software developers and Open Data Contributors!    "
 echo "-------------------------------------------------------------------------------------"
