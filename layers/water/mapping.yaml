@@ -3,38 +3,38 @@ generalized_tables:
   # etldoc: imposm3 -> osm_water_polygon_gen6
   water_polygon_gen6:
     source: water_polygon_gen5
-    sql_filter: area>20000000.0
-    tolerance: 640.0
+    sql_filter: area>power(ZRES6,2)
+    tolerance: ZRES6
 
   # etldoc: imposm3 -> osm_water_polygon_gen5
   water_polygon_gen5:
     source: water_polygon_gen4
-    sql_filter: area>10000000.0
-    tolerance: 320.0
+    sql_filter: area>power(ZRES7,2)
+    tolerance: ZRES7
 
   # etldoc: imposm3 -> osm_water_polygon_gen4
   water_polygon_gen4:
     source: water_polygon_gen3
-    sql_filter: area>5000000.0
-    tolerance: 160.0
+    sql_filter: area>power(ZRES8,2)
+    tolerance: ZRES8
 
   # etldoc: imposm3 -> osm_water_polygon_gen3
   water_polygon_gen3:
     source: water_polygon_gen2
-    sql_filter: area>2500000.0
-    tolerance: 80.0
+    sql_filter: area>power(ZRES9,2)
+    tolerance: ZRES9
 
   # etldoc: imposm3 -> osm_water_polygon_gen2
   water_polygon_gen2:
     source: water_polygon_gen1
-    sql_filter: area>1000000
-    tolerance: 40.0
+    sql_filter: area>power(ZRES10,2)
+    tolerance: ZRES10
 
   # etldoc: imposm3 -> osm_water_polygon_gen1
   water_polygon_gen1:
     source: water_polygon
-    sql_filter: area>500000
-    tolerance: 20.0
+    sql_filter: area>power(ZRES11,2)
+    tolerance: ZRES11
 
 tables:
 
