@@ -64,7 +64,7 @@ To work on OpenMapTiles you need Docker and Python.
 
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.11.0+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
-- Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
+- Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install git+https://github.com/openmaptiles/openmaptiles-tools.git@multilinguality`
 
 ### Build
 
@@ -134,7 +134,7 @@ docker-compose run generate-vectortiles
 
 ## License
 
-All code in this repository is under the [BSD license](./LICENSE.md) and the cartography decisions encoded in the schema and SQL are licensed under [CC-BY](./LICENSE.md). 
+All code in this repository is under the [BSD license](./LICENSE.md) and the cartography decisions encoded in the schema and SQL are licensed under [CC-BY](./LICENSE.md).
 
 Products or services using maps derived from OpenMapTiles schema need to visibly credit "OpenMapTiles.org" or reference "OpenMapTiles" with a link to http://openmaptiles.org/. Exceptions to attribution requirement can be granted on request.
 
