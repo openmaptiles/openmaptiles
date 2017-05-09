@@ -66,7 +66,7 @@ tileset:
     - mk # Macedonian
     - mt # Maltese
     - nl # Dutch
-    - no # Norwegian
+    - "no" # Norwegian
     - pl # Polish
     - pt # Portuguese
     - rm # Romansh

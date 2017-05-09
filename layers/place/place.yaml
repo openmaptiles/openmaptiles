@@ -53,8 +53,9 @@ layer:
   buffer_size: 256
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, name_de, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./name.sql
   - ./types.sql
   - ./capital.sql
   - ./city.sql
