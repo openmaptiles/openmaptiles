@@ -19,10 +19,12 @@
     * https://docs.docker.com/compose/install/
 * disk space ( >= ~15Gb  )
     * for small extracts  >= ~15Gb
-    * for big extracts ( continents, planet) > 20 ... 1000 Gb
+    * for big extracts ( continents, planet) 250 Gb
     * And depends on
         * OpenStreetMap data size
         * Zoom level
+    * Best on SSD for postserve but completely usable on HDD
+    * Takes 24hrs to import on a reasonable machine, and is immediately available with postserve
 * memory ( >= 3Gb )
     * for small extracts 3Gb-8Gb RAM
     * for big extracts ( Europe, Planet) > 8-32 Gb
@@ -368,6 +370,10 @@ mkdir -p data
 mv my.osm.pbf data/
 ./quickstart.sh my
 ```
+
+### Check postserve
+*  ` docker-compose up -d postserve`
+and the generated maps are going to be available in browser on [localhost:8090/0/0/0.pbf](http://localhost:8090/0/0/0.pbf).
 
 ### Check tileserver
 

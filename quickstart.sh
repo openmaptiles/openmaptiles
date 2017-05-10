@@ -244,6 +244,11 @@ make psql-analyze
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
+docker-compose up -d postserve
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/tiles.mbtiles  "
