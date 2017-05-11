@@ -13,7 +13,7 @@
 * bash
 * git
 * make 
-* docker         >=1.11
+* docker         >=1.12.4
     * https://www.docker.com/products/overview
 * docker-compose >=1.7.1
     * https://docs.docker.com/compose/install/
