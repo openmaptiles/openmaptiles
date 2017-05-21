@@ -6,9 +6,9 @@ CREATE OR REPLACE FUNCTION convert_housenumber_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_housenumber_point
   SET geometry =
-    CASE
-      WHEN ST_NPoints(geometry) < 5 THEN ST_Centroid(geometry)
-      ELSE ST_PointOnSurface(geometry)
+           CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry)
+           THEN ST_Centroid(geometry)
+           ELSE ST_PointOnSurface(geometry)
     END
   WHERE ST_GeometryType(geometry) <> 'ST_Point';
 END;
