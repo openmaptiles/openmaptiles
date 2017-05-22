@@ -5,7 +5,13 @@ DROP TRIGGER IF EXISTS trigger_refresh ON poi.updates;
 
 CREATE OR REPLACE FUNCTION convert_poi_point() RETURNS VOID AS $$
 BEGIN
-  UPDATE osm_poi_polygon SET geometry=ST_PointOnSurface(geometry) WHERE ST_GeometryType(geometry) <> 'ST_Point';
+  UPDATE osm_poi_polygon
+  SET geometry =
+           CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry)
+           THEN ST_Centroid(geometry)
+           ELSE ST_PointOnSurface(geometry)
+    END
+  WHERE ST_GeometryType(geometry) <> 'ST_Point';
   ANALYZE osm_poi_polygon;
 END;
 $$ LANGUAGE plpgsql;
