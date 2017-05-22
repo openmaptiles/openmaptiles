@@ -104,6 +104,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
   - station
+  - halt
 
 # shop values , see http://taginfo.openstreetmap.org/keys/shop#values
 def_poi_mapping_shop: &poi_mapping_shop
