@@ -316,6 +316,9 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: station
+      key: station
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -350,6 +353,9 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: station
+      key: station
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity

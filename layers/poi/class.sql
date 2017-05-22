@@ -38,7 +38,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('fast_food','food_court') THEN 'fast_food'
         WHEN subclass IN ('park','bbq') THEN 'park'
         WHEN subclass IN ('bus_stop','bus_station') THEN 'bus'
-        WHEN subclass IN ('station', 'halt') THEN 'railway'
+        WHEN subclass IN ('station', 'halt', 'subway') THEN 'railway'
         WHEN subclass IN ('camp_site','caravan_site') THEN 'campsite'
         WHEN subclass IN ('laundry','dry_cleaning') THEN 'laundry'
         WHEN subclass IN ('supermarket','deli','delicatessen','department_store','greengrocer','marketplace') THEN 'grocery'
