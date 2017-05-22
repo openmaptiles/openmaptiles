@@ -62,7 +62,7 @@ Together the layers make up the OpenMapTiles tileset.
 
 To work on OpenMapTiles you need Docker and Python.
 
-- Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.11.0+.
+- Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
 - Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
 
