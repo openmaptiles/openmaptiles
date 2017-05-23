@@ -105,6 +105,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 def_poi_mapping_railway: &poi_mapping_railway
   - station
   - halt
+  - tram_stop
 
 # shop values , see http://taginfo.openstreetmap.org/keys/shop#values
 def_poi_mapping_shop: &poi_mapping_shop
@@ -316,6 +317,8 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: mapping_key
+      type: mapping_key
     - name: station
       key: station
       type: string
@@ -353,6 +356,8 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: mapping_key
+      type: mapping_key
     - name: station
       key: station
       type: string
