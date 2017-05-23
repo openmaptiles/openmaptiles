@@ -84,7 +84,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             z_order
         FROM osm_highway_linestring_gen2
         WHERE zoom_level BETWEEN 9 AND 10
-          AND st_length(geometry)>zres(10)
+          AND st_length(geometry)>zres(11)
         UNION ALL
 
         -- etldoc: osm_highway_linestring_gen1  ->  layer_transportation:z11
@@ -96,7 +96,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             z_order
         FROM osm_highway_linestring_gen1
         WHERE zoom_level = 11
-          AND st_length(geometry)>zres(11)
+          AND st_length(geometry)>zres(12)
         UNION ALL
 
         -- etldoc: osm_highway_linestring       ->  layer_transportation:z12
