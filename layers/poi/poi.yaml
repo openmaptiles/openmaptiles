@@ -20,6 +20,7 @@ layer:
           [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
           [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+          [`station`](http://wiki.openstreetmap.org/wiki/Key:station),
           [`sport`](http://wiki.openstreetmap.org/wiki/Key:sport),
           [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism)
           or [`shop`](http://wiki.openstreetmap.org/wiki/Key:shop)
