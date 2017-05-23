@@ -31,7 +31,7 @@ testdata=${osm_area}.osm.pbf
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
-MIN_DOCKER_VER=1.11.0
+MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
@@ -241,6 +241,11 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Analyze PostgreSQL tables"
 make psql-analyze
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
+docker-compose up -d postserve
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

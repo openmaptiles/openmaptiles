@@ -2,25 +2,25 @@ generalized_tables:
 # etldoc: imposm3 -> osm_railway_linestring_gen2
   railway_linestring_gen2:
     source: railway_linestring_gen1
-    tolerance: ZRES11
+    tolerance: ZRES12
 
 # etldoc: imposm3 -> osm_railway_linestring_gen1
   railway_linestring_gen1:
     source: railway_linestring
     sql_filter: railway='rail' AND service=''
-    tolerance: ZRES12
+    tolerance: ZRES13
 
 # etldoc: imposm3 -> osm_highway_linestring_gen2
   highway_linestring_gen2:
     source: highway_linestring_gen1
-    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary') AND NOT is_area
-    tolerance: ZRES10
+    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') AND NOT is_area
+    tolerance: ZRES11
 
 # etldoc: imposm3 -> osm_highway_linestring_gen1
   highway_linestring_gen1:
     source: highway_linestring
-    sql_filter: highway IN ('motorway','trunk', 'primary', 'secondary', 'tertiary') AND NOT is_area
-    tolerance: ZRES11
+    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') AND NOT is_area
+    tolerance: ZRES12
 
 name_field: &name
   name: name
