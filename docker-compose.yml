@@ -68,7 +68,7 @@ services:
      - ./build:/mapping
      - cache:/cache
   import-sql:
-    image: "openmaptiles/import-sql:latest"
+    image: "openmaptiles/import-sql:0.2"
     env_file: .env
     networks:
     - postgres_conn
