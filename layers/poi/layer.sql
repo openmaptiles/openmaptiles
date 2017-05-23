@@ -7,12 +7,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     SELECT osm_id, geometry, NULLIF(name, '') AS name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
-<<<<<<< HEAD
     tags,
-    poi_class(subclass) AS class, subclass,
-=======
     poi_class(subclass, mapping_key) AS class, subclass,
->>>>>>> lincomatic-master
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
