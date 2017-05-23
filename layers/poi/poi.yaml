@@ -22,7 +22,6 @@ layer:
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
           [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
           [`station`](http://wiki.openstreetmap.org/wiki/Key:station),
-          [`halt`](http://wiki.openstreetmap.org/wiki/Key:halt),
           [`sport`](http://wiki.openstreetmap.org/wiki/Key:sport),
           [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism)
           or [`shop`](http://wiki.openstreetmap.org/wiki/Key:shop)
