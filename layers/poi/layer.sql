@@ -8,10 +8,10 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    poi_class(subclass) AS class, subclass,
+    poi_class(subclass, mapping_key) AS class, subclass,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass)) END ASC
+            ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
         )::int AS "rank"
     FROM (
         -- etldoc: osm_poi_point ->  layer_poi:z14_
