@@ -101,6 +101,12 @@ def_poi_mapping_leisure: &poi_mapping_leisure
   - swimming_pool
   - water_park
 
+# railway values , see http://taginfo.openstreetmap.org/keys/railway#values
+def_poi_mapping_railway: &poi_mapping_railway
+  - station
+  - halt
+  - tram_stop
+
 # shop values , see http://taginfo.openstreetmap.org/keys/shop#values
 def_poi_mapping_shop: &poi_mapping_shop
   - accessories
@@ -311,6 +317,11 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: mapping_key
+      type: mapping_key
+    - name: station
+      key: station
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -319,6 +330,7 @@ tables:
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
       leisure: *poi_mapping_leisure
+      railway: *poi_mapping_railway
       shop: *poi_mapping_shop
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
@@ -344,6 +356,11 @@ tables:
       type: string
     - name: subclass
       type: mapping_value
+    - name: mapping_key
+      type: mapping_key
+    - name: station
+      key: station
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -352,6 +369,7 @@ tables:
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
       leisure: *poi_mapping_leisure
+      railway: *poi_mapping_railway
       shop: *poi_mapping_shop
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism

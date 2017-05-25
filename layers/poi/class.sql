@@ -4,6 +4,7 @@ RETURNS INT AS $$
         WHEN 'hospital' THEN 20
         WHEN 'park' THEN 25
         WHEN 'cemetery' THEN 30
+        WHEN 'railway' THEN 40
         WHEN 'bus' THEN 50
         WHEN 'attraction' THEN 70
         WHEN 'harbor' THEN 75
@@ -28,7 +29,7 @@ RETURNS INT AS $$
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION poi_class(subclass TEXT)
+CREATE OR REPLACE FUNCTION poi_class(subclass TEXT, mapping_key TEXT)
 RETURNS TEXT AS $$
     SELECT CASE
         WHEN subclass IN ('accessories','antiques','art','beauty','bed','boutique','camera','carpet','charity','chemist','chocolate','coffee','computer','confectionery','convenience','copyshop','cosmetics','garden_centre','doityourself','erotic','electronics','fabric','florist','furniture','video_games','video','general','gift','hardware','hearing_aids','hifi','ice_cream','interior_decoration','jewelry','kiosk','lamps','mall','massage','motorcycle','mobile_phone','newsagent','optician','outdoor','perfumery','perfume','pet','photo','second_hand','shoes','sports','stationery','tailor','tattoo','ticket','tobacco','toys','travel_agency','watches','weapons','wholesale') THEN 'shop'
@@ -37,6 +38,8 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('fast_food','food_court') THEN 'fast_food'
         WHEN subclass IN ('park','bbq') THEN 'park'
         WHEN subclass IN ('bus_stop','bus_station') THEN 'bus'
+        -- because 'station' might be from both aeroway and railway
+        WHEN (subclass='station' AND mapping_key = 'railway') OR subclass IN ('halt', 'tram_stop', 'subway') THEN 'railway'
         WHEN subclass IN ('camp_site','caravan_site') THEN 'campsite'
         WHEN subclass IN ('laundry','dry_cleaning') THEN 'laundry'
         WHEN subclass IN ('supermarket','deli','delicatessen','department_store','greengrocer','marketplace') THEN 'grocery'
