@@ -6,7 +6,7 @@ generalized_tables:
   building_polygon_gen1:
     source: building_polygon
     sql_filter: area>power(ZRES12,2)
-    tolerance: ZRES13
+    tolerance: ZRES14
 
 tables:
   # etldoc: imposm3 -> osm_building_polygon
