@@ -48,7 +48,8 @@ WHERE
   c.relkind IN('r', 'v', 'm') AND
   a.attnum > 0 AND
   n.nspname = 'public' AND
-  c.relname = '{0}'
+  c.relname = '{0}' AND
+  a.attisdropped = FALSE
 ORDER BY a.attname;
 """
 
