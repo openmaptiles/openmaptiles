@@ -1,4 +1,9 @@
 generalized_tables:
+# etldoc: imposm3 -> osm_railway_linestring_gen3
+  railway_linestring_gen3:
+    source: railway_linestring_gen2
+    tolerance: ZRES11
+
 # etldoc: imposm3 -> osm_railway_linestring_gen2
   railway_linestring_gen2:
     source: railway_linestring_gen1

@@ -117,6 +117,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
         )
         UNION ALL
 
+        -- etldoc: osm_railway_linestring_gen3  ->  layer_transportation:z10
+        SELECT
+            osm_id, geometry, NULL AS highway, railway,
+            service_value(service) AS service,
+            is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_railway_linestring_gen3
+        WHERE zoom_level = 10 AND (railway='rail' AND service = '')
+        UNION ALL
+
         -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11
         SELECT
             osm_id, geometry, NULL AS highway, railway,
