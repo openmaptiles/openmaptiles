@@ -76,7 +76,6 @@ services:
      - ./build:/sql
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:latest"
-    image: "48fefe78f93d"
     env_file: .env
     networks:
     - postgres_conn
