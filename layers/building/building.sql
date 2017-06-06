@@ -23,7 +23,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_relation WHERE building = ''
+         osm_building_relation
          UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
          SELECT osm_id,geometry,
