@@ -35,6 +35,8 @@ tables:
     - name: name_de
       key: name:de
       type: string
+    - name: tags
+      type: hstore_tags
     mapping:
       waterway:
       - stream

@@ -4,7 +4,7 @@ volumes:
   cache:
 services:
   postgres:
-    image: "openmaptiles/postgis:2.5"
+    image: "openmaptiles/postgis:2.8"
     volumes:
     - pgdata:/var/lib/postgresql/data
     networks:
@@ -68,14 +68,14 @@ services:
      - ./build:/mapping
      - cache:/cache
   import-sql:
-    image: "openmaptiles/import-sql:0.1"
+    image: "openmaptiles/import-sql:0.5"
     env_file: .env
     networks:
     - postgres_conn
     volumes:
      - ./build:/sql
   openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:0.5"
+    image: "openmaptiles/openmaptiles-tools:0.6"
     env_file: .env
     networks:
     - postgres_conn

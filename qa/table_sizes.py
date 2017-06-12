@@ -15,7 +15,6 @@ FROM (
     pg_total_relation_size(relid) as "size"
   FROM pg_catalog.pg_statio_user_tables
   WHERE schemaname='public'
-    AND relname::text ~ '^osm_.*_gen[0-9]{1,2}$'
 ) a
 ;""".replace('\"', '\\\"')
 
@@ -27,8 +26,7 @@ TABLE_SIZES_SQL="""SELECT
 FROM pg_catalog.pg_statio_user_tables a
   LEFT JOIN pg_stat_user_tables b ON (a.relid = b.relid)
 WHERE
-  a.schemaname='public' AND
-  a.relname::text ~ '^osm_.*_gen[0-9]{1,2}$'
+  a.schemaname='public'
 ORDER BY a.relname;
 """.replace('\"', '\\\"')
 
@@ -37,8 +35,7 @@ TABLES_SQL = """SELECT
   a.relname
 FROM pg_catalog.pg_statio_user_tables a
 WHERE
-  a.schemaname='public' AND
-  a.relname::text ~ '^osm_.*_gen[0-9]{1,2}$'
+  a.schemaname='public'
 ORDER BY a.relname;
 """
 
@@ -51,7 +48,8 @@ WHERE
   c.relkind IN('r', 'v', 'm') AND
   a.attnum > 0 AND
   n.nspname = 'public' AND
-  c.relname = '{0}'
+  c.relname = '{0}' AND
+  a.attisdropped = FALSE
 ORDER BY a.attname;
 """
 
@@ -101,7 +99,7 @@ if __name__ == "__main__":
             subprocess.check_output("make psql-analyze", shell=True)
 
 
-        print "Total size of osm_.*_gen[0-9]+ tables"
+        print "Total size of tables"
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -F\",\" --no-align -P pager=off',

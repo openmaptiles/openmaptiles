@@ -24,6 +24,64 @@ tileset:
   maxzoom: 14
   minzoom: 0
   pixel_scale: 256
+  languages:
+    - ar # Arabic
+    - az # Azerbaijani
+    - be # Belarusian
+    - bg # Bulgarian
+    - br # Breton
+    - bs # Bosnian
+    - ca # Catalan
+    - cs # Czech
+    - cy # Welsh
+    - da # Danish
+    - de # German
+    - el # Greek
+    - en # English
+    - es # Spanish
+    - et # Estonian
+    - fi # Finnish
+    - fr # French
+    - fy # Western Frisian
+    - ga # Irish
+    - gd # Scottish Gaelic
+    - he # Hebrew
+    - hr # Croatian
+    - hu # Hungarian
+    - hy # Armenian
+    - is # Icelandic
+    - it # Italian
+    - ja # Japanese
+    - ja_kana # Japanese Kana form
+    - ja_rm # romanization of Japanese (written with Latin)
+    - ka # Georgian
+    - kk # Kazakh
+    - kn # Kannada
+    - ko # Korean
+    - ko_rm # romanization of Korean (written with Latin)
+    - la # Latin
+    - lb # Luxembourgish
+    - lt # Lithuanian
+    - lv # Latvian
+    - mk # Macedonian
+    - mt # Maltese
+    - nl # Dutch
+    - "no" # Norwegian
+    - pl # Polish
+    - pt # Portuguese
+    - rm # Romansh
+    - ro # Romania
+    - ru # Russian
+    - sk # Slovak
+    - sl # Slovene
+    - sq # Albanian
+    - sr # Serbian written with Cyrillic
+    - sr-Latn # Serbian written with Latin
+    - sv # Swedish
+    - th # Thai
+    - tr # Turkish
+    - uk # Ukrainian
+    - zh # Chinese
   defaults:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
     datasource:

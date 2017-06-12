@@ -34,9 +34,10 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, class, subclass, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, subclass, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./poi_update.sql
+  - ./name.sql
   - ./poi_polygon_update.sql
   - ./class.sql
   - ./layer.sql
