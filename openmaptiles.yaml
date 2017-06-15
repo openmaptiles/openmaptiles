@@ -26,60 +26,60 @@ tileset:
   pixel_scale: 256
   languages:
     - ar # Arabic
-    - az # Azerbaijani
+    - az # Azerbaijani, Latin
     - be # Belarusian
     - bg # Bulgarian
-    - br # Breton
-    - bs # Bosnian
-    - ca # Catalan
-    - cs # Czech
-    - cy # Welsh
-    - da # Danish
-    - de # German
+    - br # Breton, Latin
+    - bs # Bosnian, Latin
+    - ca # Catalan, Latin
+    - cs # Czech, Latin
+    - cy # Welsh, Latin
+    - da # Danish, Latin
+    - de # German, Latin
     - el # Greek
-    - en # English
-    - es # Spanish
-    - et # Estonian
-    - fi # Finnish
-    - fr # French
-    - fy # Western Frisian
-    - ga # Irish
-    - gd # Scottish Gaelic
+    - en # English, Latin
+    - es # Spanish, Latin
+    - et # Estonian, Latin
+    - fi # Finnish, Latin
+    - fr # French, Latin
+    - fy # Western Frisian, Latin
+    - ga # Irish, Latin
+    - gd # Scottish Gaelic, Latin
     - he # Hebrew
-    - hr # Croatian
-    - hu # Hungarian
+    - hr # Croatian, Latin
+    - hu # Hungarian, Latin
     - hy # Armenian
-    - is # Icelandic
-    - it # Italian
+    - is # Icelandic, Latin
+    - it # Italian, Latin
     - ja # Japanese
     - ja_kana # Japanese Kana form
-    - ja_rm # romanization of Japanese (written with Latin)
+    - ja_rm # romanization of Japanese, Latin
     - ka # Georgian
     - kk # Kazakh
     - kn # Kannada
     - ko # Korean
-    - ko_rm # romanization of Korean (written with Latin)
-    - la # Latin
-    - lb # Luxembourgish
-    - lt # Lithuanian
-    - lv # Latvian
+    - ko_rm # romanization of Korean, Latin
+    - la # Latin, Latin
+    - lb # Luxembourgish, Latin
+    - lt # Lithuanian, Latin
+    - lv # Latvian, Latin
     - mk # Macedonian
-    - mt # Maltese
-    - nl # Dutch
-    - "no" # Norwegian
-    - pl # Polish
-    - pt # Portuguese
-    - rm # Romansh
-    - ro # Romania
+    - mt # Maltese, Latin
+    - nl # Dutch, Latin
+    - "no" # Norwegian, Latin
+    - pl # Polish, Latin
+    - pt # Portuguese, Latin
+    - rm # Romansh, Latin
+    - ro # Romania, Latin
     - ru # Russian
-    - sk # Slovak
-    - sl # Slovene
-    - sq # Albanian
-    - sr # Serbian written with Cyrillic
-    - sr-Latn # Serbian written with Latin
-    - sv # Swedish
+    - sk # Slovak, Latin
+    - sl # Slovene, Latin
+    - sq # Albanian, Latin
+    - sr # Serbian, Cyrillic
+    - sr-Latn # Serbian, Latin
+    - sv # Swedish, Latin
     - th # Thai
-    - tr # Turkish
+    - tr # Turkish, Latin
     - uk # Ukrainian
     - zh # Chinese
   defaults:
