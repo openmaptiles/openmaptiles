@@ -41,6 +41,11 @@ CREATE OR REPLACE VIEW landcover_z5 AS (
     SELECT NULL::bigint AS osm_id, geometry, NULL::text AS landuse, 'ice_shelf'::text AS "natural", NULL::text AS leisure, NULL::text AS wetland FROM ne_10m_antarctic_ice_shelves_polys
 );
 
+CREATE OR REPLACE VIEW landcover_z7 AS (
+    -- etldoc: osm_landcover_polygon_gen7 ->  landcover_z7
+    SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen7
+);
+
 CREATE OR REPLACE VIEW landcover_z8 AS (
     -- etldoc: osm_landcover_polygon_gen6 ->  landcover_z8
     SELECT osm_id, geometry, landuse, "natural", leisure, wetland FROM osm_landcover_polygon_gen6
@@ -96,9 +101,13 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
         SELECT * FROM landcover_z2
         WHERE zoom_level BETWEEN 2 AND 4 AND geometry && bbox
         UNION ALL
-        -- etldoc:  landcover_z5 -> layer_landcover:z5_7
+        -- etldoc:  landcover_z5 -> layer_landcover:z5_6
         SELECT * FROM landcover_z5
-        WHERE zoom_level BETWEEN 5 AND 7 AND geometry && bbox
+        WHERE zoom_level BETWEEN 5 AND 6 AND geometry && bbox
+        UNION ALL
+        -- etldoc:  landcover_z7 -> layer_landcover:z7
+        SELECT *
+        FROM landcover_z7 WHERE zoom_level = 7 AND geometry && bbox
         UNION ALL
         -- etldoc:  landcover_z8 -> layer_landcover:z8
         SELECT *

@@ -1,6 +1,12 @@
 
 generalized_tables:
 
+  # etldoc: imposm3 -> osm_landcover_polygon_gen7
+  landcover_polygon_gen7:
+    source: landcover_polygon_gen6
+    sql_filter: area>power(ZRES5,2)
+    tolerance: ZRES7
+
   # etldoc: imposm3 -> osm_landcover_polygon_gen6
   landcover_polygon_gen6:
     source: landcover_polygon_gen5
