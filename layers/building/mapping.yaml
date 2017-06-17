@@ -149,14 +149,12 @@ tables:
       from_member: true
     - name: type
       type: member_type
-    require:
-        house: ["__any__"]
     mapping:
       type: [street]
     type: relation_member
 
-  # etldoc: imposm3 -> osm_building_associatedStreet
-  building_associatedStreet:
+  # etldoc: imposm3 -> osm_building_associatedstreet
+  building_associatedstreet:
     fields:
     - name: osm_id
       type: id
@@ -239,8 +237,6 @@ tables:
       from_member: true
     - name: type
       type: member_type
-    require:
-        house: ["__any__"]
     mapping:
       type: [associatedStreet]
     type: relation_member
