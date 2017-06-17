@@ -25,6 +25,26 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          FROM
          osm_building_relation WHERE building = ''
          UNION ALL
+
+         -- etldoc: osm_building_associatedStreet -> layer_building:z14_
+         SELECT member AS osm_id,geometry,
+                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
+                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
+                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
+         FROM
+         osm_building_associatedStreet
+         UNION ALL
+         -- etldoc: osm_building_street -> layer_building:z14_
+         SELECT member AS osm_id,geometry,
+                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
+                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
+                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
+         FROM
+         osm_building_street
+         UNION ALL
+
         -- etldoc: osm_building_polygon -> layer_building:z14_
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
@@ -36,7 +56,6 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
          SELECT osm_id,geometry,
-
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
