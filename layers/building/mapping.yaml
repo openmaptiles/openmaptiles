@@ -65,6 +65,182 @@ tables:
         building:part: ["no","none","No"]
     type: polygon
 
+  # etldoc: imposm3 -> osm_building_street
+  building_street:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    - name: building
+      key: building
+      type: string
+      from_member: true
+    - name: buildingpart
+      key: building:part
+      type: string
+      from_member: true
+    - name: buildingheight
+      key: building:height
+      type: string
+      from_member: true
+    - name: height
+      key: height
+      type: string
+      from_member: true
+    - name: buildingmin_height
+      key: building:min_height
+      type: string
+      from_member: true
+    - name: min_height
+      key: min_height
+      type: string
+      from_member: true
+    - name: buildinglevels
+      key: building:levels
+      type: string
+      from_member: true
+    - name: levels
+      key: levels
+      type: string
+      from_member: true
+    - name: buildingmin_level
+      key: building:min_level
+      type: string
+      from_member: true
+    - name: min_level
+      key: min_level
+      type: string
+      from_member: true
+    - name: relbuildingheight
+      key: building:height
+      type: string
+    - name: relheight
+      key: height
+      type: string
+    - name: relbuildingmin_height
+      key: building:min_height
+      type: string
+    - name: relmin_height
+      key: min_height
+      type: string
+    - name: relbuildinglevels
+      key: building:levels
+      type: string
+    - name: rellevels
+      key: levels
+      type: string
+    - name: relbuildingmin_level
+      key: building:min_level
+      type: string
+    - name: relmin_level
+      key: min_level
+      type: string
+    - name: member
+      type: member_id
+    - name: index
+      type: member_index
+    - name: role
+      type: member_role
+      from_member: true
+    - name: type
+      type: member_type
+    mapping:
+      type: [street]
+    type: relation_member
+
+  # etldoc: imposm3 -> osm_building_associatedstreet
+  building_associatedstreet:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    - name: building
+      key: building
+      type: string
+      from_member: true
+    - name: buildingpart
+      key: building:part
+      type: string
+      from_member: true
+    - name: buildingheight
+      key: building:height
+      type: string
+      from_member: true
+    - name: height
+      key: height
+      type: string
+      from_member: true
+    - name: buildingmin_height
+      key: building:min_height
+      type: string
+      from_member: true
+    - name: min_height
+      key: min_height
+      type: string
+      from_member: true
+    - name: buildinglevels
+      key: building:levels
+      type: string
+      from_member: true
+    - name: levels
+      key: levels
+      type: string
+      from_member: true
+    - name: buildingmin_level
+      key: building:min_level
+      type: string
+      from_member: true
+    - name: min_level
+      key: min_level
+      type: string
+      from_member: true
+    - name: relbuildingheight
+      key: building:height
+      type: string
+    - name: relheight
+      key: height
+      type: string
+    - name: relbuildingmin_height
+      key: building:min_height
+      type: string
+    - name: relmin_height
+      key: min_height
+      type: string
+    - name: relbuildinglevels
+      key: building:levels
+      type: string
+    - name: rellevels
+      key: levels
+      type: string
+    - name: relbuildingmin_level
+      key: building:min_level
+      type: string
+    - name: relmin_level
+      key: min_level
+      type: string
+    - name: member
+      type: member_id
+    - name: index
+      type: member_index
+    - name: role
+      type: member_role
+      from_member: true
+    - name: type
+      type: member_type
+    mapping:
+      type: [associatedStreet]
+    type: relation_member
+
   # etldoc: imposm3 -> osm_building_relation
   building_relation:
     fields:

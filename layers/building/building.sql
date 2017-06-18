@@ -14,10 +14,13 @@ $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building);
+--CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role);
+--CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role);
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
-        -- etldoc: osm_building_relation -> layer_building:z14_
-	 SELECT member AS osm_id,geometry,
+         -- etldoc: osm_building_relation -> layer_building:z14_
+         -- Buildings built from relations
+         SELECT member AS osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
@@ -25,7 +28,30 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          FROM
          osm_building_relation WHERE building = ''
          UNION ALL
-        -- etldoc: osm_building_polygon -> layer_building:z14_
+
+         -- etldoc: osm_building_associatedstreet -> layer_building:z14_
+         -- Buildings in associatedstreet relations
+         SELECT member AS osm_id,geometry,
+                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
+                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
+                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
+         FROM
+         osm_building_associatedstreet WHERE role = 'house'
+         UNION ALL
+         -- etldoc: osm_building_street -> layer_building:z14_
+         -- Buildings in street relations
+         SELECT member AS osm_id,geometry,
+                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
+                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
+                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
+         FROM
+         osm_building_street WHERE role = 'house'
+         UNION ALL
+
+         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- Buildings that are inner/outer
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
@@ -34,9 +60,9 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          FROM
          osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
          UNION ALL
-        -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- Standalone buildings
          SELECT osm_id,geometry,
-
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
