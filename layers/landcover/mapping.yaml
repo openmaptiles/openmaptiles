@@ -87,6 +87,7 @@ tables:
       - wood
       - wetland
       - grassland
+      - glacier
       leisure:
       - park
       wetland:
