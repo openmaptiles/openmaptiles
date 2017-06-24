@@ -114,7 +114,7 @@ services:
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
   postserve:
-    image: "openmaptiles/postserve:0.1"
+    image: "openmaptiles/postserve:0.2"
     env_file: .env
     networks:
      - postgres_conn
