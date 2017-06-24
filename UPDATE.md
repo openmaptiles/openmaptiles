@@ -12,7 +12,7 @@ or import specific change files.
 
 You can use the new imposm3 feature to keep the database updated (thanks to the [work by @stirringhalo](https://github.com/openmaptiles/openmaptiles/pull/131)). This will automatically download
 the OSM change feed and import it into the database.
-After each run of you should also have a list of tiles that have updated.
+After each run you should also have a list of tiles that have updated.
 
 ```
 docker-compose run update-osm
