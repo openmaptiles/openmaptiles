@@ -87,6 +87,8 @@ tables:
       - wood
       - wetland
       - grassland
+      - bare_rock
+      - scree
       leisure:
       - park
       wetland:
