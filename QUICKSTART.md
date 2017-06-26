@@ -57,7 +57,7 @@ If you have problems with the quickstart
 ### Check other extracts
 
 IF the previous step is working,
-THAN you can test other available quickstart extracts ( based on [Geofabrik extracts](http://download.geofabrik.de/index.html) ) !
+THEN you can test other available quickstart extracts ( based on [Geofabrik extracts](http://download.geofabrik.de/index.html) ) !
  * We are using https://github.com/julien-noblet/download-geofabrik tool
  * The current extract list, and more informations  ->  `make list`
 
