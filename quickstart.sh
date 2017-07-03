@@ -288,7 +288,11 @@ cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
 ENDDATE=$(date +"%Y-%m-%dT%H:%M%z")
-MODDATE=$(stat -c  %y  ./data/${testdata} )
+if stat --help >/dev/null 2>&1; then
+  MODDATE=$(stat -c %y ./data/${testdata} )
+else
+  MODDATE=$(stat -f%Sm -t '%F %T %z' ./data/${testdata} )
+fi
 
 echo " "
 echo " "
@@ -314,7 +318,7 @@ echo "====> : (disk space) We have created the new vectortiles ( ./data/tiles.mb
 echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
 echo "      : Created from $testdata ( file moddate: $MODDATE ) "
 echo "      : Size: "
-ls ./data/*.mbtiles -la
+ls -la ./data/*.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
