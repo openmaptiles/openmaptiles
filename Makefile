@@ -11,7 +11,6 @@ help:
 	@echo "Hints for designers:"
 	@echo "  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] "
 	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] "
-	@echo "  make start-mapbox-studio             # start Mapbox Studio"
 	@echo "  "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code  "
@@ -144,12 +143,6 @@ start-postserve:
 	@echo " "
 	docker rm -f maputnik_editor || true
 	docker run --name maputnik_editor -d -p 8088:8888 maputnik/editor
-
-
-start-mapbox-studio:
-	docker-compose up mapbox-studio
-
-
 
 generate-qareports:
 	./qa/run.sh
