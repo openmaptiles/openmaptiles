@@ -147,7 +147,7 @@ start-tileserver:
 	docker run -it --rm -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 start-mapbox-studio:
-	docker-compose up mapbox-studio
+	docker run -it --rm --network openmaptiles_postgres_conn  --link openmaptiles_postgres_1:postgres  -v $$(pwd)/build/openmaptiles.tm2source:/projects/openmaptiles.tm2source  -p 3000:3000  osm2vectortiles/mapbox-studio
 
 generate-qareports:
 	./qa/run.sh
