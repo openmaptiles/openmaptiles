@@ -76,42 +76,42 @@ psql:
 	docker-compose run --rm import-osm /usr/src/app/psql.sh
 
 psql-list-tables:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "\d+"
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "\d+"
 
 psql-pg-stat-reset:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
 
 forced-clean-sql:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
 
 pgclimb-list-views:
-	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
+	docker-compose run -T --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
 
 pgclimb-list-tables:
-	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
+	docker-compose run -T --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
 
 psql-vacuum-analyze:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
 
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE ;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
+	docker-compose run -T --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
 
 import-sql-dev:
-	docker-compose run --rm import-sql /bin/bash
+	docker-compose run -T --rm import-sql /bin/bash
 
 import-osm-dev:
-	docker-compose run --rm import-osm /bin/bash
+	docker-compose run -T --rm import-osm /bin/bash
 
 download-geofabrik:
 	@echo ===============  download-geofabrik =======================
 	@echo Download area :   $(area)
 	@echo [[ example: make download-geofabrik  area=albania ]]
 	@echo [[ list areas:  make download-geofabrik-list       ]]
-	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
+	docker-compose run -T --rm import-osm  ./download-geofabrik.sh $(area)
 	ls -la ./data/$(area).*
 	@echo "Generated config file: ./data/docker-compose-config.yml"
 	@echo " "
@@ -120,11 +120,11 @@ download-geofabrik:
 
 # the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
 list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+	docker-compose run -T --rm import-osm  ./download-geofabrik-list.sh
 
 # same as a `make list`
 download-geofabrik-list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+	docker-compose run -T --rm import-osm  ./download-geofabrik-list.sh
 
 start-tileserver:
 	@echo " "

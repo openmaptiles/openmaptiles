@@ -166,14 +166,14 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
-docker-compose run --rm openmaptiles-tools make clean
+docker-compose run -T --rm openmaptiles-tools make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
-docker-compose run --rm openmaptiles-tools make
+docker-compose run -T --rm openmaptiles-tools make
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -195,7 +195,7 @@ echo "====> : Start importing water data from http://openstreetmapdata.com into 
 echo "      : Source code:  https://github.com/openmaptiles/import-water "
 echo "      : Data license: http://openstreetmapdata.com/info/license  "
 echo "      : Thank you: http://openstreetmapdata.com/info/supporting "
-docker-compose run --rm import-water
+docker-compose run -T --rm import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -203,7 +203,7 @@ echo "====> : Start importing border data from http://openstreetmap.org into Pos
 echo "      : Source code:  https://github.com/openmaptiles/import-osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
 echo "      : Thank you: https://github.com/pnorman/osmborder "
-docker-compose run --rm import-osmborder
+docker-compose run -T --rm import-osmborder
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -211,7 +211,7 @@ echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL 
 echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
-docker-compose run --rm import-natural-earth
+docker-compose run -T --rm import-natural-earth
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -219,7 +219,7 @@ echo "====> : Start importing OpenStreetMap Lakelines data "
 echo "      : Source code: https://github.com/openmaptiles/import-lakelines "
 echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
 echo "      : Data license: .. "
-docker-compose run --rm import-lakelines
+docker-compose run -T --rm import-lakelines
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -229,13 +229,13 @@ echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-docker-compose run --rm import-osm
+docker-compose run -T --rm import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/import-sql "
-docker-compose run --rm import-sql
+docker-compose run -T --rm import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -260,13 +260,13 @@ echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
-docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --rm generate-vectortiles
+docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run -T --rm generate-vectortiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Add special metadata to mbtiles! "
-docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+docker-compose run -T --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run -T --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
