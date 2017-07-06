@@ -19,5 +19,6 @@ before_install:
 script:
   - sudo service docker restart
   - docker-compose config
+  - make generate-devdoc
   - sudo ./quickstart.sh
   
