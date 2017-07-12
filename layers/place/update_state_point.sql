@@ -32,6 +32,10 @@ BEGIN
 
   DELETE FROM osm_state_point WHERE "rank" IS NULL;
 
+  UPDATE osm_state_point
+  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -49,7 +53,7 @@ CREATE OR REPLACE FUNCTION place_state.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO place_state.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_state.refresh() RETURNS trigger AS

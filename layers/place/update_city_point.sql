@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION update_osm_city_point() RETURNS VOID AS $$
 BEGIN
 
   -- Clear  OSM key:rank ( https://github.com/openmaptiles/openmaptiles/issues/108 )
-  -- etldoc: osm_city_point          -> osm_city_point 
+  -- etldoc: osm_city_point          -> osm_city_point
   UPDATE osm_city_point AS osm  SET "rank" = NULL WHERE "rank" IS NOT NULL;
 
   -- etldoc: ne_10m_populated_places -> osm_city_point
@@ -40,6 +40,10 @@ BEGIN
   FROM important_city_point AS ne
   WHERE osm.osm_id = ne.osm_id;
 
+  UPDATE osm_city_point
+  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -56,7 +60,7 @@ CREATE OR REPLACE FUNCTION place_city.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO place_city.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_city.refresh() RETURNS trigger AS

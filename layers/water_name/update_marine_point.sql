@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE OR REPLACE FUNCTION update_osm_marine_point() RETURNS VOID AS $$
 BEGIN
-  -- etldoc: osm_marine_point          -> osm_marine_point 
+  -- etldoc: osm_marine_point          -> osm_marine_point
   UPDATE osm_marine_point AS osm SET "rank" = NULL WHERE "rank" IS NOT NULL;
 
   -- etldoc: ne_10m_geography_marine_polys -> osm_marine_point
@@ -20,6 +20,11 @@ BEGIN
   SET "rank" = scalerank
   FROM important_marine_point AS ne
   WHERE osm.osm_id = ne.osm_id;
+
+  UPDATE osm_marine_point
+  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -35,7 +40,7 @@ CREATE OR REPLACE FUNCTION water_name_marine.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO water_name_marine.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION water_name_marine.refresh() RETURNS trigger AS
