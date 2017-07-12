@@ -1,4 +1,4 @@
-DROP TRIGGER IF EXISTS trigger_flag ON osm_highway_linestring;
+DROP TRIGGER IF EXISTS trigger_flag_transportation_name ON osm_highway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON transportation_name.updates;
 
 -- Instead of using relations to find out the road names we
@@ -130,6 +130,8 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh transportation_name';
+    PERFORM update_osm_route_member();
+    REFRESH MATERIALIZED VIEW osm_transportation_name_network;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
@@ -141,7 +143,12 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_flag
+CREATE TRIGGER trigger_flag_transportation_name
+    AFTER INSERT OR UPDATE OR DELETE ON osm_route_member
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE transportation_name.flag();
+
+CREATE TRIGGER trigger_flag_transportation_name
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
     EXECUTE PROCEDURE transportation_name.flag();

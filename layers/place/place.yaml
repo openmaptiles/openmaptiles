@@ -55,15 +55,16 @@ layer:
     geometry_field: geometry
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, rank, capital FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
-  - ./name.sql
   - ./types.sql
   - ./capital.sql
   - ./city.sql
-  - ./island_polygon_update.sql
   - ./island_rank.sql
-  - ./merge_country_rank.sql
-  - ./merge_city_rank.sql
-  - ./merge_state_rank.sql
+  - ./update_continent_point.sql
+  - ./update_country_point.sql
+  - ./update_island_polygon.sql
+  - ./update_island_point.sql
+  - ./update_state_point.sql
+  - ./update_city_point.sql
   - ./layer.sql
 datasources:
   - type: imposm3
