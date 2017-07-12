@@ -20,10 +20,9 @@ layer:
     srid: 900913
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
-  - ./name.sql
-  - ./merge_marine_rank.sql
-  - ./water_lakeline.sql
-  - ./water_point.sql
+  - ./update_marine_point.sql
+  - ./update_water_lakeline.sql
+  - ./update_water_point.sql
   - ./layer.sql
 datasources:
   - type: imposm3

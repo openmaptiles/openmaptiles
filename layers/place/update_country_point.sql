@@ -36,6 +36,10 @@ BEGIN
   SET "rank" = 1
   WHERE "rank" = 0;
 
+  UPDATE osm_country_point
+  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -53,7 +57,7 @@ CREATE OR REPLACE FUNCTION place_country.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO place_country.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_country.refresh() RETURNS trigger AS

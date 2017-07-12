@@ -1,5 +1,5 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
-DROP TRIGGER IF EXISTS trigger_refresh ON waterway.updates;
+DROP TRIGGER IF EXISTS trigger_refresh ON waterway_important.updates;
 
 -- We merge the waterways by name like the highways
 -- This helps to drop not important rivers (since they do not have a name)
@@ -60,17 +60,17 @@ CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx O
 
 -- Handle updates
 
-CREATE SCHEMA IF NOT EXISTS waterway;
+CREATE SCHEMA IF NOT EXISTS waterway_important;
 
-CREATE TABLE IF NOT EXISTS waterway.updates(id serial primary key, t text, unique (t));
-CREATE OR REPLACE FUNCTION waterway.flag() RETURNS trigger AS $$
+CREATE TABLE IF NOT EXISTS waterway_important.updates(id serial primary key, t text, unique (t));
+CREATE OR REPLACE FUNCTION waterway_important.flag() RETURNS trigger AS $$
 BEGIN
-    INSERT INTO waterway.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
+    INSERT INTO waterway_important.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
 END;
 $$ language plpgsql;
 
-CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION waterway_important.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh waterway';
@@ -78,7 +78,7 @@ CREATE OR REPLACE FUNCTION waterway.refresh() RETURNS trigger AS
     REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1;
     REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2;
     REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3;
-    DELETE FROM waterway.updates;
+    DELETE FROM waterway_important.updates;
     RETURN null;
   END;
   $BODY$
@@ -87,10 +87,10 @@ language plpgsql;
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE ON osm_waterway_linestring
     FOR EACH STATEMENT
-    EXECUTE PROCEDURE waterway.flag();
+    EXECUTE PROCEDURE waterway_important.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh
-    AFTER INSERT ON waterway.updates
+    AFTER INSERT ON waterway_important.updates
     INITIALLY DEFERRED
     FOR EACH ROW
-    EXECUTE PROCEDURE waterway.refresh();
+    EXECUTE PROCEDURE waterway_important.refresh();

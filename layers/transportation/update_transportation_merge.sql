@@ -6,7 +6,7 @@ DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen6 CASCAD
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen7 CASCADE;
 
 
-DROP TRIGGER IF EXISTS trigger_flag2 ON osm_highway_linestring;
+DROP TRIGGER IF EXISTS trigger_flag_transportation ON osm_highway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
 -- Instead of using relations to find out the road names we
@@ -120,7 +120,7 @@ $$ language plpgsql;
 CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE LOG 'Refresh transportation';
+    RAISE NOTICE 'Refresh transportation';
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen3;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen4;
@@ -133,7 +133,7 @@ CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
-CREATE TRIGGER trigger_flag2
+CREATE TRIGGER trigger_flag_transportation
     AFTER INSERT OR UPDATE OR DELETE ON osm_highway_linestring
     FOR EACH STATEMENT
     EXECUTE PROCEDURE transportation.flag();
