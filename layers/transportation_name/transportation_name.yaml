@@ -49,7 +49,8 @@ layer:
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
-  - ./merge_highways.sql
+  - ./update_route_member.sql
+  - ./update_transportation_name.sql
   - ./layer.sql
 datasources:
   - type: imposm3

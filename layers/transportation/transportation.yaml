@@ -64,7 +64,7 @@ layer:
     query: (SELECT geometry, class, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
-  - ./merge_highways.sql
+  - ./update_transportation_merge.sql
   - ./layer.sql
 datasources:
   - type: imposm3
