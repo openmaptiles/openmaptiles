@@ -51,7 +51,7 @@ echo "      : Your docker system:"
 docker         --version
 docker-compose --version
 
-# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers 
+# based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers
 function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
 
 COMPOSE_VER=$(docker-compose version --short)
@@ -166,14 +166,14 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
-docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make clean
+docker-compose run --rm openmaptiles-tools make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
-docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
+docker-compose run --rm openmaptiles-tools make
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -261,7 +261,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Add special metadata to mbtiles! "
 docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles	
+docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
