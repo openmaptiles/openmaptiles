@@ -83,15 +83,16 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
         WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
-        SELECT DISTINCT ON (osm_id) 
+        SELECT DISTINCT ON (osm_id)
            osm_id, geometry,
            ceil( COALESCE(height, levels*3.66,5))::int AS render_height,
            floor(COALESCE(min_height, min_level*3.66,0))::int AS render_min_height FROM
         osm_all_buildings
-        WHERE zoom_level >= 14 AND geometry && bbox
+        WHERE
+            levels < 1000 AND
+            zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
 
 -- not handled: where a building outline covers building parts
-
