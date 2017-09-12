@@ -14,6 +14,20 @@ generalized_tables:
     source: waterway_linestring
     sql_filter: waterway IN ('river')
     tolerance: ZRES11
+
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+ford_field: &ford
+  key: ford
+  name: is_ford
+  type: bool
+
 tables:
   # etldoc: imposm3 -> osm_waterway_linestring
   waterway_linestring:
@@ -37,6 +51,9 @@ tables:
       type: string
     - name: tags
       type: hstore_tags
+    - *tunnel
+    - *bridge
+    - *ford
     mapping:
       waterway:
       - stream
