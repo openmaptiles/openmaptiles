@@ -30,6 +30,20 @@ layer:
       - raceway
       - rail
       - transit
+    subclass:
+      description: |
+          Distinguish more specific railway classes:
+          Subclass is value of the
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway) tag.
+      values:
+      - rail
+      - narrow_gauge
+      - preserved
+      - funicular
+      - subway
+      - light_rail
+      - monorail
+      - tram
     brunnel:
       description: |
           Mark whether way is a tunnel or bridge.
@@ -61,7 +75,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
   - ./update_transportation_merge.sql
