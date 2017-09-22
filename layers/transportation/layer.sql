@@ -150,7 +150,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen3
-        WHERE zoom_level = 10 AND railway='rail' AND service = ''
+        WHERE zoom_level = 10
+            AND railway IN ('rail', 'narrow_gauge') AND service = ''
         UNION ALL
 
         -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11
@@ -160,7 +161,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen2
         WHERE zoom_level = 11
-            AND railway IN ('rail', 'light_rail') AND service = ''
+            AND railway IN ('rail', 'narrow_gauge', 'light_rail') AND service = ''
         UNION ALL
 
         -- etldoc: osm_railway_linestring_gen1  ->  layer_transportation:z12
@@ -170,7 +171,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen1
         WHERE zoom_level = 12
-            AND railway IN ('rail', 'light_rail') AND service = ''
+            AND railway IN ('rail', 'narrow_gauge', 'light_rail') AND service = ''
         UNION ALL
 
         -- etldoc: osm_railway_linestring       ->  layer_transportation:z13
@@ -181,7 +182,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, ramp int, oneway int
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring
         WHERE zoom_level = 13
-                AND railway IN ('rail', 'light_rail') AND service = ''
+                AND railway IN ('rail', 'narrow_gauge', 'light_rail') AND service = ''
             OR zoom_Level >= 14
         UNION ALL
 
