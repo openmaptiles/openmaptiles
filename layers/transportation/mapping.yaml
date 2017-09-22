@@ -25,6 +25,11 @@ generalized_tables:
     sql_filter: railway IN ('rail', 'narrow_gauge', 'light_rail') AND service=''
     tolerance: ZRES13
 
+# etldoc: imposm3 -> osm_aerialway_linestring_gen1
+  aerialway_linestring_gen1:
+    source: aerialway_linestring
+    tolerance: ZRES13
+
 # etldoc: imposm3 -> osm_highway_linestring_gen2
   highway_linestring_gen2:
     source: highway_linestring_gen1
@@ -193,6 +198,35 @@ tables:
       - light_rail
       - monorail
       - tram
+
+# etldoc: imposm3 -> osm_aerialway_linestring
+  aerialway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: aerialway
+      name: aerialway
+      type: string
+    - *z_order
+    - *layer
+    - *name
+    - *name_en
+    - *name_de
+    - *short_name
+    - *tunnel
+    - *bridge
+    - *ramp
+    - *ford
+    - *oneway
+    - *area
+    - *service
+    - *usage
+    mapping:
+      aerialway:
+      - cable_car
 
 # etldoc: imposm3 -> osm_highway_polygon
   highway_polygon:
