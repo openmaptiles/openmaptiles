@@ -19,7 +19,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         SELECT * FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
-                AND (subclass='station' AND mapping_key = 'railway')
+                AND ((subclass='station' AND mapping_key = 'railway')
+                    OR subclass='halt')
         UNION ALL
         -- etldoc: osm_poi_point ->  layer_poi:z14_
         SELECT * FROM osm_poi_point
@@ -32,7 +33,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         SELECT * FROM osm_poi_polygon
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
-                AND (subclass='station' AND mapping_key = 'railway')
+                AND ((subclass='station' AND mapping_key = 'railway')
+                    OR subclass='halt')
         UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z14_
         SELECT * FROM osm_poi_polygon
