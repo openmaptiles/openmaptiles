@@ -16,11 +16,18 @@ generalized_tables:
     source: aeroway_polygon
     sql_filter: area>power(ZRES12,2)
     tolerance: ZRES13
+
+ref_field: &ref
+  key: ref
+  name: ref
+  type: string
+
 tables:
   # etldoc: imposm3 -> osm_aeroway_polygon
   aeroway_polygon:
     type: polygon
     fields:
+    - *ref
     - name: osm_id
       type: id
     - name: geometry
@@ -45,6 +52,7 @@ tables:
   aeroway_linestring:
     type: linestring
     fields:
+    - *ref
     - name: osm_id
       type: id
     - name: geometry
