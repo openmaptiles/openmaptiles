@@ -30,6 +30,16 @@ generalized_tables:
     source: aerialway_linestring
     tolerance: ZRES13
 
+# etldoc: imposm3 -> osm_shipway_linestring_gen2
+  shipway_linestring_gen2:
+    source: shipway_linestring_gen1
+    tolerance: ZRES12
+
+# etldoc: imposm3 -> osm_shipway_linestring_gen1
+  shipway_linestring_gen1:
+    source: shipway_linestring
+    tolerance: ZRES13
+
 # etldoc: imposm3 -> osm_highway_linestring_gen2
   highway_linestring_gen2:
     source: highway_linestring_gen1
@@ -227,6 +237,35 @@ tables:
     mapping:
       aerialway:
       - cable_car
+
+# etldoc: imposm3 -> osm_shipway_linestring
+  shipway_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: route
+      name: shipway
+      type: string
+    - *z_order
+    - *layer
+    - *name
+    - *name_en
+    - *name_de
+    - *short_name
+    - *tunnel
+    - *bridge
+    - *ramp
+    - *ford
+    - *oneway
+    - *area
+    - *service
+    - *usage
+    mapping:
+      route:
+      - ferry
 
 # etldoc: imposm3 -> osm_highway_polygon
   highway_polygon:

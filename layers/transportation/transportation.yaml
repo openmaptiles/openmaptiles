@@ -1,7 +1,8 @@
 layer:
   id: "transportation"
   description: |
-      **transportation** contains roads, railways, and aerialways.
+      **transportation** contains roads, railways, aerial ways, and shipping
+       lines.
       This layer is directly derived from the OSM road hierarchy.
       At lower zoom levels major highways from Natural Earth are used.
       It contains all roads from motorways to primary, secondary and
@@ -16,8 +17,10 @@ layer:
           Distinguish between more and less important roads or railways.
           Class is derived from the value of the
           [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
-          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway), or
-          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway) tag.
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway), or
+          [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
+          shipping ways).
       values:
       - motorway
       - trunk
@@ -32,6 +35,7 @@ layer:
       - rail
       - transit
       - cable_car
+      - ferry
     subclass:
       description: |
           Distinguish more specific railway classes:
