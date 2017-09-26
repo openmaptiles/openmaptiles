@@ -9,7 +9,9 @@ layer:
     ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the runway/taxiway.
     class:
       description: |
-          The original value of the [`aeroway`](http://wiki.openstreetmap.org/wiki/Key:aeroway) tag.
+          The original value of
+          [`aeroway`](http://wiki.openstreetmap.org/wiki/Key:aeroway) or
+          `area:aeroway` tag.
       values:
       - aerodrome
       - heliport

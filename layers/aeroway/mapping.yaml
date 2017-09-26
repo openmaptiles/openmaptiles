@@ -22,6 +22,14 @@ ref_field: &ref
   name: ref
   type: string
 
+def_aeroway_polygon_mapping: &aeroway_polygon_mapping
+  - aerodrome
+  - heliport
+  - runway
+  - helipad
+  - taxiway
+  - apron
+
 tables:
   # etldoc: imposm3 -> osm_aeroway_polygon
   aeroway_polygon:
@@ -33,20 +41,14 @@ tables:
     - name: geometry
       type: geometry
     - name: aeroway
-      key: aeroway
-      type: string
+      type: mapping_value
     - name: area
       type: area
     - name: webmerc_area
       type: webmerc_area
     mapping:
-      aeroway:
-      - aerodrome
-      - heliport
-      - runway
-      - helipad
-      - taxiway
-      - apron
+      aeroway: *aeroway_polygon_mapping
+      "area:aeroway": *aeroway_polygon_mapping
 
   # etldoc: imposm3 -> osm_aeroway_linestring
   aeroway_linestring:
