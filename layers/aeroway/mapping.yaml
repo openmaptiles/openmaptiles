@@ -1,4 +1,19 @@
 generalized_tables:
+  # etldoc: imposm3 -> osm_aeroway_linestring_gen3
+  aeroway_linestring_gen3:
+    source: aeroway_linestring_gen2
+    tolerance: ZRES11
+
+  # etldoc: imposm3 -> osm_aeroway_linestring_gen2
+  aeroway_linestring_gen2:
+    source: aeroway_linestring_gen1
+    tolerance: ZRES12
+
+  # etldoc: imposm3 -> osm_aeroway_linestring_gen1
+  aeroway_linestring_gen1:
+    source: aeroway_linestring
+    tolerance: ZRES13
+
   # etldoc: imposm3 -> osm_aeroway_polygon_gen3
   aeroway_polygon_gen3:
     source: aeroway_polygon_gen2
