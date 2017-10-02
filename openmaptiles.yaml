@@ -15,6 +15,7 @@ tileset:
     - layers/place/place.yaml
     - layers/housenumber/housenumber.yaml
     - layers/poi/poi.yaml
+    - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
   version: 3.3.0
   id: openmaptiles

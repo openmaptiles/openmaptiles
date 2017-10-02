@@ -1,0 +1,37 @@
+layer:
+  id: "aerodrome_label"
+  description: |
+      [Aerodrome labels](http://wiki.openstreetmap.org/wiki/Tag:aeroway%3Daerodrome)
+  buffer_size: 64
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  fields:
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the aerodrome.
+    name_en: English name `name:en` if available, otherwise `name`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    class:
+      description: |
+          Distinguish between more and less important aerodromes.
+          Class is derived from the value of
+          [`aerodrome`](http://wiki.openstreetmap.org/wiki/Proposed_features/Aerodrome)
+          and `aerodrome:type` tags.
+      values:
+      - international
+      - public
+      - regional
+      - military
+      - private
+      - other
+    iata: 3-character code issued by the IATA.
+    icao: 4-letter code issued by the ICAO.
+    ele: Elevation (`ele`) in meters.
+    ele_ft: Elevation (`ele`) in feets.
+  datasource:
+    geometry_field: geometry
+    srid: 900913
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, iata, icao, ele, ele_ft FROM layer_aerodrome_label (!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+schema:
+  - ./update.sql
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml
