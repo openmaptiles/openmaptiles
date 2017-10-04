@@ -325,6 +325,9 @@ tables:
     - name: station
       key: station
       type: string
+    - name: funicular
+      key: funicular
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -365,6 +368,9 @@ tables:
       type: mapping_key
     - name: station
       key: station
+      type: string
+    - name: funicular
+      key: funicular
       type: string
     mapping:
       aerialway: *poi_mapping_aerialway
