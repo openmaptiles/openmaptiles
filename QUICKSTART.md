@@ -373,7 +373,7 @@ mv my.osm.pbf data/
 
 ### Check postserve
 *  ` docker-compose up -d postserve`
-and the generated maps are going to be available in browser on [localhost:8090/0/0/0.pbf](http://localhost:8090/0/0/0.pbf).
+and the generated maps are going to be available in browser on [localhost:8090/tiles/0/0/0.pbf](http://localhost:8090/tiles/0/0/0.pbf).
 
 ### Check tileserver
 
