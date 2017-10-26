@@ -17,6 +17,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - bus_station
   - cafe
   - cinema
+  - clinic
   - college
   - community_centre
   - courthouse
