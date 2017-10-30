@@ -4,7 +4,7 @@ RETURNS INT AS $$
         WHEN 'hospital' THEN 20
         WHEN 'park' THEN 25
         WHEN 'cemetery' THEN 30
-        WHEN 'railway' THEN 40
+        WHEN 'rail' THEN 40
         WHEN 'bus' THEN 50
         WHEN 'attraction' THEN 70
         WHEN 'harbor' THEN 75
@@ -39,7 +39,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('park','bbq') THEN 'park'
         WHEN subclass IN ('bus_stop','bus_station') THEN 'bus'
         -- because 'station' might be from both aeroway and railway
-        WHEN (subclass='station' AND mapping_key = 'railway') OR subclass IN ('halt', 'tram_stop', 'subway') THEN 'railway'
+        WHEN (subclass='station' AND mapping_key = 'railway') OR subclass IN ('halt', 'tram_stop', 'subway') THEN 'rail'
         WHEN subclass IN ('camp_site','caravan_site') THEN 'campsite'
         WHEN subclass IN ('laundry','dry_cleaning') THEN 'laundry'
         WHEN subclass IN ('supermarket','deli','delicatessen','department_store','greengrocer','marketplace') THEN 'grocery'
