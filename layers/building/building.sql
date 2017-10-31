@@ -89,7 +89,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            floor(COALESCE(min_height, min_level*3.66,0))::int AS render_min_height FROM
         osm_all_buildings
         WHERE
-            levels < 1000 AND
+            (levels IS NULL OR levels < 1000) AND
             zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
