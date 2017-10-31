@@ -49,6 +49,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('chocolate','confectionery') THEN 'ice_cream'
         WHEN subclass IN ('post_box','post_office') THEN 'post'
         WHEN subclass IN ('cafe') THEN 'cafe'
+        WHEN subclass IN ('bicycle_rental') THEN 'bicycle_share'
         WHEN subclass IN ('school','kindergarten') THEN 'school'
         WHEN subclass IN ('alcohol','beverages','wine') THEN 'alcohol_shop'
         WHEN subclass IN ('bar','nightclub') THEN 'bar'
