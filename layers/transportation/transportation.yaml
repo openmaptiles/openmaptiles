@@ -38,9 +38,11 @@ layer:
       - ferry
     subclass:
       description: |
-          Distinguish more specific railway classes:
+          Distinguish more specific classes of railway and path:
           Subclass is value of the
-          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway) tag.
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths), or
+          [`public_transport`](http://wiki.openstreetmap.org/wiki/Key:public_transport) (for platforms) tag.
       values:
       - rail
       - narrow_gauge
@@ -50,6 +52,14 @@ layer:
       - light_rail
       - monorail
       - tram
+      - pedestrian
+      - path
+      - footway
+      - cycleway
+      - steps
+      - bridleway
+      - corridor
+      - platform
     brunnel:
       description: |
           Mark whether way is a tunnel or bridge.
