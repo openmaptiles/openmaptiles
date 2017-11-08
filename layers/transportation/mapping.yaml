@@ -296,7 +296,13 @@ tables:
     - *public_transport
     mapping:
       highway:
+      - path
+      - cycleway
+      - bridleway
+      - footway
+      - corridor
       - pedestrian
+      - steps
       public_transport:
       - platform
 
