@@ -18,6 +18,9 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         END AS class,
         CASE
             WHEN railway IS NOT NULL THEN railway
+            WHEN (highway IS NOT NULL OR public_transport IS NOT NULL)
+                AND highway_class(highway, public_transport) = 'path'
+                THEN COALESCE(NULLIF(public_transport, ''), highway)
             ELSE NULL
         END AS subclass,
         -- All links are considered as ramps as well
