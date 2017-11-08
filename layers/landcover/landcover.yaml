@@ -38,6 +38,7 @@ layer:
       - village_green
       - recreation_ground
       - park
+      - garden
       - wetland
       - grassland
       - bog

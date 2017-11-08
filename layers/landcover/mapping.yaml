@@ -92,6 +92,7 @@ tables:
       - scree
       leisure:
       - park
+      - garden
       wetland:
       - bog
       - swamp
