@@ -11,7 +11,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
     SELECT
         osm_id, geometry,
         CASE
-            WHEN highway IS NOT NULL THEN highway_class(highway)
+            WHEN highway IS NOT NULL OR public_transport IS NOT NULL THEN highway_class(highway, public_transport)
             WHEN railway IS NOT NULL THEN railway_class(railway)
             WHEN aerialway IS NOT NULL THEN aerialway
             WHEN shipway IS NOT NULL THEN shipway
@@ -31,7 +31,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -44,7 +44,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -57,7 +57,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -70,7 +70,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -83,7 +83,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -97,7 +97,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -111,7 +111,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            NULL AS public_transport, NULL AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -127,15 +127,16 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_highway_linestring
         WHERE NOT is_area AND (
             zoom_level = 12 AND (
-                highway_class(highway) NOT IN ('track', 'path', 'minor')
+                highway_class(highway, public_transport) NOT IN ('track', 'path', 'minor')
                 OR highway IN ('unclassified', 'residential')
             )
-            OR zoom_level = 13 AND highway_class(highway) NOT IN ('track', 'path')
+            OR zoom_level = 13
+                AND highway_class(highway, public_transport) NOT IN ('track', 'path')
             OR zoom_level >= 14
         )
         UNION ALL
@@ -144,7 +145,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -158,7 +159,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel,
             NULL::boolean AS is_ford,
             NULL::boolean AS is_ramp, NULL::boolean AS is_oneway,
@@ -172,7 +173,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen3
         WHERE zoom_level = 10
@@ -183,7 +184,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen2
         WHERE zoom_level = 11
@@ -194,7 +195,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring_gen1
         WHERE zoom_level = 12
@@ -206,7 +207,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, railway, NULL AS aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_railway_linestring
         WHERE zoom_level = 13
@@ -218,7 +219,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, NULL as railway, aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_aerialway_linestring_gen1
         WHERE zoom_level = 12
@@ -229,7 +230,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, NULL as railway, aerialway, NULL AS shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_aerialway_linestring
         WHERE zoom_level >= 13
@@ -239,7 +240,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, NULL AS railway, NULL AS aerialway, shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_shipway_linestring_gen2
         WHERE zoom_level = 11
@@ -249,7 +250,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, NULL AS railway, NULL AS aerialway, shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_shipway_linestring_gen1
         WHERE zoom_level = 12
@@ -260,7 +261,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             NULL AS highway, NULL AS railway, NULL AS aerialway, shipway,
-            service_value(service) AS service,
+            NULL AS public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
         FROM osm_shipway_linestring
         WHERE zoom_level >= 13
@@ -275,7 +276,7 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         SELECT
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
-            NULL AS service,
+            public_transport, NULL AS service,
             FALSE AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford,
             FALSE AS is_ramp, FALSE AS is_oneway, z_order
         FROM osm_highway_polygon

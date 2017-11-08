@@ -9,7 +9,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 -- The classes for highways are derived from the classes used in ClearTables
 -- https://github.com/ClearTables/ClearTables/blob/master/transportation.lua
-CREATE OR REPLACE FUNCTION highway_class(highway TEXT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT) RETURNS TEXT AS $$
     SELECT CASE
         WHEN highway IN ('motorway', 'motorway_link') THEN 'motorway'
         WHEN highway IN ('trunk', 'trunk_link') THEN 'trunk'
@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION highway_class(highway TEXT) RETURNS TEXT AS $$
         WHEN highway IN ('tertiary', 'tertiary_link') THEN 'tertiary'
         WHEN highway IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor'
         WHEN highway IN ('service', 'track') THEN highway
-        WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') THEN 'path'
+        WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') OR public_transport IN ('platform') THEN 'path'
         WHEN highway = 'raceway' THEN 'raceway'
         ELSE NULL
     END;
