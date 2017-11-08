@@ -100,6 +100,10 @@ usage_field: &usage
   key: usage
   name: usage
   type: string
+public_transport_field: &public_transport
+  key: public_transport
+  name: public_transport
+  type: string
 ref_field: &ref
   key: ref
   name: ref
@@ -144,6 +148,7 @@ tables:
     - *area
     - *service
     - *usage
+    - *public_transport
     mapping:
       highway:
       - motorway
@@ -170,6 +175,8 @@ tables:
       - corridor
       - pedestrian
       - steps
+      public_transport:
+      - platform
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -286,9 +293,12 @@ tables:
     - name: is_area
       key: area
       type: bool
+    - *public_transport
     mapping:
       highway:
       - pedestrian
+      public_transport:
+      - platform
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
