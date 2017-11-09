@@ -77,6 +77,8 @@ def_poi_mapping_highway: &poi_mapping_highway
 # historic values , see http://taginfo.openstreetmap.org/keys/historic#values
 def_poi_mapping_historic: &poi_mapping_historic
   - monument
+  - castle
+  - ruins
 
 # landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
 def_poi_mapping_landuse: &poi_mapping_landuse
