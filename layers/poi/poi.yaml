@@ -23,7 +23,8 @@ layer:
           [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
           [`station`](http://wiki.openstreetmap.org/wiki/Key:station),
           [`sport`](http://wiki.openstreetmap.org/wiki/Key:sport),
-          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism)
+          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
+          [`information`](http://wiki.openstreetmap.org/wiki/Key:information)
           or [`shop`](http://wiki.openstreetmap.org/wiki/Key:shop)
           tag.  Use this to do more precise styling.
     rank: |
