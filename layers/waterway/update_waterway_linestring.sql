@@ -2,10 +2,10 @@ DROP TRIGGER IF EXISTS trigger_refresh ON osm_waterway_linestring;
 
 DO $$
 BEGIN
-  update osm_waterway_linestring SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry);
-  update osm_waterway_linestring_gen1 SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry);
-  update osm_waterway_linestring_gen2 SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry);
-  update osm_waterway_linestring_gen3 SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry);
+  update osm_waterway_linestring SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry);
+  update osm_waterway_linestring_gen1 SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry);
+  update osm_waterway_linestring_gen2 SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry);
+  update osm_waterway_linestring_gen3 SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry);
 END $$;
 
 
@@ -15,8 +15,8 @@ CREATE SCHEMA IF NOT EXISTS waterway_linestring;
 CREATE OR REPLACE FUNCTION waterway_linestring.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
-    RAISE NOTICE 'Refresh waterway_linestring %', NEW.osm_id;
-    NEW.tags = slice_language_tags(NEW.tags) || get_basic_names(NEW.tags, NEW.geometry);
+--     RAISE NOTICE 'Refresh waterway_linestring %', NEW.osm_id;
+    NEW.tags = delete_empty_keys(NEW.tags) || get_basic_names(NEW.tags, NEW.geometry);
     RETURN NEW;
   END;
   $BODY$

@@ -22,7 +22,7 @@ BEGIN
     WHERE funicular = 'yes' and subclass='station';
 
   UPDATE osm_poi_polygon
-  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
   ANALYZE osm_poi_polygon;
