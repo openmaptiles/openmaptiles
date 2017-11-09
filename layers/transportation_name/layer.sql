@@ -3,7 +3,9 @@
 -- etldoc:     label="layer_transportation_name | <z6> z6 | <z7> z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, ref text, ref_length int, network text, class text) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
+  name_de text, tags hstore, ref text, ref_length int, network text, class
+  text, subclass text) AS $$
     SELECT osm_id, geometry,
       NULLIF(name, '') AS name,
       COALESCE(NULLIF(name_en, ''), name) AS name_en,
@@ -17,7 +19,12 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         when length(coalesce(ref, ''))>0
           then 'road'
       end as network,
-      highway_class(highway, '') AS class
+      highway_class(highway, '') AS class,
+      CASE
+          WHEN highway IS NOT NULL AND highway_class(highway, '') = 'path'
+              THEN highway
+          ELSE NULL
+      END AS subclass
     FROM (
 
         -- etldoc: osm_transportation_name_linestring_gen4 ->  layer_transportation_name:z6
