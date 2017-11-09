@@ -88,10 +88,24 @@ layer:
       - driveway
       - alley
       - parking_aisle
+    level:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+    layer:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+    indoor:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+      values:
+      - 1
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
   - ./update_transportation_merge.sql

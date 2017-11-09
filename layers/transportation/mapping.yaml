@@ -116,6 +116,14 @@ layer_field: &layer
   key: layer
   name: layer
   type: integer
+level_field: &level
+  key: level
+  name: level
+  type: integer
+indoor_field: &indoor
+  key: indoor
+  name: indoor
+  type: bool
 z_order_field: &z_order
   name: z_order
   type: wayzorder
@@ -136,6 +144,8 @@ tables:
     - *network
     - *z_order
     - *layer
+    - *level
+    - *indoor
     - *name
     - *name_en
     - *name_de
@@ -193,6 +203,8 @@ tables:
     - *network
     - *z_order
     - *layer
+    - *level
+    - *indoor
     - *name
     - *name_en
     - *name_de
@@ -287,9 +299,9 @@ tables:
       type: string
     - name: z_order
       type: wayzorder
-    - name: layer
-      key: layer
-      type: integer
+    - *layer
+    - *level
+    - *indoor
     - name: is_area
       key: area
       type: bool
