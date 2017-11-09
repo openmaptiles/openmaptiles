@@ -32,14 +32,24 @@ layer:
         local relative importance of a POI within it's cell in the grid. This can be used to reduce label density at *z14*.
         Since all POIs already need to be contained at *z14* you can use `less than rank=10` epxression to limit
         POIs. At some point like *z17* you can show all POIs.
+    agg_stop:
+      description: |
+          Experimental feature! Indicates main platform of public transport
+          stops (buses, trams, and subways). Grouping of platforms is
+          implemented using
+          [`uic_ref`](http://wiki.openstreetmap.org/wiki/Key:uic_ref) tag that
+           is not used worldwide.
+      values: [1]
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, subclass, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./public_transport_stop_type.sql
   - ./update_poi_polygon.sql
   - ./update_poi_point.sql
   - ./class.sql
+  - ./poi_stop_agg.sql
   - ./layer.sql
 datasources:
   - type: imposm3
