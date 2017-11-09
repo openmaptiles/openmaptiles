@@ -1,6 +1,6 @@
 
 -- etldoc: layer_poi[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_poi | <z14_> z14+" ] ;
+-- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, "rank" int) AS $$
@@ -14,10 +14,25 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
         )::int AS "rank"
     FROM (
+        -- etldoc: osm_poi_point ->  layer_poi:z12
+        -- etldoc: osm_poi_point ->  layer_poi:z13
+        SELECT * FROM osm_poi_point
+            WHERE geometry && bbox
+                AND zoom_level BETWEEN 12 AND 13
+                AND (subclass='station' AND mapping_key = 'railway')
+        UNION ALL
         -- etldoc: osm_poi_point ->  layer_poi:z14_
         SELECT * FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level >= 14
+
+        UNION ALL
+        -- etldoc: osm_poi_polygon ->  layer_poi:z12
+        -- etldoc: osm_poi_polygon ->  layer_poi:z13
+        SELECT * FROM osm_poi_polygon
+            WHERE geometry && bbox
+                AND zoom_level BETWEEN 12 AND 13
+                AND (subclass='station' AND mapping_key = 'railway')
         UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z14_
         SELECT * FROM osm_poi_polygon
