@@ -28,7 +28,7 @@ services:
     networks:
     - postgres_conn
   import-osm:
-    image: "openmaptiles/import-osm:0.4"
+    image: "openmaptiles/import-osm:latest"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -75,7 +75,7 @@ services:
     volumes:
      - ./build:/sql
   openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:0.6"
+    image: "openmaptiles/openmaptiles-tools:issue-266"
     env_file: .env
     networks:
     - postgres_conn
