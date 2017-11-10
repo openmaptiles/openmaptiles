@@ -129,6 +129,7 @@ echo "====> : Making directories - if they don't exist ( ./build ./data ./pgdata
 mkdir -p pgdata
 mkdir -p build
 mkdir -p data
+mkdir -p wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -230,6 +231,14 @@ echo "      :   Source code: https://github.com/openmaptiles/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
 docker-compose run --rm import-osm
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
+echo "      : Source code: https://github.com/openmaptiles/import-wikidata "
+echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
+echo "      : Thank you Wikidata Contributors ! "
+docker-compose run --rm import-wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

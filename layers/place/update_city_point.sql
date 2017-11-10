@@ -41,7 +41,7 @@ BEGIN
   WHERE osm.osm_id = ne.osm_id;
 
   UPDATE osm_city_point
-  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
+  SET tags = update_tags(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
 END;

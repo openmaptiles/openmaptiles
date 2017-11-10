@@ -126,6 +126,9 @@ list:
 download-geofabrik-list:
 	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
 
+download-wikidata:
+	mkdir -p wikidata && docker-compose run --rm --entrypoint /usr/src/app/download-gz.sh import-wikidata
+
 start-tileserver:
 	@echo " "
 	@echo "***********************************************************"
