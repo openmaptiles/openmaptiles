@@ -1,4 +1,3 @@
-DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON waterway_important.updates;
 
 -- We merge the waterways by name like the highways
