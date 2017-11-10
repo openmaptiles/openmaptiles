@@ -9,7 +9,7 @@ BEGIN
   WHERE ST_GeometryType(geometry) <> 'ST_Point';
 
   UPDATE osm_aerodrome_label_point
-  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
+  SET tags = update_tags(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 END;
 $$ LANGUAGE plpgsql;

@@ -9,7 +9,7 @@ CREATE MATERIALIZED VIEW osm_water_lakeline AS (
 	SELECT wp.osm_id,
 		ll.wkb_geometry AS geometry,
 		name, name_en, name_de,
-		delete_empty_keys(tags) || get_basic_names(tags, ll.wkb_geometry) AS tags,
+		update_tags(tags, ll.wkb_geometry) AS tags,
 		ST_Area(wp.geometry) AS area
     FROM osm_water_polygon AS wp
     INNER JOIN lake_centerline ll ON wp.osm_id = ll.osm_id

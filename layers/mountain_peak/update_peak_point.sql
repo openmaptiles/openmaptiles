@@ -5,7 +5,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON mountain_peak_point.updates;
 CREATE OR REPLACE FUNCTION update_osm_peak_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_peak_point
-  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
+  SET tags = update_tags(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
 END;

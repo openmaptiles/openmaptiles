@@ -33,7 +33,7 @@ BEGIN
   DELETE FROM osm_state_point WHERE "rank" IS NULL;
 
   UPDATE osm_state_point
-  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
+  SET tags = update_tags(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
 END;
