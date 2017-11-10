@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS trigger_flag ON osm_waterway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON osm_waterway_linestring;
 
 DO $$
