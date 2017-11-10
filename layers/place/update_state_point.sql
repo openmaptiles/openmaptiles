@@ -3,7 +3,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON place_state.updates;
 
 ALTER TABLE osm_state_point DROP CONSTRAINT IF EXISTS osm_state_point_rank_constraint;
 
--- etldoc: ne_10m_admin_1_states_provinces_shp   -> osm_state_point
+-- etldoc: ne_10m_admin_1_states_provinces   -> osm_state_point
 -- etldoc: osm_state_point                       -> osm_state_point
 
 CREATE OR REPLACE FUNCTION update_osm_state_point() RETURNS VOID AS $$
@@ -11,7 +11,7 @@ BEGIN
 
   WITH important_state_point AS (
       SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank, ne.datarank
-      FROM ne_10m_admin_1_states_provinces_shp AS ne, osm_state_point AS osm
+      FROM ne_10m_admin_1_states_provinces AS ne, osm_state_point AS osm
       WHERE
       -- We only match whether the point is within the Natural Earth polygon
       -- because name matching is difficult
