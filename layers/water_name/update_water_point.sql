@@ -9,7 +9,7 @@ CREATE MATERIALIZED VIEW osm_water_point AS (
     SELECT
         wp.osm_id, ST_PointOnSurface(wp.geometry) AS geometry,
         wp.name, wp.name_en, wp.name_de,
-        slice_language_tags(wp.tags) || get_basic_names(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
+        delete_empty_keys(wp.tags) || get_basic_names(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
         ST_Area(wp.geometry) AS area
     FROM osm_water_polygon AS wp
     LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id

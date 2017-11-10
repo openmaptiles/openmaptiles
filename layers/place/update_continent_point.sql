@@ -5,7 +5,7 @@ DROP TRIGGER IF EXISTS trigger_refresh ON place_continent_point.updates;
 CREATE OR REPLACE FUNCTION update_osm_continent_point() RETURNS VOID AS $$
 BEGIN
   UPDATE osm_continent_point
-  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
 END;

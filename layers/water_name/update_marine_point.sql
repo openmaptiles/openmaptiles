@@ -22,7 +22,7 @@ BEGIN
   WHERE osm.osm_id = ne.osm_id;
 
   UPDATE osm_marine_point
-  SET tags = slice_language_tags(tags) || get_basic_names(tags, geometry)
+  SET tags = delete_empty_keys(tags) || get_basic_names(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
 END;
