@@ -25,10 +25,10 @@ CREATE MATERIALIZED VIEW osm_important_waterway_linestring AS (
     FROM (
         SELECT
             ST_LineMerge(ST_Union(geometry)) AS geometry,
-            name, name_en, name_de, tags
+            name, name_en, name_de, slice_language_tags(tags) AS tags
         FROM osm_waterway_linestring
         WHERE name <> '' AND waterway = 'river'
-        GROUP BY name, name_en, name_de, tags
+        GROUP BY name, name_en, name_de, slice_language_tags(tags)
     ) AS waterway_union
 );
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_geometry_idx ON osm_important_waterway_linestring USING gist(geometry);
