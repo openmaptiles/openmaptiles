@@ -9,6 +9,9 @@ ALTER TABLE osm_country_point DROP CONSTRAINT IF EXISTS osm_country_point_rank_c
 CREATE OR REPLACE FUNCTION update_osm_country_point() RETURNS VOID AS $$
 BEGIN
 
+  UPDATE osm_country_point AS osm
+  SET "rank" = 7;
+
   WITH important_country_point AS (
       SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank
       FROM ne_10m_admin_0_countries AS ne, osm_country_point AS osm
@@ -27,9 +30,36 @@ BEGIN
   FROM important_country_point AS ne
   WHERE osm.osm_id = ne.osm_id;
 
+  -- Repeat the step for archipelago countries like Philippines or Indonesia
+  -- whose label point is not within country's polygon
+  WITH important_country_point AS (
+    SELECT
+      osm.osm_id,
+--       osm.name,
+      ne.scalerank,
+      ne.labelrank,
+--       ST_Distance(osm.geometry, ne.geometry) AS distance,
+      ROW_NUMBER()
+      OVER (
+        PARTITION BY osm.osm_id
+        ORDER BY
+          ST_Distance(osm.geometry, ne.geometry)
+      ) AS rk
+    FROM osm_country_point osm,
+      ne_10m_admin_0_countries AS ne
+    WHERE
+      NOT (osm."rank" BETWEEN 1 AND 6)
+  )
+  UPDATE osm_country_point AS osm
+  -- Normalize both scalerank and labelrank into a ranking system from 1 to 6
+  -- where the ranks are still distributed uniform enough across all countries
+  SET "rank" = LEAST(6, CEILING((ne.scalerank + ne.labelrank)/2.0))
+  FROM important_country_point AS ne
+  WHERE osm.osm_id = ne.osm_id AND ne.rk = 1;
+
   UPDATE osm_country_point AS osm
   SET "rank" = 6
-  WHERE "rank" IS NULL;
+  WHERE "rank" = 7;
 
   -- TODO: This shouldn't be necessary? The rank function makes something wrong...
   UPDATE osm_country_point AS osm
