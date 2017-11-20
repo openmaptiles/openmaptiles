@@ -49,6 +49,15 @@ tables:
     - *name_en
     - *name_de
     - *rank
+    - name: country_code_iso3166_1_alpha_2
+      key: country_code_iso3166_1_alpha_2
+      type: string
+    - name: iso3166_1_alpha_2
+      key: ISO3166-1:alpha2
+      type: string
+    - name: iso3166_1
+      key: ISO3166-1
+      type: string
     - name: tags
       type: hstore_tags
     filters:

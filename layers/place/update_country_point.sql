@@ -10,18 +10,25 @@ CREATE OR REPLACE FUNCTION update_osm_country_point() RETURNS VOID AS $$
 BEGIN
 
   UPDATE osm_country_point AS osm
-  SET "rank" = 7;
+  SET
+    "rank" = 7,
+    iso3166_1_alpha_2 = COALESCE(
+      NULLIF(osm.country_code_iso3166_1_alpha_2, ''),
+      NULLIF(osm.iso3166_1_alpha_2, ''),
+      NULLIF(osm.iso3166_1, '')
+    )
+  ;
 
   WITH important_country_point AS (
       SELECT osm.geometry, osm.osm_id, osm.name, COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en, ne.scalerank, ne.labelrank
       FROM ne_10m_admin_0_countries AS ne, osm_country_point AS osm
       WHERE
-      -- We only match whether the point is within the Natural Earth polygon
-      -- because name matching is to difficult since OSM does not contain good
-      -- enough coverage of ISO codesy
-      ST_Within(osm.geometry, ne.geometry)
-      -- We leave out tiny countries
-      AND ne.scalerank <= 1
+        -- We match only countries with ISO codes to eliminate disputed countries
+        -- that lies inside polygon of sovereign country
+        iso3166_1_alpha_2 IS NOT NULL
+        AND ST_Within(osm.geometry, ne.geometry)
+        -- We leave out tiny countries
+        AND ne.scalerank <= 1
   )
   UPDATE osm_country_point AS osm
   -- Normalize both scalerank and labelrank into a ranking system from 1 to 6
@@ -48,7 +55,8 @@ BEGIN
     FROM osm_country_point osm,
       ne_10m_admin_0_countries AS ne
     WHERE
-      NOT (osm."rank" BETWEEN 1 AND 6)
+      iso3166_1_alpha_2 IS NOT NULL
+      AND NOT (osm."rank" BETWEEN 1 AND 6)
   )
   UPDATE osm_country_point AS osm
   -- Normalize both scalerank and labelrank into a ranking system from 1 to 6
