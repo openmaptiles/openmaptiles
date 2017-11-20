@@ -27,8 +27,6 @@ BEGIN
         -- that lies inside polygon of sovereign country
         iso3166_1_alpha_2 IS NOT NULL
         AND ST_Within(osm.geometry, ne.geometry)
-        -- We leave out tiny countries
-        AND ne.scalerank <= 1
   )
   UPDATE osm_country_point AS osm
   -- Normalize both scalerank and labelrank into a ranking system from 1 to 6
