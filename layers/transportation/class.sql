@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT) RE
         WHEN highway = 'raceway' THEN 'raceway'
         ELSE NULL
     END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- The classes for railways are derived from the classes used in ClearTables
 -- https://github.com/ClearTables/ClearTables/blob/master/transportation.lua
