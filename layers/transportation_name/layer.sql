@@ -72,15 +72,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
           highway,
           network,
           z_order,
-          CASE WHEN highway IN ('footway', 'steps') THEN layer
-              ELSE NULL::int
-          END AS layer,
-          CASE WHEN highway IN ('footway', 'steps') THEN "level"
-              ELSE NULL::int
-          END AS "level",
-          CASE WHEN highway IN ('footway', 'steps') THEN indoor
-              ELSE NULL::boolean
-          END AS indoor
+          layer,
+          "level",
+          indoor
         FROM osm_transportation_name_linestring
         WHERE zoom_level = 12
             AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
@@ -100,15 +94,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
           highway,
           network,
           z_order,
-          CASE WHEN highway IN ('footway', 'steps') THEN layer
-              ELSE NULL::int
-          END AS layer,
-          CASE WHEN highway IN ('footway', 'steps') THEN "level"
-              ELSE NULL::int
-          END AS "level",
-          CASE WHEN highway IN ('footway', 'steps') THEN indoor
-              ELSE NULL::boolean
-          END AS indoor
+          layer,
+          "level",
+          indoor
         FROM osm_transportation_name_linestring
         WHERE zoom_level = 13
             AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
@@ -127,15 +115,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
           highway,
           network,
           z_order,
-          CASE WHEN highway IN ('footway', 'steps') THEN layer
-              ELSE NULL::int
-          END AS layer,
-          CASE WHEN highway IN ('footway', 'steps') THEN "level"
-              ELSE NULL::int
-          END AS "level",
-          CASE WHEN highway IN ('footway', 'steps') THEN indoor
-              ELSE NULL::boolean
-          END AS indoor
+          layer,
+          "level",
+          indoor
         FROM osm_transportation_name_linestring
         WHERE zoom_level >= 14
 

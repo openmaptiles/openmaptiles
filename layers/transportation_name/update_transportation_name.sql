@@ -23,9 +23,15 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
         else hl.ref
       end as ref,
       hl.highway,
-      hl.level,
-      hl.layer,
-      hl.indoor,
+      CASE WHEN highway IN ('footway', 'steps') THEN layer
+          ELSE NULL::int
+      END AS layer,
+      CASE WHEN highway IN ('footway', 'steps') THEN "level"
+          ELSE NULL::int
+      END AS "level",
+      CASE WHEN highway IN ('footway', 'steps') THEN indoor
+          ELSE NULL::boolean
+      END AS indoor,
       ROW_NUMBER() OVER(PARTITION BY hl.osm_id
                                    ORDER BY rm.network_type) AS "rank",
       hl.z_order
