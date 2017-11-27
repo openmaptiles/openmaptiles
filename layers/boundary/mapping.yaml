@@ -1,30 +1,3 @@
-generalized_tables:
-
-  # etldoc: imposm3 -> osm_boundary_linestring_gen5 
-  boundary_linestring_gen5:
-    source: boundary_linestring
-    tolerance: ZRES9
-
-  # etldoc: imposm3 -> osm_boundary_linestring_gen4
-  boundary_linestring_gen4:
-    source: boundary_linestring
-    tolerance: ZRES10
-
-  # etldoc: imposm3 -> osm_boundary_linestring_gen3    
-  boundary_linestring_gen3:
-    source: boundary_linestring
-    tolerance: ZRES11
-
-  # etldoc: imposm3 -> osm_boundary_linestring_gen2    
-  boundary_linestring_gen2:
-    source: boundary_linestring
-    tolerance: ZRES12
-
-  # etldoc: imposm3 -> osm_boundary_linestring_gen1    
-  boundary_linestring_gen1:
-    source: boundary_linestring
-    tolerance: ZRES13
-
 tables:
   # etldoc: imposm3 -> osm_boundary_linestring
   boundary_linestring:
