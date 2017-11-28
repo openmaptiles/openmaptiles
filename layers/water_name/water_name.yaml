@@ -17,8 +17,10 @@ layer:
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   datasource:
     geometry_field: geometry
+    key_field: osm_id
+    key_field_as_attribute: no
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_marine_point.sql
   - ./update_water_lakeline.sql
