@@ -6,7 +6,11 @@ CREATE OR REPLACE FUNCTION layer_water_name(bbox geometry, zoom_level integer)
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, class text) AS $$
     -- etldoc: osm_water_lakeline ->  layer_water_name:z9_13
     -- etldoc: osm_water_lakeline ->  layer_water_name:z14_
-    SELECT osm_id, geometry, name,
+    SELECT
+    CASE WHEN osm_id<0 THEN -osm_id*10+4
+        ELSE osm_id*10+1
+    END AS osm_id_hash,
+    geometry, name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
@@ -18,7 +22,11 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     -- etldoc: osm_water_point ->  layer_water_name:z9_13
     -- etldoc: osm_water_point ->  layer_water_name:z14_
     UNION ALL
-    SELECT osm_id, geometry, name,
+    SELECT
+    CASE WHEN osm_id<0 THEN -osm_id*10+4
+        ELSE osm_id*10+1
+    END AS osm_id_hash,
+    geometry, name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
@@ -32,7 +40,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     -- etldoc: osm_marine_point ->  layer_water_name:z9_13
     -- etldoc: osm_marine_point ->  layer_water_name:z14_
     UNION ALL
-    SELECT osm_id, geometry, name,
+    SELECT osm_id*10, geometry, name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
