@@ -18,6 +18,7 @@ BEGIN
       FROM ne_10m_populated_places AS ne, osm_city_point AS osm
       WHERE
       (
+          (osm.tags ? 'wikidata' AND osm.tags->'wikidata' = ne.wikidataid) OR
           ne.name ILIKE osm.name OR
           ne.name ILIKE osm.name_en OR
           ne.namealt ILIKE osm.name OR
