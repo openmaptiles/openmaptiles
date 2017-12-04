@@ -9,7 +9,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
 
     -- etldoc: osm_continent_point -> layer_place:z0_3
     SELECT
-        osm_id, geometry, name,
+        osm_id*10, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
@@ -24,7 +24,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     -- etldoc: osm_country_point -> layer_place:z8_11
     -- etldoc: osm_country_point -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name,
+        osm_id*10, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
@@ -39,7 +39,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     -- etldoc: osm_state_point  -> layer_place:z8_11
     -- etldoc: osm_state_point  -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name,
+        osm_id*10, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
@@ -56,7 +56,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
 
     -- etldoc: osm_island_point    -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name,
+        osm_id*10, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
@@ -70,7 +70,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     -- etldoc: osm_island_polygon  -> layer_place:z8_11
     -- etldoc: osm_island_polygon  -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name,
+        osm_id*10, geometry, name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
@@ -88,7 +88,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     -- etldoc: layer_city          -> layer_place:z8_11
     -- etldoc: layer_city          -> layer_place:z12_14
     SELECT
-        osm_id, geometry, name, name_en, name_de,
+        osm_id*10, geometry, name, name_en, name_de,
         tags,
         place::text AS class, "rank", capital,
         NULL::text AS iso_a2
