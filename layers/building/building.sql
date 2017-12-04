@@ -50,7 +50,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          osm_building_street WHERE role = 'house'
          UNION ALL
 
-         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- etldoc: osm_building_multipolygon -> layer_building:z14_
          -- Buildings that are inner/outer
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
