@@ -43,6 +43,9 @@ tables:
     - name: leisure
       key: leisure
       type: string
+    - name: tourism
+      key: tourism
+      type: string
     - name: area
       type: area
     - name: webmerc_area
@@ -68,3 +71,5 @@ tables:
       - stadium
       - pitch
       - playground
+      tourism:
+      - theme_park
