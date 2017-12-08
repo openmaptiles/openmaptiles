@@ -12,6 +12,8 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         CASE
             WHEN subclass = 'information'
                 THEN NULLIF(information, '')
+            WHEN subclass = 'place_of_worship'
+                    THEN NULLIF(religion, '')
             ELSE subclass
         END AS subclass,
         agg_stop,
