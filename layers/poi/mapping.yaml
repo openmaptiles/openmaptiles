@@ -336,6 +336,9 @@ tables:
     - name: uic_ref
       key: uic_ref
       type: string
+    - name: religion
+      key: religion
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -385,6 +388,9 @@ tables:
       type: string
     - name: uic_ref
       key: uic_ref
+      type: string
+    - name: religion
+      key: religion
       type: string
     mapping:
       aerialway: *poi_mapping_aerialway
