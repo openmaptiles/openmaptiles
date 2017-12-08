@@ -1,0 +1,87 @@
+tileset:
+  layers:
+    - layers/water/water.yaml
+    - layers/waterway/waterway.yaml
+    - layers/landcover/landcover.yaml
+    - layers/landuse/landuse.yaml
+    - layers/mountain_peak/mountain_peak.yaml
+    - layers/park/park.yaml
+    - layers/boundary/boundary.yaml
+    - layers/aeroway/aeroway.yaml
+    - layers/transportation/transportation.yaml
+    - layers/transportation_name/transportation_name.yaml
+    - layers/place/place.yaml
+    - layers/housenumber/housenumber.yaml
+    - layers/aerodrome_label/aerodrome_label.yaml
+  name: OpenMapTiles
+  version: 3.3.0
+  id: openmaptiles
+  description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"
+  attribution: '<a href="http://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>'
+  center: [-12.2168, 28.6135, 4]
+  maxzoom: 14
+  minzoom: 0
+  pixel_scale: 256
+  languages:
+    - ar # Arabic
+    - az # Azerbaijani, Latin
+    - be # Belarusian
+    - bg # Bulgarian
+    - br # Breton, Latin
+    - bs # Bosnian, Latin
+    - ca # Catalan, Latin
+    - cs # Czech, Latin
+    - cy # Welsh, Latin
+    - da # Danish, Latin
+    - de # German, Latin
+    - el # Greek
+    - en # English, Latin
+    - eo # Esperanto, Latin
+    - es # Spanish, Latin
+    - et # Estonian, Latin
+    - fi # Finnish, Latin
+    - fr # French, Latin
+    - fy # Western Frisian, Latin
+    - ga # Irish, Latin
+    - gd # Scottish Gaelic, Latin
+    - he # Hebrew
+    - hr # Croatian, Latin
+    - hu # Hungarian, Latin
+    - hy # Armenian
+    - is # Icelandic, Latin
+    - it # Italian, Latin
+    - ja # Japanese
+    - ja_kana # Japanese Kana form
+    - ja_rm # romanization of Japanese, Latin
+    - ka # Georgian
+    - kk # Kazakh
+    - kn # Kannada
+    - ko # Korean
+    - ko_rm # romanization of Korean, Latin
+    - la # Latin, Latin
+    - lb # Luxembourgish, Latin
+    - lt # Lithuanian, Latin
+    - lv # Latvian, Latin
+    - mk # Macedonian
+    - mt # Maltese, Latin
+    - nl # Dutch, Latin
+    - "no" # Norwegian, Latin
+    - pl # Polish, Latin
+    - pt # Portuguese, Latin
+    - rm # Romansh, Latin
+    - ro # Romania, Latin
+    - ru # Russian
+    - sk # Slovak, Latin
+    - sl # Slovene, Latin
+    - sq # Albanian, Latin
+    - sr # Serbian, Cyrillic
+    - sr-Latn # Serbian, Latin
+    - sv # Swedish, Latin
+    - th # Thai
+    - tr # Turkish, Latin
+    - uk # Ukrainian
+    - zh # Chinese
+  defaults:
+    srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+    datasource:
+      srid: 900913

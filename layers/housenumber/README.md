@@ -8,3 +8,6 @@ Read the layer documentation at **http://openmaptiles.org/schema#housenumber**
 
 ### ETL diagram
 ![ETL diagram for housenumber](etl_diagram.png?raw=true)
+
+# Difference for qwant style
+The housenumbers are loaded from zoom 14 because it's the lowest zoom level.
