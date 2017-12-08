@@ -8,9 +8,9 @@ Mainly some layers have been changed (see "Difference for qwant style" section i
 To generate the files needed by https://github.com/QwantResearch/kartotherian_config you just need:
  * [openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools)
  * [kosmtik](https://github.com/kosmtik/kosmtik)
- * run `generate_qwant.sh`
+ * run `CONFIG_DIR=<path_to_kartotherian_config> make qwant`
 
-move the generated files to kartotherian_config
+the files are generated in the kartotherian_config dir, you might want to commit them
 
 ## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
 
