@@ -1,9 +1,10 @@
 #! /bin/bash
-# to run this script you need kosmitc and the openmaptiles-tools loaded
+# to run this script you need kosmitk and the openmaptiles-tools loaded
 
 set -e
 
-KOSMETIK=kosmtik
+KOSMETIK="node /home/antoine/dev/bin/kosmtik/index.js"
+#KOSMETIK=kosmtik
 
 for tiles in 'base' 'poi' 'lite'; do
     tileset="openmaptiles_$tiles.yaml"

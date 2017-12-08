@@ -1,3 +1,17 @@
+# Qwant OpenMapTiles fork
+
+This is qwant version of openmaptiles.
+
+We try to contribute all we can to the great openmaptiles project, but some changes are qwant specific.
+Mainly some layers have been changed (see "Difference for qwant style" section in the layer readme) and we want to split pois from the others data to have different update cycle and better pois.
+
+To generate the files needed by https://github.com/QwantResearch/kartotherian_config you just need:
+ * [openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools)
+ * [kosmtik](https://github.com/kosmtik/kosmtik)
+ * run `generate_qwant.sh`
+
+move the generated files to kartotherian_config
+
 ## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
 
 OpenMapTiles is an extensible and open vector tile schema for a OpenStreetMap basemap. It is used to generate vector tiles for [openmaptiles.org](http://openmaptiles.org/) and [openmaptiles.com](http://openmaptiles.com/).
