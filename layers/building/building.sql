@@ -1,5 +1,5 @@
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
+-- etldoc:     label="layer_building | <z14_> z14+ " ] ;
 
 CREATE OR REPLACE FUNCTION as_numeric(text) RETURNS NUMERIC AS $$
  -- Inspired by http://stackoverflow.com/questions/16195986/isnumeric-with-postgresql/16206123#16206123
@@ -75,13 +75,6 @@ CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
 RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int) AS $$
     SELECT geometry, osm_id, render_height, render_min_height
     FROM (
-        -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
-        SELECT
-            osm_id, geometry,
-            NULL::int AS render_height, NULL::int AS render_min_height
-        FROM osm_building_polygon_gen1
-        WHERE zoom_level = 13 AND geometry && bbox
-        UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_
         SELECT DISTINCT ON (osm_id)
            osm_id, geometry,
@@ -93,6 +86,19 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
             zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
+$$ LANGUAGE SQL IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION layer_building_no_height(bbox geometry, zoom_level int)
+RETURNS TABLE(geometry geometry, osm_id bigint) AS $$
+    SELECT geometry, osm_id
+    FROM (
+        -- etldoc: osm_building_polygon -> layer_building:z14_
+        SELECT DISTINCT ON (osm_id)
+           osm_id, geometry
+        FROM osm_all_buildings
+        WHERE zoom_level >= 14 AND geometry && bbox
+    ) AS zoom_levels
+    ORDER BY ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL IMMUTABLE;
 
 -- not handled: where a building outline covers building parts

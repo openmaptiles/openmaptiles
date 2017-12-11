@@ -1,10 +1,3 @@
-generalized_tables:
-  # etldoc: imposm3 -> osm_building_polygon_gen1
-  building_polygon_gen1:
-    source: building_polygon
-    sql_filter: area>power(ZRES12,2)
-    tolerance: ZRES14
-
 tables:
   # etldoc: imposm3 -> osm_building_polygon
   building_polygon:
@@ -393,3 +386,7 @@ tables:
         building: ["no","none","No"]
         building:part: ["no","none","No"]
     type: relation_member
+
+tags:
+  # Note we want in general to load all tags, so we define it there (but it could have been generated in any layers)
+  load_all: true
