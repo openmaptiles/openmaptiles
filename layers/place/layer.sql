@@ -95,3 +95,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     FROM layer_city(bbox, zoom_level, pixel_width)
     ORDER BY "rank" ASC
 $$ LANGUAGE SQL IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION layer_place_lite(bbox geometry, zoom_level int, pixel_width numeric)
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
+    name_de text, tags hstore, class text, "rank" int, capital INT, iso_a2
+        TEXT) AS $$
+    SELECT * FROM layer_place(bbox, zoom_level, pixel_width)
+        WHERE zoom_level < 13
+    UNION ALL
+    SELECT * FROM layer_place(bbox, 14, pixel_width)
+        WHERE zoom_level >= 13
+$$ LANGUAGE SQL IMMUTABLE;

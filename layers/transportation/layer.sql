@@ -332,3 +332,15 @@ indoor INT) AS $$
     WHERE geometry && bbox
     ORDER BY z_order ASC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION layer_transportation_lite(bbox geometry, zoom_level int)
+RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text,
+ramp int, oneway int, brunnel TEXT, service TEXT, layer INT, level INT,
+indoor INT) AS $$
+    SELECT * FROM layer_transportation(bbox, zoom_level)
+        WHERE zoom_level < 13
+    UNION ALL
+    SELECT * FROM layer_transportation(bbox, 14)
+        WHERE zoom_level >= 13
+$$ LANGUAGE SQL IMMUTABLE;
