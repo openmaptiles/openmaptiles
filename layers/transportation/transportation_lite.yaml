@@ -1,0 +1,113 @@
+layer:
+  id: "transportation"
+  description: |
+      [Lite] All elements are retrieved at zoom_level >= 13
+      **transportation** contains roads, railways, aerial ways, and shipping
+       lines.
+      This layer is directly derived from the OSM road hierarchy.
+      At lower zoom levels major highways from Natural Earth are used.
+      It contains all roads from motorways to primary, secondary and
+      tertiary roads to residential roads and
+      foot paths. Styling the roads is the most essential part of the map.
+      The `transportation` layer also contains polygons for features like plazas.
+  buffer_size: 4
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  fields:
+    class:
+      description: |
+          Distinguish between more and less important roads or railways.
+          Class is derived from the value of the
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway), or
+          [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
+          shipping ways).
+      values:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - minor
+      - service
+      - track
+      - path
+      - raceway
+      - rail
+      - transit
+      - cable_car
+      - ferry
+    subclass:
+      description: |
+          Distinguish more specific classes of railway and path:
+          Subclass is value of the
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths), or
+          [`public_transport`](http://wiki.openstreetmap.org/wiki/Key:public_transport) (for platforms) tag.
+      values:
+      - rail
+      - narrow_gauge
+      - preserved
+      - funicular
+      - subway
+      - light_rail
+      - monorail
+      - tram
+      - pedestrian
+      - path
+      - footway
+      - cycleway
+      - steps
+      - bridleway
+      - corridor
+      - platform
+    brunnel:
+      description: |
+          Mark whether way is a tunnel or bridge.
+      values:
+        - bridge
+        - tunnel
+        - ford
+    oneway:
+      description: |
+          Mark with `1` whether way is a oneway (in the direction of the way)
+          or not with `0`.
+      values: [0, 1]
+    ramp:
+      description: |
+          Mark with `1` whether way is a ramp (link or steps)
+          or not with `0`.
+      values: [0, 1]
+    service:
+      description: |
+          Original value of the [`service`](http://wiki.openstreetmap.org/wiki/Key:service) tag.
+      values:
+      - spur
+      - yard
+      - siding
+      - crossover
+      - driveway
+      - alley
+      - parking_aisle
+    level:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+    layer:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+    indoor:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+      values:
+      - 1
+  datasource:
+    geometry_field: geometry
+    srid: 900913
+    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor FROM layer_transportation_lite(!bbox!, z(!scale_denominator!))) AS t
+schema: []
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

@@ -125,3 +125,15 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     WHERE geometry && bbox
     ORDER BY z_order ASC;
 $$ LANGUAGE SQL IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION layer_transportation_name_lite(bbox geometry, zoom_level integer)
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
+  name_de text, tags hstore, ref text, ref_length int, network text, class
+  text, subclass text, layer INT, level INT, indoor INT) AS $$
+  SELECT * FROM layer_transportation_name(bbox, zoom_level)
+    WHERE zoom_level < 13
+  UNION ALL
+  SELECT * FROM layer_transportation_name(bbox, 14)
+    WHERE zoom_level >= 13
+$$ LANGUAGE SQL IMMUTABLE;

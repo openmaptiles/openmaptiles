@@ -10,10 +10,10 @@ KOSMETIK=kosmtik
 
 for tiles in 'base' 'poi' 'lite'; do
     tileset="openmaptiles_$tiles.yaml"
-    generate-sql $tileset > $CONFIG_DIR/imposm/generated_$tiles.sql
 
     if [[ $tiles != "lite" ]]; then
-        #no mapping for the lite tiles
+        # no sql and no mapping for the lite tiles
+        generate-sql $tileset > $CONFIG_DIR/imposm/generated_$tiles.sql
         generate-imposm3 $tileset > $CONFIG_DIR/imposm/generated_mapping_$tiles.yaml
     fi
     TMP_SOURCE=generated_${tiles}_tm2source.yml
