@@ -90,9 +90,11 @@ def_poi_mapping_landuse: &poi_mapping_landuse
 # leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
 def_poi_mapping_leisure: &poi_mapping_leisure
   - dog_park
+  - escape_game
   - garden
   - golf_course
   - ice_rink
+  - hackerspace
   - marina
   - miniature_golf
   - park
@@ -106,8 +108,10 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
-  - station
   - halt
+  - station
+  - subway_entrance
+  - train_station_entrance
   - tram_stop
 
 # shop values , see http://taginfo.openstreetmap.org/keys/shop#values
