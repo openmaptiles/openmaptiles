@@ -1,68 +1,67 @@
-CREATE OR REPLACE FUNCTION brunnel(is_bridge BOOL, is_tunnel BOOL, is_ford BOOL) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION waterway_brunnel(is_bridge BOOL, is_tunnel BOOL) RETURNS TEXT AS $$
     SELECT CASE
         WHEN is_bridge THEN 'bridge'
         WHEN is_tunnel THEN 'tunnel'
-        WHEN is_ford THEN 'ford'
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
 -- etldoc: ne_110m_rivers_lake_centerlines ->  waterway_z3
 CREATE OR REPLACE VIEW waterway_z3 AS (
-    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM ne_110m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 
 -- etldoc: ne_50m_rivers_lake_centerlines ->  waterway_z4
 CREATE OR REPLACE VIEW waterway_z4 AS (
-    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM ne_50m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 
 -- etldoc: ne_10m_rivers_lake_centerlines ->  waterway_z6
 CREATE OR REPLACE VIEW waterway_z6 AS (
-    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, NULL::text AS name, NULL::text AS name_en, NULL::text AS name_de, NULL::hstore AS tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM ne_10m_rivers_lake_centerlines
     WHERE featurecla = 'River'
 );
 
 -- etldoc: osm_important_waterway_linestring_gen3 ->  waterway_z9
 CREATE OR REPLACE VIEW waterway_z9 AS (
-    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM osm_important_waterway_linestring_gen3
 );
 
 -- etldoc: osm_important_waterway_linestring_gen2 ->  waterway_z10
 CREATE OR REPLACE VIEW waterway_z10 AS (
-    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM osm_important_waterway_linestring_gen2
 );
 
 -- etldoc:osm_important_waterway_linestring_gen1 ->  waterway_z11
 CREATE OR REPLACE VIEW waterway_z11 AS (
-    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel, NULL::boolean AS is_ford
+    SELECT geometry, 'river'::text AS class, name, name_en, name_de, tags, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
     FROM osm_important_waterway_linestring_gen1
 );
 
 -- etldoc: osm_waterway_linestring ->  waterway_z12
 CREATE OR REPLACE VIEW waterway_z12 AS (
-    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel, is_ford
+    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel
     FROM osm_waterway_linestring
     WHERE waterway IN ('river', 'canal')
 );
 
 -- etldoc: osm_waterway_linestring ->  waterway_z13
 CREATE OR REPLACE VIEW waterway_z13 AS (
-    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel, is_ford
+    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel
     FROM osm_waterway_linestring
     WHERE waterway IN ('river', 'canal', 'stream', 'drain', 'ditch')
 );
 
 -- etldoc: osm_waterway_linestring ->  waterway_z14
 CREATE OR REPLACE VIEW waterway_z14 AS (
-    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel, is_ford
+    SELECT geometry, waterway::text AS class, name, name_en, name_de, tags, is_bridge, is_tunnel
     FROM osm_waterway_linestring
 );
 
@@ -75,7 +74,7 @@ RETURNS TABLE(geometry geometry, class text, name text, name_en text, name_de te
         NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
-        brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
+        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
         tags
     FROM (
         -- etldoc: waterway_z3 ->  layer_waterway:z3
