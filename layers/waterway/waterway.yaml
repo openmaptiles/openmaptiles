@@ -27,7 +27,6 @@ layer:
       values:
         - bridge
         - tunnel
-        - ford
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
