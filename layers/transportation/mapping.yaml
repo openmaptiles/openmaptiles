@@ -87,7 +87,7 @@ ford_field: &ford
 oneway_field: &oneway
   key: oneway
   name: is_oneway
-  type: bool
+  type: direction
 area_field: &area
   name: is_area
   key: area
