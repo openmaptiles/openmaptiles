@@ -69,9 +69,10 @@ layer:
         - ford
     oneway:
       description: |
-          Mark with `1` whether way is a oneway (in the direction of the way)
-          or not with `0`.
-      values: [0, 1]
+          Mark with `1` whether way is a oneway in the direction of the way,
+          with `-1` whether way is a oneway in the opposite direction of the way
+          or not a oneway with `0`.
+      values: [0, 1, -1]
     ramp:
       description: |
           Mark with `1` whether way is a ramp (link or steps)
