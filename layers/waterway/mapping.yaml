@@ -23,10 +23,6 @@ bridge_field: &bridge
   key: bridge
   name: is_bridge
   type: bool
-ford_field: &ford
-  key: ford
-  name: is_ford
-  type: bool
 
 tables:
   # etldoc: imposm3 -> osm_waterway_linestring
@@ -53,7 +49,6 @@ tables:
       type: hstore_tags
     - *tunnel
     - *bridge
-    - *ford
     mapping:
       waterway:
       - stream
