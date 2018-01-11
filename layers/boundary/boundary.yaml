@@ -27,6 +27,3 @@ layer:
     query: (SELECT geometry, admin_level, disputed, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
-datasources:
-  - type: imposm3
-    mapping_file: ./mapping.yaml
