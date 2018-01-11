@@ -38,7 +38,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('fast_food','food_court') THEN 'fast_food'
         WHEN subclass IN ('park','bbq') THEN 'park'
         WHEN subclass IN ('bus_stop','bus_station') THEN 'bus'
-        WHEN (subclass='station' AND mapping_key = 'railway') OR subclass IN ('halt', 'tram_stop') THEN 'railway'
+        WHEN (subclass='station' AND mapping_key = 'railway') OR subclass IN ('halt', 'tram_stop', 'subway') THEN 'railway'
         WHEN (subclass='station' AND mapping_key = 'aerialway') THEN 'aerialway'
         WHEN subclass IN ('subway_entrance','train_station_entrance') THEN 'entrance'
         WHEN subclass IN ('camp_site','caravan_site') THEN 'campsite'
