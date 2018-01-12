@@ -52,6 +52,7 @@ tables:
       type: webmerc_area
     mapping:
       amenity:
+      - bus_station
       - school
       - university
       - kindergarten
@@ -73,3 +74,4 @@ tables:
       - playground
       tourism:
       - theme_park
+      - zoo
