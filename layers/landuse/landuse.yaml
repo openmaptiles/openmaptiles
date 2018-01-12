@@ -31,6 +31,8 @@ layer:
       - pitch
       - playground
       - theme_park
+      - bus_station
+      - zoo
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
