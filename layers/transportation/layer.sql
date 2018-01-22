@@ -143,9 +143,7 @@ indoor INT) AS $$
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
             public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway,
-            CASE WHEN highway IN ('footway', 'steps') THEN layer
-                ELSE NULL::int
-            END AS layer,
+            layer,
             CASE WHEN highway IN ('footway', 'steps') THEN "level"
                 ELSE NULL::int
             END AS "level",
