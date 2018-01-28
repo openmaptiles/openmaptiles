@@ -90,6 +90,8 @@ tables:
       - glacier
       - bare_rock
       - scree
+      - beach
+      - sand
       leisure:
       - park
       - garden
