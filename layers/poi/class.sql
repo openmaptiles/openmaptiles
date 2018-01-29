@@ -55,7 +55,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('bar','nightclub') THEN 'bar'
         WHEN subclass IN ('marina','dock') THEN 'harbor'
         WHEN subclass IN ('car','car_repair','taxi') THEN 'car'
-        WHEN subclass IN ('hospital','nursing_home', 'doctors', 'clinic') THEN 'hospital'
+        WHEN subclass IN ('hospital','nursing_home', 'clinic') THEN 'hospital'
         WHEN subclass IN ('grave_yard','cemetery') THEN 'cemetery'
         WHEN subclass IN ('attraction','viewpoint') THEN 'attraction'
         WHEN subclass IN ('biergarten','pub') THEN 'beer'
