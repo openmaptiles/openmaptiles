@@ -12,7 +12,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_waterway_linestring_gen1
   waterway_linestring_gen1:
     source: waterway_linestring
-    sql_filter: waterway IN ('river')
+    sql_filter: waterway IN ('river') AND ST_IsValid(geometry)
     tolerance: ZRES11
 
 tunnel_field: &tunnel
