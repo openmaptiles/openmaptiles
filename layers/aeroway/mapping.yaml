@@ -12,6 +12,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_aeroway_linestring_gen1
   aeroway_linestring_gen1:
     source: aeroway_linestring
+    sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
   # etldoc: imposm3 -> osm_aeroway_polygon_gen3
@@ -29,7 +30,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_aeroway_polygon_gen1
   aeroway_polygon_gen1:
     source: aeroway_polygon
-    sql_filter: area>power(ZRES12,2)
+    sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
 
 ref_field: &ref

@@ -22,7 +22,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_landuse_polygon_gen1
   landuse_polygon_gen1:
     source: landuse_polygon
-    sql_filter: area>power(ZRES11,2)
+    sql_filter: area>power(ZRES11,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
 
 tables:
