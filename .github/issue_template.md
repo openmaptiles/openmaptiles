@@ -5,6 +5,8 @@ This is the right place only for a bug report and a feature request related to s
 The usage questions belongs to https://stackoverflow.com/questions/tagged/openmaptiles
 A guaranteed support and consulting from the core developers via: https://openmaptiles.com/support/
 
+Questions about OpenMapTiles Server, TileHosting and other software/products do not belong here (and will not be answered)!
+
 Please search this GitHub repo for similar requests before posting (check also closed tickets).
 
 When reporting a visual problem on a map please provide:
