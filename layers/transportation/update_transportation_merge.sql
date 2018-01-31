@@ -37,7 +37,7 @@ CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS (
           highway,
           min(z_order) AS z_order
       FROM osm_highway_linestring
-      WHERE highway IN ('motorway','trunk', 'primary')
+      WHERE highway IN ('motorway','trunk', 'primary') AND ST_IsValid(geometry)
       group by highway
     ) AS highway_union
 );
