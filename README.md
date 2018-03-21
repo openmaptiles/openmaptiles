@@ -124,7 +124,7 @@ cd data
 wget http://download.geofabrik.de/europe/albania-latest.osm.pbf
 ```
 
-Import [OpenStreetMap](http://wiki.openstreetmap.org/wiki/Osm2pgsql) data with the mapping rules from
+[Import OpenStreetMap data](https://github.com/openmaptiles/import-osm) with the mapping rules from
 `build/mapping.yaml` (which has been created by `make`).
 
 ```bash
