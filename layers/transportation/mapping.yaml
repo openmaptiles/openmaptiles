@@ -308,6 +308,9 @@ tables:
       key: area
       type: bool
     - *public_transport
+    - name: man_made
+      key: man_made
+      type: string
     mapping:
       highway:
       - path
@@ -319,6 +322,8 @@ tables:
       - steps
       public_transport:
       - platform
+      man_made:
+      - bridge
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
