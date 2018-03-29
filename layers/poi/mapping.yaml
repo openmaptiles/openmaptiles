@@ -345,6 +345,15 @@ tables:
     - name: religion
       key: religion
       type: string
+    - name: level
+      key: level
+      type: integer
+    - name: indoor
+      key: indoor
+      type: bool
+    - name: layer
+      key: layer
+      type: integer
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -398,6 +407,15 @@ tables:
     - name: religion
       key: religion
       type: string
+    - name: level
+      key: level
+      type: integer
+    - name: indoor
+      key: indoor
+      type: bool
+    - name: layer
+      key: layer
+      type: integer
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity

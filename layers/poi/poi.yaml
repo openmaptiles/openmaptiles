@@ -41,12 +41,23 @@ layer:
           [`uic_ref`](http://wiki.openstreetmap.org/wiki/Key:uic_ref) tag that
            is not used worldwide.
       values: [1]
+    level:
+      description: |
+          Original value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+    layer:
+      description: |
+          Original value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+    indoor:
+      description: |
+          Original value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+      values:
+      - 1
   datasource:
     geometry_field: geometry
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, layer, level, indoor, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./public_transport_stop_type.sql
   - ./update_poi_polygon.sql
