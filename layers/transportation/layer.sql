@@ -325,13 +325,17 @@ indoor INT) AS $$
                 ELSE FALSE
             END AS is_bridge, FALSE AS is_tunnel, FALSE AS is_ford,
             FALSE AS is_ramp, FALSE::int AS is_oneway,
-            NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
+            CASE WHEN man_made IN ('bridge') THEN layer
+                ELSE NULL::int
+            END AS layer, NULL::int AS level, NULL::boolean AS indoor,
             z_order
         FROM osm_highway_polygon
         -- We do not want underground pedestrian areas for now
         WHERE zoom_level >= 13
-            AND (is_area OR man_made IN ('bridge'))
-            AND COALESCE(layer, 0) >= 0
+            AND (
+                  man_made IN ('bridge')
+                  OR (is_area AND COALESCE(layer, 0) >= 0)
+            )
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;
