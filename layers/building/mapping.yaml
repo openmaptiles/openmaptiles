@@ -60,6 +60,7 @@ tables:
       reject:
         building: ["no","none","No"]
         building:part: ["no","none","No"]
+        man_made: ["bridge"]
     type: polygon
 
   # etldoc: imposm3 -> osm_building_street
@@ -392,4 +393,5 @@ tables:
       reject:
         building: ["no","none","No"]
         building:part: ["no","none","No"]
+        man_made: ["bridge"]
     type: relation_member
