@@ -95,8 +95,8 @@ layer:
           value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
     layer:
       description: |
-          Experimental feature! Filled only for steps and footways. Original
-          value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+          Experimental feature! 
+          Original value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
     indoor:
       description: |
           Experimental feature! Filled only for steps and footways. Original
