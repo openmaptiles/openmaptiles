@@ -89,14 +89,13 @@ layer:
       - driveway
       - alley
       - parking_aisle
+    layer:
+      description: |
+          Original value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
     level:
       description: |
           Experimental feature! Filled only for steps and footways. Original
           value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
-    layer:
-      description: |
-          Experimental feature! Filled only for steps and footways. Original
-          value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
     indoor:
       description: |
           Experimental feature! Filled only for steps and footways. Original
