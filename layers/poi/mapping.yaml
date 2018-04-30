@@ -283,6 +283,7 @@ def_poi_mapping_sport: &poi_mapping_sport
 # tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
 def_poi_mapping_tourism: &poi_mapping_tourism
   - alpine_hut
+  - aquarium
   - artwork
   - attraction
   - bed_and_breakfast
