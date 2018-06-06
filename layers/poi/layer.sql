@@ -1,11 +1,11 @@
 
-CREATE OR REPLACE FUNCTION global_id_from_imposm(osm_id bigint, osm_type text)
+CREATE OR REPLACE FUNCTION global_id_from_imposm(osm_id bigint)
 RETURNS TEXT AS $$
     SELECT CONCAT(
         'osm:',
-        CASE WHEN osm_id<0
-            THEN CONCAT('relation:', -osm_id)
-            ELSE CONCAT(osm_type, ':', osm_id)
+        CASE WHEN osm_id < -1e17 THEN CONCAT('relation:', -osm_id-1e17)
+             WHEN osm_id < 0 THEN CONCAT('way:', -osm_id)
+             ELSE CONCAT('node:', osm_id)
         END
     );
 $$ LANGUAGE SQL IMMUTABLE;
@@ -37,7 +37,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         -- etldoc: osm_poi_point ->  layer_poi:z13
         SELECT *,
             osm_id*10 AS osm_id_hash,
-            global_id_from_imposm(osm_id, 'node') as global_id
+            global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
@@ -48,7 +48,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         -- etldoc: osm_poi_point ->  layer_poi:z14_
         SELECT *,
             osm_id*10 AS osm_id_hash,
-            global_id_from_imposm(osm_id, 'node') as global_id
+            global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level >= 14
@@ -61,7 +61,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             CASE WHEN osm_id<0 THEN -osm_id*10+4
                 ELSE osm_id*10+1
             END AS osm_id_hash,
-            global_id_from_imposm(osm_id, 'way') as global_id
+            global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
@@ -75,7 +75,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             CASE WHEN osm_id<0 THEN -osm_id*10+4
                 ELSE osm_id*10+1
             END AS osm_id_hash,
-            global_id_from_imposm(osm_id, 'way') as global_id
+            global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
             WHERE geometry && bbox
                 AND zoom_level >= 14
