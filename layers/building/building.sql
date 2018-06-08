@@ -68,7 +68,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_polygon WHERE osm_id >= 0
+         osm_building_polygon WHERE osm_id >= -1e17
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
