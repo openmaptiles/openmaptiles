@@ -399,3 +399,6 @@ tables:
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
       waterway: *poi_mapping_waterway
+
+tags:
+  load_all: true
