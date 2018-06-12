@@ -45,7 +45,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, global_id, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, rank, '{{}}' as tags FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, global_id, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, rank, tags::json::text as tags FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./public_transport_stop_type.sql
   - ./update_poi_polygon.sql
