@@ -354,6 +354,9 @@ tables:
     - name: layer
       key: layer
       type: integer
+    - name: sport
+      key: sport
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -416,6 +419,9 @@ tables:
     - name: layer
       key: layer
       type: integer
+    - name: sport
+      key: sport
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
