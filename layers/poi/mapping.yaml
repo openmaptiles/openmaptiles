@@ -345,6 +345,9 @@ tables:
     - name: religion
       key: religion
       type: string
+    - name: sport
+      key: sport
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -397,6 +400,9 @@ tables:
       type: string
     - name: religion
       key: religion
+      type: string
+    - name: sport
+      key: sport
       type: string
     mapping:
       aerialway: *poi_mapping_aerialway
