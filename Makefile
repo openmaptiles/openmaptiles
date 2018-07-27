@@ -100,12 +100,6 @@ psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE ;"
 	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
 
-import-sql-dev:
-	docker-compose run --rm import-sql /bin/bash
-
-import-osm-dev:
-	docker-compose run --rm import-osm /bin/bash
-
 download-geofabrik:
 	@echo ===============  download-geofabrik =======================
 	@echo Download area :   $(area)
@@ -133,11 +127,17 @@ cfg-remake:
 	docker-compose run --rm openmaptiles-tools make clean
 	docker-compose run --rm openmaptiles-tools make
 
+
 import-osmsql:
 	docker-compose run --rm openmaptiles-tools make clean
 	docker-compose run --rm openmaptiles-tools make
 	docker-compose run --rm import-osm
 	docker-compose run --rm import-sql
+
+import-osm:
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-osm
 
 import-sql:
 	docker-compose run --rm openmaptiles-tools make clean
@@ -151,7 +151,11 @@ generate-tiles:
 	rm -rf data/tiles.mbtiles
 	docker-compose run --rm openmaptiles-tools make clean
 	docker-compose run --rm openmaptiles-tools make
-	docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles
+	if [ -f ./data/docker-compose-config.yml ]; then \
+		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles; \
+	else \
+		docker-compose run --rm generate-vectortiles; \
+	fi
 	docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
 	docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
@@ -198,3 +202,9 @@ generate-devdoc:
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water/water.yaml                   ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water_name/water_name.yaml         ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/waterway/waterway.yaml             ./build/devdoc
+
+import-sql-dev:
+	docker-compose run --rm import-sql /bin/bash
+
+import-osm-dev:
+	docker-compose run --rm import-osm /bin/bash
