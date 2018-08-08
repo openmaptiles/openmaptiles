@@ -16,6 +16,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
       CASE WHEN length(hl.name)>15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
       CASE WHEN length(hl.name_en)>15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
       CASE WHEN length(hl.name_de)>15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
+      hl.tags,
       rm.network_type,
       CASE
         WHEN (rm.network_type is not null AND nullif(rm.ref::text, '') is not null)
@@ -49,9 +50,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
         name,
         name_en,
         name_de,
-        get_basic_names(delete_empty_keys(hstore(ARRAY['name',name,'name:en',name_en,'name:de',name_de])), geometry)
-            || delete_empty_keys(hstore(ARRAY['name',name,'name:en',name_en,'name:de',name_de]))
-            AS "tags",
+        tags,
         ref,
         highway,
         "level",
@@ -65,18 +64,19 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
           name,
           name_en,
           name_de,
-          ref,
-          highway,
-          "level",
-          layer,
-          indoor,
-          network_type,
+          slice_language_tags(tags) AS tags,
+          max(ref) AS ref,
+          max(highway) AS highway,
+          max("level") AS "level",
+          max(layer) AS layer,
+          bool_or(indoor) AS indoor,
+          max(network_type) AS network_type,
           min(z_order) AS z_order
       FROM osm_transportation_name_network
       WHERE ("rank"=1 OR "rank" is null)
         AND (name <> '' OR ref <> '')
         AND NULLIF(highway, '') IS NOT NULL
-      group by name, name_en, name_de, ref, highway, "level", layer, indoor, network_type
+      group by name, name_en, name_de, slice_language_tags(tags)
     ) AS highway_union
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);
