@@ -22,12 +22,13 @@ generalized_tables:
 # etldoc: imposm3 -> osm_railway_linestring_gen1
   railway_linestring_gen1:
     source: railway_linestring
-    sql_filter: railway IN ('rail', 'narrow_gauge', 'light_rail') AND service=''
+    sql_filter: railway IN ('rail', 'narrow_gauge', 'light_rail') AND service='' AND ST_IsValid(geometry)
     tolerance: ZRES13
 
 # etldoc: imposm3 -> osm_aerialway_linestring_gen1
   aerialway_linestring_gen1:
     source: aerialway_linestring
+    sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
 # etldoc: imposm3 -> osm_shipway_linestring_gen2
@@ -38,6 +39,7 @@ generalized_tables:
 # etldoc: imposm3 -> osm_shipway_linestring_gen1
   shipway_linestring_gen1:
     source: shipway_linestring
+    sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
 # etldoc: imposm3 -> osm_highway_linestring_gen2
@@ -49,7 +51,7 @@ generalized_tables:
 # etldoc: imposm3 -> osm_highway_linestring_gen1
   highway_linestring_gen1:
     source: highway_linestring
-    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') AND NOT is_area
+    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') AND NOT is_area AND ST_IsValid(geometry)
     tolerance: ZRES12
 
 name_field: &name
@@ -87,7 +89,7 @@ ford_field: &ford
 oneway_field: &oneway
   key: oneway
   name: is_oneway
-  type: bool
+  type: direction
 area_field: &area
   name: is_area
   key: area
@@ -306,6 +308,9 @@ tables:
       key: area
       type: bool
     - *public_transport
+    - name: man_made
+      key: man_made
+      type: string
     mapping:
       highway:
       - path
@@ -317,6 +322,8 @@ tables:
       - steps
       public_transport:
       - platform
+      man_made:
+      - bridge
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member

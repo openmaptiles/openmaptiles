@@ -40,7 +40,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_landcover_polygon_gen1
   landcover_polygon_gen1:
     source: landcover_polygon
-    sql_filter: area>power(ZRES10,2)
+    sql_filter: area>power(ZRES10,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
 
 tables:
@@ -90,6 +90,8 @@ tables:
       - glacier
       - bare_rock
       - scree
+      - beach
+      - sand
       leisure:
       - park
       - garden

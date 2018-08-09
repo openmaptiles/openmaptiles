@@ -129,6 +129,32 @@ download-geofabrik-list:
 download-wikidata:
 	mkdir -p wikidata && docker-compose run --rm --entrypoint /usr/src/app/download-gz.sh import-wikidata
 
+cfg-remake:
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+
+import-osmsql:
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-osm
+	docker-compose run --rm import-sql
+
+import-sql:
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-sql
+
+psql-start:
+	docker-compose up   -d postgres
+
+generate-tiles:
+	rm -rf data/tiles.mbtiles
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles
+	docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+	docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+
 start-tileserver:
 	@echo " "
 	@echo "***********************************************************"

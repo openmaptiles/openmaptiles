@@ -12,8 +12,18 @@ generalized_tables:
   # etldoc: imposm3 -> osm_waterway_linestring_gen1
   waterway_linestring_gen1:
     source: waterway_linestring
-    sql_filter: waterway IN ('river')
+    sql_filter: waterway IN ('river') AND ST_IsValid(geometry)
     tolerance: ZRES11
+
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+
 tables:
   # etldoc: imposm3 -> osm_waterway_linestring
   waterway_linestring:
@@ -37,6 +47,8 @@ tables:
       type: string
     - name: tags
       type: hstore_tags
+    - *tunnel
+    - *bridge
     mapping:
       waterway:
       - stream

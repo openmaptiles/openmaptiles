@@ -10,6 +10,7 @@ layer:
           Use the **class** to assign special colors to areas.
           Original value of either the
           [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
+          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
           or [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure) tag.
       values:
@@ -29,6 +30,9 @@ layer:
       - stadium
       - pitch
       - playground
+      - theme_park
+      - bus_station
+      - zoo
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t

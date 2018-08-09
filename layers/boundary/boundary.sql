@@ -39,6 +39,7 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
 CREATE OR REPLACE VIEW boundary_z4 AS (
     SELECT geometry, 2 AS admin_level, false AS disputed, false AS maritime
     FROM ne_10m_admin_0_boundary_lines_land
+    WHERE featurecla <> 'Lease limit'
     UNION ALL
     SELECT geometry, 4 AS admin_level, false AS disputed, false AS maritime
     FROM ne_10m_admin_1_states_provinces_lines
@@ -56,6 +57,7 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
 CREATE OR REPLACE VIEW boundary_z5 AS (
     SELECT geometry, 2 AS admin_level, false AS disputed, false AS maritime
     FROM ne_10m_admin_0_boundary_lines_land
+    WHERE featurecla <> 'Lease limit'
     UNION ALL
     SELECT geometry, 4 AS admin_level, false AS disputed, false AS maritime
     FROM ne_10m_admin_1_states_provinces_lines

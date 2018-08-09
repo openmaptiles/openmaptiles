@@ -1,7 +1,7 @@
 generalized_tables:
   # etldoc: imposm3 -> osm_park_polygon_gen8
   park_polygon_gen8:
-    source: park_polygon_gen6
+    source: park_polygon_gen7
     sql_filter: area>power(ZRES5,2)
     tolerance: ZRES8
 
@@ -44,7 +44,7 @@ generalized_tables:
   # etldoc: imposm3 -> osm_park_polygon_gen1
   park_polygon_gen1:
     source: park_polygon
-    sql_filter: area>power(ZRES12,2)
+    sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
 
 tables:

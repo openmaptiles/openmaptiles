@@ -20,8 +20,5 @@ for tiles in 'base' 'poi' 'lite'; do
         # And be able to transform it back to string with osm type (node/way/relation)
         echo 'use_single_id_space: true' >> $CONFIG_DIR/imposm/generated_mapping_$tiles.yaml
     fi
-    TMP_SOURCE=generated_${tiles}_tm2source.yml
-    generate-tm2source $tileset  --host="localhost" --port=5432 --database="gis" --user="nice_user" --password="nice_password" > $TMP_SOURCE
-    $KOSMETIK export $TMP_SOURCE > $CONFIG_DIR/tilerator/data_tm2source_$tiles.xml
-    rm $TMP_SOURCE
+    generate-tm2source $tileset  --host="localhost" --port=5432 --database="gis" --user="nice_user" --password="nice_password" > $CONFIG_DIR/tilerator/data_tm2source_$tiles.yml
 done

@@ -15,6 +15,7 @@ layer:
       - wood
       - grass
       - wetland
+      - sand
     subclass:
       description: |
           Use **subclass** to do more precise styling.
@@ -50,6 +51,8 @@ layer:
       - tidalflat
       - saltmarsh
       - mangrove
+      - beach
+      - sand
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
