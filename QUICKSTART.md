@@ -415,15 +415,16 @@ Hints for testing areas
   ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar 
   
 Hints for designers:
-  ....TODO....                         # start Maputnik 
+  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] 
   make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] 
-  make start-mapbox-studio             # start Mapbox Studio
   
 Hints for developers:
   make                                 # build source code  
   make download-geofabrik area=albania # download OSM data from geofabrik, and create config file
   make psql                            # start PostgreSQL console 
   make psql-list-tables                # list all PostgreSQL tables 
+  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
+  make psql-analyze                    # PostgreSQL: ANALYZE
   make generate-qareports              # generate reports [./build/qareports]
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
   make import-sql-dev                  # start import-sql  /bin/bash terminal 
