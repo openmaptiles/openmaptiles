@@ -57,6 +57,9 @@ tables:
       type: id
     - name: geometry
       type: validated_geometry
+    - name: name
+      key: name
+      type: string
     - name: landuse
       key: landuse
       type: string
