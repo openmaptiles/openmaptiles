@@ -1,0 +1,24 @@
+layer:
+  id: "park_label"
+  description: |
+      Labels for `park` layer.
+  buffer_size: 64
+  fields:
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the peak.
+    name_en: English name `name:en` if available, otherwise `name`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    class:
+      description: |
+          Use the **class** to differentiate between different parks.
+      values:
+      - national_park
+      - nature_reserve
+    rank: Rank of the park within one tile (starting at 1 that is the most important park).
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park_label(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+schema:
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ../park/mapping.yaml

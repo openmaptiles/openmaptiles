@@ -4,7 +4,7 @@
 CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
     SELECT osm_id, geometry,
-        COALESCE(NULLIF(leisure, ''), NULLIF(boundary, '')) AS class
+        COALESCE(NULLIF(boundary, ''), NULLIF(leisure, '')) AS class
         FROM (
         -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
         SELECT osm_id, geometry, leisure, boundary, NULL::int as scalerank
