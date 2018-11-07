@@ -332,6 +332,7 @@ tables:
       - platform
       man_made:
       - bridge
+      - pier
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
