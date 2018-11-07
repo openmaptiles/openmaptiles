@@ -6,7 +6,6 @@ tileset:
     - layers/landuse/landuse.yaml
     - layers/mountain_peak/mountain_peak.yaml
     - layers/park/park.yaml
-    - layers/park_label/park_label.yaml
     - layers/boundary/boundary.yaml
     - layers/aeroway/aeroway.yaml
     - layers/transportation/transportation.yaml
