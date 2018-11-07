@@ -143,7 +143,7 @@ indoor INT) AS $$
             osm_id, geometry,
             highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
             public_transport, service_value(service) AS service,
-            is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
+            is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, man_made,
             layer,
             CASE WHEN highway IN ('footway', 'steps') THEN "level"
                 ELSE NULL::int
@@ -157,10 +157,19 @@ indoor INT) AS $$
             zoom_level = 12 AND (
                 highway_class(highway, public_transport) NOT IN ('track', 'path', 'minor')
                 OR highway IN ('unclassified', 'residential')
-            )
+            ) AND man_made <> 'pier'
             OR zoom_level = 13
-                AND highway_class(highway, public_transport) NOT IN ('track', 'path')
+                AND (
+                    highway_class(highway, public_transport) NOT IN ('track', 'path') AND man_made <> 'pier'
+                OR
+                    man_made = 'pier' AND NOT ST_IsClosed(geometry)
+                )
             OR zoom_level >= 14
+                AND (
+                    man_made <> 'pier'
+                OR
+                    NOT ST_IsClosed(geometry)
+                )
         )
         UNION ALL
 

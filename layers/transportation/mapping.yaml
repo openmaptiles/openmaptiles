@@ -126,6 +126,10 @@ indoor_field: &indoor
   key: indoor
   name: indoor
   type: bool
+man_made_field: &man_made
+  key: man_made
+  name: man_made
+  type: string
 z_order_field: &z_order
   name: z_order
   type: wayzorder
@@ -163,6 +167,7 @@ tables:
     - *service
     - *usage
     - *public_transport
+    - *man_made
     mapping:
       highway:
       - motorway
@@ -191,6 +196,8 @@ tables:
       - steps
       public_transport:
       - platform
+      man_made:
+      - pier
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -316,9 +323,7 @@ tables:
       key: area
       type: bool
     - *public_transport
-    - name: man_made
-      key: man_made
-      type: string
+    - *man_made
     mapping:
       highway:
       - path
