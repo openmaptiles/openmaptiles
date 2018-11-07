@@ -50,7 +50,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
         name,
         name_en,
         name_de,
-        tags,
+        tags || get_basic_names(tags, geometry) AS "tags",
         ref,
         highway,
         "level",
@@ -64,19 +64,20 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
           name,
           name_en,
           name_de,
-          slice_language_tags(tags) AS tags,
-          max(ref) AS ref,
-          max(highway) AS highway,
-          max("level") AS "level",
-          max(layer) AS layer,
-          bool_or(indoor) AS indoor,
-          max(network_type) AS network_type,
+          hstore(string_agg(nullif(slice_language_tags(tags)::text, ''), ','))
+             AS "tags",
+          ref,
+          highway,
+          "level",
+          layer,
+          indoor,
+          network_type,
           min(z_order) AS z_order
       FROM osm_transportation_name_network
       WHERE ("rank"=1 OR "rank" is null)
         AND (name <> '' OR ref <> '')
         AND NULLIF(highway, '') IS NOT NULL
-      group by name, name_en, name_de, slice_language_tags(tags)
+      group by name, name_en, name_de, ref, highway, "level", layer, indoor, network_type
     ) AS highway_union
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist(geometry);
