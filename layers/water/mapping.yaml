@@ -85,4 +85,5 @@ tables:
       - canal
       - drain
       - ditch
+      - dock
     type: polygon
