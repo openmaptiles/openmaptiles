@@ -58,7 +58,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('attraction','viewpoint') THEN 'attraction'
         WHEN subclass IN ('biergarten','pub') THEN 'beer'
         WHEN subclass IN ('music','musical_instrument') THEN 'music'
-        WHEN subclass IN ('american_football','stadium','soccer','pitch') THEN 'stadium'
+        WHEN subclass IN ('american_football','stadium','soccer') THEN 'stadium'
         WHEN subclass IN ('art','artwork','gallery','arts_centre') THEN 'art_gallery'
         WHEN subclass IN ('bag','clothes') THEN 'clothing_store'
         WHEN subclass IN ('swimming_area','swimming') THEN 'swimming'
