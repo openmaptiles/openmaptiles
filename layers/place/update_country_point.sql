@@ -24,9 +24,9 @@ BEGIN
       FROM ne_10m_admin_0_countries AS ne, osm_country_point AS osm
       WHERE
         -- We match only countries with ISO codes to eliminate disputed countries
-        -- that lies inside polygon of sovereign country
         iso3166_1_alpha_2 IS NOT NULL
-        AND ST_Within(osm.geometry, ne.geometry)
+        -- that has same Wikidata ID or lies inside polygon of sovereign country
+        AND (osm.tags->'wikidata' = ne.wikidataid OR ST_Within(osm.geometry, ne.geometry))
   )
   UPDATE osm_country_point AS osm
   -- Normalize both scalerank and labelrank into a ranking system from 1 to 6
