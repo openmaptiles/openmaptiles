@@ -5,6 +5,7 @@ tileset:
     - layers/landcover/landcover.yaml
     - layers/landuse/landuse.yaml
     - layers/mountain_peak/mountain_peak.yaml
+    - layers/volcano/volcano.yaml
     - layers/park/park.yaml
     - layers/boundary/boundary.yaml
     - layers/aeroway/aeroway.yaml

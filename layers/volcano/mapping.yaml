@@ -1,0 +1,30 @@
+tables:
+
+  # etldoc: imposm3 -> osm_volcano_point
+  volcano_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: ele
+      key: ele
+      type: string
+    - name: wikipedia
+      key: wikipedia
+      type: string
+    mapping:
+      natural:
+      - volcano
