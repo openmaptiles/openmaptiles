@@ -6,6 +6,7 @@ CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_widt
 RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
     name_de text, tags hstore, class text, "rank" int, capital INT, iso_a2
         TEXT) AS $$
+    SELECT * FROM (
 
     -- etldoc: osm_continent_point -> layer_place:z0_3
     SELECT
@@ -94,6 +95,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
         NULL::text AS iso_a2
     FROM layer_city(bbox, zoom_level, pixel_width)
     ORDER BY "rank" ASC
+    ) AS place_all
 $$ LANGUAGE SQL IMMUTABLE;
 
 

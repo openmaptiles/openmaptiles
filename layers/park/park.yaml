@@ -10,10 +10,15 @@ layer:
       values:
       - national_park
       - nature_reserve
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the park (point features only).
+    name_en: English name `name:en` if available, otherwise `name` (point features only).
+    name_de: German name `name:de` if available, otherwise `name` or `name:en` (point features only).
+    rank: Rank of the park within one tile, starting at 1 that is the most important park (point features only).
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class FROM layer_park(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./update_park_polygon.sql
   - ./layer.sql
 datasources:
   - type: imposm3

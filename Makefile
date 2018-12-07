@@ -9,31 +9,30 @@ help:
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
 	@echo "  "
 	@echo "Hints for designers:"
-	@echo "  ....TODO....                         # start Maputnik "
+	@echo "  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] "
 	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] "
-	@echo "  make start-mapbox-studio             # start Mapbox Studio"
 	@echo "  "
 	@echo "Hints for developers:"
-	@echo "  make                                 # build source code  "
+	@echo "  make                                 # build source code"
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
-	@echo "  make psql                            # start PostgreSQL console "
-	@echo "  make psql-list-tables                # list all PostgreSQL tables "
+	@echo "  make psql                            # start PostgreSQL console"
+	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
 	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
 	@echo "  make generate-devdoc                 # generate devdoc  [./build/devdoc]"
-	@echo "  make import-sql-dev                  # start import-sql  /bin/bash terminal "
-	@echo "  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)"
-	@echo "  make clean-docker                    # remove docker containers, PG data volume "
-	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment "
+	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
+	@echo "  make import-osm-dev                  # start import-osm /bin/bash terminal (imposm3)"
+	@echo "  make clean-docker                    # remove docker containers, PG data volume"
+	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment"
 	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
 	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
-	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tabless"
-	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations"
-	@echo "  cat ./quickstart.log                 # backup  of the last ./quickstart.sh "
-	@echo "  make help                            # help about avaialable commands"
+	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tables"
+	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
+	@echo "  cat ./quickstart.log                 # backup of the last ./quickstart.sh"
+	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
 build/openmaptiles.tm2source/data.yml:
@@ -53,58 +52,8 @@ clean-docker:
 	docker-compose rm -fv
 	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
 
-list-docker-images:
-	docker images | grep openmaptiles
-
-refresh-docker-images:
-	docker-compose pull --ignore-pull-failures
-
-remove-docker-images:
-	@echo "Deleting all openmaptiles related docker image(s)..."
-	@docker-compose down
-	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-
-docker-unnecessary-clean:
-	@echo "Deleting unnecessary container(s)..."
-	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
-	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
-
-psql:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh
-
-psql-list-tables:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "\d+"
-
-psql-pg-stat-reset:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
-
-forced-clean-sql:
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
-
-pgclimb-list-views:
-	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
-
-pgclimb-list-tables:
-	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
-
-psql-vacuum-analyze:
-	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
-
-psql-analyze:
-	@echo "Start - postgresql: ANALYZE VERBOSE ;"
-	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
-
-import-sql-dev:
-	docker-compose run --rm import-sql /bin/bash
-
-import-osm-dev:
-	docker-compose run --rm import-osm /bin/bash
+db-start:
+	docker-compose up   -d postgres
 
 download-geofabrik:
 	@echo ===============  download-geofabrik =======================
@@ -118,16 +67,41 @@ download-geofabrik:
 	cat ./data/docker-compose-config.yml
 	@echo " "
 
-# the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
-list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+psql: db-start
+	docker-compose run --rm import-osm /usr/src/app/psql.sh
 
-# same as a `make list`
-download-geofabrik-list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+cfg-remake:
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
 
-download-wikidata:
-	mkdir -p wikidata && docker-compose run --rm --entrypoint /usr/src/app/download-gz.sh import-wikidata
+import-osm: db-start
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-osm
+
+import-sql: db-start
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-sql
+
+import-osmsql: db-start
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	docker-compose run --rm import-osm
+	docker-compose run --rm import-sql
+
+generate-tiles: db-start
+	rm -rf data/tiles.mbtiles
+	docker-compose run --rm openmaptiles-tools make clean
+	docker-compose run --rm openmaptiles-tools make
+	if [ -f ./data/docker-compose-config.yml ]; then \
+		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles; \
+	else \
+		docker-compose run --rm generate-vectortiles; \
+	fi
+	docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+	docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+
 
 cfg-remake:
 	docker-compose run --rm openmaptiles-tools make clean
@@ -173,10 +147,28 @@ start-tileserver:
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run -it --rm -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run -it --rm --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
-start-mapbox-studio:
-	docker-compose up mapbox-studio
+start-postserve:
+	@echo " "
+	@echo "***********************************************************"
+	@echo "* "
+	@echo "* Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
+	@echo "* "
+	@echo "***********************************************************"
+	@echo " "
+	docker-compose up -d postserve
+	docker pull maputnik/editor
+	@echo " "
+	@echo "***********************************************************"
+	@echo "* "
+	@echo "* Start maputnik/editor "
+	@echo "*       ----------------------------> check localhost:8088 "
+	@echo "* "
+	@echo "***********************************************************"
+	@echo " "
+	docker rm -f maputnik_editor || true
+	docker run --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
 generate-qareports:
 	./qa/run.sh
@@ -198,6 +190,67 @@ generate-devdoc:
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water/water.yaml                   ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water_name/water_name.yaml         ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/waterway/waterway.yaml             ./build/devdoc
+
+import-sql-dev:
+	docker-compose run --rm import-sql /bin/bash
+
+import-osm-dev:
+	docker-compose run --rm import-osm /bin/bash
+
+# the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
+list:
+	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+
+# same as a `make list`
+download-geofabrik-list:
+	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+
+download-wikidata:
+	mkdir -p wikidata && docker-compose run --rm --entrypoint /usr/src/app/download-gz.sh import-wikidata
+
+psql-list-tables:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c "\d+"
+
+psql-pg-stat-reset:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
+
+forced-clean-sql:
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
+
+pgclimb-list-views:
+	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
+
+pgclimb-list-tables:
+	docker-compose run --rm import-osm /usr/src/app/pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
+
+psql-vacuum-analyze:
+	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+
+psql-analyze:
+	@echo "Start - postgresql: ANALYZE VERBOSE ;"
+	docker-compose run --rm import-osm /usr/src/app/psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
+
+list-docker-images:
+	docker images | grep openmaptiles
+
+refresh-docker-images:
+	docker-compose pull --ignore-pull-failures
+
+remove-docker-images:
+	@echo "Deleting all openmaptiles related docker image(s)..."
+	@docker-compose down
+	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+
+docker-unnecessary-clean:
+	@echo "Deleting unnecessary container(s)..."
+	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
+	@echo "Deleting unnecessary image(s)..."
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
 
 qwant:
 	./generate_qwant.sh

@@ -24,8 +24,8 @@ BEGIN
       FROM ne_10m_admin_0_countries AS ne, osm_country_point AS osm
       WHERE
         -- We match only countries with ISO codes to eliminate disputed countries
-        -- that lies inside polygon of sovereign country
         iso3166_1_alpha_2 IS NOT NULL
+        -- that lies inside polygon of sovereign country
         AND ST_Within(osm.geometry, ne.geometry)
   )
   UPDATE osm_country_point AS osm
