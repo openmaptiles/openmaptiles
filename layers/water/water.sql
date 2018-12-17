@@ -1,5 +1,9 @@
 CREATE OR REPLACE FUNCTION water_class(waterway TEXT) RETURNS TEXT AS $$
-    SELECT CASE WHEN waterway='' THEN 'lake' ELSE 'river' END;
+    SELECT CASE
+           WHEN waterway='' THEN 'lake'
+           WHEN waterway='dock' THEN 'dock'
+           ELSE 'river'
+   END;
 $$ LANGUAGE SQL IMMUTABLE;
 
 

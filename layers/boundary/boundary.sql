@@ -116,7 +116,7 @@ CREATE OR REPLACE VIEW boundary_z12 AS (
     FROM osm_border_linestring_gen2
 );
 
--- etldoc: osm_border_linestring_gen1 -> boundary_z12
+-- etldoc: osm_border_linestring_gen1 -> boundary_z13
 CREATE OR REPLACE VIEW boundary_z13 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen1

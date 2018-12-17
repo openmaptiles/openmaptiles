@@ -187,7 +187,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Drop and Recreate PostgreSQL  public schema "
 # Drop all PostgreSQL tables
-# This is add an extra safe belt , if the user modify the docker volume seetings
+# This adds an extra safety belt if the user modifies the docker volume settings
 make forced-clean-sql
 
 echo " "

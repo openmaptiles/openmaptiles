@@ -5,71 +5,30 @@ tileset:
   version: 3.3.0
   id: openmaptiles
   description: "A tileset showcasing all layers in OpenMapTiles. http://openmaptiles.org"
-  attribution: '<a href="http://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/about/" target="_blank">&copy; OpenStreetMap contributors</a>'
+  attribution: '<a href="http://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="http://www.openstreetmap.org/copyright/" target="_blank">&copy; OpenStreetMap contributors</a>'
   center: [-12.2168, 28.6135, 4]
   bounds: [-180.0,-85.0511,180.0,85.0511]
   maxzoom: 14
   minzoom: 0
   pixel_scale: 256
   languages:
-    - ar # Arabic
-    - az # Azerbaijani, Latin
-    - be # Belarusian
-    - bg # Bulgarian
     - br # Breton, Latin
-    - bs # Bosnian, Latin
     - ca # Catalan, Latin
+    - co # Corsican, Latin
     - cs # Czech, Latin
-    - cy # Welsh, Latin
-    - da # Danish, Latin
     - de # German, Latin
-    - el # Greek
     - en # English, Latin
     - eo # Esperanto, Latin
     - es # Spanish, Latin
-    - et # Estonian, Latin
-    - fi # Finnish, Latin
+    - eu # Basque, Latin
     - fr # French, Latin
-    - fy # Western Frisian, Latin
-    - ga # Irish, Latin
-    - gd # Scottish Gaelic, Latin
-    - he # Hebrew
-    - hr # Croatian, Latin
-    - hu # Hungarian, Latin
-    - hy # Armenian
-    - is # Icelandic, Latin
     - it # Italian, Latin
-    - ja # Japanese
-    - ja_kana # Japanese Kana form
-    - ja_rm # romanization of Japanese, Latin
-    - ka # Georgian
-    - kk # Kazakh
-    - kn # Kannada
-    - ko # Korean
-    - ko_rm # romanization of Korean, Latin
     - la # Latin, Latin
-    - lb # Luxembourgish, Latin
-    - lt # Lithuanian, Latin
-    - lv # Latvian, Latin
-    - mk # Macedonian
-    - mt # Maltese, Latin
     - nl # Dutch, Latin
-    - "no" # Norwegian, Latin
+    - oc # Occitan (post 1500), Latin
     - pl # Polish, Latin
     - pt # Portuguese, Latin
-    - rm # Romansh, Latin
-    - ro # Romania, Latin
     - ru # Russian
-    - sk # Slovak, Latin
-    - sl # Slovene, Latin
-    - sq # Albanian, Latin
-    - sr # Serbian, Cyrillic
-    - sr-Latn # Serbian, Latin
-    - sv # Swedish, Latin
-    - th # Thai
-    - tr # Turkish, Latin
-    - uk # Ukrainian
-    - zh # Chinese
   defaults:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
     datasource:

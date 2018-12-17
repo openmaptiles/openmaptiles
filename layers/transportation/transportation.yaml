@@ -18,9 +18,10 @@ layer:
           Class is derived from the value of the
           [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
           [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
-          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway), or
+          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
-          shipping ways).
+          shipping ways), or
+          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:route).
       values:
       - motorway
       - trunk
@@ -36,6 +37,8 @@ layer:
       - transit
       - cable_car
       - ferry
+      - bridge
+      - pier
     subclass:
       description: |
           Distinguish more specific classes of railway and path:

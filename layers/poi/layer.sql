@@ -24,7 +24,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 -- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
     SELECT osm_id_hash AS osm_id, global_id,
         geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
@@ -36,9 +36,14 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
                 THEN NULLIF(information, '')
             WHEN subclass = 'place_of_worship'
                     THEN NULLIF(religion, '')
+            WHEN subclass = 'pitch'
+                    THEN NULLIF(sport, '')
             ELSE subclass
         END AS subclass,
         agg_stop,
+        NULLIF(layer, 0) AS layer,
+        "level",
+        CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC

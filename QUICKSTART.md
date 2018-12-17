@@ -44,22 +44,22 @@ cd openmaptiles
 
 If you have problems with the quickstart
 * check the ./quickstart.log!
-* check again the system requirements!
-* check the current issues : https://github.com/openmaptiles/openmaptiles/issues 
+* doublecheck the system requirements!
+* check the current issues: https://github.com/openmaptiles/openmaptiles/issues 
 * create new issues: 
-    * create a new gist https://gist.github.com/ from your ./quickstart.log
-    * double check: if this is not contain any sensitive informations about your system   
-    * create a new issues: https://github.com/openmaptiles/openmaptiles/issues
+    * create a new gist: https://gist.github.com/ from your ./quickstart.log
+    * doublecheck: don't reveal any sensitive information about your system   
+    * create a new issue: https://github.com/openmaptiles/openmaptiles/issues
         * describe the problems  
-        * add any important informations your environment 
-        * and link your (quickstart.log) gist !
+        * add any pertinent information about your environment 
+        * link your (quickstart.log) gist!
     
 ### Check other extracts
 
 IF the previous step is working,
 THEN you can test other available quickstart extracts ( based on [Geofabrik extracts](http://download.geofabrik.de/index.html) ) !
  * We are using https://github.com/julien-noblet/download-geofabrik tool
- * The current extract list, and more informations  ->  `make list`
+ * The current extract list, and more information  ->  `make list`
 
 This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
 
@@ -415,15 +415,16 @@ Hints for testing areas
   ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar 
   
 Hints for designers:
-  ....TODO....                         # start Maputnik 
+  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] 
   make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] 
-  make start-mapbox-studio             # start Mapbox Studio
   
 Hints for developers:
   make                                 # build source code  
   make download-geofabrik area=albania # download OSM data from geofabrik, and create config file
   make psql                            # start PostgreSQL console 
   make psql-list-tables                # list all PostgreSQL tables 
+  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
+  make psql-analyze                    # PostgreSQL: ANALYZE
   make generate-qareports              # generate reports [./build/qareports]
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
   make import-sql-dev                  # start import-sql  /bin/bash terminal 
@@ -434,10 +435,10 @@ Hints for developers:
   make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
   make remove-docker-images            # remove openmaptiles docker images
   make pgclimb-list-views              # list PostgreSQL public schema views
-  make pgclimb-list-tables             # list PostgreSQL public schema tabless
-  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM informations
+  make pgclimb-list-tables             # list PostgreSQL public schema tables
+  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat ./quickstart.log                 # backup  of the last ./quickstart.sh 
-  make help                            # help about avaialable commands
+  make help                            # help about available commands
 ==============================================================================
 ```
  

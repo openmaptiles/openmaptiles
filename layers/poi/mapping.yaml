@@ -281,6 +281,7 @@ def_poi_mapping_sport: &poi_mapping_sport
 # tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
 def_poi_mapping_tourism: &poi_mapping_tourism
   - alpine_hut
+  - aquarium
   - artwork
   - attraction
   - bed_and_breakfast
@@ -342,6 +343,18 @@ tables:
     - name: religion
       key: religion
       type: string
+    - name: level
+      key: level
+      type: integer
+    - name: indoor
+      key: indoor
+      type: bool
+    - name: layer
+      key: layer
+      type: integer
+    - name: sport
+      key: sport
+      type: string
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
@@ -394,6 +407,18 @@ tables:
       type: string
     - name: religion
       key: religion
+      type: string
+    - name: level
+      key: level
+      type: integer
+    - name: indoor
+      key: indoor
+      type: bool
+    - name: layer
+      key: layer
+      type: integer
+    - name: sport
+      key: sport
       type: string
     mapping:
       aerialway: *poi_mapping_aerialway
