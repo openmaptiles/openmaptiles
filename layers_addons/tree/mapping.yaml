@@ -1,0 +1,15 @@
+tables:
+  # etldoc: imposm3 -> osm_tree
+  tree:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: leaf_type
+      tag: leaf_type
+      type: string
+    mapping:
+      natural: [tree]
+      leaf_type: [broadleaved, needleleaved]
