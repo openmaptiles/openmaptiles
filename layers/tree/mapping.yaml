@@ -1,0 +1,13 @@
+tables:
+
+  # etldoc: imposm3 -> osm_tree
+  tree:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    mapping:
+      natural:
+      - tree
