@@ -85,7 +85,7 @@ AS
 $BODY$
 BEGIN
   NEW.tags = update_tags(NEW.tags, NEW.geometry);
-  NEW.geometry_point = NEW.st_centroid(geometry);
+  NEW.geometry_point = st_centroid(NEW.geometry);
   RETURN NEW;
 END;
 $BODY$
