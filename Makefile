@@ -151,11 +151,13 @@ generate-qareports:
 generate-devdoc:
 	mkdir -p ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/aeroway/aeroway.yaml               ./build/devdoc
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/aerodrome_label/aerodrome_label.yaml ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/boundary/boundary.yaml             ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/building/building.yaml             ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/housenumber/housenumber.yaml       ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/landcover/landcover.yaml           ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/landuse/landuse.yaml               ./build/devdoc
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/mountain_peak/mountain_peak.yaml   ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/park/park.yaml                     ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/place/place.yaml                   ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/poi/poi.yaml                       ./build/devdoc
@@ -164,6 +166,22 @@ generate-devdoc:
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water/water.yaml                   ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water_name/water_name.yaml         ./build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/waterway/waterway.yaml             ./build/devdoc
+
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/aeroway/aeroway.yaml               ./build/devdoc/mapping_aeroway
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/aerodrome_label/aerodrome_label.yaml ./build/devdoc/mapping_aerodrome_label
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/building/building.yaml             ./build/devdoc/mapping_building
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/housenumber/housenumber.yaml       ./build/devdoc/mapping_housenumber
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/landcover/landcover.yaml           ./build/devdoc/mapping_landcover
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/landuse/landuse.yaml               ./build/devdoc/mapping_landuse
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/mountain_peak/mountain_peak.yaml   ./build/devdoc/mapping_mountain_peak
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/park/park.yaml                     ./build/devdoc/mapping_park
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/place/place.yaml                   ./build/devdoc/mapping_place
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/poi/poi.yaml                       ./build/devdoc/mapping_poi
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/transportation/transportation.yaml ./build/devdoc/mapping_transportation
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/transportation_name/transportation_name.yaml ./build/devdoc/mapping_transportation_name
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/water/water.yaml                   ./build/devdoc/mapping_water
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/water_name/water_name.yaml         ./build/devdoc/mapping_water_name
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/waterway/waterway.yaml             ./build/devdoc/mapping_waterway
 
 import-sql-dev:
 	docker-compose run --rm import-sql /bin/bash
