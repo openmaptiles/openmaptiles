@@ -1,4 +1,4 @@
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+all: clean build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
 help:
 	@echo "=============================================================================="
@@ -35,14 +35,18 @@ help:
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
-build/openmaptiles.tm2source/data.yml:
-	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
+build:
+	mkdir -p build
 
-build/mapping.yaml:
-	mkdir -p build && generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+build/openmaptiles.tm2source/data.yml: build
+	mkdir -p build/openmaptiles.tm2source 
+	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
-build/tileset.sql:
-	mkdir -p build && generate-sql openmaptiles.yaml > build/tileset.sql
+build/mapping.yaml: build
+	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+
+build/tileset.sql: build
+	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
 
 clean:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
@@ -70,30 +74,18 @@ download-geofabrik:
 psql: db-start
 	docker-compose run --rm import-osm /usr/src/app/psql.sh
 
-cfg-remake:
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
-
-import-osm: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-osm: db-start all
 	docker-compose run --rm import-osm
 
-import-sql: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-sql: db-start all
 	docker-compose run --rm import-sql
 
-import-osmsql: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-osmsql: db-start all
 	docker-compose run --rm import-osm
 	docker-compose run --rm import-sql
 
-generate-tiles: db-start
+generate-tiles: db-start all
 	rm -rf data/tiles.mbtiles
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
 	if [ -f ./data/docker-compose-config.yml ]; then \
 		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles; \
 	else \

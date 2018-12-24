@@ -2,7 +2,7 @@
 
 OpenMapTiles is an extensible and open vector tile schema for a OpenStreetMap basemap. It is used to generate vector tiles for [openmaptiles.org](http://openmaptiles.org/) and [openmaptiles.com](http://openmaptiles.com/).
 
-We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. The repository is built on top of the [openmaptiles/tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
+We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
 - :link: Docs http://openmaptiles.org/docs
 - :link: Schema: http://openmaptiles.org/schema
@@ -60,11 +60,10 @@ Together the layers make up the OpenMapTiles tileset.
 
 ## Develop
 
-To work on OpenMapTiles you need Docker and Python.
+To work on OpenMapTiles you need Docker.
 
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
-- Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
 
 ### Build
 
@@ -75,8 +74,6 @@ git clone git@github.com:openmaptiles/openmaptiles.git
 cd openmaptiles
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
-# You can also run the build process inside a Docker container
-docker run -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 ```
 
 You can execute the following manual steps (for better understanding)
@@ -122,7 +119,7 @@ docker-compose run import-osm
 Each time you modify layer SQL code run `make` and `docker-compose run import-sql`.
 
 ```
-make clean && make && docker-compose run import-sql
+make && docker-compose run import-sql
 ```
 
 Now you are ready to **generate the vector tiles**. Using environment variables
