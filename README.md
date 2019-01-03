@@ -116,10 +116,10 @@ docker-compose run import-osm
 
 ### Work on Layers
 
-Each time you modify layer SQL code run `make` and `docker-compose run import-sql`.
+Each time you modify layer SQL code run `make` and `make import-sql`.
 
 ```
-make && docker-compose run import-sql
+make clean && make && make import-sql
 ```
 
 Now you are ready to **generate the vector tiles**. Using environment variables

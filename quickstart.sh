@@ -166,7 +166,12 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Regenerate source files from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
+echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
+make clean
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
 make
@@ -176,7 +181,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
 echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-docker-compose up   -d postgres
+docker-compose up -d postgres
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

@@ -1,4 +1,4 @@
-all: clean build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
 help:
 	@echo "=============================================================================="
