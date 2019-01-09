@@ -105,10 +105,28 @@ layer:
           value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
       - 1
+    bicycle:
+      description: |
+          Experimental feature! Filled only for paths, cycleways and footways.
+          Original value of
+          [`bicycle`](http://wiki.openstreetmap.org/wiki/Key:bicycle) tag.
+      values: [0, 1]
+    foot:
+      description: |
+          Experimental feature! Filled only for paths, cycleways and footways.
+          Original value of
+          [`foot`](http://wiki.openstreetmap.org/wiki/Key:foot) tag.
+      values: [0, 1]
+    horse:
+      description: |
+          Experimental feature! Filled only for paths, cycleways and footways.
+          Original value of
+          [`horse`](http://wiki.openstreetmap.org/wiki/Key:horse) tag.
+      values: [0, 1]
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor, bicycle, foot, horse FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
   - ./update_transportation_merge.sql

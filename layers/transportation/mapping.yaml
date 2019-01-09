@@ -168,6 +168,15 @@ tables:
     - *usage
     - *public_transport
     - *man_made
+    - name: bicycle
+      key: bicycle
+      type: string
+    - name: foot
+      key: foot
+      type: string
+    - name: horse
+      key: horse
+      type: string
     mapping:
       highway:
       - motorway
