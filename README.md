@@ -1,16 +1,18 @@
-# Qwant OpenMapTiles fork
+# OpenMapTiles fork for Qwant Maps
 
-This is qwant version of openmaptiles.
+This is the OpenMapTiles version used in [Qwant Maps](https://github.com/QwantResearch/qwantmaps/).
 
-We try to contribute all we can to the great openmaptiles project, but some changes are qwant specific.
-Mainly some layers have been changed (see "Difference for qwant style" section in the layer readme) and we want to split pois from the others data to have different update cycle and better pois.
+Most contributions should be done to the [original OpenMapTiles project](https://github.com/openmaptiles/openmaptiles), this repo only handles some changes that are Qwant specific:
 
-To generate the files needed by https://github.com/QwantResearch/kartotherian_config you just need:
- * [openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools)
- * [kosmtik](https://github.com/kosmtik/kosmtik)
+* some layers have been adapted to our needs: see the "Difference for qwant style" paragraph at the bottom of the readme of some layers (see for instance [the building one](https://github.com/QwantResearch/openmaptiles/tree/master/layers/building#difference-for-qwant-style))
+* we want to split the `poi` layer from the other layers to have shorter update cycles
+
+This repo is used to create the config files commited in the [kartotherian_config repo](https://github.com/QwantResearch/kartotherian_config).
+
+To generate them, you need to:
+ * install [openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools)
  * run `CONFIG_DIR=<path_to_kartotherian_config> make qwant`
 
-the files are generated in the kartotherian_config dir, you might want to commit them
 
 ## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
 

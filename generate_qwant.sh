@@ -1,12 +1,10 @@
 #! /bin/bash
-# to run this script you need kosmitk and the openmaptiles-tools loaded
-# you need to passe the env var CONFIG_DIR to the script
+# to run this script you need openmaptiles-tools
+# and to pass the env var CONFIG_DIR to the script
 
 [[ -z ${CONFIG_DIR} ]] && echo "ERROR: set CONFIG_DIR to the kartotherian_config path" && exit 1
 
 set -e
-
-KOSMETIK=kosmtik
 
 for tiles in 'base' 'poi' 'lite'; do
     tileset="openmaptiles_$tiles.yaml"
