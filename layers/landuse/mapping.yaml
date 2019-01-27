@@ -68,6 +68,7 @@ tables:
       - commercial
       - industrial
       - retail
+      - winter_sports
       leisure:
       - stadium
       - pitch
