@@ -77,7 +77,7 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh argentina                    # Argentina, South-America
 ./quickstart.sh arizona                      # Arizona, US
 ./quickstart.sh arkansas                     # Arkansas, US
-./quickstart.sh arnsberg-regbez              # Regierungsbezirk Arnsberg, Nordrhein-westfalen
+./quickstart.sh arnsberg-regbez              # Regierungsbezirk Arnsberg, Nordrhein-Westfalen
 ./quickstart.sh asia                         # Asia
 ./quickstart.sh australia                    # Australia, Australia-Oceania
 ./quickstart.sh australia-oceania            # Australia and Oceania
@@ -132,11 +132,11 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh delaware                     # Delaware, US
 ./quickstart.sh denmark                      # Denmark, Europe
 ./quickstart.sh derbyshire                   # Derbyshire, England
-./quickstart.sh detmold-regbez               # Regierungsbezirk Detmold, Nordrhein-westfalen
+./quickstart.sh detmold-regbez               # Regierungsbezirk Detmold, Nordrhein-Westfalen
 ./quickstart.sh devon                        # Devon, England
 ./quickstart.sh district-of-columbia         # District of Columbia, US
 ./quickstart.sh dorset                       # Dorset, England
-./quickstart.sh duesseldorf-regbez           # Regierungsbezirk Düsseldorf, Nordrhein-westfalen
+./quickstart.sh duesseldorf-regbez           # Regierungsbezirk Düsseldorf, Nordrhein-Westfalen
 ./quickstart.sh east-sussex                  # East Sussex, England
 ./quickstart.sh east-yorkshire-with-hull     # East Yorkshire with Hull, England
 ./quickstart.sh ecuador                      # Ecuador, South-America
@@ -201,7 +201,7 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh kent                         # Kent, England
 ./quickstart.sh kentucky                     # Kentucky, US
 ./quickstart.sh kenya                        # Kenya, Africa
-./quickstart.sh koeln-regbez                 # Regierungsbezirk Köln, Nordrhein-westfalen
+./quickstart.sh koeln-regbez                 # Regierungsbezirk Köln, Nordrhein-Westfalen
 ./quickstart.sh kosovo                       # Kosovo, Europe
 ./quickstart.sh kyrgyzstan                   # Kyrgyzstan, Asia
 ./quickstart.sh lancashire                   # Lancashire, England
@@ -242,7 +242,7 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh montana                      # Montana, US
 ./quickstart.sh montenegro                   # Montenegro, Europe
 ./quickstart.sh morocco                      # Morocco, Africa
-./quickstart.sh muenster-regbez              # Regierungsbezirk Münster, Nordrhein-westfalen
+./quickstart.sh muenster-regbez              # Regierungsbezirk Münster, Nordrhein-Westfalen
 ./quickstart.sh nebraska                     # Nebraska, US
 ./quickstart.sh nepal                        # Nepal, Asia
 ./quickstart.sh netherlands                  # Netherlands, Europe
