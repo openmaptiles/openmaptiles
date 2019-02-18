@@ -24,6 +24,9 @@ tables:
     - name: rank
       key: rank
       type: integer
+    - name: is_intermittent
+      key: intermittent
+      type: bool
     filters:
       require:
         name: ["__any__"]
