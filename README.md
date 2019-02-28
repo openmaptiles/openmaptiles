@@ -101,6 +101,7 @@ docker-compose run import-water
 docker-compose run import-natural-earth
 docker-compose run import-lakelines
 docker-compose run import-osmborder
+docker-compose run import-wikidata
 ```
 
 [Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
