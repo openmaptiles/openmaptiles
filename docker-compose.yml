@@ -44,7 +44,7 @@ services:
     networks:
     - postgres_conn
   import-osm-diff:
-    image: "openmaptiles/import-osm:0.4"
+    image: "openmaptiles/import-osm:0.5"
     env_file: .env
     command: ./import_diff.sh
     environment:
@@ -56,7 +56,7 @@ services:
      - ./build:/mapping
      - cache:/cache
   update-osm:
-    image: "openmaptiles/import-osm:0.4"
+    image: "openmaptiles/import-osm:0.5"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
