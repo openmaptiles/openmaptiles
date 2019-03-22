@@ -41,7 +41,7 @@ build:
 	mkdir -p build
 
 build/openmaptiles.tm2source/data.yml: build
-	mkdir -p build/openmaptiles.tm2source
+	mkdir -p build/openmaptiles.tm2source 
 	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
 build/mvt/maketile_func.sql:
@@ -127,7 +127,7 @@ start-tileserver:
 	@echo " "
 	docker run -it --rm --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
-start-postserve: db-start
+start-postserve:
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -151,25 +151,25 @@ start-postserve: db-start
 generate-qareports:
 	./qa/run.sh
 
-build/devdoc:
+build/devdoc: 
 	mkdir -p ./build/devdoc
 
 layers = $(notdir $(wildcard layers/*)) # all layers
 
-etl-graph:
+etl-graph: 
 	@echo 'Use'
 	@echo '   make etl-graph-[layer]	to generate etl graph for [layer]'
 	@echo '   example: make etl-graph-poi'
 	@echo 'Valid layers: $(layers)'
 
 # generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
-etl-graph-%: layers/% build/devdoc
+etl-graph-%: layers/% build/devdoc 
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
 
 mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
 
 # generate mapping graph for a certain layer, e.g. mapping-graph-building, mapping-graph-place
-mapping-graph:
+mapping-graph: 
 	@echo 'Use'
 	@echo '   make mapping-graph-[layer]	to generate mapping graph for [layer]'
 	@echo '   example: make mapping-graph-poi'
@@ -178,7 +178,7 @@ mapping-graph:
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
 	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
 
-# generate all etl and mapping graphs
+# generate all etl and mapping graphs 
 generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
 
 import-sql-dev:
