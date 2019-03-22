@@ -1,4 +1,4 @@
-all: build/openmaptiles.tm2source/data.yml build/gettile.sql build/mapping.yaml build/tileset.sql
+all: build/openmaptiles.tm2source/data.yml build/mvt/maketile_func.sql build/mvt/maketile_prep.sql build/mapping.yaml build/tileset.sql
 
 help:
 	@echo "=============================================================================="
@@ -44,8 +44,11 @@ build/openmaptiles.tm2source/data.yml: build
 	mkdir -p build/openmaptiles.tm2source
 	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
-build/gettile.sql:
-	mkdir -p build && generate-sqlgettile openmaptiles.yaml > build/gettile.sql
+build/mvt/maketile_func.sql:
+	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-level=8 > build/mvt/maketile_func.sql
+
+build/mvt/maketile_prep.sql:
+	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-level=8 --prepared > build/mvt/maketile_prep.sql
 
 build/mapping.yaml: build
 	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
@@ -54,7 +57,11 @@ build/tileset.sql: build
 	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
 
 clean:
-	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/gettile.sql && rm -f build/mapping.yaml && rm -f build/tileset.sql
+	rm -f build/openmaptiles.tm2source/data.yml
+	rm -f build/mvt/maketile_func.sql
+	rm -f build/mvt/maketile_prep.sql
+	rm -f build/mapping.yaml
+	rm -f build/tileset.sql
 
 clean-docker:
 	docker-compose down -v --remove-orphans
@@ -120,7 +127,7 @@ start-tileserver:
 	@echo " "
 	docker run -it --rm --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
-start-postserve:
+start-postserve: db-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "

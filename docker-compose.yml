@@ -4,7 +4,7 @@ volumes:
   cache:
 services:
   postgres:
-    image: "openmaptiles/postgis:2.9"
+    image: "openmaptiles/postgis:latest"
     volumes:
     - pgdata:/var/lib/postgresql/data
     networks:
@@ -28,7 +28,7 @@ services:
     networks:
     - postgres_conn
   import-osm:
-    image: "openmaptiles/import-osm:0.5"
+    image: "openmaptiles/import-osm:latest"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -44,7 +44,7 @@ services:
     networks:
     - postgres_conn
   import-osm-diff:
-    image: "openmaptiles/import-osm:0.5"
+    image: "openmaptiles/import-osm:latest"
     env_file: .env
     command: ./import_diff.sh
     environment:
@@ -56,7 +56,7 @@ services:
      - ./build:/mapping
      - cache:/cache
   update-osm:
-    image: "openmaptiles/import-osm:0.5"
+    image: "openmaptiles/import-osm:latest"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -83,7 +83,7 @@ services:
     volumes:
      - ./wikidata:/import
   openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:0.9.2"
+    image: "openmaptiles/openmaptiles-tools:latest"
     env_file: .env
     networks:
     - postgres_conn
@@ -114,15 +114,15 @@ services:
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
   postserve:
-    image: "openmaptiles/postserve:0.2"
+    image: "openmaptiles/postserve:latest"
     env_file: .env
     networks:
      - postgres_conn
     ports:
-    - "8090:8080"
+     - "localhost:8090:8090"  # Tighten security - prevent non-local access to the port
     volumes:
-     - ./build/openmaptiles.tm2source:/mapping
-
+     - ./build:/mapping
+    command: /mapping/maketile_prep.sql -p 8090
 networks:
   postgres_conn:
     driver: bridge

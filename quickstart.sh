@@ -289,7 +289,8 @@ rm -f ./data/quickstart_checklist.chk
 md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
 md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
 md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
-md5sum build/gettile.sql                      >> ./data/quickstart_checklist.chk
+md5sum build/mvt/maketile_func.sql            >> ./data/quickstart_checklist.chk
+md5sum build/mvt/maketile_prep.sql            >> ./data/quickstart_checklist.chk
 md5sum ./data/${testdata}                     >> ./data/quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
 md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
