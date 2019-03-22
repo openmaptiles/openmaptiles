@@ -119,7 +119,7 @@ services:
     networks:
      - postgres_conn
     ports:
-     - "localhost:8090:8090"  # Tighten security - prevent non-local access to the port
+     - "127.0.0.1:8090:8090"  # Tighten security - prevent non-local access to the port
     volumes:
      - ./build:/mapping
     command: /mapping/maketile_prep.sql -p 8090
