@@ -4,11 +4,12 @@ OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. I
 
 We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
+- :link: Discuss at the #openmaptiles channel at [OSM Slack](https://osmus-slack.herokuapp.com/)
 - :link: Docs https://openmaptiles.org/docs
 - :link: Schema https://openmaptiles.org/schema
 - :link: Production package: https://openmaptiles.com/production-package/
 - :link: Hosting https://www.maptiler.com/cloud/
-- :link: Create own layer https://github.com/openmaptiles/skiing 
+- :link: Create own layer https://github.com/openmaptiles/skiing
 
 ## Styles
 
