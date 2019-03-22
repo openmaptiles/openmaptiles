@@ -45,10 +45,10 @@ build/openmaptiles.tm2source/data.yml: build
 	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
 build/mvt/maketile_func.sql:
-	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-level=8 > build/mvt/maketile_func.sql
+	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-zoom=8 > build/mvt/maketile_func.sql
 
 build/mvt/maketile_prep.sql:
-	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-level=8 --prepared > build/mvt/maketile_prep.sql
+	mkdir -p build/mvt && generate-sqltomvt openmaptiles.yaml --mask-layer=water --mask-zoom=8 --prepared > build/mvt/maketile_prep.sql
 
 build/mapping.yaml: build
 	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
