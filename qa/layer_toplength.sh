@@ -11,7 +11,7 @@ do
 echo " "
 echo "## $layerid z$z   max length ($classvar)"
 
-SQL=$(docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools generate-sqlquery  layers/${layerid}/${layerid}.yaml $z ) 
+SQL=$(docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools generate-sqlquery  layers/${layerid}/${layerid}.yaml $z )
 
 SQLCODE=$(cat <<-END
 SELECT DISTINCT $classvar , length( $classvar ) AS _length_ from
