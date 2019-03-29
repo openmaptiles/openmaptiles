@@ -2,8 +2,8 @@ layer:
   id: "boundary"
   description: |
       Contains administrative boundaries as linestrings.
-      Until z5 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which 
-      OSM boundaries ([`boundary=administrative`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative)) 
+      Until z5 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which
+      OSM boundaries ([`boundary=administrative`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative))
       are present from z6 to z14 (also for maritime boundaries with admin_level <= 2 at z4 and z5).
       OSM data contains several [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
       but for most styles it makes sense to just style `admin_level=2` and `admin_level=4`.
