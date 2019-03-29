@@ -15,7 +15,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, ele, ele_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, "natural", ele, ele_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./update_peak_point.sql
   - ./layer.sql
