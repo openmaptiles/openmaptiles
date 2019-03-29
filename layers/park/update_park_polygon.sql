@@ -68,6 +68,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 SELECT update_osm_park_polygon();
+CREATE INDEX IF NOT EXISTS osm_park_polygon_point_geom_idx ON osm_park_polygon USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen1_point_geom_idx ON osm_park_polygon_gen1 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen2_point_geom_idx ON osm_park_polygon_gen2 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen3_point_geom_idx ON osm_park_polygon_gen3 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen4_point_geom_idx ON osm_park_polygon_gen4 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen5_point_geom_idx ON osm_park_polygon_gen5 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen6_point_geom_idx ON osm_park_polygon_gen6 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen7_point_geom_idx ON osm_park_polygon_gen7 USING gist(geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen8_point_geom_idx ON osm_park_polygon_gen8 USING gist(geometry_point);
 
 
 CREATE OR REPLACE FUNCTION update_osm_park_polygon_row()
@@ -76,7 +85,7 @@ AS
 $BODY$
 BEGIN
   NEW.tags = update_tags(NEW.tags, NEW.geometry);
-  NEW.geometry_point = NEW.st_centroid(geometry);
+  NEW.geometry_point = st_centroid(NEW.geometry);
   RETURN NEW;
 END;
 $BODY$

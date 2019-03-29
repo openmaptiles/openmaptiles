@@ -64,7 +64,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS (
           name,
           name_en,
           name_de,
-          hstore(string_agg(nullif(slice_language_tags(tags)::text, ''), ','))
+          hstore(string_agg(nullif(slice_language_tags(tags || hstore(ARRAY['name', name, 'name:en', name_en, 'name:de', name_de]))::text, ''), ','))
              AS "tags",
           ref,
           highway,
