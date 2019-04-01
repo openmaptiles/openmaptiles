@@ -39,9 +39,10 @@ Important:  The ./quickstart.sh is for small extracts - not optimal for a Planet
 ```bash
 git clone https://github.com/openmaptiles/openmaptiles.git
 cd openmaptiles
-./quickstart.sh
+./quickstart.sh --no-wikidata
 ```
 
+**Caution**! Latest Wikidata is more than 50GB. If you are just doing an experiment, always use option `--no-wikidata`.
 If you have problems with the quickstart
 * check the ./quickstart.log!
 * doublecheck the system requirements!

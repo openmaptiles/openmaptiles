@@ -21,12 +21,20 @@ set -o nounset
 # see more QUICKSTART.md
 #
 
-if [ $# -eq 0 ]; then
-    osm_area=albania                         #  default test country
-    echo "No parameter - set area=$osm_area "
-else
-    osm_area=$1
-fi
+osm_area=albania #  default test country
+for i in "$@"
+do
+case $i in
+    --no-wikidata)
+    NO_WIKIDATA=true # do not import Wikidata
+    shift
+    ;;
+    *)
+    osm_area=$i
+    shift
+    ;;
+esac
+done
 testdata=${osm_area}.osm.pbf
 
 ##  Min versions ...
@@ -232,13 +240,15 @@ echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copy
 echo "      : Thank you OpenStreetMap Contributors ! "
 docker-compose run --rm import-osm
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
-echo "      : Source code: https://github.com/openmaptiles/import-wikidata "
-echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
-echo "      : Thank you Wikidata Contributors ! "
-docker-compose run --rm import-wikidata
+if [ "$NO_WIKIDATA" != true ]; then
+    echo " "
+    echo "-------------------------------------------------------------------------------------"
+    echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
+    echo "      : Source code: https://github.com/openmaptiles/import-wikidata "
+    echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
+    echo "      : Thank you Wikidata Contributors ! "
+    docker-compose run --rm import-wikidata
+fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
