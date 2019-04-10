@@ -1,7 +1,7 @@
-CREATE OR REPLACE FUNCTION water_class(waterway TEXT, "natural" TEXT) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION water_class(waterway TEXT) RETURNS TEXT AS $$
     SELECT CASE
-           WHEN "natural"='bay' THEN 'bay'
            WHEN waterway='' THEN 'lake'
+           WHEN waterway='lake' THEN 'lake'
            WHEN waterway='dock' THEN 'dock'
            ELSE 'river'
    END;
@@ -54,7 +54,8 @@ CREATE OR REPLACE VIEW water_z6 AS (
     SELECT geometry, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
    -- etldoc:  osm_water_polygon_gen6 ->  water_z6
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen6
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen6
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z7 AS (
@@ -62,7 +63,8 @@ CREATE OR REPLACE VIEW water_z7 AS (
     SELECT geometry, 'ocean'::text AS class FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  osm_water_polygon_gen5 ->  water_z7
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen5
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen5
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z8 AS (
@@ -70,7 +72,8 @@ CREATE OR REPLACE VIEW water_z8 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen4
     UNION ALL
     -- etldoc:  osm_water_polygon_gen4 ->  water_z8
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen4
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen4
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z9 AS (
@@ -78,7 +81,8 @@ CREATE OR REPLACE VIEW water_z9 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen3
     UNION ALL
     -- etldoc:  osm_water_polygon_gen3 ->  water_z9
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen3
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen3
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z10 AS (
@@ -86,7 +90,8 @@ CREATE OR REPLACE VIEW water_z10 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen2
     UNION ALL
     -- etldoc:  osm_water_polygon_gen2 ->  water_z10
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen2
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen2
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z11 AS (
@@ -94,7 +99,8 @@ CREATE OR REPLACE VIEW water_z11 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon_gen1
     UNION ALL
     -- etldoc:  osm_water_polygon_gen1 ->  water_z11
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon_gen1
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon_gen1
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z12 AS (
@@ -102,7 +108,8 @@ CREATE OR REPLACE VIEW water_z12 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z12
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z13 AS (
@@ -110,7 +117,8 @@ CREATE OR REPLACE VIEW water_z13 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z13
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon
+    WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z14 AS (
@@ -118,7 +126,8 @@ CREATE OR REPLACE VIEW water_z14 AS (
     SELECT geometry, 'ocean'::text AS class FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z14
-    SELECT geometry, water_class(waterway, "natural") AS class FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class FROM osm_water_polygon
+    WHERE "natural" != 'bay'
 );
 
 -- etldoc: layer_water [shape=record fillcolor=lightpink, style="rounded,filled",
