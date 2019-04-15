@@ -12,6 +12,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - bank
   - bar
   - bbq
+  - bicycle_parking
   - bicycle_rental
   - biergarten
   - bus_station
@@ -35,8 +36,10 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - kindergarten
   - library
   - marketplace
+  - motorcycle_parking
   - nightclub
   - nursing_home
+  - parking
   - pharmacy
   - place_of_worship
   - police
