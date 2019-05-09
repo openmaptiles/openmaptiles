@@ -68,14 +68,14 @@ CREATE OR REPLACE VIEW boundary_z6 AS (
 CREATE OR REPLACE VIEW boundary_z7 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen7
-    WHERE admin_level <= 4
+    WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen6 -> boundary_z8
 CREATE OR REPLACE VIEW boundary_z8 AS (
     SELECT geometry, admin_level, disputed, maritime
     FROM osm_border_linestring_gen6
-    WHERE admin_level <= 4
+    WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen5 -> boundary_z9
