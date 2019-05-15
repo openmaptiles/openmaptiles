@@ -36,6 +36,9 @@ layer:
       - rail
       - transit
       - cable_car
+      - chair_lift
+      - t-bar
+      - rope_tow
       - ferry
       - bridge
       - pier

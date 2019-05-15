@@ -271,6 +271,9 @@ tables:
     mapping:
       aerialway:
       - cable_car
+      - chair_lift
+      - t-bar
+      - rope_tow
 
 # etldoc: imposm3 -> osm_shipway_linestring
   shipway_linestring:
