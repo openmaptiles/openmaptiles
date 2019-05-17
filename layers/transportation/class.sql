@@ -47,8 +47,8 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 -- we always know the values of surface
 CREATE OR REPLACE FUNCTION surface_value(surface TEXT) RETURNS TEXT AS $$
     SELECT CASE
-        WHEN surface IN ('paved', 'asphalt', 'concrete', 'paving_stones', 'cobblestone', 'concrete:plates', 'pebblestone') THEN 'paved'
-        WHEN surface IN ('unpaved', 'ground', 'gravel', 'dirt', 'grass', 'compacted', 'sand', 'fine_gravel', 'sett', 'wood', 'earth') THEN 'unpaved'
+        WHEN surface IN ('paved', 'asphalt', 'cobblestone', 'concrete', 'concrete:lanes', 'concrete:plates', 'metal', 'paving_stones', 'sett', 'unhewn_cobblestone', 'wood') THEN 'paved'
+        WHEN surface IN ('unpaved', 'compacted', 'dirt', 'earth', 'fine_gravel', 'grass', 'grass_paver', 'gravel', 'gravel_turf', 'ground', 'ice', 'mud', 'pebblestone', 'salt', 'sand', 'snow', 'woodchips') THEN 'unpaved'
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
