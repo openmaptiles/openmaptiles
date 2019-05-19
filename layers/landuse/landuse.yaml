@@ -32,7 +32,6 @@ layer:
       - playground
       - theme_park
       - bus_station
-      - winter_sports
       - zoo
   datasource:
     geometry_field: geometry
