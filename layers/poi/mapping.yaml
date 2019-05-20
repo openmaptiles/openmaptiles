@@ -93,6 +93,7 @@ def_poi_mapping_landuse: &poi_mapping_landuse
   - brownfield
   - cemetery
   - reservoir
+  - winter_sports
 
 # leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
 def_poi_mapping_leisure: &poi_mapping_leisure
