@@ -75,6 +75,7 @@ tables:
       - stadium
       - pitch
       - playground
+      - track
       tourism:
       - theme_park
       - zoo
