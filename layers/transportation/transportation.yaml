@@ -36,6 +36,7 @@ layer:
       - rail
       - transit
       - cable_car
+      - gondola
       - ferry
       - bridge
       - pier

@@ -276,6 +276,7 @@ tables:
     mapping:
       aerialway:
       - cable_car
+      - gondola
 
 # etldoc: imposm3 -> osm_shipway_linestring
   shipway_linestring:
