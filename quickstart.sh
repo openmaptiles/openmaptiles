@@ -192,10 +192,10 @@ make forced-clean-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing water data from http://openstreetmapdata.com into PostgreSQL "
+echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ into PostgreSQL "
 echo "      : Source code:  https://github.com/openmaptiles/import-water "
-echo "      : Data license: http://openstreetmapdata.com/info/license  "
-echo "      : Thank you: http://openstreetmapdata.com/info/supporting "
+echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
+echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
 docker-compose run --rm import-water
 
 echo " "
