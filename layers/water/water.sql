@@ -90,7 +90,7 @@ CREATE OR REPLACE VIEW water_z10 AS (
 
 CREATE OR REPLACE VIEW water_z11 AS (
     -- etldoc:  osm_ocean_polygon_gen1 ->  water_z11
-    SELECT geometry, 'ocean'::text, NULL::boolean AS class FROM osm_ocean_polygon_gen1
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon_gen1
     UNION ALL
     -- etldoc:  osm_water_polygon_gen1 ->  water_z11
     SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen1
@@ -98,7 +98,7 @@ CREATE OR REPLACE VIEW water_z11 AS (
 
 CREATE OR REPLACE VIEW water_z12 AS (
     -- etldoc:  osm_ocean_polygon_gen1 ->  water_z12
-    SELECT geometry, 'ocean'::text, NULL::boolean AS class FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z12
     SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon
@@ -106,7 +106,7 @@ CREATE OR REPLACE VIEW water_z12 AS (
 
 CREATE OR REPLACE VIEW water_z13 AS (
     -- etldoc:  osm_ocean_polygon ->  water_z13
-    SELECT geometry, 'ocean'::text, NULL::boolean AS class FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z13
     SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon
@@ -114,7 +114,7 @@ CREATE OR REPLACE VIEW water_z13 AS (
 
 CREATE OR REPLACE VIEW water_z14 AS (
     -- etldoc:  osm_ocean_polygon ->  water_z14
-    SELECT geometry, 'ocean'::text, NULL::boolean AS class FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z14
     SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon

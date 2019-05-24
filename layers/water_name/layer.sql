@@ -15,7 +15,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
     'lake'::text AS class,
-    is_intermittent::int
+    is_intermittent::int AS intermittent
     FROM osm_water_lakeline
     WHERE geometry && bbox
       AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
@@ -32,7 +32,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
     'lake'::text AS class,
-    is_intermittent::int
+    is_intermittent::int AS intermittent
     FROM osm_water_point
     WHERE geometry && bbox AND (
         (zoom_level BETWEEN 9 AND 13 AND area > 70000*2^(20-zoom_level))
@@ -47,7 +47,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
     place::text AS class,
-    is_intermittent::int
+    is_intermittent::int AS intermittent
     FROM osm_marine_point
     WHERE geometry && bbox AND (
         place = 'ocean'
