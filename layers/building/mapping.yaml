@@ -17,6 +17,12 @@ tables:
       type: area
     - name: webmerc_area
       type: webmerc_area
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: building
       key: building
       type: string
@@ -78,6 +84,12 @@ tables:
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -166,6 +178,12 @@ tables:
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -254,6 +272,12 @@ tables:
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -342,6 +366,12 @@ tables:
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string

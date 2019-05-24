@@ -167,21 +167,21 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Remove old generated source files ( ./build/* ) ( if they exist ) "
-docker-compose run --rm openmaptiles-tools make clean
+make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
-docker-compose run --rm openmaptiles-tools make
+make
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
 echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-docker-compose up   -d postgres
+docker-compose up -d postgres
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -192,10 +192,10 @@ make forced-clean-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing water data from http://openstreetmapdata.com into PostgreSQL "
+echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ into PostgreSQL "
 echo "      : Source code:  https://github.com/openmaptiles/import-water "
-echo "      : Data license: http://openstreetmapdata.com/info/license  "
-echo "      : Thank you: http://openstreetmapdata.com/info/supporting "
+echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
+echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
 docker-compose run --rm import-water
 
 echo " "

@@ -133,6 +133,10 @@ man_made_field: &man_made
 z_order_field: &z_order
   name: z_order
   type: wayzorder
+surface_field: &surface
+  key: surface
+  name: surface
+  type: string
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -168,6 +172,7 @@ tables:
     - *usage
     - *public_transport
     - *man_made
+    - *surface
     mapping:
       highway:
       - motorway
@@ -271,6 +276,7 @@ tables:
     mapping:
       aerialway:
       - cable_car
+      - gondola
 
 # etldoc: imposm3 -> osm_shipway_linestring
   shipway_linestring:

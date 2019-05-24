@@ -44,7 +44,7 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('supermarket','deli','delicatessen','department_store','greengrocer','marketplace') THEN 'grocery'
         WHEN subclass IN ('books','library') THEN 'library'
         WHEN subclass IN ('university','college') THEN 'college'
-        WHEN subclass IN ('hotel','motel','bed_and_breakfast','guest_house','hostel','chalet','alpine_hut','camp_site') THEN 'lodging'
+        WHEN subclass IN ('hotel','motel','bed_and_breakfast','guest_house','hostel','chalet','alpine_hut','dormitory') THEN 'lodging'
         WHEN subclass IN ('chocolate','confectionery') THEN 'ice_cream'
         WHEN subclass IN ('post_box','post_office') THEN 'post'
         WHEN subclass IN ('cafe') THEN 'cafe'

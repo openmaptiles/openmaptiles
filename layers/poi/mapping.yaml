@@ -12,6 +12,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - bank
   - bar
   - bbq
+  - bicycle_parking
   - bicycle_rental
   - biergarten
   - bus_station
@@ -35,8 +36,10 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - kindergarten
   - library
   - marketplace
+  - motorcycle_parking
   - nightclub
   - nursing_home
+  - parking
   - pharmacy
   - place_of_worship
   - police
@@ -70,6 +73,10 @@ def_poi_mapping_barrier: &poi_mapping_barrier
   - stile
   - toll_booth
 
+# building values , see http://taginfo.openstreetmap.org/keys/building#values
+def_poi_mapping_building: &poi_mapping_building
+  - dormitory
+
 # highway values , see http://taginfo.openstreetmap.org/keys/highway#values
 def_poi_mapping_highway: &poi_mapping_highway
   - bus_stop
@@ -86,6 +93,7 @@ def_poi_mapping_landuse: &poi_mapping_landuse
   - brownfield
   - cemetery
   - reservoir
+  - winter_sports
 
 # leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
 def_poi_mapping_leisure: &poi_mapping_leisure
@@ -361,6 +369,7 @@ tables:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
       barrier: *poi_mapping_barrier
+      building: *poi_mapping_building
       highway: *poi_mapping_highway
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
@@ -426,6 +435,7 @@ tables:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
       barrier: *poi_mapping_barrier
+      building: *poi_mapping_building
       highway: *poi_mapping_highway
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
