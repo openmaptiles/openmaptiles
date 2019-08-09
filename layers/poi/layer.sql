@@ -35,9 +35,9 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             WHEN subclass = 'information'
                 THEN NULLIF(information, '')
             WHEN subclass = 'place_of_worship'
-                    THEN NULLIF(religion, '')
+                THEN NULLIF(religion, '')
             WHEN subclass = 'pitch'
-                    THEN NULLIF(sport, '')
+                THEN NULLIF(sport, '')
             ELSE subclass
         END AS subclass,
         agg_stop,
@@ -68,6 +68,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         FROM osm_poi_point
             WHERE geometry && bbox
                 AND zoom_level >= 14
+                AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
 
         UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z12
@@ -91,6 +92,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         FROM osm_poi_polygon
             WHERE geometry && bbox
                 AND zoom_level >= 14
+                AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
     ORDER BY "rank"
     ;
