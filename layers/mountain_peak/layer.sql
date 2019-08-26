@@ -45,7 +45,10 @@ $$
           ) DESC
       )::int AS "rank"
       FROM osm_peak_point
-      WHERE geometry && bbox AND ele is not null AND ele ~ E'^-?\\d+'
+      WHERE geometry && bbox
+        AND ele is not null
+        AND ele ~ E'^-?\\d+'
+        AND substring(ele from E'^(-?\\d+)(\\D|$)')::bigint < 10000
     ) AS ranked_peaks
   WHERE zoom_level >= 7 AND (rank <= 5 OR zoom_level >= 14)
   ORDER BY "rank" ASC;
