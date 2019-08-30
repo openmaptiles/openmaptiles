@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION landcover_class(landuse VARCHAR, "natural" VARCHAR, l
         WHEN "natural" IN ('glacier', 'ice_shelf') THEN 'ice'
         WHEN "natural"='wood' OR landuse IN ('forest') THEN 'wood'
         WHEN "natural" IN ('bare_rock', 'scree') THEN 'rock'
-        WHEN "natural"='grassland'
+        WHEN "natural" IN ('fell', 'grassland', 'heath', 'scrub', 'tundra')
             OR landuse IN ('grass', 'meadow', 'allotments', 'grassland',
                 'park', 'village_green', 'recreation_ground')
             OR leisure IN ('park', 'garden')
