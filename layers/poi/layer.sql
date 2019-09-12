@@ -24,7 +24,7 @@ $$ LANGUAGE SQL IMMUTABLE;
 -- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int, mapping_key text) AS $$
     SELECT osm_id_hash AS osm_id, global_id,
         geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
@@ -47,7 +47,8 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
-        )::int AS "rank"
+        )::int AS "rank",
+        mapping_key
     FROM (
         -- etldoc: osm_poi_point ->  layer_poi:z12
         -- etldoc: osm_poi_point ->  layer_poi:z13
@@ -55,7 +56,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
-            WHERE geometry && bbox
+            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
                 AND zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
                     OR subclass IN ('halt', 'ferry_terminal'))
@@ -66,7 +67,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
-            WHERE geometry && bbox
+            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
                 AND zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
 
@@ -78,7 +79,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
-            WHERE geometry && bbox
+            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
                 AND zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
                     OR subclass IN ('halt', 'ferry_terminal'))
@@ -90,7 +91,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
-            WHERE geometry && bbox
+            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
                 AND zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
