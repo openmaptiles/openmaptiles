@@ -6,7 +6,7 @@ language: bash
 
 services:
   - docker
-  
+
 before_install:
   - sudo rm -f /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -15,9 +15,8 @@ before_install:
   - sudo service docker restart
   - docker-compose -v
   - docker -v
- 
+
 script:
   - sudo service docker restart
   - docker-compose config
   - sudo ./quickstart.sh
-  

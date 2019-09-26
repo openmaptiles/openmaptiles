@@ -4,22 +4,26 @@ layer:
       Water polygons representing oceans and lakes. Covered watered areas are excluded (`covered=yes`).
       On low zoom levels all water originates from Natural Earth. To get a more correct display of the south pole you should also
       style the covering ice shelves over the water.
-      On higher zoom levels water polygons from [OpenStreetMapData](http://openstreetmapdata.com/) are used.
+      On higher zoom levels water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) are used.
       The polygons are split into many smaller polygons to improve rendering performance.
       This however can lead to less rendering options in clients since these boundaries show up. So you might not be
       able to use border styling for ocean water features.
   fields:
     class:
       description: |
-          All water polygons from [OpenStreetMapData](http://openstreetmapdata.com/) have the class `ocean`.
+          All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
           Water bodies are classified as `lake` or `river` for water bodies with the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
       values:
       - ocean
       - lake
       - river
+    intermittent:
+      description: |
+        Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) water polygon.
+      values: [0, 1]
   buffer_size: 4
   datasource:
-    query: (SELECT geometry, class FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, intermittent FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./water.sql
 datasources:

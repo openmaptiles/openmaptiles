@@ -1,5 +1,4 @@
-
-##To determine whether any changes are a notable loss in performance:
+## To determine whether any changes are a notable loss in performance:
 
 1. Start with the old approach
 2. Use a fresh database
@@ -9,7 +8,7 @@
 6. Quickstart.log will have all the time logs.
 7. If necessary, run an update as well to see if your approach can keep up with live updates on the chosen interval. Currently, weekly updates are the target.
 
-##To determine whether your changes in SQL are lossless:
+## To determine whether your changes in SQL are lossless:
 
 It is recommended to use the "sqldiff" tool to compare mbtiles.
 

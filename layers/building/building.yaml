@@ -11,6 +11,8 @@ layer:
         An approximated height from levels and height of the building or building:part after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear). For future 3D rendering of buildings.
     render_min_height: |
         An approximated height from levels and height of the bottom of the building or building:part after the method of Paul Norman in [OSM Clear](https://github.com/ClearTables/osm-clear). For future 3D rendering of buildings.
+    colour: |
+        Colour
     hide_3d: |
         If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d.
 schema:

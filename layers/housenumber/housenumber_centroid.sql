@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION housenumber.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO housenumber.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
