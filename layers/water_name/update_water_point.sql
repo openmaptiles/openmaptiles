@@ -7,9 +7,9 @@ DROP MATERIALIZED VIEW IF EXISTS  osm_water_point CASCADE;
 
 CREATE MATERIALIZED VIEW osm_water_point AS (
     SELECT
-        wp.osm_id, ST_PointOnSurface(wp.geometry) AS geometry,
+        wp.osm_id, ST_PointOnSurface(ST_MakeValid(wp.geometry)) AS geometry,
         wp.name, wp.name_en, wp.name_de,
-        update_tags(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
+        update_tags(wp.tags, ST_PointOnSurface(ST_MakeValid(wp.geometry))) AS tags,
         ST_Area(wp.geometry) AS area,
         wp.is_intermittent
     FROM osm_water_polygon AS wp

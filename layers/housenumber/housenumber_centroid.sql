@@ -8,7 +8,7 @@ BEGIN
   SET geometry =
            CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry)
            THEN ST_Centroid(geometry)
-           ELSE ST_PointOnSurface(geometry)
+           ELSE ST_PointOnSurface(ST_MakeValid(geometry))
     END
   WHERE ST_GeometryType(geometry) <> 'ST_Point';
 END;
