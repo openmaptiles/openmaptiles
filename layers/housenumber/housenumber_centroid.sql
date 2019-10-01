@@ -8,7 +8,7 @@ BEGIN
   SET geometry =
            CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry)
            THEN ST_Centroid(geometry)
-           ELSE ST_PointOnSurface(geometry)
+           ELSE ST_PointOnSurface(ST_MakeValid(geometry))
     END
   WHERE ST_GeometryType(geometry) <> 'ST_Point';
 END;
@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION housenumber.flag() RETURNS trigger AS $$
 BEGIN
     INSERT INTO housenumber.updates(t) VALUES ('y')  ON CONFLICT(t) DO NOTHING;
     RETURN null;
-END;    
+END;
 $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS

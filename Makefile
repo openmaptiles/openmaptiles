@@ -20,7 +20,9 @@ help:
 	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
 	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
-	@echo "  make generate-devdoc                 # generate devdoc  [./build/devdoc]"
+	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./build/devdoc]"
+	@echo "  make etl-graph                       # hint for generating a single etl graph"
+	@echo "  make mapping-graph                   # hint for generating a single mapping graph"
 	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
 	@echo "  make import-osm-dev                  # start import-osm /bin/bash terminal (imposm3)"
 	@echo "  make clean-docker                    # remove docker containers, PG data volume"
@@ -31,18 +33,22 @@ help:
 	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
 	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tables"
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
-	@echo "  cat ./quickstart.log                 # backup of the last ./quickstart.sh"
+	@echo "  cat  quickstart.log                  # backup of the last ./quickstart.sh"
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
-build/openmaptiles.tm2source/data.yml:
-	mkdir -p build/openmaptiles.tm2source && generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
+build:
+	mkdir -p build
 
-build/mapping.yaml:
-	mkdir -p build && generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+build/openmaptiles.tm2source/data.yml: build
+	mkdir -p build/openmaptiles.tm2source
+	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
-build/tileset.sql:
-	mkdir -p build && generate-sql openmaptiles.yaml > build/tileset.sql
+build/mapping.yaml: build
+	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+
+build/tileset.sql: build
+	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
 
 clean:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
@@ -70,30 +76,18 @@ download-geofabrik:
 psql: db-start
 	docker-compose run --rm import-osm /usr/src/app/psql.sh
 
-cfg-remake:
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
-
-import-osm: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-osm: db-start all
 	docker-compose run --rm import-osm
 
-import-sql: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-sql: db-start all
 	docker-compose run --rm import-sql
 
-import-osmsql: db-start
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
+import-osmsql: db-start all
 	docker-compose run --rm import-osm
 	docker-compose run --rm import-sql
 
-generate-tiles: db-start
+generate-tiles: db-start all
 	rm -rf data/tiles.mbtiles
-	docker-compose run --rm openmaptiles-tools make clean
-	docker-compose run --rm openmaptiles-tools make
 	if [ -f ./data/docker-compose-config.yml ]; then \
 		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles; \
 	else \
@@ -173,23 +167,35 @@ start-postserve:
 generate-qareports:
 	./qa/run.sh
 
-# work in progress - please don't remove
-generate-devdoc:
+build/devdoc:
 	mkdir -p ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/aeroway/aeroway.yaml               ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/boundary/boundary.yaml             ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/building/building.yaml             ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/housenumber/housenumber.yaml       ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/landcover/landcover.yaml           ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/landuse/landuse.yaml               ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/park/park.yaml                     ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/place/place.yaml                   ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/poi/poi.yaml                       ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/transportation/transportation.yaml ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/transportation_name/transportation_name.yaml ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water/water.yaml                   ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/water_name/water_name.yaml         ./build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/waterway/waterway.yaml             ./build/devdoc
+
+layers = $(notdir $(wildcard layers/*)) # all layers
+
+etl-graph:
+	@echo 'Use'
+	@echo '   make etl-graph-[layer]	to generate etl graph for [layer]'
+	@echo '   example: make etl-graph-poi'
+	@echo 'Valid layers: $(layers)'
+
+# generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
+etl-graph-%: layers/% build/devdoc
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
+
+mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
+
+# generate mapping graph for a certain layer, e.g. mapping-graph-building, mapping-graph-place
+mapping-graph:
+	@echo 'Use'
+	@echo '   make mapping-graph-[layer]	to generate mapping graph for [layer]'
+	@echo '   example: make mapping-graph-poi'
+	@echo 'Valid layers: $(mappingLayers)'
+
+mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
+	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+
+# generate all etl and mapping graphs
+generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
 
 import-sql-dev:
 	docker-compose run --rm import-sql /bin/bash

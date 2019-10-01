@@ -16,13 +16,18 @@ To generate them, you need to:
 
 ## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
 
-OpenMapTiles is an extensible and open vector tile schema for a OpenStreetMap basemap. It is used to generate vector tiles for [openmaptiles.org](http://openmaptiles.org/) and [openmaptiles.com](http://openmaptiles.com/).
+OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. It is used to generate vector tiles for online zoomable maps. The project is about creating a beautiful basemaps with general layers that contain topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
 
-We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. The repository is built on top of the [openmaptiles/tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
+We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
-- :link: Docs http://openmaptiles.org/docs
-- :link: Schema: http://openmaptiles.org/schema
-- :link: Production package: http://openmaptiles.com/
+Please keep in mind that OpenMapTiles schema should stay displaying general topographic content. In case of creating a new layer or expanding an existing one with a specific theme, please create a fork and invite other community members to cooperate on your topic in this separate fork. OpenMapTiles schema is used in many projects all over the world and the size of the final vector tiles needs to be considered in any update.
+
+- :link: Schema https://openmaptiles.org/schema
+- :link: Docs https://openmaptiles.org/docs
+- :link: Production package: https://openmaptiles.com/production-package/
+- :link: Hosting https://www.maptiler.com/cloud/
+- :link: Create own layer https://github.com/openmaptiles/openmaptiles-skiing
+- :link: Discuss at the #openmaptiles channel at [OSM Slack](https://osmus-slack.herokuapp.com/)
 
 ## Styles
 
@@ -76,11 +81,10 @@ Together the layers make up the OpenMapTiles tileset.
 
 ## Develop
 
-To work on OpenMapTiles you need Docker and Python.
+To work on OpenMapTiles you need Docker.
 
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
-- Install [OpenMapTiles tools](https://github.com/openmaptiles/openmaptiles-tools) with `pip install openmaptiles-tools`
 
 ### Build
 
@@ -91,8 +95,6 @@ git clone git@github.com:openmaptiles/openmaptiles.git
 cd openmaptiles
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
-# You can also run the build process inside a Docker container
-docker run -v $(pwd):/tileset openmaptiles/openmaptiles-tools make
 ```
 
 You can execute the following manual steps (for better understanding)
@@ -110,7 +112,7 @@ Now start up the database container.
 docker-compose up -d postgres
 ```
 
-Import external data from [OpenStreetMapData](http://openstreetmapdata.com/), [Natural Earth](http://www.naturalearthdata.com/) and  [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
+Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
 
 ```bash
 docker-compose run import-water
@@ -135,10 +137,10 @@ docker-compose run import-osm
 
 ### Work on Layers
 
-Each time you modify layer SQL code run `make` and `docker-compose run import-sql`.
+Each time you modify layer SQL code run `make` and `make import-sql`.
 
 ```
-make clean && make && docker-compose run import-sql
+make clean && make && make import-sql
 ```
 
 Now you are ready to **generate the vector tiles**. Using environment variables
@@ -152,12 +154,12 @@ docker-compose run generate-vectortiles
 
 All code in this repository is under the [BSD license](./LICENSE.md) and the cartography decisions encoded in the schema and SQL are licensed under [CC-BY](./LICENSE.md).
 
-Products or services using maps derived from OpenMapTiles schema need to visibly credit "OpenMapTiles.org" or reference "OpenMapTiles" with a link to http://openmaptiles.org/. Exceptions to attribution requirement can be granted on request.
+Products or services using maps derived from OpenMapTiles schema need to visibly credit "OpenMapTiles.org" or reference "OpenMapTiles" with a link to https://openmaptiles.org/. Exceptions to attribution requirement can be granted on request.
 
 For a browsable electronic map based on OpenMapTiles and OpenStreetMap data, the
 credit should appear in the corner of the map. For example:
 
-[© OpenMapTiles](http://openmaptiles.org/) [© OpenStreetMap contributors](http://www.openstreetmap.org/copyright)
+[© OpenMapTiles](https://openmaptiles.org/) [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
 
 For printed and static maps a similar attribution should be made in a textual
 description near the image, in the same fashion as if you cite a photograph.

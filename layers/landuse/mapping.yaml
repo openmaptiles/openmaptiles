@@ -46,19 +46,14 @@ tables:
     - name: tourism
       key: tourism
       type: string
+    - name: place
+      key: place
+      type: string
     - name: area
       type: area
     - name: webmerc_area
       type: webmerc_area
     mapping:
-      amenity:
-      - bus_station
-      - school
-      - university
-      - kindergarten
-      - college
-      - library
-      - hospital
       landuse:
       - railway
       - cemetery
@@ -68,10 +63,22 @@ tables:
       - commercial
       - industrial
       - retail
+      amenity:
+      - bus_station
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
       leisure:
       - stadium
       - pitch
       - playground
+      - track
       tourism:
       - theme_park
       - zoo
+      place:
+      - suburb
+      - neighbourhood

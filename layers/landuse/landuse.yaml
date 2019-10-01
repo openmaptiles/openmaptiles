@@ -9,17 +9,12 @@ layer:
       description: |
           Use the **class** to assign special colors to areas.
           Original value of either the
-          [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
-          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
-          or [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure) tag.
+          [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
+          [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
+          or [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
       values:
-      - school
-      - university
-      - kindergarten
-      - college
-      - library
-      - hospital
       - railway
       - cemetery
       - military
@@ -27,12 +22,21 @@ layer:
       - commercial
       - industrial
       - retail
+      - bus_station
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
       - stadium
       - pitch
       - playground
+      - track
       - theme_park
-      - bus_station
       - zoo
+      - suburb
+      - neighbourhood
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t

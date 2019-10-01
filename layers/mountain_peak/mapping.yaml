@@ -28,3 +28,4 @@ tables:
     mapping:
       natural:
       - peak
+      - volcano

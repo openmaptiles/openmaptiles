@@ -26,33 +26,35 @@ layer:
           or [`wetland`](http://wiki.openstreetmap.org/wiki/Key:wetland) tag.
       values:
       - allotments
+      - bare_rock
+      - beach
+      - bog
       - farm
       - farmland
-      - orchard
-      - plant_nursery
-      - vineyard
+      - forest
+      - garden
+      - glacier
       - grass
       - grassland
-      - glacier
-      - meadow
-      - forest
-      - village_green
-      - recreation_ground
-      - park
-      - garden
-      - wetland
-      - grassland
-      - bog
-      - swamp
-      - wet_meadow
+      - mangrove
       - marsh
+      - meadow
+      - orchard
+      - park
+      - plant_nursery
+      - recreation_ground
       - reedbed
       - saltern
-      - tidalflat
       - saltmarsh
-      - mangrove
-      - beach
       - sand
+      - scree
+      - swamp
+      - tidalflat
+      - village_green
+      - vineyard
+      - wet_meadow
+      - wetland
+      - wood
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
