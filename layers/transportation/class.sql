@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT) RE
         WHEN highway IN ('tertiary', 'tertiary_link') THEN 'tertiary'
         WHEN highway IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor'
         WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') OR public_transport IN ('platform') THEN 'path'
-        WHEN highway IN ('service', 'track', 'raceway') THEN highway
+        WHEN highway IN ('service', 'track', 'raceway', 'construction') THEN highway
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE;

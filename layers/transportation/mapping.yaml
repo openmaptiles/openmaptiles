@@ -199,6 +199,7 @@ tables:
       - service
       - track
       - raceway
+      - construction
       public_transport:
       - platform
       man_made:
