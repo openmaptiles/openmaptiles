@@ -187,18 +187,18 @@ tables:
       - tertiary_link
       - unclassified
       - residential
-      - road
       - living_street
-      - raceway
-      - track
-      - service
-      - path
-      - cycleway
-      - bridleway
-      - footway
-      - corridor
+      - road
       - pedestrian
+      - path
+      - footway
+      - cycleway
       - steps
+      - bridleway
+      - corridor
+      - service
+      - track
+      - raceway
       public_transport:
       - platform
       man_made:
