@@ -330,7 +330,7 @@ indoor INT, surface TEXT) AS $$
         -- etldoc: osm_highway_polygon          ->  layer_transportation:z14_
         SELECT
             osm_id, geometry,
-            highway, NULL AS railway, NULL AS aerialway, NULL AS shipway,
+            highway, NULL AS construction, NULL AS railway, NULL AS aerialway, NULL AS shipway,
             public_transport, NULL AS service,
             CASE WHEN man_made IN ('bridge') THEN TRUE
                 ELSE FALSE
