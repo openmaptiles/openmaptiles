@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT, co
           WHEN construction IN ('primary', 'primary_link') THEN 'primary_construction'
           WHEN construction IN ('secondary', 'secondary_link') THEN 'secondary_construction'
           WHEN construction IN ('tertiary', 'tertiary_link') THEN 'tertiary_construction'
-          WHEN construction IS NULL OR construction IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor_construction'
+          WHEN construction = '' OR construction IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor_construction'
           WHEN construction IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') OR public_transport IN ('platform') THEN 'path_construction'
           WHEN construction IN ('service', 'track', 'raceway') THEN CONCAT(highway, '_construction')
           ELSE NULL
