@@ -42,9 +42,6 @@ tables:
     - name: name_en
       key: name:en
       type: string
-    - name: name_de
-      key: name:de
-      type: string
     - name: tags
       type: hstore_tags
     - *tunnel

@@ -5,7 +5,7 @@ DROP TRIGGER IF EXISTS trigger_insert_line ON osm_water_polygon;
 CREATE OR REPLACE VIEW osm_water_lakeline_view AS
 	SELECT wp.osm_id,
 		ll.wkb_geometry AS geometry,
-		name, name_en, name_de,
+		name, name_en,
 		update_tags(tags, ll.wkb_geometry) AS tags,
 		ST_Area(wp.geometry) AS area,
 		is_intermittent
@@ -43,7 +43,7 @@ $BODY$ language plpgsql;
 CREATE OR REPLACE FUNCTION water_lakeline.update() RETURNS trigger AS $BODY$
 BEGIN
     UPDATE osm_water_lakeline
-    SET (osm_id, geometry, name, name_en, name_de, tags, area, is_intermittent) =
+    SET (osm_id, geometry, name, name_en, tags, area, is_intermittent) =
         (SELECT * FROM osm_water_lakeline_view WHERE osm_water_lakeline_view.osm_id = NEW.osm_id)
     WHERE osm_water_lakeline.osm_id = NEW.osm_id;
 

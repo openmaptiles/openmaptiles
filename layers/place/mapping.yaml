@@ -6,10 +6,6 @@ name_en_field: &name_en
   name: name_en
   key: name:en
   type: string
-name_de_field: &name_de
-  name: name_de
-  key: name:de
-  type: string
 rank_field: &rank
   name: rank
   key: rank
@@ -27,7 +23,6 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *name_de
     - name: tags
       type: hstore_tags
     filters:
@@ -47,7 +42,6 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *name_de
     - *rank
     - name: country_code_iso3166_1_alpha_2
       key: country_code_iso3166_1_alpha_2
@@ -79,7 +73,6 @@ tables:
       type: area
     - *name
     - *name_en
-    - *name_de
     - name: tags
       type: hstore_tags
     - *rank
@@ -100,7 +93,6 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *name_de
     - name: tags
       type: hstore_tags
     - *rank
@@ -121,7 +113,6 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *name_de
     - name: tags
       type: hstore_tags
     - name: is_in_country
@@ -151,7 +142,6 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *name_de
     - name: tags
       type: hstore_tags
     - name: place

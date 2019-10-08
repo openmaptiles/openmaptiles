@@ -8,7 +8,6 @@ layer:
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
     name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     capital:
       description: |
           The **capital** field marks the
@@ -60,7 +59,7 @@ layer:
     geometry_field: geometry
     key_field: osm_id
     key_field_as_attribute: no
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, rank, capital, iso_a2 FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, name, name_en, {name_languages}, class, rank, capital, iso_a2 FROM layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./types.sql
   - ./capital.sql

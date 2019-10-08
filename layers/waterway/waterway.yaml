@@ -16,7 +16,6 @@ layer:
         The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the waterway.
         The `name` field may be empty for NaturalEarth data or at lower zoom levels.
     name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
         The original value of the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
@@ -38,7 +37,7 @@ layer:
       values: [0, 1]
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_waterway_linestring.sql
   - ./update_important_waterway.sql

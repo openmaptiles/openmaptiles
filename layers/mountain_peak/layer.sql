@@ -11,7 +11,6 @@ CREATE OR REPLACE FUNCTION layer_mountain_peak(
     geometry geometry,
     name text,
     name_en text,
-    name_de text,
     class text,
     tags hstore,
     ele int,
@@ -24,7 +23,6 @@ $$
     geometry,
     name,
     name_en,
-    name_de,
     tags -> 'natural' AS class,
     tags,
     ele::int,
@@ -32,7 +30,6 @@ $$
     rank::int FROM (
       SELECT osm_id, geometry, name,
       COALESCE(NULLIF(name_en, ''), name) AS name_en,
-      COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
       tags,
       substring(ele from E'^(-?\\d+)(\\D|$)')::int AS ele,
       round(substring(ele from E'^(-?\\d+)(\\D|$)')::int*3.2808399)::int AS ele_ft,
