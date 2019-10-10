@@ -8,14 +8,14 @@ BEGIN
   select st_buffer(geometry, 10000) into gbr_geom from ne_10m_admin_0_countries where iso_a2 = 'GB';
   delete from osm_route_member where network IN('omt-gb-motorway', 'omt-gb-trunk');
 
-  insert into osm_route_member (member, ref, network)
+  insert into osm_route_member (osm_id, member, ref, network)
     (
-      SELECT hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-motorway'
+      SELECT 0, hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-motorway'
       from osm_highway_linestring hw
       where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
         and hw.highway IN ('motorway')
     ) UNION (
-      SELECT hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-trunk'
+      SELECT 0, hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-trunk'
       from osm_highway_linestring hw
       where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
         and hw.highway IN ('trunk')
