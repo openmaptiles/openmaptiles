@@ -350,6 +350,8 @@ tables:
   route_member:
     type: relation_member
     columns:
+    - name: osm_id
+      type: id
     - name: member
       type: member_id
     - name: role
