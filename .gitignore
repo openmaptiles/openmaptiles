@@ -16,3 +16,6 @@ wikidata/*
 
 # generated source files
 build/*
+
+# any IntelliJ IDEA files
+.idea/
