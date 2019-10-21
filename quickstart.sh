@@ -171,7 +171,7 @@ make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
+echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/01_tileset.sql; ./build/02_gettile.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
 make
@@ -242,7 +242,7 @@ docker-compose run --rm import-wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
+echo "====> : Start SQL postprocessing:  ./build/*.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/import-sql "
 docker-compose run --rm import-sql
 
@@ -287,7 +287,8 @@ echo "--------------------------------------------------------------------------
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
 md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
-md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
+md5sum build/01_tileset.sql                   >> ./data/quickstart_checklist.chk
+md5sum build/02_gettile.sql                   >> ./data/quickstart_checklist.chk
 md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
 md5sum ./data/${testdata}                     >> ./data/quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk

@@ -1,4 +1,4 @@
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/01_tileset.sql build/02_gettile.sql
 
 help:
 	@echo "=============================================================================="
@@ -47,11 +47,14 @@ build/openmaptiles.tm2source/data.yml: build
 build/mapping.yaml: build
 	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
 
-build/tileset.sql: build
-	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
+build/01_tileset.sql: build
+	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/01_tileset.sql
+
+build/02_gettile.sql: build
+	docker-compose run --rm openmaptiles-tools generate-sqltomvt --fun openmaptiles.yaml > build/02_gettile.sql
 
 clean:
-	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
+	rm -f build/openmaptiles.tm2source/data.yml build/mapping.yaml build/01_tileset.sql build/02_gettile.sql
 
 clean-docker:
 	docker-compose down -v --remove-orphans
