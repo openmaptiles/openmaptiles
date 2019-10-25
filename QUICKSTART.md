@@ -1,5 +1,3 @@
-
-
 ## Quickstart - for small extracts
 
 ### Req:
@@ -12,7 +10,9 @@
         * Please give a feedback, share your experience, write a tutorial
 * bash
 * git
-* make 
+* make
+* bc
+* md5sum
 * docker         >=1.12.3
     * https://www.docker.com/products/overview
 * docker-compose >=1.7.1
@@ -45,15 +45,15 @@ cd openmaptiles
 If you have problems with the quickstart
 * check the ./quickstart.log!
 * doublecheck the system requirements!
-* check the current issues: https://github.com/openmaptiles/openmaptiles/issues 
-* create new issues: 
+* check the current issues: https://github.com/openmaptiles/openmaptiles/issues
+* create new issues:
     * create a new gist: https://gist.github.com/ from your ./quickstart.log
-    * doublecheck: don't reveal any sensitive information about your system   
+    * doublecheck: don't reveal any sensitive information about your system
     * create a new issue: https://github.com/openmaptiles/openmaptiles/issues
-        * describe the problems  
-        * add any pertinent information about your environment 
+        * describe the problems
+        * add any pertinent information about your environment
         * link your (quickstart.log) gist!
-    
+
 ### Check other extracts
 
 IF the previous step is working,
@@ -377,25 +377,25 @@ and the generated maps are going to be available in browser on [localhost:8090/t
 
 ### Check tileserver
 
-start: 
-*  ` make start-tileserver` 
+start:
+*  ` make start-tileserver`
 and the generated maps are going to be available in webbrowser on [localhost:8080](http://localhost:8080/).
 
-This is only a quick preview, because your mbtiles only generated to zoom level 7 !  
+This is only a quick preview, because your mbtiles only generated to zoom level 7 !
 
 
 ### Change MIN_ZOOM and MAX_ZOOM
 
 modify the settings in the `.env`  file, the defaults :
 * QUICKSTART_MIN_ZOOM=0
-* QUICKSTART_MAX_ZOOM=7  
+* QUICKSTART_MAX_ZOOM=7
 
 and re-start  `./quickstart.sh `
 *  the new config file re-generating to here  ./data/docker-compose-config.yml
 *  Known problems:
-    * If you use same area - then the ./data/docker-compose-config.yml not re-generating, so you have to modify by hand! 
+    * If you use same area - then the ./data/docker-compose-config.yml not re-generating, so you have to modify by hand!
 
-Hints: 
+Hints:
 * Small increments! Never starts with the MAX_ZOOM = 14
 * The suggested  MAX_ZOOM = 14  - use only with small extracts
 
@@ -408,37 +408,36 @@ the current output:
 
 ```
 ==============================================================================
- OpenMapTiles  https://github.com/openmaptiles/openmaptiles 
-Hints for testing areas                
-  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> 
-  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>> 
-  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar 
-  
+ OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+Hints for testing areas
+  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>>
+  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>>
+  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
+
 Hints for designers:
-  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] 
-  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] 
-  
+  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ]
+  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ]
+
 Hints for developers:
-  make                                 # build source code  
+  make                                 # build source code
   make download-geofabrik area=albania # download OSM data from geofabrik, and create config file
-  make psql                            # start PostgreSQL console 
-  make psql-list-tables                # list all PostgreSQL tables 
+  make psql                            # start PostgreSQL console
+  make psql-list-tables                # list all PostgreSQL tables
   make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
   make psql-analyze                    # PostgreSQL: ANALYZE
   make generate-qareports              # generate reports [./build/qareports]
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
-  make import-sql-dev                  # start import-sql  /bin/bash terminal 
+  make import-sql-dev                  # start import-sql  /bin/bash terminal
   make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)
-  make clean-docker                    # remove docker containers, PG data volume 
-  make forced-clean-sql                # drop all PostgreSQL tables for clean environment 
+  make clean-docker                    # remove docker containers, PG data volume
+  make forced-clean-sql                # drop all PostgreSQL tables for clean environment
   make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)
   make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
   make remove-docker-images            # remove openmaptiles docker images
   make pgclimb-list-views              # list PostgreSQL public schema views
   make pgclimb-list-tables             # list PostgreSQL public schema tables
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
-  cat ./quickstart.log                 # backup  of the last ./quickstart.sh 
+  cat ./quickstart.log                 # backup  of the last ./quickstart.sh
   make help                            # help about available commands
 ==============================================================================
 ```
- 

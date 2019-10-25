@@ -49,6 +49,9 @@ tables:
       type: hstore_tags
     - *tunnel
     - *bridge
+    - name: is_intermittent
+      key: intermittent
+      type: bool
     mapping:
       waterway:
       - stream

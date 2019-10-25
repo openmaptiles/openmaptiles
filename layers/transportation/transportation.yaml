@@ -36,6 +36,7 @@ layer:
       - rail
       - transit
       - cable_car
+      - gondola
       - ferry
       - bridge
       - pier
@@ -117,10 +118,16 @@ layer:
     mtb_scale:
       description: |
           Original value of the [`mtb:scale`](http://wiki.openstreetmap.org/wiki/Key:mtb:scale) tag (highways only).
+    surface:
+      description: |
+          Values of [`surface`](https://wiki.openstreetmap.org/wiki/Key:surface) tag devided into 2 groups `paved` (paved, asphalt, cobblestone, concrete, concrete:lanes, concrete:plates, metal, paving_stones, sett, unhewn_cobblestone, wood) and `unpaved` (unpaved, compacted, dirt, earth, fine_gravel, grass, grass_paver, gravel, gravel_turf, ground, ice, mud, pebblestone, salt, sand, snow, woodchips).
+      values:
+      - paved
+      - unpaved
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor, bicycle, foot, horse, mtb_scale FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
   - ./update_transportation_merge.sql

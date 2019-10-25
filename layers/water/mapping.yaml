@@ -69,6 +69,9 @@ tables:
     - name: waterway
       key: waterway
       type: string
+    - name: is_intermittent
+      key: intermittent
+      type: bool
     filters:
       reject:
         covered: ["yes"]

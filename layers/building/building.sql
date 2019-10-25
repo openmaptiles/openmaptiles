@@ -26,6 +26,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
          osm_building_relation WHERE building = ''
@@ -38,6 +40,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
          osm_building_associatedstreet WHERE role = 'house'
@@ -49,6 +53,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
          osm_building_street WHERE role = 'house'
@@ -61,6 +67,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
          osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
@@ -72,6 +80,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(obp.min_height),-1),nullif(as_numeric(obp.buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(obp.levels),-1),nullif(as_numeric(obp.buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(obp.min_level),-1),nullif(as_numeric(obp.buildingmin_level),-1)) as min_level,
+                  nullif(obp.material, '') AS material,
+                  nullif(obp.colour, '') AS colour,
                   CASE WHEN obr.role='outline' THEN TRUE ELSE FALSE END as hide_3d
          FROM
          osm_building_polygon obp
@@ -80,14 +90,35 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int, hide_3d boolean) AS $$
+RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int, colour text, hide_3d boolean) AS $$
     SELECT geometry, osm_id, render_height, render_min_height,
+       COALESCE(colour, CASE material
+           -- Ordered by count from taginfo
+           WHEN 'cement_block' THEN '#6a7880'
+           WHEN 'brick' THEN '#bd8161'
+           WHEN 'plaster' THEN '#dadbdb'
+           WHEN 'wood' THEN '#d48741'
+           WHEN 'concrete' THEN '#d3c2b0'
+           WHEN 'metal' THEN '#b7b1a6'
+           WHEN 'stone' THEN '#b4a995'
+           WHEN 'mud' THEN '#9d8b75'
+           WHEN 'steel' THEN '#b7b1a6' -- same as metal
+           WHEN 'glass' THEN '#5a81a0'
+           WHEN 'traditional' THEN '#bd8161' -- same as brick
+           WHEN 'masonry' THEN '#bd8161' -- same as brick
+           WHEN 'Brick' THEN '#bd8161' -- same as brick
+           WHEN 'tin' THEN '#b7b1a6' -- same as metal
+           WHEN 'timber_framing' THEN '#b3b0a9'
+           WHEN 'sandstone' THEN '#b4a995' -- same as stone
+           WHEN 'clay' THEN '#9d8b75' -- same as mud
+       END) AS colour,
       CASE WHEN hide_3d THEN TRUE ELSE NULL::boolean END AS hide_3d
     FROM (
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
         SELECT
             osm_id, geometry,
             NULL::int AS render_height, NULL::int AS render_min_height,
+            NULL::text AS material, NULL::text AS colour,
             FALSE AS hide_3d
         FROM osm_building_polygon_gen1
         WHERE zoom_level = 13 AND geometry && bbox
@@ -97,6 +128,8 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            osm_id, geometry,
            ceil( COALESCE(height, levels*3.66,5))::int AS render_height,
            floor(COALESCE(min_height, min_level*3.66,0))::int AS render_min_height,
+           material,
+           colour,
            hide_3d
         FROM osm_all_buildings
         WHERE

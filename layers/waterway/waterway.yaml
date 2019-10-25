@@ -1,7 +1,7 @@
 layer:
   id: "waterway"
   description: |
-      OpenStreetMap [waterways](http://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels
+      OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels
       and Natural Earth rivers and lake centerlines for low zoom levels.
       Linestrings without a name or which are too short are filtered
       out at low zoom levels. Waterways do no not have a `subclass` field.
@@ -27,9 +27,13 @@ layer:
       values:
         - bridge
         - tunnel
+    intermittent:
+      description: |
+        Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) waterway.
+      values: [0, 1]
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_waterway_linestring.sql
   - ./update_important_waterway.sql

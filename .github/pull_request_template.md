@@ -13,4 +13,4 @@ Your pull request must:
 
  * Be possible to merge automatically.
 
-When you rea making PR that adds new spatial features to OpenMapTiles schema, please make also PR for at least one of our GL styles to show it on the map. Visual check is crucial.
+When you are making a PR that adds new spatial features to OpenMapTiles schema, please make also PR for at least one of our GL styles to show it on the map. Visual check is crucial.

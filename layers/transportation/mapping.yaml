@@ -148,6 +148,9 @@ horse_field: &horse
 mtb_scale_field: &mtb_scale
   key: mtb:scale
   name: mtb_scale
+surface_field: &surface
+  key: surface
+  name: surface
   type: string
 
 tables:
@@ -188,6 +191,7 @@ tables:
     - *foot
     - *horse
     - *mtb_scale
+    - *surface
     mapping:
       highway:
       - motorway
@@ -291,6 +295,7 @@ tables:
     mapping:
       aerialway:
       - cable_car
+      - gondola
 
 # etldoc: imposm3 -> osm_shipway_linestring
   shipway_linestring:
