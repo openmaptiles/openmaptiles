@@ -10,12 +10,20 @@ layer:
       description: |
           Use the **class** to assign natural colors for **landcover**.
       values:
-      - farmland
-      - ice
-      - wood
-      - grass
-      - wetland
-      - sand
+        farmland:
+          subclass: ['farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery']
+        ice:
+          subclass: ['glacier', 'ice_shelf']
+        wood:
+          subclass: ['wood', 'forest']
+        rock:
+          subclass: ['bare_rock', 'scree']
+        grass:
+          subclass: ['fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
+        wetland:
+          subclass: ['wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove']
+        sand:
+          subclass: ['beach', 'sand', 'dune']
     subclass:
       description: |
           Use **subclass** to do more precise styling.

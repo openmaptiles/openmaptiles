@@ -11,15 +11,7 @@
 
 CREATE OR REPLACE FUNCTION landcover_class(subclass VARCHAR) RETURNS TEXT AS $$
     SELECT CASE
-        WHEN subclass IN ('farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery') THEN 'farmland'
-        WHEN subclass IN ('glacier', 'ice_shelf') THEN 'ice'
-        WHEN subclass IN ('wood', 'forest') THEN 'wood'
-        WHEN subclass IN ('bare_rock', 'scree') THEN 'rock'
-        WHEN subclass IN ('fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments',
-                          'park', 'village_green', 'recreation_ground', 'garden', 'golf_course') THEN 'grass'
-        WHEN subclass IN ('wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed',
-                          'saltern', 'tidalflat', 'saltmarsh', 'mangrove') THEN 'wetland'
-        WHEN subclass IN ('beach', 'sand', 'dune') THEN 'sand'
+        %%FIELD_MAPPING: class %%
         ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE;
