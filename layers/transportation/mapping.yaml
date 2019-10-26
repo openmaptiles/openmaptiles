@@ -148,6 +148,7 @@ horse_field: &horse
 mtb_scale_field: &mtb_scale
   key: mtb:scale
   name: mtb_scale
+  type: string
 surface_field: &surface
   key: surface
   name: surface

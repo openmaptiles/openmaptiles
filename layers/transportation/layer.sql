@@ -8,7 +8,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text,
 ramp int, oneway int, brunnel TEXT, service TEXT, layer INT, level INT,
-indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale, surface TEXT) AS $$
+indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) AS $$
     SELECT
         osm_id, geometry,
         CASE
@@ -50,8 +50,7 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale, surface TEXT) AS $$
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
-            NULL AS surface,
-            z_order
+            NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen7
         WHERE zoom_level = 4
         UNION ALL
@@ -198,7 +197,7 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale, surface TEXT) AS $$
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
-      	    NULL as surface, z_order
+            NULL as surface, z_order
         FROM osm_railway_linestring_gen5
         WHERE zoom_level = 8
             AND railway='rail' AND service = '' and usage='main'
@@ -326,7 +325,6 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale, surface TEXT) AS $$
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
-            z_order
             NULL AS surface, z_order
         FROM osm_shipway_linestring_gen1
         WHERE zoom_level = 12
