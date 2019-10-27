@@ -27,6 +27,7 @@ You can start from several GL styles supporting the OpenMapTiles vector schema.
 - [Klokantech 3D](https://github.com/openmaptiles/klokantech-3d-gl-style)
 - [Fiord Color](https://github.com/openmaptiles/fiord-color-gl-style)
 - [Toner](https://github.com/openmaptiles/toner-gl-style)
+- [OSM Liberty](https://github.com/maputnik/osm-liberty)
 
 We also ported over our favorite old raster styles (TM2).
 
