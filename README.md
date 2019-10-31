@@ -106,6 +106,16 @@ docker-compose run import-lakelines
 docker-compose run import-osmborder
 ```
 
+**[Optional]**
+Import latest Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
+
+Beware that current [Wikidata dump](https://dumps.wikimedia.org/wikidatawiki/entities/latest-all.json.gz) is more than 55GB, it takes time to download and import it. If you just want to have a quickstart on OpenMapTiles, just skip this step.
+
+```bash
+make download-wikidata
+docker-compose run import-wikidata
+```
+
 [Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
 
 ```bash
