@@ -45,13 +45,13 @@ generalized_tables:
 # etldoc: imposm3 -> osm_highway_linestring_gen2
   highway_linestring_gen2:
     source: highway_linestring_gen1
-    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') AND NOT is_area
+    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
     tolerance: ZRES11
 
 # etldoc: imposm3 -> osm_highway_linestring_gen1
   highway_linestring_gen1:
     source: highway_linestring
-    sql_filter: highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') AND NOT is_area AND ST_IsValid(geometry)
+    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link')) AND NOT is_area AND ST_IsValid(geometry)
     tolerance: ZRES12
 
 name_field: &name
@@ -150,6 +150,9 @@ tables:
     - name: highway
       key: highway
       type: string
+    - name: construction
+      key: construction
+      type: string
     - *ref
     - *network
     - *z_order
@@ -187,18 +190,19 @@ tables:
       - tertiary_link
       - unclassified
       - residential
-      - road
       - living_street
-      - raceway
-      - track
-      - service
-      - path
-      - cycleway
-      - bridleway
-      - footway
-      - corridor
+      - road
       - pedestrian
+      - path
+      - footway
+      - cycleway
       - steps
+      - bridleway
+      - corridor
+      - service
+      - track
+      - raceway
+      - construction
       public_transport:
       - platform
       man_made:

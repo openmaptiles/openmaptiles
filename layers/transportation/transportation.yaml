@@ -14,9 +14,10 @@ layer:
   fields:
     class:
       description: |
-          Distinguish between more and less important roads or railways.
+          Distinguish between more and less important roads or railways and roads under construction.
           Class is derived from the value of the
           [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
+          [`construction`](http://wiki.openstreetmap.org/wiki/Key:construction),
           [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
@@ -33,6 +34,16 @@ layer:
       - track
       - path
       - raceway
+      - motorway_construction
+      - trunk_construction
+      - primary_construction
+      - secondary_construction
+      - tertiary_construction
+      - minor_construction
+      - service_construction
+      - track_construction
+      - path_construction
+      - raceway_construction
       - rail
       - transit
       - cable_car
