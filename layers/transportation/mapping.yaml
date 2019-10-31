@@ -133,6 +133,22 @@ man_made_field: &man_made
 z_order_field: &z_order
   name: z_order
   type: wayzorder
+bicycle_field: &bicycle
+  key: bicycle
+  name: bicycle
+  type: string
+foot_field: &foot
+  key: foot
+  name: foot
+  type: string
+horse_field: &horse
+  key: horse
+  name: horse
+  type: string
+mtb_scale_field: &mtb_scale
+  key: mtb:scale
+  name: mtb_scale
+  type: string
 surface_field: &surface
   key: surface
   name: surface
@@ -175,6 +191,10 @@ tables:
     - *usage
     - *public_transport
     - *man_made
+    - *bicycle
+    - *foot
+    - *horse
+    - *mtb_scale
     - *surface
     mapping:
       highway:
