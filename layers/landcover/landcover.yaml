@@ -29,6 +29,7 @@ layer:
       - bare_rock
       - beach
       - bog
+      - dune
       - farm
       - farmland
       - forest
