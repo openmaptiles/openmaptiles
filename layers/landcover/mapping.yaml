@@ -92,6 +92,7 @@ tables:
       - scree
       - beach
       - sand
+      - dune
       leisure:
       - park
       - garden
