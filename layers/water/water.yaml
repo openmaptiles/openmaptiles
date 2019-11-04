@@ -23,7 +23,7 @@ layer:
       values: [0, 1]
   buffer_size: 4
   datasource:
-    query: (SELECT geometry, class, intermittent FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, intermittent, brunnel FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./water.sql
 datasources:
