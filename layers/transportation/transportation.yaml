@@ -123,9 +123,9 @@ layer:
     foot:
       description: |
           Original value of the [`foot`](http://wiki.openstreetmap.org/wiki/Key:foot) tag (highways only).
-    hourse:
+    horse:
       description: |
-          Original value of the [`hourse`](http://wiki.openstreetmap.org/wiki/Key:hourse) tag (highways only).
+          Original value of the [`horse`](http://wiki.openstreetmap.org/wiki/Key:horse) tag (highways only).
     mtb_scale:
       description: |
           Original value of the [`mtb:scale`](http://wiki.openstreetmap.org/wiki/Key:mtb:scale) tag (highways only).
