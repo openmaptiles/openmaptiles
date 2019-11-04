@@ -18,7 +18,7 @@ services:
     networks:
     - postgres_conn
   import-water:
-    image: "openmaptiles/import-water:1.1"
+    image: "openmaptiles/import-water:1.2"
     env_file: .env
     networks:
     - postgres_conn
@@ -68,7 +68,7 @@ services:
      - ./build:/mapping
      - cache:/cache
   import-sql:
-    image: "openmaptiles/import-sql:0.8"
+    image: "openmaptiles/import-sql:1.0"
     env_file: .env
     networks:
     - postgres_conn
