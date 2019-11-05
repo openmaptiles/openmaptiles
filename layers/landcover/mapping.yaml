@@ -78,12 +78,17 @@ tables:
       natural:
       - wood
       - wetland
+      - fell
       - grassland
+      - heath
+      - scrub
+      - tundra
       - glacier
       - bare_rock
       - scree
       - beach
       - sand
+      - dune
       leisure:
       - park
       - garden
