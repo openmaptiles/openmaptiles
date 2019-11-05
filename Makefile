@@ -180,7 +180,8 @@ etl-graph:
 
 # generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
 etl-graph-%: layers/% build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
+	docker run --rm -u $$(id -u $${USER}):$$(id -g $${USER}) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
+	cp ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
 
 mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
 
@@ -192,7 +193,8 @@ mapping-graph:
 	@echo 'Valid layers: $(mappingLayers)'
 
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker run --rm -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+	docker run --rm -u $$(id -u $${USER}):$$(id -g $${USER}) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+	cp ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
 
 # generate all etl and mapping graphs
 generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))

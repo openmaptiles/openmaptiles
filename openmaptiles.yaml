@@ -17,7 +17,7 @@ tileset:
     - layers/poi/poi.yaml
     - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
-  version: 3.9.0
+  version: 3.10.0
   id: openmaptiles
   description: "A tileset showcasing all layers in OpenMapTiles. https://openmaptiles.org"
   attribution: '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
@@ -27,7 +27,8 @@ tileset:
   minzoom: 0
   pixel_scale: 256
   languages:
-    - ar # Arabic
+    - am # Amharic
+    - ar # Arabic  
     - az # Azerbaijani, Latin
     - be # Belarusian
     - bg # Bulgarian
@@ -65,6 +66,7 @@ tileset:
     - kn # Kannada
     - ko # Korean
     - ko_rm # romanization of Korean, Latin
+    - ku # Kurdish, Latin
     - la # Latin, Latin
     - lb # Luxembourgish, Latin
     - lt # Lithuanian, Latin
