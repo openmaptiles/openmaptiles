@@ -18,6 +18,8 @@ layer:
       description: |
           Mark with `1` if the border is disputed.
       values: [0, 1]
+    disputed_view: |
+        TBD
     maritime:
       description: |
           Mark with `1` if it is a maritime border.
@@ -25,6 +27,6 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, disputed, disputed_view, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
