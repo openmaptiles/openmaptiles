@@ -90,6 +90,7 @@ tables:
       leisure:
       - park
       - garden
+      - golf_course
       wetland:
       - bog
       - swamp
