@@ -1,3 +1,21 @@
+-- Compute the weight of an OSM POI, primarily this function relies on the
+-- count of page views for the Wikipedia pages of this POI.
+CREATE OR REPLACE FUNCTION poi_display_weight(
+    name varchar,
+    subclass varchar,
+    mapping_key varchar,
+    tags hstore
+)
+RETURNS REAL AS $$
+    BEGIN
+        RETURN CASE
+            WHEN name <> '' THEN
+                1 - poi_class_rank(poi_class(subclass, mapping_key))::real / 1000
+            ELSE
+                0.0
+        END;
+    END
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION osm_hash_from_imposm(imposm_id bigint)
 RETURNS bigint AS $$
@@ -46,7 +64,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
+            ORDER BY poi_display_weight(name, subclass, mapping_key, tags) DESC
         )::int AS "rank",
         mapping_key
     FROM (
