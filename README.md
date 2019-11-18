@@ -76,7 +76,7 @@ To work on OpenMapTiles you need Docker.
 Build the tileset.
 
 ```bash
-git clone git@github.com:openmaptiles/openmaptiles.git
+git clone https://github.com/openmaptiles/openmaptiles.git
 cd openmaptiles
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make
