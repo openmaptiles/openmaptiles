@@ -108,7 +108,7 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
     FROM ne_10m_admin_1_states_provinces_lines
     WHERE min_zoom <= 5
     UNION ALL
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen10
     WHERE maritime=true AND admin_level <= 2
 );
@@ -116,62 +116,62 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
 -- etldoc: osm_border_linestring_gen9 -> boundary_z5
 
 CREATE OR REPLACE VIEW boundary_z5 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen9
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen8 -> boundary_z6
 CREATE OR REPLACE VIEW boundary_z6 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen8
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen7 -> boundary_z7
 CREATE OR REPLACE VIEW boundary_z7 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen7
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen6 -> boundary_z8
 CREATE OR REPLACE VIEW boundary_z8 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen6
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen5 -> boundary_z9
 CREATE OR REPLACE VIEW boundary_z9 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen5
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen4 -> boundary_z10
 CREATE OR REPLACE VIEW boundary_z10 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen4
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen3 -> boundary_z11
 CREATE OR REPLACE VIEW boundary_z11 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen3
     WHERE admin_level <= 8
 );
 
 -- etldoc: osm_border_linestring_gen2 -> boundary_z12
 CREATE OR REPLACE VIEW boundary_z12 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen2
 );
 
 -- etldoc: osm_border_linestring_gen1 -> boundary_z13
 CREATE OR REPLACE VIEW boundary_z13 AS (
-    SELECT osm_id, geometry, admin_level, disputed, disp_view(disputed, osm_id) AS disputed_view, maritime
+    SELECT osm_id, geometry, admin_level, disputed, osm_disp_view(disputed, osm_id) AS disputed_view, maritime
     FROM osm_border_linestring_gen1
 );
 
