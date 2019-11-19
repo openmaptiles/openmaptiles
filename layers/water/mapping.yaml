@@ -56,8 +56,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - key: name
       name: name
       type: string
