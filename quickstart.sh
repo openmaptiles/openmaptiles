@@ -35,6 +35,8 @@ MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
+: "${TOOLS_VERSION:=$(cat "$(dirname "$0")/TOOLS_VERSION")}"
+export TOOLS_VERSION
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit,
 # as well as pass any other common parameters.
@@ -259,7 +261,7 @@ make psql-analyze
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
-docker-compose up -d postserve
+docker-compose up -d openmaptiles-tools  postserve
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
