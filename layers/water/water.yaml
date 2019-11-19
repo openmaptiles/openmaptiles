@@ -21,6 +21,12 @@ layer:
       description: |
         Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) water polygon.
       values: [0, 1]
+    brunnel:
+      description: |
+        Identifies the type of crossing as either a bridge or a tunnel.
+      values:
+        - bridge
+        - tunnel
   buffer_size: 4
   datasource:
     query: (SELECT geometry, class, intermittent, brunnel FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
