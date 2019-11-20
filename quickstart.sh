@@ -260,8 +260,13 @@ make psql-analyze
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
+docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
-docker-compose up -d openmaptiles-tools  postserve
+docker-compose up -d postserve
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
