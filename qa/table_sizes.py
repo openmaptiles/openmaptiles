@@ -3,9 +3,8 @@ import sys
 import argparse
 import subprocess
 
-parser  = argparse.ArgumentParser()
+parser = argparse.ArgumentParser()
 parser.add_argument('--noan', action='store_true', help='Not to run make psql-analyze')
-
 
 TOTAL_SIZE_SQL = """SELECT
   pg_size_pretty(sum(size)) AS size
@@ -18,8 +17,7 @@ FROM (
 ) a
 ;""".replace('\"', '\\\"')
 
-
-TABLE_SIZES_SQL="""SELECT
+TABLE_SIZES_SQL = """SELECT
   a.relname as "table",
   pg_table_size(a.relid) as "size",
   b.n_live_tup as "rows"
@@ -29,7 +27,6 @@ WHERE
   a.schemaname='public'
 ORDER BY a.relname;
 """.replace('\"', '\\\"')
-
 
 TABLES_SQL = """SELECT
   a.relname
@@ -59,34 +56,38 @@ COLUMNS_SQL = """select
 from {1} t;
 """.replace('\"', '\\\"')
 
+
 def print_column_sizes(tables):
     for table in tables:
-        print "Column sizes of table "+table
+        print("Column sizes of table " + table)
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -t -A -F\",\" -P pager=off',
-            '-c \"' + COLUMN_NAMES_SQL.format(table).replace('\n', ' ').replace('\r', '') + '\"'
+            '-c \"' + COLUMN_NAMES_SQL.format(table).replace('\n', ' ').replace('\r',
+                                                                                '') + '\"'
         ]
         # print " ".join(cmds)
         output = subprocess.check_output(" ".join(cmds), shell=True)
-        columns = filter(lambda c: len(c)>0, map(lambda l: l.strip(), output.split('\n')))
+        columns = filter(lambda c: len(c) > 0,
+                         map(lambda l: l.strip(), output.split('\n')))
 
         # print columns
 
-        col_sql = ",\n".join(map(lambda c: "sum(pg_column_size(\\\""+c+"\\\")) as \\\""+c+"\\\"", columns))
+        col_sql = ",\n".join(
+            map(lambda c: "sum(pg_column_size(\\\"" + c + "\\\")) as \\\"" + c + "\\\"",
+                columns))
 
         # print COLUMNS_SQL.format(col_sql, table);
 
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -F\",\" --no-align -P pager=off',
-            '-c \"' + COLUMNS_SQL.format(col_sql, table).replace('\n', ' ').replace('\r', '') + '\"'
+            '-c \"' + COLUMNS_SQL.format(col_sql, table).replace('\n', ' ').replace(
+                '\r', '') + '\"'
         ]
         # print " ".join(cmds)
         col_csv = subprocess.check_output(" ".join(cmds), shell=True)
-        print col_csv
-
-
+        print(col_csv)
 
 
 if __name__ == "__main__":
@@ -94,12 +95,11 @@ if __name__ == "__main__":
 
     try:
 
-        if(not args.noan):
-            print "Running make psql-analyze"
+        if not args.noan:
+            print("Running make psql-analyze")
             subprocess.check_output("make psql-analyze", shell=True)
 
-
-        print "Total size of tables"
+        print("Total size of tables")
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -F\",\" --no-align -P pager=off',
@@ -107,11 +107,10 @@ if __name__ == "__main__":
         ]
         # print " ".join(cmds)
         TOTAL_SIZE_CSV = subprocess.check_output(" ".join(cmds), shell=True)
-        print TOTAL_SIZE_CSV
-        print "\n"
+        print(TOTAL_SIZE_CSV)
+        print("\n")
 
-
-        print "Table sizes"
+        print("Table sizes")
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -F\",\" --no-align -P pager=off',
@@ -119,11 +118,10 @@ if __name__ == "__main__":
         ]
         # print " ".join(cmds)
         TABLE_SIZES_CSV = subprocess.check_output(" ".join(cmds), shell=True)
-        print TABLE_SIZES_CSV
-        print "\n"
+        print(TABLE_SIZES_CSV)
+        print("\n")
 
-
-        print "Column sizes"
+        print("Column sizes")
         cmds = [
             'docker-compose run --rm import-osm',
             '/usr/src/app/psql.sh -t -A -F\",\" -P pager=off',
@@ -131,11 +129,12 @@ if __name__ == "__main__":
         ]
         # print " ".join(cmds)
         output = subprocess.check_output(" ".join(cmds), shell=True)
-        tables = filter(lambda t: len(t)>0, map(lambda l: l.strip(), output.split('\n')))
+        tables = filter(lambda t: len(t) > 0,
+                        map(lambda l: l.strip(), output.split('\n')))
 
         print_column_sizes(tables);
 
         # print tables
-    except subprocess.CalledProcessError, e:
-        print "Error:\n", e.output
+    except subprocess.CalledProcessError as e:
+        print("Error:\n", e.output)
     sys.exit(0)
