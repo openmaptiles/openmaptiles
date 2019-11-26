@@ -251,7 +251,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
-docker-compose run $DC_OPTS import-sql
+docker-compose run $DC_OPTS openmaptiles-tools import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -261,7 +261,7 @@ make psql-analyze
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
-docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

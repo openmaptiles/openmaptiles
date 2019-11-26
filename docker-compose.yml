@@ -67,13 +67,6 @@ services:
       - ./data:/import
       - ./build:/mapping
       - cache:/cache
-  import-sql:
-    image: "openmaptiles/import-sql:${TOOLS_VERSION}"
-    env_file: .env
-    networks:
-      - postgres_conn
-    volumes:
-      - ./build:/sql
   import-wikidata:
     image: "openmaptiles/import-wikidata:${TOOLS_VERSION}"
     env_file: .env
@@ -108,8 +101,6 @@ services:
       - postgres_conn
     env_file: .env
     environment:
-      #BBOX: "8.25,46.97,9.58,47.52"
-      #BBOX: "5.97,45.75,10.7,47.72"
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}

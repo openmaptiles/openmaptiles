@@ -99,12 +99,12 @@ import-osm: db-start all
 
 .PHONY: import-sql
 import-sql: db-start all
-	docker-compose run $(DC_OPTS) import-sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: import-osmsql
 import-osmsql: db-start all
 	docker-compose run $(DC_OPTS) import-osm
-	docker-compose run $(DC_OPTS) import-sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: generate-tiles
 generate-tiles: db-start all
@@ -202,7 +202,7 @@ generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(
 
 .PHONY: import-sql-dev
 import-sql-dev:
-	docker-compose run $(DC_OPTS) import-sql /bin/bash
+	docker-compose run $(DC_OPTS) openmaptiles-tools bash
 
 .PHONY: import-osm-dev
 import-osm-dev:
