@@ -49,6 +49,9 @@ tables:
     - name: place
       key: place
       type: string
+    - name: waterway
+      key: waterway
+      type: string
     - name: area
       type: area
     - name: webmerc_area
@@ -82,3 +85,5 @@ tables:
       place:
       - suburb
       - neighbourhood
+      waterway:
+      - dam

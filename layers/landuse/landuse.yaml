@@ -13,7 +13,8 @@ layer:
           [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
           [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
           [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
-          or [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
+          [`place`](http://wiki.openstreetmap.org/wiki/Key:place)
+          or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
       values:
       - railway
       - cemetery
@@ -37,6 +38,7 @@ layer:
       - zoo
       - suburb
       - neighbourhood
+      - dam
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
