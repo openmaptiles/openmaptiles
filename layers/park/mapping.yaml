@@ -79,8 +79,6 @@ tables:
       type: string
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     mapping:
       leisure:
       - nature_reserve

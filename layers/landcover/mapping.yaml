@@ -53,8 +53,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: subclass
       type: mapping_value
     - name: mapping_key
