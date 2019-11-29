@@ -113,6 +113,5 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
                 AND zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
-    ORDER BY "rank"
     ;
 $$ LANGUAGE SQL IMMUTABLE;
