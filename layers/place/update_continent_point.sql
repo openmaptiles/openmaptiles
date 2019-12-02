@@ -4,9 +4,16 @@ DROP TRIGGER IF EXISTS trigger_refresh ON place_continent_point.updates;
 -- etldoc:  osm_continent_point ->  osm_continent_point
 CREATE OR REPLACE FUNCTION update_osm_continent_point() RETURNS VOID AS $$
 BEGIN
+
   UPDATE osm_continent_point
   SET tags = update_tags(tags, geometry)
   WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+
+  -- avoid Esperanto in default name
+  UPDATE osm_continent_point
+  SET name = tags->'name:en', 
+      tags = tags || hstore('name', tags->'name:en') || hstore('name:latin', tags->'name:en')
+  WHERE name = tags->'name:eo';
 
 END;
 $$ LANGUAGE plpgsql;
