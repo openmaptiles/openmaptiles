@@ -1,4 +1,13 @@
 generalized_tables:
+  # etldoc: imposm3 -> osm_landuse_polygon_gen7
+  landuse_polygon_gen7:
+    source: landuse_polygon_gen6
+    tolerance: ZRES7
+  # etldoc: imposm3 -> osm_landuse_polygon_gen6
+  landuse_polygon_gen6:
+    source: landuse_polygon_gen5
+    sql_filter: area>power(ZRES6,2) AND (landuse='residential' OR place='suburb' OR place='neighbourhood')
+    tolerance: ZRES8
   # etldoc: imposm3 -> osm_landuse_polygon_gen5
   landuse_polygon_gen5:
     source: landuse_polygon_gen4
