@@ -19,7 +19,18 @@ layer:
           Mark with `1` if the border is disputed.
       values: [0, 1]
     disputed_view: |
-        TBD
+      description: |
+          Field containing disputed area name and ISO2 code of country, which wants to see the boundary line. For now defined by feature IDs.
+      values: 
+      - arunachalpradesh_cn
+      - arunachalpradesh_in
+      - crimea_ru
+      - crimea_ua
+      - kashmir_cn
+      - kashmir_in
+      - kashmir_cn_in
+      - kashmir_pk
+      - kosovo_xk
     maritime:
       description: |
           Mark with `1` if it is a maritime border.
