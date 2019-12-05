@@ -37,7 +37,11 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
                                    ORDER BY rm.network_type) AS "rank",
       hl.z_order
   FROM osm_highway_linestring hl
-  left join osm_route_member rm on (rm.member = hl.osm_id)
+  -- NOTE: As Qwant uses `use_single_id_space` parameter in imposm, `osm_id`
+  --       columns are modified, but not the column `member`. For a way, the
+  --       transformation only multiplies the id by -1, as defined here:
+  --       https://github.com/omniscale/imposm3/blob/0ca82bbe/writer/ways.go#L60
+  left join osm_route_member rm on (rm.member = -hl.osm_id)
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist(geometry);
 
