@@ -8,125 +8,160 @@ CREATE OR REPLACE FUNCTION water_class(waterway TEXT) RETURNS TEXT AS $$
 $$ LANGUAGE SQL IMMUTABLE;
 
 
+CREATE OR REPLACE FUNCTION waterway_brunnel(is_bridge BOOL, is_tunnel BOOL) RETURNS TEXT AS $$
+    SELECT CASE
+        WHEN is_bridge THEN 'bridge'
+        WHEN is_tunnel THEN 'tunnel'
+        ELSE NULL
+    END;
+$$ LANGUAGE SQL IMMUTABLE STRICT;
+
+
 
 CREATE OR REPLACE VIEW water_z0 AS (
     -- etldoc:  ne_110m_ocean ->  water_z0
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_110m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_110m_ocean
     UNION ALL
     -- etldoc:  ne_110m_lakes ->  water_z0
-    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent FROM ne_110m_lakes
+    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_110m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z1 AS (
     -- etldoc:  ne_110m_ocean ->  water_z1
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_110m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_110m_ocean
     UNION ALL
     -- etldoc:  ne_110m_lakes ->  water_z1
-    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent FROM ne_110m_lakes
+    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_110m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z2 AS (
     -- etldoc:  ne_50m_ocean ->  water_z2
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_50m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_50m_ocean
     UNION ALL
     -- etldoc:  ne_50m_lakes ->  water_z2
-    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent FROM ne_50m_lakes
+    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_50m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z4 AS (
     -- etldoc:  ne_50m_ocean ->  water_z4
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_50m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_50m_ocean
     UNION ALL
     -- etldoc:  ne_50m_lakes ->  water_z4
-    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent FROM ne_50m_lakes
+    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_50m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z5 AS (
     -- etldoc:  ne_10m_ocean ->  water_z5
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_10m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  ne_10m_lakes ->  water_z5
-    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent FROM ne_10m_lakes
+    SELECT geometry, 'lake'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_10m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z6 AS (
     -- etldoc:  ne_10m_ocean ->  water_z6
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_10m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_10m_ocean
     UNION ALL
    -- etldoc:  osm_water_polygon_gen6 ->  water_z6
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen6
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_water_polygon_gen6
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z7 AS (
     -- etldoc:  ne_10m_ocean ->  water_z7
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM ne_10m_ocean
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM ne_10m_ocean
     UNION ALL
     -- etldoc:  osm_water_polygon_gen5 ->  water_z7
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen5
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_water_polygon_gen5
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z8 AS (
     -- etldoc:  osm_ocean_polygon_gen4 ->  water_z8
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon_gen4
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon_gen4
     UNION ALL
     -- etldoc:  osm_water_polygon_gen4 ->  water_z8
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen4
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_water_polygon_gen4
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z9 AS (
     -- etldoc:  osm_ocean_polygon_gen3 ->  water_z9
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon_gen3
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon_gen3
     UNION ALL
     -- etldoc:  osm_water_polygon_gen3 ->  water_z9
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen3
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel FROM osm_water_polygon_gen3
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z10 AS (
     -- etldoc:  osm_ocean_polygon_gen2 ->  water_z10
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon_gen2
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon_gen2
     UNION ALL
     -- etldoc:  osm_water_polygon_gen2 ->  water_z10
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen2
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel FROM osm_water_polygon_gen2
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z11 AS (
     -- etldoc:  osm_ocean_polygon_gen1 ->  water_z11
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon_gen1
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon_gen1
     UNION ALL
     -- etldoc:  osm_water_polygon_gen1 ->  water_z11
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon_gen1
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_water_polygon_gen1
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z12 AS (
     -- etldoc:  osm_ocean_polygon_gen1 ->  water_z12
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z12
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, is_bridge, is_tunnel
+    FROM osm_water_polygon
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z13 AS (
     -- etldoc:  osm_ocean_polygon ->  water_z13
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z13
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, is_bridge, is_tunnel
+    FROM osm_water_polygon
     WHERE "natural" != 'bay'
 );
 
 CREATE OR REPLACE VIEW water_z14 AS (
     -- etldoc:  osm_ocean_polygon ->  water_z14
-    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent FROM osm_ocean_polygon
+    SELECT geometry, 'ocean'::text AS class, NULL::boolean AS is_intermittent, NULL::boolean AS is_bridge, NULL::boolean AS is_tunnel
+    FROM osm_ocean_polygon
     UNION ALL
     -- etldoc:  osm_water_polygon ->  water_z14
-    SELECT geometry, water_class(waterway) AS class, is_intermittent FROM osm_water_polygon
+    SELECT geometry, water_class(waterway) AS class, is_intermittent, is_bridge, is_tunnel
+    FROM osm_water_polygon
     WHERE "natural" != 'bay'
 );
 
@@ -134,8 +169,11 @@ CREATE OR REPLACE VIEW water_z14 AS (
 -- etldoc:     label="layer_water |<z0> z0|<z1>z1|<z2>z2|<z3>z3 |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_water (bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, class text, intermittent int) AS $$
-    SELECT geometry, class::text, is_intermittent::int AS intermittent FROM (
+RETURNS TABLE(geometry geometry, class text, brunnel text, intermittent int) AS $$
+    SELECT geometry, class::text,
+        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
+        is_intermittent::int AS intermittent
+    FROM (
         -- etldoc: water_z0 ->  layer_water:z0
         SELECT * FROM water_z0 WHERE zoom_level = 0
         UNION ALL

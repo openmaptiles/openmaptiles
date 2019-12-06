@@ -1,10 +1,10 @@
 ## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
 
-OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. It is used to generate vector tiles for online zoomable maps. The project is about creating a beautiful basemaps with general layers that contain topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
+OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
 
-We encourage you to collaborate, reuse and adapt existing layers and add your own layers or use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
+We encourage you to collaborate, reuse and adapt existing layers, or add your own layers. You may use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
-Please keep in mind that OpenMapTiles schema should stay displaying general topographic content. In case of creating a new layer or expanding an existing one with a specific theme, please create a fork and invite other community members to cooperate on your topic in this separate fork. OpenMapTiles schema is used in many projects all over the world and the size of the final vector tiles needs to be considered in any update.
+Please keep in mind that OpenMapTiles schema should display general topographic content. If creating a new layer or expanding an existing layer with a specific theme, please create a fork and invite other community members to cooperate on your topic. OpenMapTiles schema is used in many projects all over the world and the size of the final vector tiles needs to be considered in any update.
 
 - :link: Schema https://openmaptiles.org/schema
 - :link: Docs https://openmaptiles.org/docs
@@ -76,7 +76,7 @@ To work on OpenMapTiles you need Docker.
 Build the tileset.
 
 ```bash
-git clone git@github.com:openmaptiles/openmaptiles.git
+git clone https://github.com/openmaptiles/openmaptiles.git
 cd openmaptiles
 # Build the imposm mapping, the tm2source project and collect all SQL scripts
 make

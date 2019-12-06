@@ -36,6 +36,15 @@ generalized_tables:
     sql_filter: area>power(ZRES10,2) AND ST_IsValid(geometry)
     tolerance: ZRES12
 
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+
 tables:
 
   # etldoc: imposm3 -> osm_water_polygon
@@ -47,8 +56,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - key: name
       name: name
       type: string
@@ -72,6 +79,8 @@ tables:
     - name: is_intermittent
       key: intermittent
       type: bool
+    - *tunnel
+    - *bridge
     filters:
       reject:
         covered: ["yes"]
