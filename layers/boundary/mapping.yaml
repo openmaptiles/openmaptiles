@@ -1,0 +1,38 @@
+generalized_tables:
+  # etldoc: imposm3 -> osm_border_disp_linestring
+  border_disp_linestring:
+    source: border_disp_relation
+    sql_filter: ST_GeometryType(geometry) = 'ST_LineString'
+
+tables:
+  # etldoc: imposm3 -> osm_border_disp_relation
+  border_disp_relation:
+    type: relation_member
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - key: boundary
+      name: boundary
+      type: string
+    - key: admin_level
+      name: admin_level
+      type: string
+    - key: claimed_by
+      name: claimed_by
+      type: string
+    - key: disputed_by
+      name: disputed_by
+      type: string
+    mapping:
+      type: [boundary]
+    filters:
+      require:
+        #admin_level: ['2']
+        admin_level: [__any__]
+        claimed_by: [__any__]
+
