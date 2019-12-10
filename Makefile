@@ -1,5 +1,13 @@
+# Options to run with docker and docker-compose - ensure the container is destroyed on exit
+DC_OPTS:=--rm
+
+# container runs as the current user rather than root (so that created files are not root-owned)
+DC_USER_OPTS:=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+
+.PHONY: all
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
+.PHONY: help
 help:
 	@echo "=============================================================================="
 	@echo " OpenMapTiles  https://github.com/openmaptiles/openmaptiles "
@@ -37,66 +45,76 @@ help:
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
+.PHONY: build
 build:
 	mkdir -p build
 
 build/openmaptiles.tm2source/data.yml: build
 	mkdir -p build/openmaptiles.tm2source
-	docker-compose run --rm openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
 build/mapping.yaml: build
-	docker-compose run --rm openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
 
 build/tileset.sql: build
-	docker-compose run --rm openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
 
+.PHONY: clean
 clean:
 	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
 
+.PHONY: clean-docker
 clean-docker:
 	docker-compose down -v --remove-orphans
 	docker-compose rm -fv
 	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
 
+.PHONY: db-start
 db-start:
-	docker-compose up   -d postgres
+	docker-compose up -d postgres
 
+.PHONY: download-geofabrik
 download-geofabrik:
 	@echo ===============  download-geofabrik =======================
 	@echo Download area :   $(area)
 	@echo [[ example: make download-geofabrik  area=albania ]]
 	@echo [[ list areas:  make download-geofabrik-list       ]]
-	docker-compose run --rm import-osm  ./download-geofabrik.sh $(area)
+	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik.sh $(area)
 	ls -la ./data/$(area).*
 	@echo "Generated config file: ./data/docker-compose-config.yml"
 	@echo " "
 	cat ./data/docker-compose-config.yml
 	@echo " "
 
+.PHONY: psql
 psql: db-start
-	docker-compose run --rm import-osm ./psql.sh
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh
 
+.PHONY: import-osm
 import-osm: db-start all
-	docker-compose run --rm import-osm
+	docker-compose run $(DC_OPTS) import-osm
 
+.PHONY: import-sql
 import-sql: db-start all
-	docker-compose run --rm import-sql
+	docker-compose run $(DC_OPTS) import-sql
 
+.PHONY: import-osmsql
 import-osmsql: db-start all
-	docker-compose run --rm import-osm
-	docker-compose run --rm import-sql
+	docker-compose run $(DC_OPTS) import-osm
+	docker-compose run $(DC_OPTS) import-sql
 
+.PHONY: generate-tiles
 generate-tiles: db-start all
 	rm -rf data/tiles.mbtiles
 	if [ -f ./data/docker-compose-config.yml ]; then \
-		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run --rm generate-vectortiles; \
+		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $(DC_OPTS) generate-vectortiles; \
 	else \
-		docker-compose run --rm generate-vectortiles; \
+		docker-compose run $(DC_OPTS) generate-vectortiles; \
 	fi
-	docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-	docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+	docker-compose run $(DC_OPTS) openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+	docker-compose run $(DC_OPTS) openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
-
+.PHONY: start-tileserver
 start-tileserver:
 	@echo " "
 	@echo "***********************************************************"
@@ -115,8 +133,9 @@ start-tileserver:
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run -it --rm --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
+.PHONY: start-postserve
 start-postserve:
 	@echo " "
 	@echo "***********************************************************"
@@ -136,16 +155,19 @@ start-postserve:
 	@echo "***********************************************************"
 	@echo " "
 	docker rm -f maputnik_editor || true
-	docker run --name maputnik_editor -d -p 8088:8888 maputnik/editor
+	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
+.PHONY: generate-qareports
 generate-qareports:
 	./qa/run.sh
 
 build/devdoc:
 	mkdir -p ./build/devdoc
 
+
 layers = $(notdir $(wildcard layers/*)) # all layers
 
+.PHONY: etl-graph
 etl-graph:
 	@echo 'Use'
 	@echo '   make etl-graph-[layer]	to generate etl graph for [layer]'
@@ -154,12 +176,14 @@ etl-graph:
 
 # generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
 etl-graph-%: layers/% build/devdoc
-	docker run --rm -u $$(id -u $${USER}):$$(id -g $${USER}) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
+	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools:${TOOLS_VERSION} generate-etlgraph layers/$*/$*.yaml ./build/devdoc
 	cp ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
+
 
 mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
 
 # generate mapping graph for a certain layer, e.g. mapping-graph-building, mapping-graph-place
+.PHONY: mapping-graph
 mapping-graph:
 	@echo 'Use'
 	@echo '   make mapping-graph-[layer]	to generate mapping graph for [layer]'
@@ -167,60 +191,75 @@ mapping-graph:
 	@echo 'Valid layers: $(mappingLayers)'
 
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker run --rm -u $$(id -u $${USER}):$$(id -g $${USER}) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
 	cp ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
 
 # generate all etl and mapping graphs
 generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
 
+.PHONY: import-sql-dev
 import-sql-dev:
-	docker-compose run --rm import-sql /bin/bash
+	docker-compose run $(DC_OPTS) import-sql /bin/bash
 
+.PHONY: import-osm-dev
 import-osm-dev:
-	docker-compose run --rm import-osm /bin/bash
+	docker-compose run $(DC_OPTS) import-osm /bin/bash
 
 # the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
+.PHONY: list
 list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
 
 # same as a `make list`
+.PHONY: download-geofabrik-list
 download-geofabrik-list:
-	docker-compose run --rm import-osm  ./download-geofabrik-list.sh
+	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
 
+.PHONY: download-wikidata
 download-wikidata:
-	mkdir -p wikidata && docker-compose run --rm --entrypoint /usr/src/app/download-gz.sh import-wikidata
+	mkdir -p wikidata && docker-compose run $(DC_OPTS) --entrypoint /usr/src/app/download-gz.sh import-wikidata
 
+.PHONY: psql-list-tables
 psql-list-tables:
-	docker-compose run --rm import-osm ./psql.sh  -P pager=off  -c "\d+"
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c "\d+"
 
+.PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
-	docker-compose run --rm import-osm ./psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
 
+.PHONY: forced-clean-sql
 forced-clean-sql:
-	docker-compose run --rm import-osm ./psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
-	docker-compose run --rm import-osm ./psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
-	docker-compose run --rm import-osm ./psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
 
+.PHONY: pgclimb-list-views
 pgclimb-list-views:
-	docker-compose run --rm import-osm ./pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
+	docker-compose run $(DC_OPTS) import-osm ./pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
 
+.PHONY: pgclimb-list-tables
 pgclimb-list-tables:
-	docker-compose run --rm import-osm ./pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
+	docker-compose run $(DC_OPTS) import-osm ./pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
 
+.PHONY: psql-vacuum-analyze
 psql-vacuum-analyze:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run --rm import-osm ./psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
 
+.PHONY: psql-analyze
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE ;"
-	docker-compose run --rm import-osm ./psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
 
+.PHONY: list-docker-images
 list-docker-images:
 	docker images | grep openmaptiles
 
+.PHONY: refresh-docker-images
 refresh-docker-images:
 	docker-compose pull --ignore-pull-failures
 
+.PHONY: remove-docker-images
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
 	@docker-compose down
@@ -228,6 +267,7 @@ remove-docker-images:
 	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
 
+.PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:
 	@echo "Deleting unnecessary container(s)..."
 	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
