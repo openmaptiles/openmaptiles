@@ -7,102 +7,121 @@ CREATE OR REPLACE FUNCTION edit_name(name VARCHAR) RETURNS TEXT AS $$
 $$ LANGUAGE SQL IMMUTABLE;
 
 
-
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen1
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen1 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen1 AS
     SELECT ST_Simplify(geometry, 10) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen1 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen1;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen2
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen2 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen2 AS
     SELECT ST_Simplify(geometry, 20) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen2 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen2;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen3
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen3 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen3 AS
     SELECT ST_Simplify(geometry, 40) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen3 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen3;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen4
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen4 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen4 AS
     SELECT ST_Simplify(geometry, 80) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen4 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen4;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen5
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen5 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen5 AS
     SELECT ST_Simplify(geometry, 160) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen5 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen5;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen6
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen6 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen6 AS
     SELECT ST_Simplify(geometry, 300) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen6 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen6;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen7
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen7 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen7 AS
     SELECT ST_Simplify(geometry, 600) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen7 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen7;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen8
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen8 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen8 AS
     SELECT ST_Simplify(geometry, 1200) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen8 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen8;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen9
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen9 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen9 AS
     SELECT ST_Simplify(geometry, 2400) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen9 USING gist (geometry);
 ANALYZE osm_border_disp_linestring_gen9;
 
+-- etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen10
 DROP TABLE IF EXISTS osm_border_disp_linestring_gen10 CASCADE;
 CREATE TABLE osm_border_disp_linestring_gen10 AS
     SELECT ST_Simplify(geometry, 4800) AS geometry,
         osm_id, admin_level,
-        concat_ws('_', edit_name(name), claimed_by) AS disputed_view
+        concat_ws('_', edit_name(name), claimed_by) AS disputed_view,
+        maritime
     FROM osm_border_disp_linestring
     WHERE admin_level = '2';
 CREATE INDEX ON osm_border_disp_linestring_gen10 USING gist (geometry);
@@ -194,7 +213,7 @@ CREATE OR REPLACE VIEW boundary_z5 AS (
     FROM osm_border_linestring_gen9
     WHERE admin_level <= 4
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen9
 );
 
@@ -205,7 +224,7 @@ CREATE OR REPLACE VIEW boundary_z6 AS (
     FROM osm_border_linestring_gen8
     WHERE admin_level <= 4
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen8
 );
 
@@ -216,7 +235,7 @@ CREATE OR REPLACE VIEW boundary_z7 AS (
     FROM osm_border_linestring_gen7
     WHERE admin_level <= 4
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen7
 );
 
@@ -227,7 +246,7 @@ CREATE OR REPLACE VIEW boundary_z8 AS (
     FROM osm_border_linestring_gen6
     WHERE admin_level <= 4
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen6
 );
 
@@ -238,7 +257,7 @@ CREATE OR REPLACE VIEW boundary_z9 AS (
     FROM osm_border_linestring_gen5
     WHERE admin_level <= 6
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen5
 );
 
@@ -249,7 +268,7 @@ CREATE OR REPLACE VIEW boundary_z10 AS (
     FROM osm_border_linestring_gen4
     WHERE admin_level <= 6
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen4
 );
 
@@ -260,7 +279,7 @@ CREATE OR REPLACE VIEW boundary_z11 AS (
     FROM osm_border_linestring_gen3
     WHERE admin_level <= 8
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen3
 );
 
@@ -270,7 +289,7 @@ CREATE OR REPLACE VIEW boundary_z12 AS (
     SELECT geometry, admin_level, disputed, NULL AS disputed_view, maritime
     FROM osm_border_linestring_gen2
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen2
 );
 
@@ -280,7 +299,7 @@ CREATE OR REPLACE VIEW boundary_z13 AS (
     SELECT geometry, admin_level, disputed, NULL AS disputed_view, maritime
     FROM osm_border_linestring_gen1
     UNION ALL
-    SELECT geometry, admin_level::int, true AS disputed, disputed_view, false AS maritime
+    SELECT geometry, admin_level, true AS disputed, disputed_view, maritime
     FROM osm_border_disp_linestring_gen1
 );
 
