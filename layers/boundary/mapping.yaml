@@ -1,8 +1,70 @@
 generalized_tables:
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen10
+  border_disp_linestring_gen10:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 4800
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen9
+  border_disp_linestring_gen9:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 2400
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen8
+  border_disp_linestring_gen8:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 1200
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen7
+  border_disp_linestring_gen7:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 600
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen6
+  border_disp_linestring_gen6:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 300
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen5
+  border_disp_linestring_gen5:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 160
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen4
+  border_disp_linestring_gen4:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 80
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen3
+  border_disp_linestring_gen3:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 40
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen2
+  border_disp_linestring_gen2:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 20
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen1
+  border_disp_linestring_gen1:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 10
+
   # etldoc: osm_border_disp_relation -> osm_border_disp_linestring
   border_disp_linestring:
     source: border_disp_relation
     sql_filter: ST_GeometryType(geometry) = 'ST_LineString'
+
 
 tables:
   # etldoc: imposm3 -> osm_border_disp_relation

@@ -18,24 +18,27 @@ layer:
       description: |
           Mark with `1` if the border is disputed.
       values: [0, 1]
-    disputed_view:
+    disputed_name:
       description: |
-          Field containing name of the disputed area (extracted from border relation in OSM, without spaces) and ISO2 code of country, which wants to see the boundary line.
+          Field containing name of the disputed area (extracted from border relation in OSM, without spaces).
           For country boundaries only (`admin_level = 2`).
           Value examples from Asian OSM pbf extract
       values:
-      - AbuMusaIsland_AE
-      - BaraHotiiValleys_CN
-      - ChineseClaim_CN
-      - Crimea_RU
-      - Crimea_UA
-      - Demchok_CN
-      - Dokdo_JP
-      - IndianClaim-North_IN
-      - IndianClaimwesternKashmir_IN
-      - PakistaniClaim_PK
-      - SamduValleys_CN
-      - TirpaniValleys_CN
+      - AbuMusaIsland
+      - BaraHotiiValleys
+      - ChineseClaim
+      - Crimea
+      - Demchok
+      - Dokdo
+      - IndianClaim-North
+      - IndianClaimwesternKashmir
+      - PakistaniClaim
+      - SamduValleys
+      - TirpaniValleys
+    claimed_by:
+      description: |
+          ISO2 code of country, which wants to see the boundary line.
+          For country boundaries only (`admin_level = 2`).
     maritime:
       description: |
           Mark with `1` if it is a maritime border.
@@ -43,7 +46,7 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, disputed_view, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
 datasources:
