@@ -1,10 +1,10 @@
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
-DC_OPTS:=--rm
+DC_OPTS?=--rm
 
 # container runs as the current user rather than root (so that created files are not root-owned)
-DC_USER_OPTS:=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
 
-TOOLS_VERSION:=$(shell cat TOOLS_VERSION)
+TOOLS_VERSION?=$(shell cat TOOLS_VERSION)
 export TOOLS_VERSION
 
 .PHONY: all
