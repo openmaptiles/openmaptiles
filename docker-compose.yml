@@ -111,7 +111,7 @@ services:
     networks:
       - postgres_conn
     ports:
-      - "8090:8080"
+      - "8090:8090"
     volumes:
       - .:/tileset
 
