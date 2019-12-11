@@ -366,7 +366,7 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
         WHERE zoom_level >= 13
             AND (
                   man_made IN ('bridge', 'pier')
-                  OR (ST_GeometryType(geometry) IN ('ST_Polygon','ST_MultiPolygon') AND COALESCE(layer, 0) >= 0)
+                  OR (is_area AND COALESCE(layer, 0) >= 0)
             )
     ) AS zoom_levels
     WHERE geometry && bbox
