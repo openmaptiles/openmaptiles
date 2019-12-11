@@ -1,17 +1,17 @@
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
-CREATE OR REPLACE FUNCTION as_numeric(text) RETURNS NUMERIC AS $$
- -- Inspired by http://stackoverflow.com/questions/16195986/isnumeric-with-postgresql/16206123#16206123
-DECLARE test NUMERIC;
-BEGIN
-     test = $1::NUMERIC;
-     RETURN test;
-EXCEPTION WHEN others THEN
-     RETURN -1;
-END;
-$$ STRICT
-LANGUAGE plpgsql IMMUTABLE;
+CREATE OR REPLACE FUNCTION as_numeric(text)
+RETURNS NUMERIC AS                                                                
+$$                                
+SELECT CAST(
+        (REGEXP_MATCH(
+            TRIM($1),
+            '^(([-+]?[0-9]+(\.[0-9]+)?(e[-+]?[0-9]+)?)|([-+]?\.[0-9]+)(e[-+]?[0-9]+)?)$')
+        )[1] AS NUMERIC);
+$$
+LANGUAGE SQL
+IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
@@ -140,6 +140,8 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
             zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL IMMUTABLE
+PARALLEL SAFE;
 
 -- not handled: where a building outline covers building parts

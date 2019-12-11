@@ -108,4 +108,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text) AS $$
         SELECT * FROM landuse_z14 WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
