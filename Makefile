@@ -75,6 +75,8 @@ clean-docker:
 .PHONY: db-start
 db-start:
 	docker-compose up -d postgres
+	@echo "Wait for PostgreSQL to start..."
+	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
 
 .PHONY: download-geofabrik
 download-geofabrik:
@@ -139,7 +141,7 @@ start-tileserver:
 	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 .PHONY: start-postserve
-start-postserve:
+start-postserve: db-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "

@@ -106,7 +106,7 @@ services:
       MAX_ZOOM: ${MAX_ZOOM}
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    command: postserve openmaptiles.yaml
+    command: postserve openmaptiles.yaml --verbose
     env_file: .env
     networks:
       - postgres_conn
