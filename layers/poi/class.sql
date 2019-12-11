@@ -25,7 +25,9 @@ RETURNS INT AS $$
         WHEN 'bar' THEN 800
         ELSE 1000
     END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION poi_class(subclass TEXT, mapping_key TEXT)
 RETURNS TEXT AS $$
@@ -65,4 +67,6 @@ RETURNS TEXT AS $$
         WHEN subclass IN ('castle','ruins') THEN 'castle'
         ELSE subclass
     END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

@@ -359,4 +359,6 @@ RETURNS TABLE(geometry geometry, admin_level int, disputed int, disputed_name te
         -- etldoc: boundary_z13 -> layer_boundary:z13
         SELECT * FROM boundary_z13 WHERE geometry && bbox AND zoom_level >= 13
     ) AS zoom_levels;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL IMMUTABLE
+PARALLEL SAFE;
