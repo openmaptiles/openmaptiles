@@ -6,43 +6,43 @@ services:
   postgres:
     image: "openmaptiles/postgis:2.9"
     volumes:
-    - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     networks:
-    - postgres_conn
+      - postgres_conn
     ports:
-     - "5432"
+      - "5432"
     env_file: .env
   import-natural-earth:
     image: "openmaptiles/import-natural-earth:1.4"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
   import-water:
     image: "openmaptiles/import-water:1.2"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
   import-lakelines:
     image: "openmaptiles/import-lakelines:1.0"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
   import-osm:
     image: "openmaptiles/import-osm:0.5"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - ./data:/import
-     - ./build:/mapping
-     - cache:/cache
+      - ./data:/import
+      - ./build:/mapping
+      - cache:/cache
   import-osmborder:
     image: "openmaptiles/import-osmborder:0.4"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
   import-osm-diff:
     image: "openmaptiles/import-osm:0.5"
     env_file: .env
@@ -50,11 +50,11 @@ services:
     environment:
       DIFF_MODE: ${DIFF_MODE}
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - ./data:/import
-     - ./build:/mapping
-     - cache:/cache
+      - ./data:/import
+      - ./build:/mapping
+      - cache:/cache
   update-osm:
     image: "openmaptiles/import-osm:0.5"
     env_file: .env
@@ -62,50 +62,50 @@ services:
       DIFF_MODE: ${DIFF_MODE}
     command: ./import_update.sh
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - ./data:/import
-     - ./build:/mapping
-     - cache:/cache
+      - ./data:/import
+      - ./build:/mapping
+      - cache:/cache
   import-sql:
     image: "openmaptiles/import-sql:1.0"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - ./build:/sql
+      - ./build:/sql
   import-wikidata:
     image: "openmaptiles/import-wikidata:0.1"
     env_file: .env
     command: import-wikidata
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - ./wikidata:/import
+      - ./wikidata:/import
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:0.9.2"
     env_file: .env
     networks:
-    - postgres_conn
+      - postgres_conn
     volumes:
-     - .:/tileset
-     - ./build:/sql
+      - .:/tileset
+      - ./build:/sql
   generate-changed-vectortiles:
     image: "openmaptiles/generate-vectortiles:0.1.1"
     command: ./export-list.sh
     volumes:
-    - ./data:/export
-    - ./build/openmaptiles.tm2source:/tm2source
+      - ./data:/export
+      - ./build/openmaptiles.tm2source:/tm2source
     networks:
-    - postgres_conn
+      - postgres_conn
     env_file: .env
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:0.1.1"
     volumes:
-    - ./data:/export
-    - ./build/openmaptiles.tm2source:/tm2source
+      - ./data:/export
+      - ./build/openmaptiles.tm2source:/tm2source
     networks:
-    - postgres_conn
+      - postgres_conn
     env_file: .env
     environment:
       #BBOX: "8.25,46.97,9.58,47.52"
@@ -117,11 +117,11 @@ services:
     image: "openmaptiles/postserve:0.2"
     env_file: .env
     networks:
-     - postgres_conn
+      - postgres_conn
     ports:
-    - "8090:8080"
+      - "8090:8080"
     volumes:
-     - ./build/openmaptiles.tm2source:/mapping
+      - ./build/openmaptiles.tm2source:/mapping
 
 networks:
   postgres_conn:
