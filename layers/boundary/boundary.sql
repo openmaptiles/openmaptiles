@@ -20,6 +20,7 @@ CREATE OR REPLACE VIEW boundary_z0 AS (
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land  -> boundary_z1
 -- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z1
+-- etldoc: osm_border_disp_linestring_gen11 -> boundary_z1
 CREATE OR REPLACE VIEW boundary_z1 AS (
     SELECT geometry,
         2 AS admin_level,
@@ -36,11 +37,15 @@ CREATE OR REPLACE VIEW boundary_z1 AS (
         NULL AS claimed_by,
         false AS maritime
     FROM ne_50m_admin_1_states_provinces_lines
+    UNION ALL
+    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    FROM osm_border_disp_linestring_gen11
 );
 
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land -> boundary_z3
 -- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z3
+-- etldoc: osm_border_disp_linestring_gen11 -> boundary_z3
 CREATE OR REPLACE VIEW boundary_z3 AS (
     SELECT geometry,
         2 AS admin_level,
@@ -57,12 +62,16 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
         NULL AS claimed_by,
         false AS maritime
     FROM ne_50m_admin_1_states_provinces_lines
+    UNION ALL
+    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    FROM osm_border_disp_linestring_gen11
 );
 
 
 -- etldoc: ne_10m_admin_0_boundary_lines_land -> boundary_z4
 -- etldoc: ne_10m_admin_1_states_provinces_lines -> boundary_z4
 -- etldoc: osm_border_linestring_gen10 -> boundary_z4
+-- etldoc: osm_border_disp_linestring_gen10 -> boundary_z4
 CREATE OR REPLACE VIEW boundary_z4 AS (
     SELECT geometry,
         2 AS admin_level,
@@ -85,6 +94,9 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
     SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
     FROM osm_border_linestring_gen10
     WHERE maritime=true AND admin_level <= 2
+    UNION ALL
+    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    FROM osm_border_disp_linestring_gen10
 );
 
 -- etldoc: osm_border_linestring_gen9 -> boundary_z5

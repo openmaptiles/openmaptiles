@@ -1,5 +1,11 @@
 generalized_tables:
 
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen11
+  border_disp_linestring_gen11:
+    source: border_disp_linestring
+    sql_filter: admin_level = 2
+    tolerance: 9600
+
   # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen10
   border_disp_linestring_gen10:
     source: border_disp_linestring
