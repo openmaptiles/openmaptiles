@@ -72,6 +72,7 @@ tables:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
       amenity:
       - bus_station
