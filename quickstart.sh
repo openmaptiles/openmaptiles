@@ -35,6 +35,8 @@ MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
+: "${TOOLS_VERSION:=$(cat "$(dirname "$0")/TOOLS_VERSION")}"
+export TOOLS_VERSION
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit,
 # as well as pass any other common parameters.
@@ -249,7 +251,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
-docker-compose run $DC_OPTS import-sql
+docker-compose run $DC_OPTS openmaptiles-tools import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -258,8 +260,8 @@ make psql-analyze
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
-docker-compose up -d postserve
+echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
+docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -341,6 +343,10 @@ echo "It takes $((ENDTIME - STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
+echo " "
+echo "*  Use   make start-postserve    to explore tile generation on request"
+echo "*  Use   make start-tileserver   to view pre-generated tiles"
+echo " "
 echo "Available help commands (make help)  "
 make help
 

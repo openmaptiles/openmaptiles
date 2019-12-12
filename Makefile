@@ -1,8 +1,11 @@
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
-DC_OPTS:=--rm
+DC_OPTS?=--rm
 
 # container runs as the current user rather than root (so that created files are not root-owned)
-DC_USER_OPTS:=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+
+TOOLS_VERSION?=$(shell cat TOOLS_VERSION)
+export TOOLS_VERSION
 
 .PHONY: all
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
@@ -72,6 +75,8 @@ clean-docker:
 .PHONY: db-start
 db-start:
 	docker-compose up -d postgres
+	@echo "Wait for PostgreSQL to start..."
+	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
 
 .PHONY: download-geofabrik
 download-geofabrik:
@@ -96,12 +101,12 @@ import-osm: db-start all
 
 .PHONY: import-sql
 import-sql: db-start all
-	docker-compose run $(DC_OPTS) import-sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: import-osmsql
 import-osmsql: db-start all
 	docker-compose run $(DC_OPTS) import-osm
-	docker-compose run $(DC_OPTS) import-sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: generate-tiles
 generate-tiles: db-start all
@@ -136,11 +141,11 @@ start-tileserver:
 	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 .PHONY: start-postserve
-start-postserve:
+start-postserve: db-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
+	@echo "* Bring up postserve at localhost:8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -150,7 +155,8 @@ start-postserve:
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maputnik/editor "
-	@echo "*       ----------------------------> check localhost:8088 "
+	@echo "*       ---> go to http://localhost:8088"
+	@echo "*       ---> set 'data source' to  http://localhost:8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -191,7 +197,7 @@ mapping-graph:
 	@echo 'Valid layers: $(mappingLayers)'
 
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools:${TOOLS_VERSION} generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
 	cp ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
 
 # generate all etl and mapping graphs
@@ -199,7 +205,7 @@ generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(
 
 .PHONY: import-sql-dev
 import-sql-dev:
-	docker-compose run $(DC_OPTS) import-sql /bin/bash
+	docker-compose run $(DC_OPTS) openmaptiles-tools bash
 
 .PHONY: import-osm-dev
 import-osm-dev:

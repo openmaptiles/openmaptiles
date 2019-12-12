@@ -13,7 +13,8 @@ do
 echo " "
 echo "## $layerid z$z - $var "
 
-SQL=$(docker run --rm -v $(pwd):/tileset openmaptiles/openmaptiles-tools generate-sqlquery  layers/${layerid}/${layerid}.yaml $z )
+: "${TOOLS_VERSION:=$(cat "$(dirname "$0")/../TOOLS_VERSION")}"
+SQL=$(docker run --rm -v "$(pwd):/tileset" "openmaptiles/openmaptiles-tools:$TOOLS_VERSION" generate-sqlquery  layers/${layerid}/${layerid}.yaml $z )
 
 SQLCODE=$(cat <<-END
 SELECT
