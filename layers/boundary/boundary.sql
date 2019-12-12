@@ -38,7 +38,12 @@ CREATE OR REPLACE VIEW boundary_z1 AS (
         false AS maritime
     FROM ne_50m_admin_1_states_provinces_lines
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen11
 );
 
@@ -63,7 +68,12 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
         false AS maritime
     FROM ne_50m_admin_1_states_provinces_lines
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen11
 );
 
@@ -91,117 +101,217 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
     FROM ne_10m_admin_1_states_provinces_lines
     WHERE min_zoom <= 5
     UNION ALL
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen10
     WHERE maritime=true AND admin_level <= 2
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen10
 );
 
 -- etldoc: osm_border_linestring_gen9 -> boundary_z5
 -- etldoc: osm_border_disp_linestring_gen9 -> boundary_z5
 CREATE OR REPLACE VIEW boundary_z5 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen9
     WHERE admin_level <= 4
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen9)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen9
 );
 
 -- etldoc: osm_border_linestring_gen8 -> boundary_z6
 -- etldoc: osm_border_disp_linestring_gen8 -> boundary_z6
 CREATE OR REPLACE VIEW boundary_z6 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen8
     WHERE admin_level <= 4
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen8)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen8
 );
 
 -- etldoc: osm_border_linestring_gen7 -> boundary_z7
 -- etldoc: osm_border_disp_linestring_gen7 -> boundary_z7
 CREATE OR REPLACE VIEW boundary_z7 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen7
     WHERE admin_level <= 4
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen7)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen7
 );
 
 -- etldoc: osm_border_linestring_gen6 -> boundary_z8
 -- etldoc: osm_border_disp_linestring_gen6 -> boundary_z8
 CREATE OR REPLACE VIEW boundary_z8 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen6
     WHERE admin_level <= 4
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen6)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen6
 );
 
 -- etldoc: osm_border_linestring_gen5 -> boundary_z9
 -- etldoc: osm_border_disp_linestring_gen5 -> boundary_z9
 CREATE OR REPLACE VIEW boundary_z9 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen5
     WHERE admin_level <= 6
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen5)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen5
 );
 
 -- etldoc: osm_border_linestring_gen4 -> boundary_z10
 -- etldoc: osm_border_disp_linestring_gen4 -> boundary_z10
 CREATE OR REPLACE VIEW boundary_z10 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen4
     WHERE admin_level <= 6
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen4)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen4
 );
 
 -- etldoc: osm_border_linestring_gen3 -> boundary_z11
 -- etldoc: osm_border_disp_linestring_gen3 -> boundary_z11
 CREATE OR REPLACE VIEW boundary_z11 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen3
     WHERE admin_level <= 8
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen3)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen3
 );
 
 -- etldoc: osm_border_linestring_gen2 -> boundary_z12
 -- etldoc: osm_border_disp_linestring_gen2 -> boundary_z12
 CREATE OR REPLACE VIEW boundary_z12 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen2
     WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen2)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen2
 );
 
 -- etldoc: osm_border_linestring_gen1 -> boundary_z13
 -- etldoc: osm_border_disp_linestring_gen1 -> boundary_z13
 CREATE OR REPLACE VIEW boundary_z13 AS (
-    SELECT geometry, admin_level, disputed, NULL AS disputed_name, NULL AS claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        disputed,
+        NULL AS disputed_name,
+        NULL AS claimed_by,
+        maritime
     FROM osm_border_linestring_gen1
     WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen1)
     UNION ALL
-    SELECT geometry, admin_level, true AS disputed, edit_name(name) AS disputed_name, claimed_by, maritime
+    SELECT geometry,
+        admin_level,
+        true AS disputed,
+        edit_name(name) AS disputed_name,
+        claimed_by,
+        maritime
     FROM osm_border_disp_linestring_gen1
 );
 
