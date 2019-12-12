@@ -20,7 +20,6 @@ CREATE OR REPLACE FUNCTION landcover_class(subclass VARCHAR) RETURNS TEXT AS $$
         WHEN subclass IN ('wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed',
                           'saltern', 'tidalflat', 'saltmarsh', 'mangrove') THEN 'wetland'
         WHEN subclass IN ('beach', 'sand', 'dune') THEN 'sand'
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 

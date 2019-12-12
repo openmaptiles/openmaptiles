@@ -12,7 +12,6 @@ CREATE OR REPLACE FUNCTION waterway_brunnel(is_bridge BOOL, is_tunnel BOOL) RETU
     SELECT CASE
         WHEN is_bridge THEN 'bridge'
         WHEN is_tunnel THEN 'tunnel'
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 

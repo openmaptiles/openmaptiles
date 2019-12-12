@@ -23,7 +23,6 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             WHEN (highway IS NOT NULL OR public_transport IS NOT NULL)
                 AND highway_class(highway, public_transport, construction) = 'path'
                 THEN COALESCE(NULLIF(public_transport, ''), highway)
-            ELSE NULL
         END AS subclass,
         -- All links are considered as ramps as well
         CASE WHEN highway_is_link(highway) OR highway = 'steps'
@@ -33,7 +32,7 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
         NULLIF(service, '') AS service,
         NULLIF(layer, 0) AS layer,
         "level",
-        CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
+        CASE WHEN indoor=TRUE THEN 1 END as indoor,
         NULLIF(bicycle, '') AS bicycle,
         NULLIF(foot, '') AS foot,
         NULLIF(horse, '') AS horse,
@@ -157,12 +156,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, man_made,
             layer,
-            CASE WHEN highway IN ('footway', 'steps') THEN "level"
-                ELSE NULL::int
-            END AS "level",
-            CASE WHEN highway IN ('footway', 'steps') THEN indoor
-                ELSE NULL::boolean
-            END AS indoor,
+            CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
+            CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
             bicycle, foot, horse, mtb_scale,
             surface_value(surface) AS "surface",
             z_order
