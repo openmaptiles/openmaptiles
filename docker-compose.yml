@@ -67,6 +67,17 @@ services:
       - ./data:/import
       - ./build:/mapping
       - cache:/cache
+  import-sql:
+    # This target is obsolete, and was left for backwards compatibility
+    # Use openmaptiles-tools target instead
+    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
+    command: import-sql
+    env_file: .env
+    networks:
+      - postgres_conn
+    volumes:
+      - .:/tileset
+      - ./build:/sql
   import-wikidata:
     image: "openmaptiles/import-wikidata:${TOOLS_VERSION}"
     env_file: .env

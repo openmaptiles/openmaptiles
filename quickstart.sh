@@ -265,11 +265,6 @@ docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --tes
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
-docker-compose up -d postserve
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/tiles.mbtiles  "
@@ -348,6 +343,10 @@ echo "It takes $((ENDTIME - STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
+echo " "
+echo "*  Use   make start-postserve    to explore tile generation on request"
+echo "*  Use   make start-tileserver   to view pre-generated tiles"
+echo " "
 echo "Available help commands (make help)  "
 make help
 
