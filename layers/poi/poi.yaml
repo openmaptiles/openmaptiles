@@ -36,7 +36,14 @@ layer:
         bus:
           subclass: ['bus_stop', 'bus_station']
         railway:
+          - __AND__:
+              subclass: 'station'
+              mapping_key: 'railway'
+          - subclass: ['halt', 'tram_stop', 'subway']
         aerialway:
+          __AND__:
+            subclass: 'station'
+            mapping_key: 'aerialway'
         entrance:
           subclass: ['subway_entrance', 'train_station_entrance']
         campsite:

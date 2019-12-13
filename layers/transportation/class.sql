@@ -11,19 +11,6 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT, construction TEXT) RETURNS TEXT AS $$
     SELECT CASE
         %%FIELD_MAPPING: class %%
-        WHEN highway = 'construction' THEN CASE
-          WHEN construction IN ('motorway', 'motorway_link') THEN 'motorway_construction'
-          WHEN construction IN ('trunk', 'trunk_link') THEN 'trunk_construction'
-          WHEN construction IN ('primary', 'primary_link') THEN 'primary_construction'
-          WHEN construction IN ('secondary', 'secondary_link') THEN 'secondary_construction'
-          WHEN construction IN ('tertiary', 'tertiary_link') THEN 'tertiary_construction'
-          WHEN construction IN ('', 'unclassified', 'residential', 'living_street', 'road') THEN 'minor_construction'
-          WHEN construction IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor')
-              OR public_transport = 'platform' THEN 'path_construction'
-          WHEN construction = 'service' THEN 'service_construction'
-          WHEN construction = 'track' THEN 'track_construction'
-          WHEN construction = 'raceway' THEN 'raceway_construction'
-        END
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
