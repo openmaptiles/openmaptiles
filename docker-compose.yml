@@ -78,16 +78,18 @@ services:
     volumes:
       - .:/tileset
       - ./build:/sql
-  import-wikidata:
-    image: "openmaptiles/import-wikidata:${TOOLS_VERSION}"
+  openmaptiles-tools:
+    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     env_file: .env
-    command: import-wikidata
     networks:
       - postgres_conn
     volumes:
-      - ./wikidata:/import
-  openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
+      - .:/tileset
+      - ./build:/sql
+  openmaptiles-tools-latest:
+    # This target exists for experimental tools that have not yet been published.
+    # Do not use this for production.
+    image: "openmaptiles/openmaptiles-tools:latest"
     env_file: .env
     networks:
       - postgres_conn

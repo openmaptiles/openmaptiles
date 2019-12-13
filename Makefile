@@ -226,9 +226,10 @@ list:
 download-geofabrik-list:
 	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
 
-.PHONY: download-wikidata
-download-wikidata:
-	mkdir -p wikidata && docker-compose run $(DC_OPTS) --entrypoint /usr/src/app/download-gz.sh import-wikidata
+.PHONY: import-wikidata
+import-wikidata:
+	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
+	docker-compose run $(DC_OPTS) openmaptiles-tools-latest import-wikidata openmaptiles.yaml
 
 .PHONY: psql-list-tables
 psql-list-tables:

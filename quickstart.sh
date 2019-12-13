@@ -134,7 +134,6 @@ echo "====> : Making directories - if they don't exist ( ./build ./data ./pgdata
 mkdir -p pgdata
 mkdir -p build
 mkdir -p data
-mkdir -p wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -239,14 +238,6 @@ docker-compose run $DC_OPTS import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-wikidata "
-echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
-echo "      : Thank you Wikidata Contributors ! "
-docker-compose run $DC_OPTS import-wikidata
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
 # If the output contains a WARNING, stop further processing
@@ -258,6 +249,13 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Analyze PostgreSQL tables"
 make psql-analyze
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing Wikidata: Wikidata Query Service -> PostgreSQL"
+echo "      : The Wikidata license: CC0 - https://www.wikidata.org/wiki/Wikidata:Main_Page "
+echo "      : Thank you Wikidata Contributors ! "
+make import-wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
