@@ -2,16 +2,23 @@
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
 CREATE OR REPLACE FUNCTION as_numeric(text)
-RETURNS NUMERIC AS                                                                
-$$                                
-SELECT CAST(
-        (REGEXP_MATCH(
-            TRIM($1),
-            '^(([-+]?[0-9]+(\.[0-9]+)?(e[-+]?[0-9]+)?)|([-+]?\.[0-9]+)(e[-+]?[0-9]+)?)$')
-        )[1] AS NUMERIC);
+RETURNS NUMERIC AS
+$$
+SELECT CASE 
+            WHEN TEST IS NULL THEN -1
+            WHEN TEST[1] IN ('','.') THEN -1
+            ELSE CAST(TEST[1] AS NUMERIC)
+        END AS RESULT
+FROM (
+    SELECT ARRAY_AGG(i) AS TEST
+    FROM (
+        SELECT (REGEXP_MATCHES($1,'^[\ ]*?([-+]?[0-9]*\.?[0-9]*?(e[-+]?[0-9]+)?)[\ ]*?$','i'))[1] i
+    )  t
+) _;
 $$
 LANGUAGE SQL
-IMMUTABLE STRICT PARALLEL SAFE;
+IMMUTABLE PARALLEL SAFE
+COST 50;
 
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
