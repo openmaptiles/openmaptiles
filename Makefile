@@ -4,9 +4,6 @@ DC_OPTS?=--rm
 # container runs as the current user rather than root (so that created files are not root-owned)
 DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
 
-TOOLS_VERSION?=$(shell cat TOOLS_VERSION)
-export TOOLS_VERSION
-
 .PHONY: all
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
@@ -182,7 +179,7 @@ etl-graph:
 
 # generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
 etl-graph-%: layers/% build/devdoc
-	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools:${TOOLS_VERSION} generate-etlgraph layers/$*/$*.yaml ./build/devdoc
+	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
 	cp ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
 
 
@@ -197,7 +194,7 @@ mapping-graph:
 	@echo 'Valid layers: $(mappingLayers)'
 
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker run $(DC_USER_OPTS) -v $$(pwd):/tileset openmaptiles/openmaptiles-tools:${TOOLS_VERSION} generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
+	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
 	cp ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
 
 # generate all etl and mapping graphs
