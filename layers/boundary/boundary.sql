@@ -12,8 +12,8 @@ CREATE OR REPLACE VIEW boundary_z0 AS (
     SELECT geometry,
         2 AS admin_level,
         (CASE WHEN featurecla LIKE 'Disputed%' THEN true ELSE false END) AS disputed,
-        NULL AS disputed_name,
-        NULL AS claimed_by,
+        NULL::text AS disputed_name,
+        NULL::text AS claimed_by,
         false AS maritime
     FROM ne_110m_admin_0_boundary_lines_land
 );
