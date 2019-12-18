@@ -4,6 +4,14 @@ DC_OPTS?=--rm
 # container runs as the current user rather than root (so that created files are not root-owned)
 DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
 
+# If running in the test mode, compare files rather than copy them
+TEST_MODE?=no
+ifeq ($(TEST_MODE),yes)
+  COPY_TO_GIT=diff
+else
+  COPY_TO_GIT=cp
+endif
+
 .PHONY: all
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
 
@@ -180,7 +188,7 @@ etl-graph:
 # generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
 etl-graph-%: layers/% build/devdoc
 	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
-	cp ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
+	@$(COPY_TO_GIT) ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
 
 
 mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
@@ -195,7 +203,7 @@ mapping-graph:
 
 mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
 	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
-	cp ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
+	@$(COPY_TO_GIT) ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
 
 # generate all etl and mapping graphs
 generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
