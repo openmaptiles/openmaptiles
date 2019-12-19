@@ -251,7 +251,10 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
-docker-compose run $DC_OPTS openmaptiles-tools import-sql
+# If the output contains a WARNING, stop further processing
+# Adapted from https://unix.stackexchange.com/questions/307562
+docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
+    awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
