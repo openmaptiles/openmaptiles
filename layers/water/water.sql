@@ -81,13 +81,13 @@ CREATE OR REPLACE VIEW water_z4 AS (
         NULL::boolean AS is_tunnel
     FROM ne_50m_ocean
     UNION ALL
-    -- etldoc:  ne_50m_lakes ->  water_z4
+    -- etldoc:  ne_10m_lakes ->  water_z4
     SELECT geometry,
         'lake'::text AS class,
         NULL::boolean AS is_intermittent,
         NULL::boolean AS is_bridge,
         NULL::boolean AS is_tunnel
-    FROM ne_50m_lakes
+    FROM ne_10m_lakes
 );
 
 CREATE OR REPLACE VIEW water_z5 AS (
