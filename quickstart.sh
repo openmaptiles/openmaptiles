@@ -204,14 +204,6 @@ docker-compose run $DC_OPTS import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osmborder"
-echo "      : Data license: http://www.openstreetmap.org/copyright"
-echo "      : Thank you: https://github.com/pnorman/osmborder "
-docker-compose run $DC_OPTS import-osmborder
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
@@ -234,7 +226,15 @@ echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-docker-compose run $DC_OPTS import-osm
+make import-osm
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing border data from ./data/${testdata} into PostgreSQL using osmborder"
+echo "      : Source code: https://github.com/pnorman/osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you: Paul Norman"
+make import-borders
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

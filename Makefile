@@ -114,6 +114,10 @@ import-osmsql: db-start all
 	docker-compose run $(DC_OPTS) import-osm
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
+.PHONY: import-borders
+import-borders: db-start
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
+
 .PHONY: generate-tiles
 generate-tiles: db-start all
 	rm -rf data/tiles.mbtiles

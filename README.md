@@ -103,7 +103,6 @@ Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/),
 docker-compose run import-water
 docker-compose run import-natural-earth
 docker-compose run import-lakelines
-docker-compose run import-osmborder
 ```
 
 [Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
@@ -114,10 +113,11 @@ wget http://download.geofabrik.de/europe/albania-latest.osm.pbf
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
-`build/mapping.yaml` (which has been created by `make`).
+`build/mapping.yaml` (which has been created by `make`).  Also create borders table using extra processing with [osmborder](https://github.com/pnorman/osmborder) tool.
 
 ```bash
-docker-compose run import-osm
+make import-osm
+make import-borders
 ```
 
 Import latest Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
