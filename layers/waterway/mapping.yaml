@@ -28,7 +28,7 @@ tables:
   # etldoc: imposm3 -> osm_waterway_linestring
   waterway_linestring:
     type: linestring
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
