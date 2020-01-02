@@ -14,7 +14,7 @@ $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
-CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
+CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member) WHERE role = 'outline';
 --CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 --CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 
@@ -85,10 +85,10 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(obp.min_level),-1),nullif(as_numeric(obp.buildingmin_level),-1)) as min_level,
                   nullif(obp.material, '') AS material,
                   nullif(obp.colour, '') AS colour,
-                  CASE WHEN obr.role='outline' THEN TRUE ELSE FALSE END as hide_3d
+                  obr.role IS NOT NULL AS hide_3d
          FROM
          osm_building_polygon obp
-           LEFT JOIN osm_building_relation obr ON (obr.member = obp.osm_id)
+           LEFT JOIN osm_building_relation obr ON obr.member = obp.osm_id AND obr.role = 'outline'
          -- Only check for ST_Polygon as we exclude buildings from relations keeping only positive ids
          WHERE obp.osm_id >= 0 AND ST_GeometryType(obp.geometry) = 'ST_Polygon'
 );
