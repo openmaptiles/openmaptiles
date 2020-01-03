@@ -72,7 +72,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   FALSE as hide_3d
          FROM
          osm_building_polygon obp
-         WHERE osm_id < 0
+         -- OSM mulipolygons once imported can give unique postgis polygons with holes, or multi parts polygons
+         WHERE osm_id < 0 AND ST_GeometryType(geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
 
          UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
@@ -88,7 +89,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          FROM
          osm_building_polygon obp
            LEFT JOIN osm_building_relation obr ON (obr.member = obp.osm_id)
-         WHERE obp.osm_id >= 0
+         -- Only check for ST_Polygon as we exclude buildings from relations keeping only positive ids
+         WHERE obp.osm_id >= 0 AND ST_GeometryType(obp.geometry) = 'ST_Polygon'
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
