@@ -13,23 +13,19 @@ IMMUTABLE STRICT PARALLEL SAFE;
 -- https://github.com/ClearTables/ClearTables/blob/master/transportation.lua
 CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT, construction TEXT) RETURNS TEXT AS $$
     SELECT CASE
-        WHEN highway IN ('motorway', 'motorway_link') THEN 'motorway'
-        WHEN highway IN ('trunk', 'trunk_link') THEN 'trunk'
-        WHEN highway IN ('primary', 'primary_link') THEN 'primary'
-        WHEN highway IN ('secondary', 'secondary_link') THEN 'secondary'
-        WHEN highway IN ('tertiary', 'tertiary_link') THEN 'tertiary'
-        WHEN highway IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor'
-        WHEN highway IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') OR public_transport IN ('platform') THEN 'path'
-        WHEN highway IN ('service', 'track', 'raceway') THEN highway
+        %%FIELD_MAPPING: class %%
         WHEN highway = 'construction' THEN CASE
           WHEN construction IN ('motorway', 'motorway_link') THEN 'motorway_construction'
           WHEN construction IN ('trunk', 'trunk_link') THEN 'trunk_construction'
           WHEN construction IN ('primary', 'primary_link') THEN 'primary_construction'
           WHEN construction IN ('secondary', 'secondary_link') THEN 'secondary_construction'
           WHEN construction IN ('tertiary', 'tertiary_link') THEN 'tertiary_construction'
-          WHEN construction = '' OR construction IN ('unclassified', 'residential', 'living_street', 'road') THEN 'minor_construction'
-          WHEN construction IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor') OR public_transport IN ('platform') THEN 'path_construction'
-          WHEN construction IN ('service', 'track', 'raceway') THEN CONCAT(highway, '_construction')
+          WHEN construction IN ('', 'unclassified', 'residential', 'living_street', 'road') THEN 'minor_construction'
+          WHEN construction IN ('pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor')
+              OR public_transport = 'platform' THEN 'path_construction'
+          WHEN construction = 'service' THEN 'service_construction'
+          WHEN construction = 'track' THEN 'track_construction'
+          WHEN construction = 'raceway' THEN 'raceway_construction'
           ELSE NULL
         END
         ELSE NULL

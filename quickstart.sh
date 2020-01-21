@@ -35,8 +35,6 @@ MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
-: "${TOOLS_VERSION:=$(cat "$(dirname "$0")/TOOLS_VERSION")}"
-export TOOLS_VERSION
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit,
 # as well as pass any other common parameters.
@@ -251,7 +249,10 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
-docker-compose run $DC_OPTS openmaptiles-tools import-sql
+# If the output contains a WARNING, stop further processing
+# Adapted from https://unix.stackexchange.com/questions/307562
+docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
+    awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

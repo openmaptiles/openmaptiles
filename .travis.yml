@@ -6,5 +6,6 @@ services:
   - docker
 
 script:
+  - set -e
   - TEST_MODE=yes make generate-devdoc
   - ./quickstart.sh
