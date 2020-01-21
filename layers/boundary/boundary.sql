@@ -1,3 +1,114 @@
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen1 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen1
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen1 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen1 AS (
+  SELECT ST_Simplify(geometry, 10) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 10
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen1_idx ON osm_border_linestring_gen1 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen2 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen2
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen2 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen2 AS (
+  SELECT ST_Simplify(geometry, 20) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 10
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen2_idx ON osm_border_linestring_gen2 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen3 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen3
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen3 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen3 AS (
+  SELECT ST_Simplify(geometry, 40) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 8
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen3_idx ON osm_border_linestring_gen3 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen4 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen4
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen4 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen4 AS (
+  SELECT ST_Simplify(geometry, 80) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 6
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen4_idx ON osm_border_linestring_gen4 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen5 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen5
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen5 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen5 AS (
+  SELECT ST_Simplify(geometry, 160) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 6
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen5_idx ON osm_border_linestring_gen5 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen6 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen6
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen6 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen6 AS (
+  SELECT ST_Simplify(geometry, 300) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 4
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen6_idx ON osm_border_linestring_gen6 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen7 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen7
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen7 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen7 AS (
+  SELECT ST_Simplify(geometry, 600) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 4
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen7_idx ON osm_border_linestring_gen7 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen8 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen8
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen8 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen8 AS (
+  SELECT ST_Simplify(geometry, 1200) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 4
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen8_idx ON osm_border_linestring_gen8 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen9 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen9
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen9 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen9 AS (
+  SELECT ST_Simplify(geometry, 2400) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 4
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen9_idx ON osm_border_linestring_gen9 USING gist (geometry);
+
+-- This statement can be deleted after the border importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_border_linestring_gen10 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_border_linestring -> osm_border_linestring_gen10
+DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen10 CASCADE;
+CREATE MATERIALIZED VIEW osm_border_linestring_gen10 AS (
+  SELECT ST_Simplify(geometry, 4800) AS geometry, osm_id, admin_level, dividing_line, disputed, maritime
+  FROM osm_border_linestring
+  WHERE admin_level <= 2
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_border_linestring_gen10_idx ON osm_border_linestring_gen10 USING gist (geometry);
+
+
 CREATE OR REPLACE FUNCTION edit_name(name VARCHAR) RETURNS TEXT AS $$
     SELECT CASE
         WHEN POSITION(' at ' in name) > 0
