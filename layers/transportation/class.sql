@@ -3,7 +3,6 @@ CREATE OR REPLACE FUNCTION brunnel(is_bridge BOOL, is_tunnel BOOL, is_ford BOOL)
         WHEN is_bridge THEN 'bridge'
         WHEN is_tunnel THEN 'tunnel'
         WHEN is_ford THEN 'ford'
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
@@ -24,9 +23,7 @@ CREATE OR REPLACE FUNCTION highway_class(highway TEXT, public_transport TEXT, co
           WHEN construction = 'service' THEN 'service_construction'
           WHEN construction = 'track' THEN 'track_construction'
           WHEN construction = 'raceway' THEN 'raceway_construction'
-          ELSE NULL
         END
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
@@ -36,7 +33,6 @@ CREATE OR REPLACE FUNCTION railway_class(railway TEXT) RETURNS TEXT AS $$
     SELECT CASE
         WHEN railway IN ('rail', 'narrow_gauge', 'preserved', 'funicular') THEN 'rail'
         WHEN railway IN ('subway', 'light_rail', 'monorail', 'tram') THEN 'transit'
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
@@ -45,7 +41,6 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 CREATE OR REPLACE FUNCTION service_value(service TEXT) RETURNS TEXT AS $$
     SELECT CASE
         WHEN service IN ('spur', 'yard', 'siding', 'crossover', 'driveway', 'alley', 'parking_aisle') THEN service
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 
@@ -55,6 +50,5 @@ CREATE OR REPLACE FUNCTION surface_value(surface TEXT) RETURNS TEXT AS $$
     SELECT CASE
         WHEN surface IN ('paved', 'asphalt', 'cobblestone', 'concrete', 'concrete:lanes', 'concrete:plates', 'metal', 'paving_stones', 'sett', 'unhewn_cobblestone', 'wood') THEN 'paved'
         WHEN surface IN ('unpaved', 'compacted', 'dirt', 'earth', 'fine_gravel', 'grass', 'grass_paver', 'gravel', 'gravel_turf', 'ground', 'ice', 'mud', 'pebblestone', 'salt', 'sand', 'snow', 'woodchips') THEN 'unpaved'
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE STRICT;

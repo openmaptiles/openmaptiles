@@ -23,11 +23,10 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
       CASE
           WHEN highway IS NOT NULL AND highway_class(highway, '', construction) = 'path'
               THEN highway
-          ELSE NULL
       END AS subclass,
       NULLIF(layer, 0) AS layer,
       "level",
-      CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor
+      CASE WHEN indoor=TRUE THEN 1 END as indoor
     FROM (
 
         -- etldoc: osm_transportation_name_linestring_gen4 ->  layer_transportation_name:z6

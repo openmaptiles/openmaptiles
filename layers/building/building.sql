@@ -112,7 +112,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            WHEN 'sandstone' THEN '#b4a995' -- same as stone
            WHEN 'clay' THEN '#9d8b75' -- same as mud
        END) AS colour,
-      CASE WHEN hide_3d THEN TRUE ELSE NULL::boolean END AS hide_3d
+      CASE WHEN hide_3d THEN TRUE END AS hide_3d
     FROM (
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
         SELECT

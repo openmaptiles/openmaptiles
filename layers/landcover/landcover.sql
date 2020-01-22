@@ -12,7 +12,6 @@
 CREATE OR REPLACE FUNCTION landcover_class(subclass VARCHAR) RETURNS TEXT AS $$
     SELECT CASE
         %%FIELD_MAPPING: class %%
-        ELSE NULL
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
