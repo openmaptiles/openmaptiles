@@ -172,12 +172,10 @@ start-postserve: db-start
 generate-qareports:
 	./qa/run.sh
 
-build/devdoc:
-	mkdir -p ./build/devdoc
-
 # generate all etl and mapping graphs
 .PHONY: generate-devdoc
 generate-devdoc:
+	mkdir -p ./build/devdoc && \
 	docker-compose run $(DC_USER_OPTS) openmaptiles-tools-latest sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
