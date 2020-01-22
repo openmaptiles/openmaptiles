@@ -178,7 +178,7 @@ build/devdoc:
 # generate all etl and mapping graphs
 .PHONY: generate-devdoc
 generate-devdoc:
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools sh -c \
+	docker-compose run $(DC_USER_OPTS) openmaptiles-tools-latest sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
