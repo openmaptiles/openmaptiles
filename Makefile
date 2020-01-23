@@ -116,7 +116,8 @@ import-osmsql: db-start all
 
 .PHONY: import-borders
 import-borders: db-start
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
+	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
+	docker-compose run $(DC_OPTS) openmaptiles-tools-latest import-borders
 
 .PHONY: generate-tiles
 generate-tiles: db-start all
