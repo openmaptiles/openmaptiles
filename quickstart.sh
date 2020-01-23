@@ -205,10 +205,10 @@ docker-compose run $DC_OPTS import-water
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osmborder"
+echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/bin/import-borders"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
-echo "      : Thank you: https://github.com/pnorman/osmborder "
-docker-compose run $DC_OPTS import-osmborder
+echo "      : Thank you: https://github.com/pnorman/osmborder"
+make import-borders
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

@@ -103,7 +103,7 @@ Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/),
 docker-compose run import-water
 docker-compose run import-natural-earth
 docker-compose run import-lakelines
-docker-compose run import-osmborder
+make import-borders
 ```
 
 [Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.

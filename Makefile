@@ -226,6 +226,11 @@ list:
 download-geofabrik-list:
 	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
 
+.PHONY: import-borders
+import-borders:
+	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
+	docker-compose run $(DC_OPTS) openmaptiles-tools-latest import-borders
+
 .PHONY: import-wikidata
 import-wikidata:
 	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
