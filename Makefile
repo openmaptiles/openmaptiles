@@ -65,7 +65,8 @@ build/mapping.yaml: build
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
 
 build/tileset.sql: build
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > $@
+	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
+	docker-compose run $(DC_OPTS) openmaptiles-tools-latest generate-sql openmaptiles.yaml > $@
 
 .PHONY: clean
 clean:
