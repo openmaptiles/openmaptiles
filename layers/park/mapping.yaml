@@ -53,7 +53,7 @@ tables:
   park_polygon:
     type: polygon
     _resolve_wikidata: false
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

@@ -49,7 +49,7 @@ tables:
 
   # etldoc: imposm3 -> osm_water_polygon
   water_polygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

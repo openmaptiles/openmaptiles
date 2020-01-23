@@ -159,7 +159,7 @@ tables:
   highway_linestring:
     type: linestring
     _resolve_wikidata: false
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -233,7 +233,7 @@ tables:
   railway_linestring:
     type: linestring
     _resolve_wikidata: false
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -276,7 +276,7 @@ tables:
   aerialway_linestring:
     type: linestring
     _resolve_wikidata: false
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -309,7 +309,7 @@ tables:
   shipway_linestring:
     type: linestring
     _resolve_wikidata: false
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -340,7 +340,7 @@ tables:
 # etldoc: imposm3 -> osm_highway_polygon
   highway_polygon:
     type: polygon
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

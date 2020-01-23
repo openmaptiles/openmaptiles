@@ -8,7 +8,7 @@ generalized_tables:
 tables:
   # etldoc: imposm3 -> osm_building_polygon
   building_polygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -69,7 +69,7 @@ tables:
 
   # etldoc: imposm3 -> osm_building_street
   building_street:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -161,7 +161,7 @@ tables:
 
   # etldoc: imposm3 -> osm_building_associatedstreet
   building_associatedstreet:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -253,7 +253,7 @@ tables:
 
   # etldoc: imposm3 -> osm_building_relation
   building_relation:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -345,7 +345,7 @@ tables:
 
   # etldoc: imposm3 -> osm_building_multipolygon
   building_multipolygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

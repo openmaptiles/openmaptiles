@@ -7,9 +7,11 @@ DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
 # If running in the test mode, compare files rather than copy them
 TEST_MODE?=no
 ifeq ($(TEST_MODE),yes)
-  COPY_TO_GIT=diff
+  # create images in ./build/devdoc and compare them to ./layers
+  GRAPH_PARAMS=./build/devdoc ./layers
 else
-  COPY_TO_GIT=cp
+  # update graphs in the ./layers dir
+  GRAPH_PARAMS=./layers
 endif
 
 .PHONY: all
@@ -36,9 +38,7 @@ help:
 	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
 	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
-	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./build/devdoc]"
-	@echo "  make etl-graph                       # hint for generating a single etl graph"
-	@echo "  make mapping-graph                   # hint for generating a single mapping graph"
+	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./layers/...]"
 	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
 	@echo "  make import-osm-dev                  # start import-osm /bin/bash terminal (imposm3)"
 	@echo "  make clean-docker                    # remove docker containers, PG data volume"
@@ -172,41 +172,13 @@ start-postserve: db-start
 generate-qareports:
 	./qa/run.sh
 
-build/devdoc:
-	mkdir -p ./build/devdoc
-
-
-layers = $(notdir $(wildcard layers/*)) # all layers
-
-.PHONY: etl-graph
-etl-graph:
-	@echo 'Use'
-	@echo '   make etl-graph-[layer]	to generate etl graph for [layer]'
-	@echo '   example: make etl-graph-poi'
-	@echo 'Valid layers: $(layers)'
-
-# generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
-etl-graph-%: layers/% build/devdoc
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
-	@$(COPY_TO_GIT) ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
-
-
-mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
-
-# generate mapping graph for a certain layer, e.g. mapping-graph-building, mapping-graph-place
-.PHONY: mapping-graph
-mapping-graph:
-	@echo 'Use'
-	@echo '   make mapping-graph-[layer]	to generate mapping graph for [layer]'
-	@echo '   example: make mapping-graph-poi'
-	@echo 'Valid layers: $(mappingLayers)'
-
-mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
-	@$(COPY_TO_GIT) ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
-
 # generate all etl and mapping graphs
-generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
+.PHONY: generate-devdoc
+generate-devdoc:
+	mkdir -p ./build/devdoc && \
+	docker-compose run $(DC_USER_OPTS) openmaptiles-tools-latest sh -c \
+			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
+			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
 .PHONY: import-sql-dev
 import-sql-dev:

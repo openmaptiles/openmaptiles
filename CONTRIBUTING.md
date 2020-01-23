@@ -32,15 +32,11 @@ Your pull request must:
  * Use clear commit messages.
  * Be possible to merge automatically.
 
-When you modify rules of importing data in `mapping.yaml` or `*.sql`, please update also:
+When you modify import data rules in `mapping.yaml` or `*.sql`, please update:
 
 1. field description in `[layer].yaml`
 2. comments starting with `#etldoc`
-3. if needed, generate new `mapping_diagram.png` or `etl_diagram.png` using commands below:
-```
-make mapping-graph-[layer]
-make etl-graph-[layer]
-```
+3. regenerate documentation graphs with `make generate-devdoc`
 4. update layer description on https://openmaptiles.org/schema/ (https://github.com/openmaptiles/www.openmaptiles.org/tree/master/layers)
 5. check if OMT styles are affected by the PR and if there is a need for style updates
 
