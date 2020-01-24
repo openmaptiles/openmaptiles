@@ -71,8 +71,10 @@ layer:
             construction: ['', 'unclassified', 'residential', 'living_street', 'road']
         path_construction:
           __AND__:
-            highway: construction
-            construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+            - highway: construction
+            - __OR__:
+                construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+                public_transport: platform
         service_construction:
           __AND__:
             highway: construction
