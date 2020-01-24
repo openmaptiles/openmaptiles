@@ -116,8 +116,7 @@ import-osmsql: db-start all
 
 .PHONY: import-borders
 import-borders: db-start
-	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
-	docker-compose run $(DC_OPTS) openmaptiles-tools-latest import-borders
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
 
 .PHONY: generate-tiles
 generate-tiles: db-start all
@@ -182,7 +181,7 @@ generate-qareports:
 .PHONY: generate-devdoc
 generate-devdoc:
 	mkdir -p ./build/devdoc && \
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools-latest sh -c \
+	docker-compose run $(DC_USER_OPTS) openmaptiles-tools sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
@@ -206,8 +205,7 @@ download-geofabrik-list:
 
 .PHONY: import-wikidata
 import-wikidata:
-	# FIXME:   switch to openmaptiles-tools after v3.2+ is published
-	docker-compose run $(DC_OPTS) openmaptiles-tools-latest import-wikidata openmaptiles.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata openmaptiles.yaml
 
 .PHONY: psql-list-tables
 psql-list-tables:
