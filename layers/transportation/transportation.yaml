@@ -68,7 +68,7 @@ layer:
         minor_construction:
           __AND__:
             highway: construction
-            construction: ['unclassified', 'residential', 'living_street', 'road']
+            construction: ['', 'unclassified', 'residential', 'living_street', 'road']
         path_construction:
           __AND__:
             highway: construction
