@@ -36,6 +36,6 @@ $$
     round(substring(ele from E'^(-?\\d+)(\\D|$)')::int*3.2808399)::int AS ele_ft
   FROM osm_aerodrome_label_point
   WHERE geometry && bbox AND zoom_level >= 10;
-$$ 
-LANGUAGE SQL 
+$$
+LANGUAGE SQL
 IMMUTABLE PARALLEL SAFE;
