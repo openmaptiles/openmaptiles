@@ -69,6 +69,7 @@ services:
       - postgres_conn
     volumes:
       - .:/tileset
+      - ./data:/import
       - ./build:/sql
   openmaptiles-tools-latest:
     # This target exists for experimental tools that have not yet been published.
