@@ -77,6 +77,9 @@ tables:
     - name: boundary
       key: boundary
       type: string
+    - name: protection_title
+      key: protection_title
+      type: string
     - name: area
       type: area
     mapping:
@@ -84,3 +87,4 @@ tables:
       - nature_reserve
       boundary:
       - national_park
+      - protected_area
