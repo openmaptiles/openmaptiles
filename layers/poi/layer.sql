@@ -15,7 +15,7 @@ RETURNS REAL AS $$
                 0.0
         END;
     END
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$ LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION osm_hash_from_imposm(imposm_id bigint)
 RETURNS bigint AS $$
@@ -24,7 +24,7 @@ RETURNS bigint AS $$
         WHEN imposm_id < 0 THEN  (-imposm_id) * 10 + 1 -- Way
         ELSE imposm_id * 10 -- Node
     END::bigint;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION global_id_from_imposm(imposm_id bigint)
 RETURNS TEXT AS $$
@@ -35,14 +35,14 @@ RETURNS TEXT AS $$
              ELSE CONCAT('node:', imposm_id)
         END
     );
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
 
 
--- etldoc: layer_poi[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
-
-CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int, mapping_key text) AS $$
+CREATE OR REPLACE FUNCTION all_pois(zoom_level integer)
+RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text,
+    name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer,
+    level integer, indoor integer, mapping_key text)
+AS $$
     SELECT osm_id_hash AS osm_id, global_id,
         geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
@@ -62,10 +62,6 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
         NULLIF(layer, 0) AS layer,
         "level",
         CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
-        row_number() OVER (
-            PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY poi_display_weight(name, subclass, mapping_key, tags) DESC
-        )::int AS "rank",
         mapping_key
     FROM (
         -- etldoc: osm_poi_point ->  layer_poi:z12
@@ -74,8 +70,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
-            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
-                AND zoom_level BETWEEN 12 AND 13
+            WHERE zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
                     OR subclass IN ('halt', 'ferry_terminal'))
         UNION ALL
@@ -85,8 +80,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_point
-            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
-                AND zoom_level >= 14
+            WHERE zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
 
         UNION ALL
@@ -97,8 +91,7 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
-            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
-                AND zoom_level BETWEEN 12 AND 13
+            WHERE zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
                     OR subclass IN ('halt', 'ferry_terminal'))
 
@@ -109,9 +102,29 @@ RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_
             osm_hash_from_imposm(osm_id) AS osm_id_hash,
             global_id_from_imposm(osm_id) as global_id
         FROM osm_poi_polygon
-            WHERE CASE WHEN bbox IS NULL THEN TRUE ELSE geometry && bbox END
-                AND zoom_level >= 14
+            WHERE zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
     ;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
+
+-- etldoc: layer_poi[shape=record fillcolor=lightpink, style="rounded,filled",
+-- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
+CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
+RETURNS TABLE(osm_id bigint, global_id text, geometry geometry, name text, name_en text,
+    name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer,
+    level integer, indoor integer, mapping_key text, "rank" int)
+AS $$
+    SELECT *,
+        row_number() OVER (
+            PARTITION BY LabelGrid(geometry, 100 * pixel_width)
+            ORDER BY poi_display_weight(name, subclass, mapping_key, tags) DESC
+        )::int AS "rank"
+    FROM (
+        -- etldoc: osm_poi_point ->  layer_poi:z12
+        -- etldoc: osm_poi_point ->  layer_poi:z13
+        SELECT *
+        FROM all_pois(zoom_level)
+        WHERE geometry && bbox
+    ) as all_pois;
+$$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
