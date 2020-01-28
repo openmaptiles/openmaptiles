@@ -39,8 +39,7 @@ githash=$( git rev-parse HEAD )
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit,
 # as well as pass any other common parameters.
 # In the future this should use -u $(id -u "$USER"):$(id -g "$USER") instead of running docker as root.
-DC_OPTS="--rm"
-DC_USER_OPTS="$DC_OPTS -u $(id -u "$USER"):$(id -g "$USER")"
+DC_OPTS="--rm -u $(id -u "$USER"):$(id -g "$USER")"
 
 log_file=./quickstart.log
 rm -f $log_file
@@ -199,7 +198,7 @@ echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ i
 echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
 echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
 echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-docker-compose run $DC_USER_OPTS import-water
+docker-compose run $DC_OPTS import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -207,7 +206,7 @@ echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL 
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
-docker-compose run $DC_USER_OPTS import-natural-earth
+docker-compose run $DC_OPTS import-natural-earth
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -215,7 +214,7 @@ echo "====> : Start importing OpenStreetMap Lakelines data "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
 echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
 echo "      : Data license: .. "
-docker-compose run $DC_USER_OPTS import-lakelines
+docker-compose run $DC_OPTS import-lakelines
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -241,7 +240,7 @@ echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
-docker-compose run $DC_USER_OPTS openmaptiles-tools import-sql | \
+docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
     awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
@@ -259,7 +258,7 @@ make import-wikidata
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
-docker-compose run $DC_USER_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -274,12 +273,12 @@ echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
-docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $DC_USER_OPTS generate-vectortiles
+docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $DC_OPTS generate-vectortiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Add special metadata to mbtiles! "
-docker-compose run $DC_USER_OPTS openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run $DC_OPTS openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -317,13 +316,6 @@ echo "--------------------------------------------------------------------------
 echo "====> : (disk space) We have created a lot of docker images: "
 echo "      : Hint: you can remove with:  docker rmi IMAGE "
 docker images | grep openmaptiles
-
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
-echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
-docker volume ls -q | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

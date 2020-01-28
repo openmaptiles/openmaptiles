@@ -1,8 +1,6 @@
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
-DC_OPTS?=--rm
-
-# container runs as the current user rather than root (so that created files are not root-owned)
-DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+# Containers run as the current user rather than root (so that created files are not root-owned)
+DC_OPTS?=--rm -u $$(id -u $${USER}):$$(id -g $${USER})
 
 # If running in the test mode, compare files rather than copy them
 TEST_MODE?=no
@@ -55,33 +53,35 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	mkdir -p build && mkdir -p data
+	mkdir -p build && mkdir -p data && mkdir -p pgdata && mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
 
 build/mapping.yaml: init-dirs
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
 
 build/tileset.sql: init-dirs
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > $@
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > $@
 
 .PHONY: clean
 clean:
-	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
+	rm -rf build
 
 .PHONY: clean-docker
 clean-docker:
 	docker-compose down -v --remove-orphans
 	docker-compose rm -fv
 	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
+	rm -rf pgdata
+	rm -rf cache
 
 .PHONY: db-start
 db-start:
 	docker-compose up -d postgres
 	@echo "Wait for PostgreSQL to start..."
-	docker-compose run $(DC_USER_OPTS) import-osm  ./pgwait.sh
+	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
 
 .PHONY: download-geofabrik
 download-geofabrik: init-dirs
@@ -89,7 +89,7 @@ download-geofabrik: init-dirs
 	@echo Download area:   $(area)
 	@echo [[ example: make download-geofabrik area=albania ]]
 	@echo [[ list areas:  make download-geofabrik-list     ]]
-	docker-compose run $(DC_USER_OPTS) import-osm ./download-geofabrik.sh $(area)
+	docker-compose run $(DC_OPTS) import-osm ./download-geofabrik.sh $(area)
 	ls -la ./data/$(area).*
 	@echo "Generated config file: ./data/docker-compose-config.yml"
 	@echo " "
@@ -98,35 +98,35 @@ download-geofabrik: init-dirs
 
 .PHONY: psql
 psql: db-start
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh
 
 .PHONY: import-osm
 import-osm: db-start all
-	docker-compose run $(DC_USER_OPTS) import-osm
+	docker-compose run $(DC_OPTS) import-osm
 
 .PHONY: import-sql
 import-sql: db-start all
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools import-sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: import-osmsql
 import-osmsql: db-start all
-	docker-compose run $(DC_USER_OPTS) import-osm
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools import-sql
+	docker-compose run $(DC_OPTS) import-osm
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: import-borders
 import-borders: db-start
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools import-borders
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
 
 .PHONY: generate-tiles
 generate-tiles: init-dirs db-start all
 	rm -rf data/tiles.mbtiles
 	if [ -f ./data/docker-compose-config.yml ]; then \
 		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml \
-					   run $(DC_USER_OPTS) generate-vectortiles; \
+					   run $(DC_OPTS) generate-vectortiles; \
 	else \
-		docker-compose run $(DC_USER_OPTS) generate-vectortiles; \
+		docker-compose run $(DC_OPTS) generate-vectortiles; \
 	fi
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
@@ -147,7 +147,7 @@ start-tileserver: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_USER_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 .PHONY: start-postserve
 start-postserve: db-start
@@ -170,7 +170,7 @@ start-postserve: db-start
 	@echo "***********************************************************"
 	@echo " "
 	docker rm -f maputnik_editor || true
-	docker run $(DC_USER_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
+	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
 .PHONY: generate-qareports
 generate-qareports:
@@ -180,17 +180,17 @@ generate-qareports:
 .PHONY: generate-devdoc
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools sh -c \
+	docker-compose run $(DC_OPTS) openmaptiles-tools sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
 .PHONY: import-sql-dev
 import-sql-dev:
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools bash
+	docker-compose run $(DC_OPTS) openmaptiles-tools bash
 
 .PHONY: import-osm-dev
 import-osm-dev:
-	docker-compose run $(DC_USER_OPTS) import-osm /bin/bash
+	docker-compose run $(DC_OPTS) import-osm /bin/bash
 
 # the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
 .PHONY: list
@@ -198,19 +198,19 @@ list: download-geofabrik-list
 
 .PHONY: download-geofabrik-list
 download-geofabrik-list:
-	docker-compose run $(DC_USER_OPTS) import-osm ./download-geofabrik-list.sh
+	docker-compose run $(DC_OPTS) import-osm ./download-geofabrik-list.sh
 
 .PHONY: import-wikidata
 import-wikidata:
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools import-wikidata openmaptiles.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata openmaptiles.yaml
 
 .PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
 .PHONY: forced-clean-sql
 forced-clean-sql:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
 		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
 		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
 		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
@@ -218,27 +218,27 @@ forced-clean-sql:
 
 .PHONY: list-views
 list-views:
-	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	@docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables:
-	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	@docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
 psql-list-tables:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
 .PHONY: psql-vacuum-analyze
 psql-vacuum-analyze:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
 .PHONY: psql-analyze
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
+	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
 .PHONY: list-docker-images
 list-docker-images:
