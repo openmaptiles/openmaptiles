@@ -81,7 +81,7 @@ clean-docker:
 db-start:
 	docker-compose up -d postgres
 	@echo "Wait for PostgreSQL to start..."
-	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
+	docker-compose run $(DC_USER_OPTS) import-osm  ./pgwait.sh
 
 .PHONY: download-geofabrik
 download-geofabrik: init-dirs
@@ -206,11 +206,11 @@ import-wikidata:
 
 .PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
+	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
 .PHONY: forced-clean-sql
 forced-clean-sql:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh \
+	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
 		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
 		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
 		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
@@ -218,27 +218,27 @@ forced-clean-sql:
 
 .PHONY: list-views
 list-views:
-	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -A -F"," -P pager=off -P footer=off \
+	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables:
-	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -A -F"," -P pager=off -P footer=off \
+	@docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
 psql-list-tables:
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -P pager=off -c "\d+"
+	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
 .PHONY: psql-vacuum-analyze
 psql-vacuum-analyze:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
 .PHONY: psql-analyze
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
-	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
+	docker-compose run $(DC_USER_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
 .PHONY: list-docker-images
 list-docker-images:
