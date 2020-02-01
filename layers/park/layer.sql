@@ -122,4 +122,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, name text, name_en t
         WHERE zoom_level >= 14 AND geometry_point && bbox
     ) AS park_point
     ) AS park_all;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

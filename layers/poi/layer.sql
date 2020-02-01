@@ -70,4 +70,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         ) as poi_union
     ORDER BY "rank"
     ;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
