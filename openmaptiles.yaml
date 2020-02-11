@@ -28,7 +28,7 @@ tileset:
   pixel_scale: 256
   languages:
     - am # Amharic
-    - ar # Arabic  
+    - ar # Arabic
     - az # Azerbaijani, Latin
     - be # Belarusian
     - bg # Bulgarian
