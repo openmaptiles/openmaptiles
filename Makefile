@@ -53,7 +53,7 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	mkdir -p build && mkdir -p data && mkdir -p pgdata && mkdir -p cache
+	mkdir -p build && mkdir -p data && mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
@@ -74,7 +74,6 @@ clean-docker:
 	docker-compose down -v --remove-orphans
 	docker-compose rm -fv
 	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
-	rm -rf pgdata
 	rm -rf cache
 
 .PHONY: db-start
@@ -82,6 +81,10 @@ db-start:
 	docker-compose up -d postgres
 	@echo "Wait for PostgreSQL to start..."
 	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
+
+.PHONY: db-stop
+db-stop:
+	docker-compose stop postgres
 
 .PHONY: download-geofabrik
 download-geofabrik: init-dirs
@@ -109,13 +112,23 @@ import-sql: db-start all
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: import-osmsql
-import-osmsql: db-start all
-	docker-compose run $(DC_OPTS) import-osm
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
+import-osmsql: db-start all import-osm import-sql
 
 .PHONY: import-borders
 import-borders: db-start
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
+
+.PHONY: import-water
+import-water: db-start
+	docker-compose run $(DC_OPTS) import-water
+
+.PHONY: import-natural-earth
+import-natural-earth: db-start
+	docker-compose run $(DC_OPTS) import-natural-earth
+
+.PHONY: import-lakelines
+import-lakelines: db-start
+	docker-compose run $(DC_OPTS) import-lakelines
 
 .PHONY: generate-tiles
 generate-tiles: init-dirs db-start all

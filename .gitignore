@@ -14,9 +14,6 @@ data/*
 # generated source files
 build/*
 
-# PostgreSQL data
-pgdata/*
-
 # Import cache
 cache/*
 

@@ -183,7 +183,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
 echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-docker-compose up -d postgres
+make db-start
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -198,7 +198,7 @@ echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ i
 echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
 echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
 echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-docker-compose run $DC_OPTS import-water
+make import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -206,7 +206,7 @@ echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL 
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
-docker-compose run $DC_OPTS import-natural-earth
+make import-natural-earth
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -214,7 +214,7 @@ echo "====> : Start importing OpenStreetMap Lakelines data "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
 echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
 echo "      : Data license: .. "
-docker-compose run $DC_OPTS import-lakelines
+make import-lakelines
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -240,7 +240,7 @@ echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
-docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
+make import-sql | \
     awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
@@ -272,18 +272,12 @@ echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-til
 echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
-
-docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $DC_OPTS generate-vectortiles
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Add special metadata to mbtiles! "
-docker-compose run $DC_OPTS openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+make generate-tiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
-docker-compose stop postgres
+make db-stop
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
