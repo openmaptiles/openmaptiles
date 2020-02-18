@@ -9,6 +9,10 @@ DROP TRIGGER IF EXISTS trigger_refresh ON building_polygon.updates;
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation (building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation (member) WHERE role = 'outline';
 
+-- Replace the index of imposm by a custom index
+DROP INDEX IF EXISTS osm_building_polygon_geom;
+CREATE INDEX IF NOT EXISTS osm_building_polygon_idx ON osm_building_polygon USING gist (geometry) WHERE ST_GeometryType(geometry) IN ('ST_Polygon', 'ST_MultiPolygon');
+
 CREATE OR REPLACE VIEW osm_buildings_relation AS
     -- etldoc: osm_building_relation -> layer_building:z14_
     -- Buildings built from relations
