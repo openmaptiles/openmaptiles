@@ -57,7 +57,7 @@ docker         --version
 docker-compose --version
 
 # based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers
-function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
+function version { echo "$@" | tr -cs '0-9.' '.' | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
 
 COMPOSE_VER=$(docker-compose version --short)
 if [ "$(version "$COMPOSE_VER")" -lt "$(version "$MIN_COMPOSE_VER")" ]; then
