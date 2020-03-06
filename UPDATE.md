@@ -15,7 +15,7 @@ the OSM change feed and import it into the database.
 After each run you should also have a list of tiles that have updated.
 
 ```
-docker-compose run update-osm
+make update-osm
 ```
 
 ### Import Change File
@@ -23,7 +23,7 @@ docker-compose run update-osm
 Given you have a file `changes.osc.gz` in your import folder. Once you ran the import command you should also have a list of tiles that have updated.
 
 ```
-docker-compose run import-osm-diff
+make import-osm-diff
 ```
 
 ## Generate Changed Tiles

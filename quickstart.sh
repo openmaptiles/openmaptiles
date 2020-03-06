@@ -27,7 +27,7 @@ if [ $# -eq 0 ]; then
 else
     osm_area=$1
 fi
-testdata="${osm_area}.osm.pbf"
+testdata="${osm_area}-latest.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
@@ -147,10 +147,6 @@ if [ !  -f "./data/${testdata}" ]; then
     make download-geofabrik "area=${osm_area}"
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Osm metadata : $testdata"
-    cat ./data/osmstat.txt
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
     echo "====> : Generated docker-compose config"
     cat ./data/docker-compose-config.yml
 else
@@ -258,7 +254,7 @@ make import-wikidata
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
-docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+make test-perf-null
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -289,11 +285,9 @@ md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
 md5sum "./data/${testdata}"                   >> ./data/quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
 md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
-md5sum ./data/osmstat.txt                     >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
-ENDDATE=$(date +"%Y-%m-%dT%H:%M%z")
 if stat --help >/dev/null 2>&1; then
   MODDATE=$(stat -c %y "./data/${testdata}" )
 else
