@@ -14,6 +14,9 @@ data/*
 # generated source files
 build/*
 
+# Import cache
+cache/*
+
 # any IDE files
 .idea/
 .vscode/
