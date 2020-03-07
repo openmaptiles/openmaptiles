@@ -426,7 +426,7 @@ Hints for developers:
   make psql-analyze                    # PostgreSQL: ANALYZE
   make generate-qareports              # generate reports [./build/qareports]
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
-  make import-sql-dev                  # start import-sql  /bin/bash terminal
+  make tools-dev                  # start import-sql  /bin/bash terminal
   make clean-docker                    # remove docker containers, PG data volume
   make forced-clean-sql                # drop all PostgreSQL tables for clean environment
   make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)

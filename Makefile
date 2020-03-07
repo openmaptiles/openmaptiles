@@ -37,7 +37,7 @@ help:
 	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
 	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./layers/...]"
-	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
+	@echo "  make tools-dev                       # start openmaptiles-tools /bin/bash terminal"
 	@echo "  make clean-docker                    # remove docker containers, PG data volume"
 	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment"
 	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
@@ -114,7 +114,7 @@ import-osm-diff: db-start all
 
 .PHONY: update-osm
 update-osm: db-start all
-	docker-compose run $(DC_OPTS) openmaptiles-tools update-osm
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-update
 
 .PHONY: import-sql
 import-sql: db-start all
@@ -209,8 +209,8 @@ generate-devdoc: init-dirs
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
-.PHONY: import-sql-dev
-import-sql-dev:
+.PHONY: tools-dev
+tools-dev:
 	docker-compose run $(DC_OPTS) openmaptiles-tools bash
 
 # the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command

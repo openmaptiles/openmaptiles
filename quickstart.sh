@@ -36,11 +36,6 @@ STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
 
-# Options to run with docker and docker-compose - ensure the container is destroyed on exit,
-# as well as pass any other common parameters.
-# In the future this should use -u $(id -u "$USER"):$(id -g "$USER") instead of running docker as root.
-DC_OPTS="--rm -u $(id -u "$USER"):$(id -g "$USER")"
-
 log_file=./quickstart.log
 rm -f $log_file
 echo " "
@@ -138,17 +133,12 @@ echo "--------------------------------------------------------------------------
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
-if [ !  -f "./data/${testdata}" ]; then
+if [[ ! -f "./data/${testdata}" || ! -f "./data/docker-compose-config.yml" ]]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "====> : Downloading testdata $testdata"
-    rm -f ./data/*
-    #wget $testdataurl  -P ./data
+    rm -rf ./data/*
     make download-geofabrik "area=${osm_area}"
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
-    echo "====> : Generated docker-compose config"
-    cat ./data/docker-compose-config.yml
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
@@ -172,7 +162,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
-make
+make all
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -279,12 +269,14 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
-md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
-md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
-md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
-md5sum "./data/${testdata}"                   >> ./data/quickstart_checklist.chk
-md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
-md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
+{
+  md5sum build/mapping.yaml ;
+  md5sum build/tileset.sql ;
+  md5sum build/openmaptiles.tm2source/data.yml ;
+  md5sum "./data/${testdata}" ;
+  md5sum ./data/tiles.mbtiles ;
+  md5sum ./data/docker-compose-config.yml;
+} >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)

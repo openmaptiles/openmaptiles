@@ -1,6 +1,12 @@
 version: "2"
+
 volumes:
   pgdata:
+
+networks:
+  postgres_conn:
+    driver: bridge
+
 services:
   postgres:
     image: "openmaptiles/postgis:${TOOLS_VERSION}"
@@ -116,7 +122,3 @@ services:
       - "8090:8090"
     volumes:
       - .:/tileset
-
-networks:
-  postgres_conn:
-    driver: bridge
