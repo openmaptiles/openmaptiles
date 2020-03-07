@@ -105,8 +105,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
     echo "system memory (GB): ${mem}"
     grep SwapTotal /proc/meminfo
-    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)"
-    cat /proc/meminfo  | grep Free
+    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
+    grep Free /proc/meminfo
 else
     echo " "
     echo "Warning : Platforms other than Linux are less tested"
