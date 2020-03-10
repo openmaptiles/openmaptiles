@@ -13,7 +13,7 @@ else
 endif
 
 .PHONY: all
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
 
 .PHONY: help
 help:
@@ -38,8 +38,10 @@ help:
 	@echo "  make generate-qareports              # generate reports [./build/qareports]"
 	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./layers/...]"
 	@echo "  make tools-dev                       # start openmaptiles-tools /bin/bash terminal"
-	@echo "  make clean-docker                    # remove docker containers, PG data volume"
-	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment"
+	@echo "  make db-destroy                      # remove docker containers and PostgreSQL data volume"
+	@echo "  make db-start                        # start PostgreSQL, creating it if it doesn't exist"
+	@echo "  make db-start-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
+	@echo "  make db-stop                         # stop PostgreSQL database without destroying the data"
 	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
@@ -61,15 +63,16 @@ build/openmaptiles.tm2source/data.yml: init-dirs
 build/mapping.yaml: init-dirs
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
 
-build/tileset.sql: init-dirs
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > $@
+.PHONY: build-sql
+build-sql: init-dirs
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml 
 
 .PHONY: clean
 clean:
 	rm -rf build
 
-.PHONY: clean-docker
-clean-docker:
+.PHONY: db-destroy
+db-destroy:
 	docker-compose down -v --remove-orphans
 	docker-compose rm -fv
 	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
@@ -77,9 +80,13 @@ clean-docker:
 
 .PHONY: db-start
 db-start:
-	docker-compose up -d postgres
+	docker-compose up --no-recreate -d postgres
 	@echo "Wait for PostgreSQL to start..."
 	docker-compose run $(DC_OPTS) openmaptiles-tools pgwait
+
+.PHONY: db-start-preloaded
+db-start-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+db-start-preloaded: db-start
 
 .PHONY: db-stop
 db-stop:
@@ -120,24 +127,13 @@ update-osm: db-start all
 import-sql: db-start all
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
-.PHONY: import-osmsql
-import-osmsql: db-start all import-osm import-sql
-
 .PHONY: import-borders
 import-borders: db-start
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
 
-.PHONY: import-water
-import-water: db-start
-	docker-compose run $(DC_OPTS) import-water
-
-.PHONY: import-natural-earth
-import-natural-earth: db-start
-	docker-compose run $(DC_OPTS) import-natural-earth
-
-.PHONY: import-lakelines
-import-lakelines: db-start
-	docker-compose run $(DC_OPTS) import-lakelines
+.PHONY: import-data
+import-data: db-start
+	docker-compose run $(DC_OPTS) import-data
 
 .PHONY: generate-tiles
 generate-tiles: init-dirs db-start all
@@ -223,19 +219,11 @@ download-geofabrik-list:
 
 .PHONY: import-wikidata
 import-wikidata:
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata openmaptiles.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /import/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
 	docker-compose run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
-
-.PHONY: forced-clean-sql
-forced-clean-sql:
-	docker-compose run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 \
-		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
-		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
-		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
-		-c "GRANT ALL ON SCHEMA public TO public; COMMENT ON SCHEMA public IS 'standard public schema';"
 
 .PHONY: list-views
 list-views:
@@ -280,6 +268,7 @@ refresh-docker-images:
 	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	#docker-compose pull --ignore-pull-failures
 
 .PHONY: remove-docker-images
 remove-docker-images:

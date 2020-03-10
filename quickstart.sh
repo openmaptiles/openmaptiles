@@ -116,11 +116,11 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers"
-make clean-docker
+make db-destroy
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Checking OpenMapTiles docker images "
+echo "====> : Existing OpenMapTiles docker images. Will use version $(source .env && echo "$TOOLS_VERSION")"
 docker images | grep openmaptiles
 
 echo " "
@@ -166,41 +166,42 @@ make all
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
-echo "      : Source code: https://github.com/openmaptiles/postgis "
-echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-make db-start
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Drop and Recreate PostgreSQL  public schema "
-# Drop all PostgreSQL tables
-# This adds an extra safety belt if the user modifies the docker volume settings
-make forced-clean-sql
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
-echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
-echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-make import-water
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
-echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
-echo "      : Thank you: Natural Earth Contributors! "
-make import-natural-earth
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing OpenStreetMap Lakelines data "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
-echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
-echo "      : Data license: .. "
-make import-lakelines
+if [ $# -eq 0 ] || [ $# -eq 1 ]; then
+  echo "====> : Start PostgreSQL service using postgis image preloaded with this data:"
+  echo "      : * Water data from http://osmdata.openstreetmap.de"
+  echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
+  echo "      : * Natural Earth from http://www.naturalearthdata.com"
+  echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
+  echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
+  echo "      :   includes all data from the import-data image"
+  echo "      :"
+  echo "      : Use two-parameter quickstart to start with an empty database:"
+  echo "      :   ./quickstart.sh albania empty"
+  echo "      : If desired, you can manually import data by one using these commands:"
+  echo "      :   make db-destroy"
+  echo "      :   make start-db"
+  echo "      :   make import-data"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/postgis-preloaded"
+  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  make db-start-preloaded
+else
+  echo "====> : Start PostgreSQL service using empty database and importing all the data:"
+  echo "      : * Water data from http://osmdata.openstreetmap.de"
+  echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
+  echo "      : * Natural Earth from http://www.naturalearthdata.com"
+  echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
+  echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
+  echo "      :   includes all data from the import-data image"
+  echo "      :"
+  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  make db-start
+  make import-data
+fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -263,7 +264,7 @@ make generate-tiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
-make db-stop
+make db-stop POSTGIS_IMAGE=openmaptiles/postgis-preloaded
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
