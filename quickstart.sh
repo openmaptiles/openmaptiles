@@ -159,7 +159,7 @@ make clean
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
+echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/sql/* )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
 make all
@@ -223,7 +223,7 @@ make import-borders
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
+echo "====> : Start SQL postprocessing:  ./build/sql/* -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
@@ -264,16 +264,14 @@ make generate-tiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
-make db-stop POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+make db-stop
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
 {
-  md5sum build/mapping.yaml ;
-  md5sum build/tileset.sql ;
-  md5sum build/openmaptiles.tm2source/data.yml ;
+  find build -type f | sort | xargs md5sum ;
   md5sum "./data/${testdata}" ;
   md5sum ./data/tiles.mbtiles ;
   md5sum ./data/docker-compose-config.yml;

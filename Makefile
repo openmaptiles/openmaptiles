@@ -54,7 +54,7 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	mkdir -p build && mkdir -p data && mkdir -p cache
+	mkdir -p build/sql && mkdir -p data && mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
@@ -65,7 +65,7 @@ build/mapping.yaml: init-dirs
 
 .PHONY: build-sql
 build-sql: init-dirs
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml 
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml --dir ./build/sql
 
 .PHONY: clean
 clean:
@@ -123,17 +123,17 @@ import-osm-diff: db-start all
 update-osm: db-start all
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-update
 
-.PHONY: import-sql
-import-sql: db-start all
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
+.PHONY: import-data
+import-data: db-start
+	docker-compose run $(DC_OPTS) import-data
 
 .PHONY: import-borders
 import-borders: db-start
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-borders
 
-.PHONY: import-data
-import-data: db-start
-	docker-compose run $(DC_OPTS) import-data
+.PHONY: import-sql
+import-sql: db-start all
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: generate-tiles
 generate-tiles: init-dirs db-start all
@@ -176,17 +176,25 @@ start-postserve: db-start
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Bring up postserve at localhost:8090"
+	@echo "*     --> can view it locally (use make start-maputnik)"
+	@echo "*     --> or can use https://maputnik.github.io/editor"
+	@echo "* "
+	@echo "*  set data source / TileJSON URL to http://localhost:8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
 	docker-compose up -d postserve
 	docker pull maputnik/editor
+
+
+.PHONY: start-maputnik
+start-maputnik: start-postserve
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maputnik/editor "
 	@echo "*       ---> go to http://localhost:8088"
-	@echo "*       ---> set 'data source' to  http://localhost:8090"
+	@echo "*       ---> set data source / TileJSON URL to http://localhost:8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
