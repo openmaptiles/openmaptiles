@@ -76,7 +76,7 @@ clean:
 db-destroy:
 	docker-compose down -v --remove-orphans
 	docker-compose rm -fv
-	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
+	docker volume ls -q | grep openmaptiles | xargs --no-run-if-empty docker volume rm
 	rm -rf cache
 
 .PHONY: db-start
@@ -292,9 +292,9 @@ remove-docker-images:
 .PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:
 	@echo "Deleting unnecessary container(s)..."
-	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
+	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs --no-run-if-empty docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs --no-run-if-empty  docker rmi
 
 .PHONY: test-perf-null
 test-perf-null:
