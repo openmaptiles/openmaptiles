@@ -136,7 +136,7 @@ rm -f ./data/*.mbtiles
 if [[ ! -f "./data/${testdata}" || ! -f "./data/docker-compose-config.yml" ]]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Downloading testdata $testdata"
+    echo "====> : Downloading ${osm_area} from Geofabrik..."
     rm -rf ./data/*
     make download-geofabrik "area=${osm_area}"
 else
@@ -272,9 +272,7 @@ echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
 {
   find build -type f | sort | xargs md5sum ;
-  md5sum "./data/${testdata}" ;
-  md5sum ./data/tiles.mbtiles ;
-  md5sum ./data/docker-compose-config.yml;
+  find data -type f | sort | xargs md5sum ;
 } >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
@@ -312,7 +310,7 @@ echo "We saved the log file to $log_file  ( for debugging ) You can compare with
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
 echo " "
-echo "*  Use   make start-postserve    to explore tile generation on request"
+echo "*  Use   make start-maputnik     to explore tile generation on request"
 echo "*  Use   make start-tileserver   to view pre-generated tiles"
 echo " "
 echo "Available help commands (make help)  "

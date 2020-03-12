@@ -163,6 +163,8 @@ generate-tiles: init-dirs db-start all
 	@echo "Updating generated tile metadata ..."
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
 
+# Note that tileserver-gl currently requires to be run as a root
+# because it exposes port 80, which cannot be listened on withot root
 .PHONY: start-tileserver
 start-tileserver: init-dirs
 	@echo " "
@@ -182,7 +184,7 @@ start-tileserver: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run --rm -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
 .PHONY: start-postserve
 start-postserve: db-start
@@ -233,7 +235,7 @@ tools-dev:
 
 .PHONY: import-wikidata
 import-wikidata:
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /import/wikidata-cache.json openmaptiles.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
@@ -269,20 +271,13 @@ list-docker-images:
 
 .PHONY: refresh-docker-images
 refresh-docker-images:
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "docker-compose pull --ignore-pull-failures"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	@echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	#docker-compose pull --ignore-pull-failures
+	@if test "$(NO_REFRESH)"; then \
+		echo "Skipping docker image refresh" ;\
+	else \
+		echo "" ;\
+		echo "Refreshing docker images... Use NO_REFRESH=1 to skip." ;\
+		docker-compose pull --ignore-pull-failures ;\
+	fi
 
 .PHONY: remove-docker-images
 remove-docker-images:
