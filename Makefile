@@ -85,6 +85,7 @@ db-start:
 	@echo "Wait for PostgreSQL to start..."
 	docker-compose run $(DC_OPTS) openmaptiles-tools pgwait
 
+# Wrap db-start target but use the preloaded image
 .PHONY: db-start-preloaded
 db-start-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
 db-start-preloaded: db-start
@@ -276,7 +277,8 @@ refresh-docker-images:
 	else \
 		echo "" ;\
 		echo "Refreshing docker images... Use NO_REFRESH=1 to skip." ;\
-		docker-compose pull --ignore-pull-failures ;\
+		docker-compose pull --ignore-pull-failures --parallel ;\
+		POSTGIS_IMAGE=openmaptiles/postgis-preloaded docker-compose pull --ignore-pull-failures postgres ;\
 	fi
 
 .PHONY: remove-docker-images
