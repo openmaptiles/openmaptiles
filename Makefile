@@ -277,7 +277,7 @@ refresh-docker-images:
 	else \
 		echo "" ;\
 		echo "Refreshing docker images... Use NO_REFRESH=1 to skip." ;\
-		docker-compose pull --ignore-pull-failures --parallel ;\
+		docker-compose pull --ignore-pull-failures ;\
 		POSTGIS_IMAGE=openmaptiles/postgis-preloaded docker-compose pull --ignore-pull-failures postgres ;\
 	fi
 
