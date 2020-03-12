@@ -23,7 +23,7 @@ make update-osm
 Given you have a file `changes.osc.gz` in your import folder. Once you ran the import command you should also have a list of tiles that have updated.
 
 ```
-make import-osm-diff
+make import-diff
 ```
 
 ## Generate Changed Tiles

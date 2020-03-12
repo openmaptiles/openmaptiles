@@ -130,13 +130,13 @@ psql: db-start
 import-osm: db-start all
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-osm
 
-.PHONY: import-osm-diff
-import-osm-diff: db-start all
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-osm-diff
-
 .PHONY: update-osm
 update-osm: db-start all
 	docker-compose run $(DC_OPTS) openmaptiles-tools import-update
+
+.PHONY: import-diff
+import-diff: db-start all
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-diff
 
 .PHONY: import-data
 import-data: db-start
