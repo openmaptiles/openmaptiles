@@ -209,7 +209,7 @@ generate-qareports:
 .PHONY: generate-devdoc
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
-	docker-compose run $(DC_OPTS) openmaptiles-tools-latest sh -c \
+	docker-compose run $(DC_OPTS) -e TOOLS_VERSION=latest openmaptiles-tools sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
