@@ -11,47 +11,47 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, name text, name_en t
         NULL::int as rank
         FROM (
         -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen8
         WHERE zoom_level = 6 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen7 -> layer_park:z7
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen7
         WHERE zoom_level = 7 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen6 -> layer_park:z8
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen6
         WHERE zoom_level = 8 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen5 -> layer_park:z9
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen5
         WHERE zoom_level = 9 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen4 -> layer_park:z10
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen4
         WHERE zoom_level = 10 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen3 -> layer_park:z11
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen3
         WHERE zoom_level = 11 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen2 -> layer_park:z12
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen2
         WHERE zoom_level = 12 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen1 -> layer_park:z13
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon_gen1
         WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon -> layer_park:z14
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary
         FROM osm_park_polygon
         WHERE zoom_level >= 14 AND geometry && bbox
     ) AS park_polygon
