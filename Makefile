@@ -24,9 +24,9 @@ help:
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
 	@echo " "
 	@echo "Hints for designers:"
-	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see localhost:8088 ]"
-	@echo "  make start-postserve                 # start dynamic tile server [ see localhost:8088 ]"
-	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ]"
+	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see localhost:8088 ]"
+	@echo "  make postserve-start                 # start dynamic tile server [ see localhost:8088 ]"
+	@echo "  make tileserver-start                # start klokantech/tileserver-gl [ see localhost:8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
@@ -115,9 +115,9 @@ download-geofabrik: init-dirs
 		echo "Download area: $(area)" ;\
 		docker-compose run $(DC_OPTS) openmaptiles-tools bash -c \
 			'download-osm geofabrik $(area) \
-			--minzoom $$QUICKSTART_MIN_ZOOM \
-			--maxzoom $$QUICKSTART_MAX_ZOOM \
-			--make-dc /import/docker-compose-config.yml -- -d /import' ;\
+				--minzoom $$QUICKSTART_MIN_ZOOM \
+				--maxzoom $$QUICKSTART_MAX_ZOOM \
+				--make-dc /import/docker-compose-config.yml -- -d /import' ;\
 		ls -la ./data/$(area)* ;\
 		echo " " ;\
 	fi
@@ -166,8 +166,8 @@ generate-tiles: init-dirs db-start all
 
 # Note that tileserver-gl currently requires to be run as a root
 # because it exposes port 80, which cannot be listened on withot root
-.PHONY: start-tileserver
-start-tileserver: init-dirs
+.PHONY: tileserver-start
+tileserver-start: init-dirs
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -187,13 +187,13 @@ start-tileserver: init-dirs
 	@echo " "
 	docker run --rm -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
 
-.PHONY: start-postserve
-start-postserve: db-start
+.PHONY: postserve-start
+postserve-start: db-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Bring up postserve at localhost:8090"
-	@echo "*     --> can view it locally (use make start-maputnik)"
+	@echo "*     --> can view it locally (use make maputnik-start)"
 	@echo "*     --> or can use https://maputnik.github.io/editor"
 	@echo "* "
 	@echo "*  set data source / TileJSON URL to http://localhost:8090"
@@ -201,11 +201,13 @@ start-postserve: db-start
 	@echo "***********************************************************"
 	@echo " "
 	docker-compose up -d postserve
-	docker pull maputnik/editor
 
+.PHONY: postserve-stop
+postserve-stop:
+	docker-compose stop postserve
 
-.PHONY: start-maputnik
-start-maputnik: start-postserve
+.PHONY: maputnik-start
+maputnik-start: maputnik-stop postserve-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -217,6 +219,10 @@ start-maputnik: start-postserve
 	@echo " "
 	docker rm -f maputnik_editor || true
 	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
+
+.PHONY: maputnik-stop
+maputnik-stop:
+	docker rm -f maputnik_editor || true
 
 .PHONY: generate-qareports
 generate-qareports:
@@ -299,3 +305,22 @@ docker-unnecessary-clean:
 .PHONY: test-perf-null
 test-perf-null:
 	docker-compose run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+
+.PHONY: test-create-pbf
+test-create-pbf:
+	@echo "=========== downloading extracts ... ==================="
+	@mkdir -p data/combined
+#	docker-compose run $(DC_OPTS) openmaptiles-tools bash -c '\
+#		download-osm geofabrik delaware -- -d /import/combined \
+#		'
+	@echo "=============== downloaded files ======================="
+	@ls -la ./data/combined/*pbf
+	@echo "========== Merging into  test.osm.pbf =================="
+	osmosis \
+		--read-pbf bedfordshire-latest.osm.pbf \
+		--read-pbf bhutan-latest.osm.pbf         --merge \
+		--read-pbf cape-verde-latest.osm.pbf     --merge \
+		--read-pbf delaware-latest.osm.pbf       --merge \
+		--read-pbf liechtenstein-latest.osm.pbf  --merge \
+		--read-pbf maldives-latest.osm.pbf       --merge \
+		--write-pbf test.osm.pbf
