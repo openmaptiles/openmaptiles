@@ -11,11 +11,11 @@ tileset:
     - layers/transportation/transportation.yaml
     - layers/building/building.yaml
     - layers/water_name/water_name.yaml
-    - layers/transportation_name/transportation_name.yaml
+#    - layers/transportation_name/transportation_name.yaml
     - layers/place/place.yaml
-    - layers/housenumber/housenumber.yaml
+#    - layers/housenumber/housenumber.yaml
     - layers/poi/poi.yaml
-    - layers/aerodrome_label/aerodrome_label.yaml
+#    - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
   version: 3.11.0
   id: openmaptiles

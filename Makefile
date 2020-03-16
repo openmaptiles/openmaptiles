@@ -226,7 +226,7 @@ forced-clean-sql:
 	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
 		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
 		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
-		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
+		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION pg_stat_statements;" \
 		-c "GRANT ALL ON SCHEMA public TO public; COMMENT ON SCHEMA public IS 'standard public schema';"
 
 .PHONY: list-views

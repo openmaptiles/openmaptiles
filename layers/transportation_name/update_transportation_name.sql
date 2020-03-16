@@ -13,9 +13,12 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
   SELECT
       hl.geometry,
       hl.osm_id,
-      CASE WHEN length(hl.name)>15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
-      CASE WHEN length(hl.name_en)>15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
-      CASE WHEN length(hl.name_de)>15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
+      -- CASE WHEN length(hl.name)>15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
+      -- CASE WHEN length(hl.name_en)>15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
+      -- CASE WHEN length(hl.name_de)>15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
+      hl.name AS "name",
+      hl.name_en AS "name_en",
+      hl.name_de AS "name_de",
       hl.tags,
       rm.network_type,
       CASE
