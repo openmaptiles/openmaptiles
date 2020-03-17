@@ -35,6 +35,8 @@ services:
       # Must match the version of this file (first line)
       # download-osm will use it when generating a composer file
       MAKE_DC_VERSION: "2.3"
+      # Allow DIFF_MODE to be overwritten from shell
+      DIFF_MODE: ${DIFF_MODE}
     networks:
       - postgres_conn
     volumes:

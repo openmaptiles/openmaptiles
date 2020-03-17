@@ -55,7 +55,9 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	mkdir -p build/sql && mkdir -p data && mkdir -p cache
+	@mkdir -p build/sql
+	@mkdir -p data
+	@mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
@@ -232,7 +234,7 @@ generate-qareports:
 .PHONY: generate-devdoc
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
-	docker-compose run $(DC_OPTS) -e TOOLS_VERSION=latest openmaptiles-tools sh -c \
+	docker-compose run $(DC_OPTS) openmaptiles-tools sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
