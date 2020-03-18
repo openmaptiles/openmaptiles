@@ -94,7 +94,8 @@ services:
       - host
     env_file: .env
   generate-vectortiles:
-    image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
+    # image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
+    build: ../generate-vectortiles
     volumes:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
@@ -109,10 +110,11 @@ services:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     command: postserve openmaptiles.yaml --verbose
     env_file: .env
-    networks:
-      - host
-    ports:
-      - "8090:8090"
+    network_mode: host
+    # networks:
+    #   - host
+    # ports:
+    #   - "8090:8090"
     volumes:
       - .:/tileset
 

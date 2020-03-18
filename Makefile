@@ -99,6 +99,10 @@ download-geofabrik: init-dirs
 	cat ./data/docker-compose-config.yml
 	@echo " "
 
+.PHONY: db-init
+db-init: db-start
+	docker-compose run $(DC_OPTS) import-osm ./initdb-postgis.sh
+
 .PHONY: psql
 psql: db-start
 	docker-compose run $(DC_OPTS) import-osm ./psql.sh
