@@ -15,42 +15,8 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: material
-      key: building:material
-      type: string
-    - name: colour
-      key: building:colour
-      type: string
-    - name: building
-      key: building
-      type: string
-    - name: buildingpart
-      key: building:part
-      type: string
-    - name: buildingheight
-      key: building:height
-      type: string
-    - name: buildingmin_height
-      key: building:min_height
-      type: string
-    - name: buildinglevels
-      key: building:levels
-      type: string
-    - name: buildingmin_level
-      key: building:min_level
-      type: string
-    - name: height
-      key: height
-      type: string
-    - name: min_height
-      key: min_height
-      type: string
-    - name: levels
-      key: levels
-      type: string
-    - name: min_level
-      key: min_level
-      type: string
+    - name: tags
+      type: hstore_tags
     mapping:
       building:part:
       - __any__
@@ -67,189 +33,31 @@ tables:
         man_made: ["bridge"]
     type: polygon
 
-  # etldoc: imposm3 -> osm_building_street
-  building_street:
-    columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - name: building
-      key: building
-      type: string
-      from_member: true
-    - name: material
-      key: building:material
-      type: string
-    - name: colour
-      key: building:colour
-      type: string
-    - name: buildingpart
-      key: building:part
-      type: string
-      from_member: true
-    - name: buildingheight
-      key: building:height
-      type: string
-      from_member: true
-    - name: height
-      key: height
-      type: string
-      from_member: true
-    - name: buildingmin_height
-      key: building:min_height
-      type: string
-      from_member: true
-    - name: min_height
-      key: min_height
-      type: string
-      from_member: true
-    - name: buildinglevels
-      key: building:levels
-      type: string
-      from_member: true
-    - name: levels
-      key: levels
-      type: string
-      from_member: true
-    - name: buildingmin_level
-      key: building:min_level
-      type: string
-      from_member: true
-    - name: min_level
-      key: min_level
-      type: string
-      from_member: true
-    - name: relbuildingheight
-      key: building:height
-      type: string
-    - name: relheight
-      key: height
-      type: string
-    - name: relbuildingmin_height
-      key: building:min_height
-      type: string
-    - name: relmin_height
-      key: min_height
-      type: string
-    - name: relbuildinglevels
-      key: building:levels
-      type: string
-    - name: rellevels
-      key: levels
-      type: string
-    - name: relbuildingmin_level
-      key: building:min_level
-      type: string
-    - name: relmin_level
-      key: min_level
-      type: string
-    - name: member
-      type: member_id
-    - name: index
-      type: member_index
-    - name: role
-      type: member_role
-      from_member: true
-    - name: type
-      type: member_type
-    mapping:
-      type: [street]
-    type: relation_member
-
-  # etldoc: imposm3 -> osm_building_associatedstreet
-  building_associatedstreet:
-    columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - name: building
-      key: building
-      type: string
-      from_member: true
-    - name: material
-      key: building:material
-      type: string
-    - name: colour
-      key: building:colour
-      type: string
-    - name: buildingpart
-      key: building:part
-      type: string
-      from_member: true
-    - name: buildingheight
-      key: building:height
-      type: string
-      from_member: true
-    - name: height
-      key: height
-      type: string
-      from_member: true
-    - name: buildingmin_height
-      key: building:min_height
-      type: string
-      from_member: true
-    - name: min_height
-      key: min_height
-      type: string
-      from_member: true
-    - name: buildinglevels
-      key: building:levels
-      type: string
-      from_member: true
-    - name: levels
-      key: levels
-      type: string
-      from_member: true
-    - name: buildingmin_level
-      key: building:min_level
-      type: string
-      from_member: true
-    - name: min_level
-      key: min_level
-      type: string
-      from_member: true
-    - name: relbuildingheight
-      key: building:height
-      type: string
-    - name: relheight
-      key: height
-      type: string
-    - name: relbuildingmin_height
-      key: building:min_height
-      type: string
-    - name: relmin_height
-      key: min_height
-      type: string
-    - name: relbuildinglevels
-      key: building:levels
-      type: string
-    - name: rellevels
-      key: levels
-      type: string
-    - name: relbuildingmin_level
-      key: building:min_level
-      type: string
-    - name: relmin_level
-      key: min_level
-      type: string
-    - name: member
-      type: member_id
-    - name: index
-      type: member_index
-    - name: role
-      type: member_role
-      from_member: true
-    - name: type
-      type: member_type
-    mapping:
-      type: [associatedStreet]
-    type: relation_member
+  # etldoc: imposm3 -> osm_building_point
+  # TODO entrances, roof?
+  # building_point:
+  #   columns:
+  #   - name: osm_id
+  #     type: id
+  #   - name: geometry
+  #     type: geometry
+  #   - name: tags
+  #     type: hstore_tags
+  #   mapping:
+  #     building:part:
+  #     - __any__
+  #     building:
+  #     - __any__
+  #     # these aeroway polygons all imply building=yes
+  #     aeroway:
+  #     - terminal
+  #     - hangar
+  #   filters:
+  #     reject:
+  #       building: ["no","none","No"]
+  #       building:part: ["no","none","No"]
+  #       man_made: ["bridge"]
+  #   type: point
 
   # etldoc: imposm3 -> osm_building_relation
   building_relation:
@@ -257,79 +65,14 @@ tables:
     - name: osm_id
       type: id
     - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - name: building
-      key: building
-      type: string
+      type: geometry
+    # - name: area
+    #   type: area
+    - name: tags
+      type: hstore_tags
+    - name: member_tags
+      type: hstore_tags
       from_member: true
-    - name: material
-      key: building:material
-      type: string
-    - name: colour
-      key: building:colour
-      type: string
-    - name: buildingpart
-      key: building:part
-      type: string
-      from_member: true
-    - name: buildingheight
-      key: building:height
-      type: string
-      from_member: true
-    - name: height
-      key: height
-      type: string
-      from_member: true
-    - name: buildingmin_height
-      key: building:min_height
-      type: string
-      from_member: true
-    - name: min_height
-      key: min_height
-      type: string
-      from_member: true
-    - name: buildinglevels
-      key: building:levels
-      type: string
-      from_member: true
-    - name: levels
-      key: levels
-      type: string
-      from_member: true
-    - name: buildingmin_level
-      key: building:min_level
-      type: string
-      from_member: true
-    - name: min_level
-      key: min_level
-      type: string
-      from_member: true
-    - name: relbuildingheight
-      key: building:height
-      type: string
-    - name: relheight
-      key: height
-      type: string
-    - name: relbuildingmin_height
-      key: building:min_height
-      type: string
-    - name: relmin_height
-      key: min_height
-      type: string
-    - name: relbuildinglevels
-      key: building:levels
-      type: string
-    - name: rellevels
-      key: levels
-      type: string
-    - name: relbuildingmin_level
-      key: building:min_level
-      type: string
-    - name: relmin_level
-      key: min_level
-      type: string
     - name: member
       type: member_id
     - name: index
@@ -342,3 +85,49 @@ tables:
     mapping:
       type: [building]
     type: relation_member
+
+tags:
+  include:
+  - building             # 383104148
+  - building:part        # 1159042
+  - building:use         # 630277 (landuse)
+  - levels               # 16489
+  - building:levels      # 14539 966 (coalesce levels)
+  - building:level       # 19383 (for building parts?)
+  - min_level            # 3181
+  - building:min_level   # 76351   (coalesce min_level)
+  - material             # 1209983
+  - building:material    # 1462169 (coalesce material)
+  - wall:material        # 35269   (coalesce material)
+  - building:walls       # 83234   (coalesce material)
+  - colour               # 433264
+  - building:colour      # 561413  (coalesce colour)
+  - height               # 13039062
+  - building:height      # 52190
+  - min_height           # 122064
+  - building:min_height  # 875
+  - building:parts       # 5369
+  - building:shape       # 1625
+  - building:roof:shape  # 100 096
+  - roof:shape           # 2800028
+  - building:roof_shape  # 3900   (coalesce roof:shape)
+  - building:roof:type   # 1400   (coalesce roof:shape)
+  - roof:material        # 979610
+  - building:roof:material # 1550 (coalesce roof:material)
+  - building:roof        # 355049 (coalesce roof:material, roof:shape)
+  - roof:colour          # 901095
+  - building:roof:colour # 14 192  (coalesce roof:colour)
+  - roof:levels          # 601813
+  - building:roof:levels # 3432   (coalesce roof:levels)
+  - roof:height          # 229325
+  - building:roof:height # 2413   (coalesce roof:height)
+  - roof:orientation     # 354 447
+  - roof:direction       # 33893     (coalesce roof:orientation)
+  - building:roof:orientation # 7419 (coalesce roof:orientation)
+  - roof:orientation:compass # 22166 (coalesce roof:orientation)
+  - roof:ridge           # 17268
+  - building:roof:ridge  # 305 (coalesce roof:ridge)
+  - roof:lines           # 437 (coalesce roof:ridge)
+  - roof:edge            # 11743 (roof:ridge ?)
+  # - roof:extent          # 1122
+  # - roof:downpipe        # 20876

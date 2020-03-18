@@ -13,62 +13,41 @@ END;
 $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
+--CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 --CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 --CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
+
+-- Get relation members
+-- SELECT ST_GeometryType(r.geometry), st_npoints(r.geometry), to_json(member_tags), r.*, ST_GeometryType(p.geometry) g
+-- FROM public.osm_building_relation r
+-- LEFT JOIN osm_building_polygon p ON (p.osm_id = -r.member)
+-- WHERE
+-- ST_GeometryType(r.geometry) = 'ST_Polygon' and p.osm_id < 0
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_relation -> layer_building:z14_
          -- Buildings built from relations
-         SELECT member AS osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
-                  FALSE as hide_3d
-         FROM
-         osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
-         UNION ALL
-
-         -- etldoc: osm_building_associatedstreet -> layer_building:z14_
-         -- Buildings in associatedstreet relations
-         SELECT member AS osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
-                  FALSE as hide_3d
-         FROM
-         osm_building_associatedstreet WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
-         UNION ALL
-         -- etldoc: osm_building_street -> layer_building:z14_
-         -- Buildings in street relations
-         SELECT member AS osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
-                  FALSE as hide_3d
-         FROM
-         osm_building_street WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
-         UNION ALL
-
+         -- SELECT member AS osm_id,geometry,
+         --          COALESCE(nullif(as_numeric(tags->'height'),-1),nullif(as_numeric(tags->'building:height'),-1)) as height,
+         --          COALESCE(nullif(as_numeric(tags->'min_height'),-1),nullif(as_numeric(tags->'building:min_height'),-1)) as min_height,
+         --          COALESCE(nullif(as_numeric(tags->'levels'),-1),nullif(as_numeric(tags->'building:levels'),-1)) as levels,
+         --          COALESCE(nullif(as_numeric(tags->'min_level'),-1),nullif(as_numeric(tags->'building:min_level'),-1)) as min_level,
+         --          nullif(tags->'material', '') AS material,
+         --          nullif(tags->'colour', '') AS colour,
+         --          FALSE as hide_3d
+         -- FROM
+         -- osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
+         -- UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Buildings that are from multipolygons
          SELECT osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
+                  COALESCE(nullif(as_numeric(tags->'height'),-1),nullif(as_numeric(tags->'building:height'),-1)) as height,
+                  COALESCE(nullif(as_numeric(tags->'min_height'),-1),nullif(as_numeric(tags->'building:min_height'),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(tags->'levels'),-1),nullif(as_numeric(tags->'building:levels'),-1)) as levels,
+                  COALESCE(nullif(as_numeric(tags->'min_level'),-1),nullif(as_numeric(tags->'building:min_level'),-1)) as min_level,
+                  nullif(tags->'material', '') AS material,
+                  nullif(tags->'colour', '') AS colour,
                   FALSE as hide_3d
          FROM
          osm_building_polygon obp
@@ -78,12 +57,12 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
          SELECT obp.osm_id,obp.geometry,
-                  COALESCE(nullif(as_numeric(obp.height),-1),nullif(as_numeric(obp.buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(obp.min_height),-1),nullif(as_numeric(obp.buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(obp.levels),-1),nullif(as_numeric(obp.buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(obp.min_level),-1),nullif(as_numeric(obp.buildingmin_level),-1)) as min_level,
-                  nullif(obp.material, '') AS material,
-                  nullif(obp.colour, '') AS colour,
+                  COALESCE(nullif(as_numeric(obp.tags->'height'),-1),nullif(as_numeric(obp.tags->'building:height'),-1)) as height,
+                  COALESCE(nullif(as_numeric(obp.tags->'min_height'),-1),nullif(as_numeric(obp.tags->'building:min_height'),-1)) as min_height,
+                  COALESCE(nullif(as_numeric(obp.tags->'levels'),-1),nullif(as_numeric(obp.tags->'building:levels'),-1)) as levels,
+                  COALESCE(nullif(as_numeric(obp.tags->'min_level'),-1),nullif(as_numeric(obp.tags->'building:min_level'),-1)) as min_level,
+                  nullif(obp.tags->'material', '') AS material,
+                  nullif(obp.tags->'colour', '') AS colour,
                   CASE WHEN obr.role='outline' THEN TRUE ELSE FALSE END as hide_3d
          FROM
          osm_building_polygon obp
