@@ -55,7 +55,7 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	@mkdir -p build/sql
+	@mkdir -p build
 	@mkdir -p data
 	@mkdir -p cache
 
@@ -68,7 +68,7 @@ build/mapping.yaml: init-dirs
 
 .PHONY: build-sql
 build-sql: init-dirs
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml --dir ./build/sql
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
 
 .PHONY: clean
 clean:
@@ -307,22 +307,3 @@ docker-unnecessary-clean:
 .PHONY: test-perf-null
 test-perf-null:
 	docker-compose run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
-
-.PHONY: test-create-pbf
-test-create-pbf:
-	@echo "=========== downloading extracts ... ==================="
-	@mkdir -p data/combined
-#	docker-compose run $(DC_OPTS) openmaptiles-tools bash -c '\
-#		download-osm geofabrik delaware -- -d /import/combined \
-#		'
-	@echo "=============== downloaded files ======================="
-	@ls -la ./data/combined/*pbf
-	@echo "========== Merging into  test.osm.pbf =================="
-	osmosis \
-		--read-pbf bedfordshire-latest.osm.pbf \
-		--read-pbf bhutan-latest.osm.pbf         --merge \
-		--read-pbf cape-verde-latest.osm.pbf     --merge \
-		--read-pbf delaware-latest.osm.pbf       --merge \
-		--read-pbf liechtenstein-latest.osm.pbf  --merge \
-		--read-pbf maldives-latest.osm.pbf       --merge \
-		--write-pbf test.osm.pbf
