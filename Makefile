@@ -1,3 +1,12 @@
+# Include common settings
+include .env
+# Ensure POSTGRES settings exist for backward compatibility
+POSTGRES_DB?=openmaptiles
+POSTGRES_USER?=openmaptiles
+POSTGRES_PASSWORD?=openmaptiles
+POSTGRES_HOST?=postgres
+POSTGRES_PORT?=5432
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS?=--rm -u $$(id -u $${USER}):$$(id -g $${USER})
@@ -57,7 +66,7 @@ init-dirs:
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="$(POSTGRES_HOST)" --port=$(POSTGRES_PORT) --database="$(POSTGRES_DB)" --user="$(POSTGRES_USER)" --password="$(POSTGRES_PASSWORD)" > $@
 
 build/mapping.yaml: init-dirs
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
