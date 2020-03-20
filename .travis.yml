@@ -8,4 +8,6 @@ services:
 script:
   - set -e
   - TEST_MODE=yes make generate-devdoc
-  - ./quickstart.sh
+  - export QUICKSTART_MIN_ZOOM=0
+  - export QUICKSTART_MAX_ZOOM=14
+  - ./quickstart.sh enfield
