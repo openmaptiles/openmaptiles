@@ -29,4 +29,4 @@ jobs:
           TEST_MODE=yes
           export QUICKSTART_MIN_ZOOM=0
           export QUICKSTART_MAX_ZOOM=14
-          bash ./quickstart.sh enfield
+          bash ./quickstart.sh northamptonshire
