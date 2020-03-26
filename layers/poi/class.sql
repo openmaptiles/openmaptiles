@@ -25,15 +25,16 @@ RETURNS INT AS $$
         WHEN 'bar' THEN 800
         ELSE 1000
     END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION poi_class(subclass TEXT, mapping_key TEXT)
 RETURNS TEXT AS $$
     SELECT CASE
         %%FIELD_MAPPING: class %%
-        WHEN (subclass = 'station' AND mapping_key = 'railway')
-          OR (subclass IN ('halt', 'tram_stop', 'subway')) THEN 'railway'
-        WHEN (subclass = 'station' AND mapping_key = 'aerialway') THEN 'aerialway'
         ELSE subclass
     END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

@@ -1,7 +1,6 @@
 version: "2"
 volumes:
   pgdata:
-  cache:
 services:
   postgres:
     image: "openmaptiles/postgis:${TOOLS_VERSION}"
@@ -37,12 +36,7 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
-  import-osmborder:
-    image: "openmaptiles/import-osmborder:${TOOLS_VERSION}"
-    env_file: .env
-    networks:
-      - postgres_conn
+      - ./cache:/cache
   import-osm-diff:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
@@ -54,7 +48,7 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
+      - ./cache:/cache
   update-osm:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
@@ -66,18 +60,7 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
-  import-sql:
-    # This target is obsolete, and was left for backwards compatibility
-    # Use openmaptiles-tools target instead
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    command: import-sql
-    env_file: .env
-    networks:
-      - postgres_conn
-    volumes:
-      - .:/tileset
-      - ./build:/sql
+      - ./cache:/cache
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     env_file: .env
@@ -85,6 +68,7 @@ services:
       - postgres_conn
     volumes:
       - .:/tileset
+      - ./data:/import
       - ./build:/sql
   openmaptiles-tools-latest:
     # This target exists for experimental tools that have not yet been published.
@@ -95,6 +79,7 @@ services:
       - postgres_conn
     volumes:
       - .:/tileset
+      - ./data:/import
       - ./build:/sql
   generate-changed-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"

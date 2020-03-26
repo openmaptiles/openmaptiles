@@ -4,4 +4,6 @@ RETURNS INT AS $$
         WHEN capital IN ('yes', '2') THEN 2
         WHEN capital = '4' THEN 4
     END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$
+LANGUAGE SQL
+IMMUTABLE STRICT PARALLEL SAFE;
