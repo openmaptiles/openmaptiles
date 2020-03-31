@@ -37,3 +37,8 @@ jobs:
       run: |
         TEST_MODE=yes
         make generate-devdoc
+    
+    - uses: actions/upload-artifact@v1
+      with:
+        name: upload quickstart log
+        path: quickstart.log
