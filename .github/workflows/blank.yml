@@ -29,4 +29,7 @@ jobs:
           TEST_MODE=yes
           export QUICKSTART_MIN_ZOOM=0
           export QUICKSTART_MAX_ZOOM=14
+          echo "::set-env name=QUICKSTART_MIN_ZOOM::$QUICKSTART_MIN_ZOOM"
+          echo "::set-env name=QUICKSTART_MAX_ZOOM::$QUICKSTART_MAX_ZOOM"
+
           bash ./quickstart.sh northamptonshire
