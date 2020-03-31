@@ -26,9 +26,7 @@ jobs:
     - name: Run a multi-line script
       run: |
           set -e
-          
+          TEST_MODE=yes
+          export QUICKSTART_MIN_ZOOM=0
+          export QUICKSTART_MAX_ZOOM=14
           bash ./quickstart.sh northamptonshire
-      env:
-        TEST_MODE: "YES"
-        QUICKSTART_MIN_ZOOM: 0
-        QUICKSTART_MAX_ZOOM: 14
