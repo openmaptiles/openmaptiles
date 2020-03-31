@@ -32,4 +32,4 @@ jobs:
           echo "::set-env name=QUICKSTART_MIN_ZOOM::$QUICKSTART_MIN_ZOOM"
           echo "::set-env name=QUICKSTART_MAX_ZOOM::$QUICKSTART_MAX_ZOOM"
 
-          bash ./quickstart.sh northamptonshire
+          #bash ./quickstart.sh northamptonshire
