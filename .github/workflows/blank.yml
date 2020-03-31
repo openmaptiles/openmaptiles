@@ -29,7 +29,7 @@ jobs:
         QUICKSTART_MAX_ZOOM: ${{ 14 }}
       run: |
 
-          echo "::set-env name=QUICKSTART_MIN_ZOOM::$QUICKSTART_MIN_ZOOM"
-          echo "::set-env name=QUICKSTART_MAX_ZOOM::$QUICKSTART_MAX_ZOOM"
+          #echo "::set-env name=QUICKSTART_MIN_ZOOM::$QUICKSTART_MIN_ZOOM"
+          #echo "::set-env name=QUICKSTART_MAX_ZOOM::$QUICKSTART_MAX_ZOOM"
           echo env
           #bash ./quickstart.sh northamptonshire
