@@ -1,0 +1,45 @@
+# MapTiler OpenMapTiles 
+#######################
+
+# Workflow to validate OMT`s new Pull Requests and commits push into OMT repo
+
+name: OMT_CI
+
+# Controls when the action will run. Triggers the workflow on push and pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# jobs can run parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # runs on ubuntu (can run on windows and mac os)
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Named steps
+    - name: generate all zooms
+      run: sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
+    
+    # Runs quickstart  
+    - name: quickstart
+      env:
+        area: northamptonshire
+      run:  bash ./quickstart.sh $area
+      
+    - name: generate devdoc
+      run: TEST_MODE=yes make generate-devdoc
+    
+    # todo: use artifact to store result of tests
+    #- uses: actions/upload-artifact@v1
+    #  with:
+    #    name: quickstart log file
+    #    path: quickstart.log
