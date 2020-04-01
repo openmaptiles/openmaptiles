@@ -25,18 +25,14 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: test generate all zooms
       run: sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
+      
     - name: quickstart
       env:
         area: northamptonshire
-      run: |
-          #echo "::set-env name=QUICKSTART_MIN_ZOOM::$QUICKSTART_MIN_ZOOM"
-          #echo "::set-env name=QUICKSTART_MAX_ZOOM::$QUICKSTART_MAX_ZOOM"
-          echo .env
-          bash ./quickstart.sh $area
+      run:  bash ./quickstart.sh $area
+      
     - name: generate devdoc
-      run: |
-        TEST_MODE=yes
-        make generate-devdoc
+      run: TEST_MODE=yes make generate-devdoc
     
     - uses: actions/upload-artifact@v1
       with:
