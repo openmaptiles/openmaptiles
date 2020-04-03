@@ -1,4 +1,4 @@
-## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
+## OpenMapTiles [![Build Status](https://github.com/tompohys/openmaptiles/workflows/omt_ci/badge.svg)](https://travis-ci.org/openmaptiles/openmaptiles)
 
 OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
 
