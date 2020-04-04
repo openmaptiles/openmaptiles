@@ -50,12 +50,12 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, name text, name_en t
         WHERE zoom_level = 12 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon_gen1 -> layer_park:z13
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, protection_title, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, protection_title
         FROM osm_park_polygon_gen1
         WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_park_polygon -> layer_park:z14
-        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, protection_title, NULL::int as scalerank
+        SELECT osm_id, geometry, name, name_en, name_de, tags, leisure, boundary, protection_title
         FROM osm_park_polygon
         WHERE zoom_level >= 14 AND geometry && bbox
     ) AS park_polygon
