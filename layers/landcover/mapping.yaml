@@ -46,7 +46,7 @@ generalized_tables:
 tables:
   # etldoc: imposm3 -> osm_landcover_polygon
   landcover_polygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

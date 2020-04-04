@@ -76,7 +76,7 @@ tables:
   # etldoc: imposm3 -> osm_border_disp_relation
   border_disp_relation:
     type: relation_member
-    fields:
+    columns:
     - name: relation_id
       type: id
     - name: osm_id

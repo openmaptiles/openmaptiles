@@ -21,7 +21,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         agg_stop,
         NULLIF(layer, 0) AS layer,
         "level",
-        CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
+        CASE WHEN indoor=TRUE THEN 1 END as indoor,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
@@ -70,4 +70,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         ) as poi_union
     ORDER BY "rank"
     ;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

@@ -3,8 +3,7 @@ CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS (
   SELECT
       uic_ref,
       count(*) as count,
-			CASE WHEN count(*) > 2 THEN ST_Centroid(ST_UNION(geometry))
-			ELSE NULL END AS centroid
+      CASE WHEN count(*) > 2 THEN ST_Centroid(ST_UNION(geometry)) END AS centroid
   FROM osm_poi_point
 	WHERE
 		nullif(uic_ref, '') IS NOT NULL
@@ -13,7 +12,7 @@ CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS (
 		uic_ref
 	HAVING
 		count(*) > 1
-);
+) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_rank CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_rank AS (
@@ -33,7 +32,7 @@ CREATE MATERIALIZED VIEW osm_poi_stop_rank AS (
 	WHERE
 		subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
 	ORDER BY p.uic_ref, rk
-);
+) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 
 ALTER TABLE osm_poi_point ADD COLUMN IF NOT EXISTS agg_stop INTEGER DEFAULT NULL;
 SELECT update_osm_poi_point_agg();

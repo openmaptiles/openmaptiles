@@ -39,7 +39,7 @@ githash=$( git rev-parse HEAD )
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit,
 # as well as pass any other common parameters.
 # In the future this should use -u $(id -u "$USER"):$(id -g "$USER") instead of running docker as root.
-DC_OPTS="--rm"
+DC_OPTS="--rm -u $(id -u "$USER"):$(id -g "$USER")"
 
 log_file=./quickstart.log
 rm -f $log_file
@@ -57,7 +57,7 @@ docker         --version
 docker-compose --version
 
 # based on: http://stackoverflow.com/questions/16989598/bash-comparing-version-numbers
-function version { echo "$@" | tr -cs '0-9.' '.' | gawk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
+function version { echo "$@" | tr -cs '0-9.' '.' | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }'; }
 
 COMPOSE_VER=$(docker-compose version --short)
 if [ "$(version "$COMPOSE_VER")" -lt "$(version "$MIN_COMPOSE_VER")" ]; then
@@ -130,11 +130,8 @@ docker images | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Making directories - if they don't exist ( ./build ./data ./pgdata ) "
-mkdir -p pgdata
-mkdir -p build
-mkdir -p data
-mkdir -p wikidata
+echo "====> : Create directories if they don't exist"
+make init-dirs
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -186,7 +183,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
 echo "      : Source code: https://github.com/openmaptiles/postgis "
 echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-docker-compose up -d postgres
+make db-start
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -201,15 +198,7 @@ echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ i
 echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
 echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
 echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-docker-compose run $DC_OPTS import-water
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osmborder"
-echo "      : Data license: http://www.openstreetmap.org/copyright"
-echo "      : Thank you: https://github.com/pnorman/osmborder "
-docker-compose run $DC_OPTS import-osmborder
+make import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -217,7 +206,7 @@ echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL 
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
-docker-compose run $DC_OPTS import-natural-earth
+make import-natural-earth
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -225,7 +214,7 @@ echo "====> : Start importing OpenStreetMap Lakelines data "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
 echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
 echo "      : Data license: .. "
-docker-compose run $DC_OPTS import-lakelines
+make import-lakelines
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -235,29 +224,36 @@ echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-docker-compose run $DC_OPTS import-osm
+make import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-wikidata "
-echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
-echo "      : Thank you Wikidata Contributors ! "
-docker-compose run $DC_OPTS import-wikidata
+echo "====> : Start importing border data from ./data/${testdata} into PostgreSQL using osmborder"
+echo "      : Source code: https://github.com/pnorman/osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you: Paul Norman"
+make import-borders
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
-docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
+make import-sql | \
     awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Analyze PostgreSQL tables"
 make psql-analyze
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing Wikidata: Wikidata Query Service -> PostgreSQL"
+echo "      : The Wikidata license: CC0 - https://www.wikidata.org/wiki/Wikidata:Main_Page "
+echo "      : Thank you Wikidata Contributors ! "
+make import-wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -276,19 +272,12 @@ echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-til
 echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
-
-docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $DC_OPTS generate-vectortiles
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Add special metadata to mbtiles! "
-docker-compose run $DC_OPTS openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-docker-compose run $DC_OPTS openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+make generate-tiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
-docker-compose stop postgres
+make db-stop
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -321,13 +310,6 @@ echo "--------------------------------------------------------------------------
 echo "====> : (disk space) We have created a lot of docker images: "
 echo "      : Hint: you can remove with:  docker rmi IMAGE "
 docker images | grep openmaptiles
-
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created this new docker volume for PostgreSQL data:"
-echo "      : Hint: you can remove with : docker volume rm openmaptiles_pgdata "
-docker volume ls -q | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

@@ -1,20 +1,66 @@
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_ocean_polygon_gen1 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_ocean_polygon -> osm_ocean_polygon_gen1
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen1 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen1 AS (
+  SELECT ST_Simplify(geometry, 20) AS geometry
+  FROM osm_ocean_polygon
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen1_idx ON osm_ocean_polygon_gen1 USING gist (geometry);
+
+
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_ocean_polygon_gen2 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_ocean_polygon -> osm_ocean_polygon_gen2
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen2 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen2 AS (
+  SELECT ST_Simplify(geometry, 40) AS geometry
+  FROM osm_ocean_polygon
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen2_idx ON osm_ocean_polygon_gen2 USING gist (geometry);
+
+
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_ocean_polygon_gen3 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_ocean_polygon -> osm_ocean_polygon_gen3
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen3 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen3 AS (
+  SELECT ST_Simplify(geometry, 80) AS geometry
+  FROM osm_ocean_polygon
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen3_idx ON osm_ocean_polygon_gen3 USING gist (geometry);
+
+
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO $$ BEGIN DROP TABLE IF EXISTS osm_ocean_polygon_gen4 CASCADE; EXCEPTION WHEN wrong_object_type THEN END; $$ language 'plpgsql';
+-- etldoc: osm_ocean_polygon -> osm_ocean_polygon_gen4
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen4 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen4 AS (
+  SELECT ST_Simplify(geometry, 160) AS geometry
+  FROM osm_ocean_polygon
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen4_idx ON osm_ocean_polygon_gen4 USING gist (geometry);
+
+
+
 CREATE OR REPLACE FUNCTION water_class(waterway TEXT) RETURNS TEXT AS $$
     SELECT CASE
-           WHEN waterway='' THEN 'lake'
-           WHEN waterway='lake' THEN 'lake'
-           WHEN waterway='dock' THEN 'dock'
+           %%FIELD_MAPPING: class %%
            ELSE 'river'
    END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
 
 
 CREATE OR REPLACE FUNCTION waterway_brunnel(is_bridge BOOL, is_tunnel BOOL) RETURNS TEXT AS $$
     SELECT CASE
         WHEN is_bridge THEN 'bridge'
         WHEN is_tunnel THEN 'tunnel'
-        ELSE NULL
     END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$
+LANGUAGE SQL
+IMMUTABLE STRICT PARALLEL SAFE;
 
 
 
@@ -333,4 +379,6 @@ RETURNS TABLE(geometry geometry, class text, brunnel text, intermittent int) AS 
         SELECT * FROM water_z14 WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

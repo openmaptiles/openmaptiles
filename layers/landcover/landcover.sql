@@ -11,18 +11,11 @@
 
 CREATE OR REPLACE FUNCTION landcover_class(subclass VARCHAR) RETURNS TEXT AS $$
     SELECT CASE
-        WHEN subclass IN ('farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery') THEN 'farmland'
-        WHEN subclass IN ('glacier', 'ice_shelf') THEN 'ice'
-        WHEN subclass IN ('wood', 'forest') THEN 'wood'
-        WHEN subclass IN ('bare_rock', 'scree') THEN 'rock'
-        WHEN subclass IN ('fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments',
-                          'park', 'village_green', 'recreation_ground', 'garden', 'golf_course') THEN 'grass'
-        WHEN subclass IN ('wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed',
-                          'saltern', 'tidalflat', 'saltmarsh', 'mangrove') THEN 'wetland'
-        WHEN subclass IN ('beach', 'sand', 'dune') THEN 'sand'
-        ELSE NULL
+        %%FIELD_MAPPING: class %%
     END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
 
 -- etldoc: ne_110m_glaciated_areas ->  landcover_z0
 CREATE OR REPLACE VIEW landcover_z0 AS (
@@ -137,4 +130,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text) AS $$
         SELECT *
         FROM landcover_z14 WHERE zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

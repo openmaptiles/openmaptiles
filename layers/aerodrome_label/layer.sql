@@ -27,27 +27,7 @@ $$
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
     CASE
-      WHEN aerodrome = 'international'
-          OR aerodrome_type = 'international'
-        THEN 'international'
-      WHEN
-          aerodrome = 'public'
-          OR aerodrome_type LIKE '%public%'
-          OR aerodrome_type = 'civil'
-        THEN 'public'
-      WHEN
-          aerodrome = 'regional'
-          OR aerodrome_type = 'regional'
-        THEN 'regional'
-      WHEN
-          aerodrome = 'military'
-          OR aerodrome_type LIKE '%military%'
-          OR military = 'airfield'
-        THEN 'military'
-      WHEN
-          aerodrome = 'private'
-          OR aerodrome_type = 'private'
-        THEN 'private'
+      %%FIELD_MAPPING: class %%
       ELSE 'other'
     END AS class,
     NULLIF(iata, '') AS iata,
@@ -56,5 +36,6 @@ $$
     round(substring(ele from E'^(-?\\d+)(\\D|$)')::int*3.2808399)::int AS ele_ft
   FROM osm_aerodrome_label_point
   WHERE geometry && bbox AND zoom_level >= 10;
-
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
