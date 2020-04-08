@@ -20,16 +20,16 @@ help:
 	@echo "=============================================================================="
 	@echo " OpenMapTiles  https://github.com/openmaptiles/openmaptiles "
 	@echo "Hints for testing areas                "
-	@echo "  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> "
-	@echo "  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>> "
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>> "
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
-	@echo "  "
+	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] "
 	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] "
-	@echo "  "
+	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
@@ -88,16 +88,26 @@ db-stop:
 
 .PHONY: download-geofabrik
 download-geofabrik: init-dirs
-	@echo =============== download-geofabrik =======================
-	@echo Download area:   $(area)
-	@echo [[ example: make download-geofabrik area=albania ]]
-	@echo [[ list areas:  make download-geofabrik-list     ]]
-	docker-compose run $(DC_OPTS) import-osm ./download-geofabrik.sh $(area)
-	ls -la ./data/$(area).*
-	@echo "Generated config file: ./data/docker-compose-config.yml"
-	@echo " "
-	cat ./data/docker-compose-config.yml
-	@echo " "
+	@if ! test "$(area)"; then \
+		echo "" ;\
+		echo "ERROR: Unable to download an area if area is not given." ;\
+		echo "Usage:" ;\
+		echo "  make download-geofabrik area=<area-id>" ;\
+		echo "" ;\
+		echo "Use   make list-geofabrik   to get a list of all available areas" ;\
+		echo "" ;\
+		exit 1 ;\
+	else \
+		echo "=============== download-geofabrik =======================" ;\
+		echo "Download area: $(area)" ;\
+		docker-compose run $(DC_OPTS) openmaptiles-tools bash -c \
+			'download-osm geofabrik $(area) \
+				--minzoom $$QUICKSTART_MIN_ZOOM \
+				--maxzoom $$QUICKSTART_MAX_ZOOM \
+				--make-dc /import/docker-compose-config.yml -- -d /import' ;\
+		ls -la ./data/$(area)* ;\
+		echo " " ;\
+	fi
 
 .PHONY: psql
 psql: db-start
@@ -204,14 +214,6 @@ import-sql-dev:
 .PHONY: import-osm-dev
 import-osm-dev:
 	docker-compose run $(DC_OPTS) import-osm /bin/bash
-
-# the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
-.PHONY: list
-list: download-geofabrik-list
-
-.PHONY: download-geofabrik-list
-download-geofabrik-list:
-	docker-compose run $(DC_OPTS) import-osm ./download-geofabrik-list.sh
 
 .PHONY: import-wikidata
 import-wikidata:
