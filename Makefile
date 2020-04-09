@@ -8,6 +8,9 @@ ifeq ($(strip $(DC_PROJECT)),)
 endif
 DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
 
+# Use `xargs --no-run-if-empty` flag, if supported
+XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
+
 # If running in the test mode, compare files rather than copy them
 TEST_MODE?=no
 ifeq ($(TEST_MODE),yes)
@@ -79,14 +82,14 @@ clean:
 clean-docker:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
-	docker volume ls -q -f "name=^$(DC_PROJECT)_" | xargs --no-run-if-empty docker volume rm 
+	docker volume ls -q -f "name=^$${DC_PROJECT,,*}_" | $(XARGS) docker volume rm
 	rm -rf cache
 
 .PHONY: db-start
 db-start:
 	$(DOCKER_COMPOSE) up -d postgres
 	@echo "Wait for PostgreSQL to start..."
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm  ./pgwait.sh
+	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./pgwait.sh
 
 .PHONY: db-stop
 db-stop:
@@ -270,14 +273,14 @@ refresh-docker-images:
 .PHONY: remove-docker-images
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
-	@docker-compose --project-name $(DC_PROJECT) down
-	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+	@$(DOCKER_COMPOSE) down
+	@docker images "openmaptiles/*"                | $(XARGS) docker rmi -f
+	@docker images "osm2vectortiles/mapbox-studio" | $(XARGS) docker rmi -f
+	@docker images "klokantech/tileserver-gl"      | $(XARGS) docker rmi -f
 
 .PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:
 	@echo "Deleting unnecessary container(s)..."
-	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
+	@docker ps -a --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
