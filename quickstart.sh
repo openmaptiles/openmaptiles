@@ -147,10 +147,6 @@ if [ !  -f "./data/${testdata}" ]; then
     make download-geofabrik "area=${osm_area}"
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Osm metadata : $testdata"
-    cat ./data/osmstat.txt
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
     echo "====> : Generated docker-compose config"
     cat ./data/docker-compose-config.yml
 else
@@ -289,7 +285,6 @@ md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
 md5sum "./data/${testdata}"                   >> ./data/quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
 md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
-md5sum ./data/osmstat.txt                     >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
