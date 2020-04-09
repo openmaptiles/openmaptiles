@@ -27,7 +27,7 @@ if [ $# -eq 0 ]; then
 else
     osm_area=$1
 fi
-testdata="${osm_area}.osm.pbf"
+testdata="${osm_area}-latest.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
@@ -35,11 +35,6 @@ MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
-
-# Options to run with docker and docker-compose - ensure the container is destroyed on exit,
-# as well as pass any other common parameters.
-# In the future this should use -u $(id -u "$USER"):$(id -g "$USER") instead of running docker as root.
-DC_OPTS="--rm -u $(id -u "$USER"):$(id -g "$USER")"
 
 log_file=./quickstart.log
 rm -f $log_file
@@ -138,17 +133,12 @@ echo "--------------------------------------------------------------------------
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
-if [ !  -f "./data/${testdata}" ]; then
+if [[ ! -f "./data/${testdata}" || ! -f "./data/docker-compose-config.yml" ]]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Downloading testdata $testdata"
-    rm -f ./data/*
-    #wget $testdataurl  -P ./data
+    echo "====> : Downloading ${osm_area} from Geofabrik..."
+    rm -rf ./data/*
     make download-geofabrik "area=${osm_area}"
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
-    echo "====> : Generated docker-compose config"
-    cat ./data/docker-compose-config.yml
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
@@ -254,7 +244,7 @@ make psql-analyze
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
-docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+make test-perf-null
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
