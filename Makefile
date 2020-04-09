@@ -6,7 +6,7 @@ DC_OPTS?=--rm -u $$(id -u $${USER}):$$(id -g $${USER})
 ifeq ($(strip $(DC_PROJECT)),)
   override DC_PROJECT:=$(notdir $(shell pwd))
 endif
-DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
+DOCKER_COMPOSE:=docker-compose --project-name $(DC_PROJECT)
 
 # Use `xargs --no-run-if-empty` flag, if supported
 XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
@@ -261,12 +261,12 @@ psql-pg-stat-reset:
 
 .PHONY: list-views
 list-views:
-	@docker-compose run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables:
-	@docker-compose run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
