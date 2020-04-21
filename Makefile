@@ -118,7 +118,6 @@ ifeq ($(strip $(area)),)
 else
 	@echo "=============== download-$(OSM_SERVER) ======================="
 	@echo "Download area: $(area)"
-	@rm -fr ./data/*.pbf
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'download-osm $(OSM_SERVER) $(area) \
 			--minzoom $$QUICKSTART_MIN_ZOOM \
