@@ -313,137 +313,78 @@ def_poi_mapping_tourism: &poi_mapping_tourism
 def_poi_mapping_waterway: &poi_mapping_waterway
   - dock
 
+def_poi_fields: &poi_fields
+  - name: osm_id
+    type: id
+  - name: geometry
+    type: geometry
+  - name: name
+    key: name
+    type: string
+  - name: name_en
+    key: name:en
+    type: string
+  - name: name_de
+    key: name:de
+    type: string
+  - name: tags
+    type: hstore_tags
+  - name: subclass
+    type: mapping_value
+  - name: mapping_key
+    type: mapping_key
+  - name: station
+    key: station
+    type: string
+  - name: funicular
+    key: funicular
+    type: string
+  - name: information
+    key: information
+    type: string
+  - name: uic_ref
+    key: uic_ref
+    type: string
+  - name: religion
+    key: religion
+    type: string
+  - name: level
+    key: level
+    type: integer
+  - name: indoor
+    key: indoor
+    type: bool
+  - name: layer
+    key: layer
+    type: integer
+  - name: sport
+    key: sport
+    type: string
+
+def_poi_mapping: &poi_mapping
+  aerialway: *poi_mapping_aerialway
+  amenity: *poi_mapping_amenity
+  barrier: *poi_mapping_barrier
+  building: *poi_mapping_building
+  highway: *poi_mapping_highway
+  historic: *poi_mapping_historic
+  landuse: *poi_mapping_landuse
+  leisure: *poi_mapping_leisure
+  railway: *poi_mapping_railway
+  shop: *poi_mapping_shop
+  sport: *poi_mapping_sport
+  tourism: *poi_mapping_tourism
+  waterway: *poi_mapping_waterway
+
 tables:
   # etldoc: imposm3 -> osm_poi_point
   poi_point:
     type: point
-    fields:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: geometry
-    - name: name
-      key: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
-    - name: tags
-      type: hstore_tags
-    - name: subclass
-      type: mapping_value
-    - name: mapping_key
-      type: mapping_key
-    - name: station
-      key: station
-      type: string
-    - name: funicular
-      key: funicular
-      type: string
-    - name: information
-      key: information
-      type: string
-    - name: uic_ref
-      key: uic_ref
-      type: string
-    - name: religion
-      key: religion
-      type: string
-    - name: level
-      key: level
-      type: integer
-    - name: indoor
-      key: indoor
-      type: bool
-    - name: layer
-      key: layer
-      type: integer
-    - name: sport
-      key: sport
-      type: string
-    mapping:
-      aerialway: *poi_mapping_aerialway
-      amenity: *poi_mapping_amenity
-      barrier: *poi_mapping_barrier
-      building: *poi_mapping_building
-      highway: *poi_mapping_highway
-      historic: *poi_mapping_historic
-      landuse: *poi_mapping_landuse
-      leisure: *poi_mapping_leisure
-      railway: *poi_mapping_railway
-      shop: *poi_mapping_shop
-      sport: *poi_mapping_sport
-      tourism: *poi_mapping_tourism
-      waterway: *poi_mapping_waterway
-
+    fields: *poi_fields
+    mapping: *poi_mapping
 
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
-    fields:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: geometry
-    - name: name
-      key: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
-    - name: tags
-      type: hstore_tags
-    - name: subclass
-      type: mapping_value
-    - name: mapping_key
-      type: mapping_key
-    - name: station
-      key: station
-      type: string
-    - name: funicular
-      key: funicular
-      type: string
-    - name: information
-      key: information
-      type: string
-    - name: uic_ref
-      key: uic_ref
-      type: string
-    - name: religion
-      key: religion
-      type: string
-    - name: level
-      key: level
-      type: integer
-    - name: indoor
-      key: indoor
-      type: bool
-    - name: layer
-      key: layer
-      type: integer
-    - name: sport
-      key: sport
-      type: string
-    mapping:
-      aerialway: *poi_mapping_aerialway
-      amenity: *poi_mapping_amenity
-      barrier: *poi_mapping_barrier
-      building: *poi_mapping_building
-      highway: *poi_mapping_highway
-      historic: *poi_mapping_historic
-      landuse: *poi_mapping_landuse
-      leisure: *poi_mapping_leisure
-      railway: *poi_mapping_railway
-      shop: *poi_mapping_shop
-      sport: *poi_mapping_sport
-      tourism: *poi_mapping_tourism
-      waterway: *poi_mapping_waterway
-
-tags:
-  load_all: true
+    fields: *poi_fields
+    mapping: *poi_mapping

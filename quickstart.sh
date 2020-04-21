@@ -27,7 +27,7 @@ if [ $# -eq 0 ]; then
 else
     osm_area=$1
 fi
-testdata=${osm_area}.osm.pbf
+testdata="${osm_area}.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
@@ -35,6 +35,11 @@ MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
 githash=$( git rev-parse HEAD )
+
+# Options to run with docker and docker-compose - ensure the container is destroyed on exit,
+# as well as pass any other common parameters.
+# In the future this should use -u $(id -u "$USER"):$(id -g "$USER") instead of running docker as root.
+DC_OPTS="--rm"
 
 log_file=./quickstart.log
 rm -f $log_file
@@ -103,9 +108,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
     echo "      : --- Memory, CPU info ---- "
     mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
-    echo "system memory (GB): ${mem}  "
+    echo "system memory (GB): ${mem}"
     grep SwapTotal /proc/meminfo
-    echo cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)
+    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)"
     cat /proc/meminfo  | grep Free
 else
     echo " "
@@ -136,32 +141,32 @@ echo "--------------------------------------------------------------------------
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
-if [ !  -f ./data/${testdata} ]; then
+if [ !  -f "./data/${testdata}" ]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Downloading testdata $testdata   "
+    echo "====> : Downloading testdata $testdata"
     rm -f ./data/*
     #wget $testdataurl  -P ./data
-    make download-geofabrik      area=${osm_area}
+    make download-geofabrik "area=${osm_area}"
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Osm metadata : $testdata   "
+    echo "====> : Osm metadata : $testdata"
     cat ./data/osmstat.txt
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Generated docker-compose config  "
+    echo "====> : Generated docker-compose config"
     cat ./data/docker-compose-config.yml
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : The testdata ./data/$testdata exists, we don't need to download! "
+    echo "====> : The testdata ./data/$testdata exists, we don't need to download!"
 fi
 
 
-if [ !  -f ./data/${testdata} ]; then
+if [ !  -f "./data/${testdata}" ]; then
     echo " "
     echo "Missing ./data/$testdata , Download or Parameter error? "
-    exit 404
+    exit 1
 fi
 
 echo " "
@@ -193,58 +198,61 @@ make forced-clean-sql
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/import-water "
+echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
 echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
 echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-docker-compose run --rm import-water
+docker-compose run $DC_OPTS import-water
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing border data from http://openstreetmap.org into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/import-osmborder"
+echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
 echo "      : Thank you: https://github.com/pnorman/osmborder "
-docker-compose run --rm import-osmborder
+docker-compose run $DC_OPTS import-osmborder
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/import-natural-earth "
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
 echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
 echo "      : Thank you: Natural Earth Contributors! "
-docker-compose run --rm import-natural-earth
+docker-compose run $DC_OPTS import-natural-earth
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing OpenStreetMap Lakelines data "
-echo "      : Source code: https://github.com/openmaptiles/import-lakelines "
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
 echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
 echo "      : Data license: .. "
-docker-compose run --rm import-lakelines
+docker-compose run $DC_OPTS import-lakelines
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing OpenStreetMap data: ./data/${testdata} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
 echo "      : Imposm3 documentation: https://imposm.org/docs/imposm3/latest/index.html "
 echo "      :   Thank you Omniscale! "
-echo "      :   Source code: https://github.com/openmaptiles/import-osm "
+echo "      :   Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-docker-compose run --rm import-osm
+docker-compose run $DC_OPTS import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing Wikidata: ./wikidata/latest-all.json.gz -> PostgreSQL"
-echo "      : Source code: https://github.com/openmaptiles/import-wikidata "
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-wikidata "
 echo "      : The Wikidata license: https://www.wikidata.org/wiki/Wikidata:Database_download/en#License "
 echo "      : Thank you Wikidata Contributors ! "
-docker-compose run --rm import-wikidata
+docker-compose run $DC_OPTS import-wikidata
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start SQL postprocessing:  ./build/tileset.sql -> PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/import-sql "
-docker-compose run --rm import-sql
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-sql "
+# If the output contains a WARNING, stop further processing
+# Adapted from https://unix.stackexchange.com/questions/307562
+docker-compose run $DC_OPTS openmaptiles-tools import-sql | \
+    awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -253,15 +261,15 @@ make psql-analyze
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Bring up postserve at localhost:8090/tiles/{z}/{x}/{y}.pbf"
-docker-compose up -d postserve
+echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
+docker-compose run $DC_OPTS openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/tiles.mbtiles  "
-echo "      : Source code: https://github.com/openmaptiles/generate-vectortiles "
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/generate-vectortiles "
 echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
 echo "      : Thank you https://www.mapbox.com !"
 echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-tiles "
@@ -269,13 +277,13 @@ echo "      :  "
 echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
 echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
 
-docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml  run --rm generate-vectortiles
+docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $DC_OPTS generate-vectortiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Add special metadata to mbtiles! "
-docker-compose run --rm openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-docker-compose run --rm openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+docker-compose run $DC_OPTS openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
+docker-compose run $DC_OPTS openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -289,7 +297,7 @@ rm -f ./data/quickstart_checklist.chk
 md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
 md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
 md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
-md5sum ./data/${testdata}                     >> ./data/quickstart_checklist.chk
+md5sum "./data/${testdata}"                   >> ./data/quickstart_checklist.chk
 md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
 md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
 md5sum ./data/osmstat.txt                     >> ./data/quickstart_checklist.chk
@@ -298,9 +306,9 @@ cat ./data/quickstart_checklist.chk
 ENDTIME=$(date +%s)
 ENDDATE=$(date +"%Y-%m-%dT%H:%M%z")
 if stat --help >/dev/null 2>&1; then
-  MODDATE=$(stat -c %y ./data/${testdata} )
+  MODDATE=$(stat -c %y "./data/${testdata}" )
 else
-  MODDATE=$(stat -f%Sm -t '%F %T %z' ./data/${testdata} )
+  MODDATE=$(stat -f%Sm -t '%F %T %z' "./data/${testdata}" )
 fi
 
 echo " "
@@ -332,10 +340,14 @@ ls -la ./data/*.mbtiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "The ./quickstart.sh $osm_area  is finished! "
-echo "It takes $(($ENDTIME - $STARTTIME)) seconds to complete"
+echo "It takes $((ENDTIME - STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
+echo " "
+echo "*  Use   make start-postserve    to explore tile generation on request"
+echo "*  Use   make start-tileserver   to view pre-generated tiles"
+echo " "
 echo "Available help commands (make help)  "
 make help
 

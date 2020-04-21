@@ -29,13 +29,18 @@ layer:
       - bare_rock
       - beach
       - bog
+      - dune
+      - scrub
       - farm
       - farmland
+      - fell
       - forest
       - garden
       - glacier
       - grass
       - grassland
+      - golf_course
+      - heath
       - mangrove
       - marsh
       - meadow
@@ -50,6 +55,7 @@ layer:
       - scree
       - swamp
       - tidalflat
+      - tundra
       - village_green
       - vineyard
       - wet_meadow

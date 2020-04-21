@@ -77,8 +77,6 @@ tables:
       type: geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - *name
     - *name_en
     - *name_de

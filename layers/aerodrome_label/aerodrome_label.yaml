@@ -27,6 +27,8 @@ layer:
     ele_ft: Elevation (`ele`) in feets.
   datasource:
     geometry_field: geometry
+    key_field: osm_id
+    key_field_as_attribute: no
     srid: 900913
     query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, iata, icao, ele, ele_ft FROM layer_aerodrome_label (!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
