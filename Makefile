@@ -1,12 +1,14 @@
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS?=--rm -u $$(id -u $${USER}):$$(id -g $${USER})
+DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
 
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
   override DC_PROJECT:=$(notdir $(shell pwd))
+  DOCKER_COMPOSE:= docker-compose
+else
+  DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
 endif
-DOCKER_COMPOSE:=docker-compose --project-name $(DC_PROJECT)
 
 # Use `xargs --no-run-if-empty` flag, if supported
 XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
@@ -24,6 +26,9 @@ endif
 .PHONY: all
 all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
 
+# Set OpenMapTiles host
+OMT_HOST:=http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+
 .PHONY: help
 help:
 	@echo "=============================================================================="
@@ -33,20 +38,22 @@ help:
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
 	@echo " "
 	@echo "Hints for designers:"
-	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see localhost:8088 ]"
+	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
 	@echo "  make postserve-start                 # start dynamic tile server [ see localhost:8088 ]"
-	@echo "  make tileserver-start                # start klokantech/tileserver-gl [ see localhost:8080 ]"
+	@echo "  make tileserver-start                # start klokantech/tileserver-gl     [ see $(OMT_HOST):8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
 	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
-	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
+	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik,        and create config file"
+	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr, and create config file"
+	@echo "  make download-bbike area=Amsterdam   # download OSM data from bbike.org,        and create config file"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
 	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
-	@echo "  make generate-qareports              # generate reports [./build/qareports]"
-	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./layers/...]"
+	@echo "  make generate-qareports              # generate reports                                [./build/qareports]"
+	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
 	@echo "  make tools-dev                       # start openmaptiles-tools /bin/bash terminal"
 	@echo "  make db-destroy                      # remove docker containers and PostgreSQL data volume"
 	@echo "  make db-start                        # start PostgreSQL, creating it if it doesn't exist"
@@ -58,7 +65,7 @@ help:
 	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
 	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tables"
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
-	@echo "  cat  quickstart.log                  # backup of the last ./quickstart.sh"
+	@echo "  cat  quickstart.log                  # transcript of the last ./quickstart.sh run"
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
@@ -110,28 +117,30 @@ db-stop:
 list-geofabrik:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list geofabrik
 
-.PHONY: download-geofabrik
-download-geofabrik: init-dirs
-	@if ! test "$(area)"; then \
-		echo "" ;\
-		echo "ERROR: Unable to download an area if area is not given." ;\
-		echo "Usage:" ;\
-		echo "  make download-geofabrik area=<area-id>" ;\
-		echo "" ;\
-		echo "Use   make list-geofabrik   to get a list of all available areas" ;\
-		echo "" ;\
-		exit 1 ;\
-	else \
-		echo "=============== download-geofabrik =======================" ;\
-		echo "Download area: $(area)" ;\
-		$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-			'download-osm geofabrik $(area) \
-				--minzoom $$QUICKSTART_MIN_ZOOM \
-				--maxzoom $$QUICKSTART_MAX_ZOOM \
-				--make-dc /import/docker-compose-config.yml -- -d /import' ;\
-		ls -la ./data/$(area)* ;\
-		echo " " ;\
-	fi
+OSM_SERVERS:=geofabrik osmfr bbbike
+ALL_DOWNLOADS:=$(addprefix download-,$(OSM_SERVERS))
+OSM_SERVER=$(patsubst download-%,%,$@)
+.PHONY: $(ALL_DOWNLOADS)
+$(ALL_DOWNLOADS): init-dirs
+ifeq ($(strip $(area)),)
+	@echo ""
+	@echo "ERROR: Unable to download an area if area is not given."
+	@echo "Usage:"
+	@echo "  make download-$(OSM_SERVER) area=<area-id>"
+	@echo ""
+	$(if $(filter %-geofabrik,$@),@echo "Use   make list-geofabrik   to get a list of all available areas";echo "")
+	@exit 1
+else
+	@echo "=============== download-$(OSM_SERVER) ======================="
+	@echo "Download area: $(area)"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'download-osm $(OSM_SERVER) $(area) \
+			--minzoom $$QUICKSTART_MIN_ZOOM \
+			--maxzoom $$QUICKSTART_MAX_ZOOM \
+			--make-dc /import/docker-compose-config.yml -- -d /import'
+	ls -la ./data/$(notdir $(area))*
+	@echo ""
+endif
 
 .PHONY: psql
 psql: db-start
@@ -162,16 +171,13 @@ import-sql: db-start all
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql
 
 .PHONY: generate-tiles
+ifneq ($(wildcard data/docker-compose-config.yml),)
+  DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
+endif
 generate-tiles: init-dirs db-start all
 	rm -rf data/tiles.mbtiles
-	@if [ -f ./data/docker-compose-config.yml ]; then \
-		echo "Generating tiles limited by ./data/docker-compose-config.yml ..."; \
-		$(DOCKER_COMPOSE) -f docker-compose.yml -f ./data/docker-compose-config.yml \
-					   run $(DC_OPTS) generate-vectortiles; \
-	else \
-		echo "Generating all tiles ..."; \
-		$(DOCKER_COMPOSE) run $(DC_OPTS) generate-vectortiles; \
-	fi
+	echo "Generating tiles ..."; \
+	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
 
@@ -192,7 +198,7 @@ tileserver-start: init-dirs
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start klokantech/tileserver-gl "
-	@echo "*       ----------------------------> check localhost:8080 "
+	@echo "*       ----------------------------> check $(OMT_HOST):8080 "
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -203,7 +209,7 @@ postserve-start: db-start
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Bring up postserve at localhost:8090"
+	@echo "* Bring up postserve at $(OMT_HOST):8090"
 	@echo "*     --> can view it locally (use make maputnik-start)"
 	@echo "*     --> or can use https://maputnik.github.io/editor"
 	@echo "* "
@@ -223,8 +229,8 @@ maputnik-start: maputnik-stop postserve-start
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maputnik/editor "
-	@echo "*       ---> go to http://localhost:8088"
-	@echo "*       ---> set data source / TileJSON URL to http://localhost:8090"
+	@echo "*       ---> go to http://$(OMT_HOST):8088 "
+	@echo "*       ---> set data source / TileJSON URL to http://$(OMT_HOST):8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -302,9 +308,9 @@ refresh-docker-images:
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
 	@$(DOCKER_COMPOSE) down
-	@docker images "openmaptiles/*"                | $(XARGS) docker rmi -f
-	@docker images "osm2vectortiles/mapbox-studio" | $(XARGS) docker rmi -f
-	@docker images "klokantech/tileserver-gl"      | $(XARGS) docker rmi -f
+	@docker images "openmaptiles/*" -q                | $(XARGS) docker rmi -f
+	@docker images "maputnik/editor" -q               | $(XARGS) docker rmi -f
+	@docker images "klokantech/tileserver-gl" -q      | $(XARGS) docker rmi -f
 
 .PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:

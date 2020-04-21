@@ -1,15 +1,22 @@
 layer:
   id: "park"
   description: |
-      The park layer contains parks from OpenStreetMap tagged with either [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park) or [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
+      The park layer contains parks from OpenStreetMap tagged with
+      [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
+      [`boundary=protected_area`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
+      or [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
   buffer_size: 4
   fields:
     class:
       description: |
           Use the **class** to differentiate between different parks.
-      values:
-      - national_park
-      - nature_reserve
+          The class for `boundary=protected_area` parks is the lower-case of the
+          [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
+          value with blanks replaced by `_`.
+          `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
+          `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
+          The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
+          values is similarly assigned.
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the park (point features only).
     name_en: English name `name:en` if available, otherwise `name` (point features only).
     name_de: German name `name:de` if available, otherwise `name` or `name:en` (point features only).
