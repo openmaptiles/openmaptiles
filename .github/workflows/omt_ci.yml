@@ -15,29 +15,65 @@ on:
 
 # jobs can run parallel
 jobs:
+  create_tests:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: load database
+      run: |
+        make init-dirs
+        make download-geofabrik area=greater-london
+        make clean
+        make
+        make db-start
+        make import-water
+        make import-natural-earth
+        make import-lakelines
+        make import-osm
+        make import-borders
+        make import-wikidata
+        make import-sql
+    - name: generate test data
+      run: docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml -t eu-london -r test_results.json
+    - name: upload result from test
+      uses: actions/upload-artifact@v1
+      with:
+        name: test_results
+        path: test_results.json   
   # This workflow contains a single job called "build"
   build:
     # runs on ubuntu (can run on windows and mac os)
     runs-on: ubuntu-latest
-
+    needs: create_tests
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
     # Named steps
+    - name: Download results for compare
+      uses: actions/download-artifact@v1
+      with:
+        name: test_results
+
     - name: generate all zooms
       run: sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
     
     # Runs quickstart  
     - name: quickstart
       env:
-        area: northamptonshire
+        #area: northamptonshire
+        area: greater-london
       run:  bash ./quickstart.sh $area
       
     - name: generate devdoc
       run: TEST_MODE=yes make generate-devdoc
     
+    - name: compare results
+      run: docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml -t eu-london -c test_results.json
     # todo: use artifact to store result of tests
     #- uses: actions/upload-artifact@v1
     #  with:
