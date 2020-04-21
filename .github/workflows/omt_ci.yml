@@ -1,7 +1,7 @@
 # MapTiler OpenMapTiles 
 #######################
 
-# Workflow to validate OMT`s new Pull Requests and commits push into OMT repo
+# Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
 
 name: OMT_CI
 
