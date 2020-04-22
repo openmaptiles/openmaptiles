@@ -116,7 +116,7 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers"
-make clean-docker
+make db-destroy
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -298,8 +298,8 @@ echo "We saved the log file to $log_file  ( for debugging ) You can compare with
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
 echo " "
-echo "*  Use   make start-postserve    to explore tile generation on request"
-echo "*  Use   make start-tileserver   to view pre-generated tiles"
+echo "*  Use   make maputnik-start     to explore tile generation on request"
+echo "*  Use   make tileserver-start   to view pre-generated tiles"
 echo " "
 echo "Available help commands (make help)  "
 make help

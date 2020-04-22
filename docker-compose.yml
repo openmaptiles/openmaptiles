@@ -11,7 +11,7 @@ networks:
 services:
 
   postgres:
-    image: "openmaptiles/postgis:${TOOLS_VERSION}"
+    image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -71,12 +71,16 @@ services:
       # Must match the version of this file (first line)
       # download-osm will use it when generating a composer file
       MAKE_DC_VERSION: "2.3"
+      # Allow DIFF_MODE to be overwritten from shell
+      DIFF_MODE: ${DIFF_MODE}
     networks:
       - postgres_conn
     volumes:
       - .:/tileset
       - ./data:/import
       - ./build:/sql
+      - ./build:/mapping
+      - ./cache:/cache
 
   generate-changed-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
