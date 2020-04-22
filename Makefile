@@ -202,7 +202,7 @@ postserve-start: db-start
 	@echo "*     --> can view it locally (use make maputnik-start)"
 	@echo "*     --> or can use https://maputnik.github.io/editor"
 	@echo "* "
-	@echo "*  set data source / TileJSON URL to http://localhost:8090"
+	@echo "*  set data source / TileJSON URL to http://$(OMT_HOST):8090"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -295,13 +295,13 @@ list-docker-images:
 
 .PHONY: refresh-docker-images
 refresh-docker-images:
-	@if test "$(NO_REFRESH)"; then \
-		echo "Skipping docker image refresh" ;\
-	else \
-		echo "" ;\
-		echo "Refreshing docker images... Use NO_REFRESH=1 to skip." ;\
-		$(DOCKER_COMPOSE) pull --ignore-pull-failures ;\
-	fi
+ifneq ($(strip $(NO_REFRESH)),)
+	echo "Skipping docker image refresh"
+else
+	echo ""
+	echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
+	$(DOCKER_COMPOSE) pull --ignore-pull-failures
+endif
 
 .PHONY: remove-docker-images
 remove-docker-images:
