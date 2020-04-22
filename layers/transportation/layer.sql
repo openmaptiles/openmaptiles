@@ -378,9 +378,13 @@ CREATE OR REPLACE FUNCTION layer_transportation_lite(bbox geometry, zoom_level i
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text,
 ramp int, oneway int, brunnel TEXT, service TEXT, layer INT, level INT,
 indoor INT, surface TEXT) AS $$
-    SELECT * FROM layer_transportation(bbox, zoom_level)
+    SELECT
+        osm_id, geometry, class, subclass, ramp, oneway, brunnel, service, layer, level, indoor, surface
+    FROM layer_transportation(bbox, zoom_level)
         WHERE zoom_level < 13
     UNION ALL
-    SELECT * FROM layer_transportation(bbox, 14)
+    SELECT
+        osm_id, geometry, class, subclass, ramp, oneway, brunnel, service, layer, level, indoor, surface
+    FROM layer_transportation(bbox, 14)
         WHERE zoom_level >= 13
 $$ LANGUAGE SQL IMMUTABLE;
