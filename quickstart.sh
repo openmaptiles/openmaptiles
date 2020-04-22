@@ -105,8 +105,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
     echo "system memory (GB): ${mem}"
     grep SwapTotal /proc/meminfo
-    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(cat /proc/cpuinfo | grep "bogomips" | head -1)"
-    cat /proc/meminfo  | grep Free
+    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
+    grep Free /proc/meminfo
 else
     echo " "
     echo "Warning : Platforms other than Linux are less tested"
@@ -120,7 +120,7 @@ make clean-docker
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Checking OpenMapTiles docker images "
+echo "====> : Existing OpenMapTiles docker images. Will use version $(source .env && echo "$TOOLS_VERSION")"
 docker images | grep openmaptiles
 
 echo " "
@@ -162,7 +162,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Code generating from the layer definitions ( ./build/mapping.yaml; ./build/tileset.sql )"
 echo "      : The tool source code: https://github.com/openmaptiles/openmaptiles-tools "
 echo "      : But we generate the tm2source, Imposm mappings and SQL functions from the layer definitions! "
-make
+make all
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -178,29 +178,18 @@ echo "====> : Drop and Recreate PostgreSQL  public schema "
 # This adds an extra safety belt if the user modifies the docker volume settings
 make forced-clean-sql
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing water data from http://osmdata.openstreetmap.de/ into PostgreSQL "
-echo "      : Source code:  https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-water "
-echo "      : Data license: https://osmdata.openstreetmap.de/info/license.html "
-echo "      : Thank you: https://osmdata.openstreetmap.de/info/ "
-make import-water
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing  http://www.naturalearthdata.com  into PostgreSQL "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-natural-earth "
-echo "      : Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use  "
-echo "      : Thank you: Natural Earth Contributors! "
-make import-natural-earth
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing OpenStreetMap Lakelines data "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-lakelines "
-echo "      :              https://github.com/lukasmartinelli/osm-lakelines "
-echo "      : Data license: .. "
-make import-lakelines
+echo "====> : Importing all the data:"
+echo "      : * Water data from http://osmdata.openstreetmap.de"
+echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
+echo "      : * Natural Earth from http://www.naturalearthdata.com"
+echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
+echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
+echo "      :"
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
+echo "      :   includes all data from the import-data image"
+echo "      :"
+echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+make import-data
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -269,16 +258,13 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
-md5sum build/mapping.yaml                     >> ./data/quickstart_checklist.chk
-md5sum build/tileset.sql                      >> ./data/quickstart_checklist.chk
-md5sum build/openmaptiles.tm2source/data.yml  >> ./data/quickstart_checklist.chk
-md5sum "./data/${testdata}"                   >> ./data/quickstart_checklist.chk
-md5sum ./data/tiles.mbtiles                   >> ./data/quickstart_checklist.chk
-md5sum ./data/docker-compose-config.yml       >> ./data/quickstart_checklist.chk
+{
+  find build -type f | sort | xargs md5sum ;
+  find data -type f | sort | xargs md5sum ;
+} >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
-ENDDATE=$(date +"%Y-%m-%dT%H:%M%z")
 if stat --help >/dev/null 2>&1; then
   MODDATE=$(stat -c %y "./data/${testdata}" )
 else

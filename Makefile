@@ -69,7 +69,9 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	mkdir -p build && mkdir -p data && mkdir -p cache
+	@mkdir -p build
+	@mkdir -p data
+	@mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 	mkdir -p build/openmaptiles.tm2source
@@ -94,12 +96,13 @@ clean-docker:
 
 .PHONY: db-start
 db-start:
-	$(DOCKER_COMPOSE) up -d postgres
+	$(DOCKER_COMPOSE) up --no-recreate -d postgres
 	@echo "Wait for PostgreSQL to start..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./pgwait.sh
 
 .PHONY: db-stop
 db-stop:
+	@echo "Stopping PostgreSQL..."
 	$(DOCKER_COMPOSE) stop postgres
 
 OSM_SERVERS:=geofabrik osmfr bbbike
@@ -142,21 +145,13 @@ import-sql: db-start all
 .PHONY: import-osmsql
 import-osmsql: db-start all import-osm import-sql
 
+.PHONY: import-data
+import-data: db-start
+	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
+
 .PHONY: import-borders
 import-borders: db-start
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-borders
-
-.PHONY: import-water
-import-water: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-water
-
-.PHONY: import-natural-earth
-import-natural-earth: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-natural-earth
-
-.PHONY: import-lakelines
-import-lakelines: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-lakelines
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
@@ -219,7 +214,7 @@ generate-qareports:
 .PHONY: generate-devdoc
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools-latest sh -c \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
