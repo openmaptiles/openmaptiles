@@ -1,4 +1,4 @@
-# MapTiler OpenMapTiles 
+# MapTiler OpenMapTiles
 #######################
 
 # Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
@@ -28,16 +28,16 @@ jobs:
     # Named steps
     - name: generate all zooms
       run: sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
-    
-    # Runs quickstart  
+
+    # Runs quickstart
     - name: quickstart
       env:
         area: northamptonshire
       run:  bash ./quickstart.sh $area
-      
+
     - name: generate devdoc
       run: TEST_MODE=yes make generate-devdoc
-    
+
     # todo: use artifact to store result of tests
     #- uses: actions/upload-artifact@v1
     #  with:
