@@ -296,10 +296,10 @@ list-docker-images:
 .PHONY: refresh-docker-images
 refresh-docker-images:
 ifneq ($(strip $(NO_REFRESH)),)
-	echo "Skipping docker image refresh"
+	@echo "Skipping docker image refresh"
 else
-	echo ""
-	echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
+	@echo ""
+	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
 	$(DOCKER_COMPOSE) pull --ignore-pull-failures
 endif
 
