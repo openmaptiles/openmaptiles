@@ -39,7 +39,7 @@ help:
 	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make postserve-start                 # start dynamic tile server [ see localhost:8088 ]"
+	@echo "  make postserve-start                 # start dynamic tile server [ see $(OMT_HOST):8088 ]"
 	@echo "  make tileserver-start                # start klokantech/tileserver-gl     [ see $(OMT_HOST):8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
@@ -181,8 +181,6 @@ generate-tiles: init-dirs db-start all
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
 
-# Note that tileserver-gl currently requires to be run as a root
-# because it exposes port 80, which cannot be listened on withot root
 .PHONY: tileserver-start
 tileserver-start: init-dirs
 	@echo " "
@@ -234,12 +232,11 @@ maputnik-start: maputnik-stop postserve-start
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	-docker rm -f maputnik_editor
 	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
 .PHONY: maputnik-stop
 maputnik-stop:
-	docker rm -f maputnik_editor || true
+	-docker rm -f maputnik_editor
 
 .PHONY: generate-qareports
 generate-qareports:
