@@ -1,0 +1,38 @@
+# MapTiler OpenMapTiles
+#######################
+
+# Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
+
+name: On Master Commit
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  run_performance_tests:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: load database
+      run: |
+        make init-dirs
+        cp .github/perf-test-areas-latest.osm.pbf data/
+        make clean
+        make
+        make db-start
+        make import-data
+        make import-osm
+        make import-borders
+        make import-wikidata
+        make import-sql
+    - name: run test
+      run: docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --test eu-london --record perf-test_master.json
+    - name: upload result from test
+      uses: actions/upload-artifact@v1
+      with:
+        name: perf-test_master.json
+        path: perf-test_master.json
