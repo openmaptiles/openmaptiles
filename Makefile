@@ -202,7 +202,7 @@ tileserver-start: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run --rm -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run --rm -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 klokantech/tileserver-gl --port 8080
 
 .PHONY: postserve-start
 postserve-start: db-start
