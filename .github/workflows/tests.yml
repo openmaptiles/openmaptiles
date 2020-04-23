@@ -67,7 +67,7 @@ jobs:
           if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
             echo "Data file does not exist, downloading..."
             curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
-              "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+              "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
           fi
           make db-start
           time make import-data
@@ -81,7 +81,7 @@ jobs:
           export TOOLS_VERSION=latest
           docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml \
             --minzoom 0 --maxzoom 14 \
-            --test equatorial-guinea --test liechtenstein \
+            --test hungary --test isle-of-man \
             --record base-performance.json
       - name: Save test result
         uses: actions/upload-artifact@v1
@@ -116,7 +116,7 @@ jobs:
           if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
             echo "Data file does not exist, downloading..."
             curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
-              "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+              "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
           fi
           make db-start
           time make import-data
@@ -134,7 +134,7 @@ jobs:
           export TOOLS_VERSION=latest
           OUTPUT="$(docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml \
             --minzoom 0 --maxzoom 14 \
-            --test equatorial-guinea --test liechtenstein \
+            --test hungary --test isle-of-man \
             --compare base-performance.json --record pr-performance.json)"
 
           # Convert multiline output into a single long string.
