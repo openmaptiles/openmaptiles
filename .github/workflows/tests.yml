@@ -55,7 +55,7 @@ jobs:
       - name: Cache download area
         uses: actions/cache@v1
         with:
-          path: data/perf-test-areas-latest.osm.pbf
+          path: data_cache
           key: test-data
       - name: Load test data into DB and run performance test
         id: load_db
@@ -64,11 +64,13 @@ jobs:
           make clean db-destroy
           make all
           # Download test file from Google Drive if it is not already there (from Cache)
-          if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
+          mkdir -p data_cache
+          if [ ! -f data_cache/perf-test-areas-latest.osm.pbf ]; then
             echo "Data file does not exist, downloading..."
-            curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
+            curl --silent --show-error --location --output data_cache/perf-test-areas-latest.osm.pbf \
               "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
           fi
+          cp data_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
           make db-start
           time make import-data
           time make import-osm
@@ -104,7 +106,7 @@ jobs:
       - name: Cache download area
         uses: actions/cache@v1
         with:
-          path: data/perf-test-areas-latest.osm.pbf
+          path: data_cache
           key: test-data
       - name: Load test data into DB and run performance test
         id: load_db
@@ -113,11 +115,13 @@ jobs:
           make clean db-destroy
           make all
           # Download test file from Google Drive if it is not already there (from Cache)
-          if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
+          mkdir -p data_cache
+          if [ ! -f data_cache/perf-test-areas-latest.osm.pbf ]; then
             echo "Data file does not exist, downloading..."
-            curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
+            curl --silent --show-error --location --output data_cache/perf-test-areas-latest.osm.pbf \
               "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
           fi
+          cp data_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
           make db-start
           time make import-data
           time make import-osm
