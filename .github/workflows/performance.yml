@@ -22,22 +22,22 @@ jobs:
         uses: actions/checkout@v2
         # For commits, just get the resulting code
         if: "github.event_name != 'pull_request'"
+      - name: Cache download area
+        uses: actions/cache@v1
+        with:
+          path: data/perf-test-areas-latest.osm.pbf
+          key: test-data
       - name: Load test data into DB and run performance test
         id: load_db
         run: |
           # Make sure these steps are identical to the other job
           make clean db-destroy
           make all
-          # TODO: Use nginx service to host this file, and use "download-osm url http://localhost/..."
-          # Eventually we could also switch to a more permanent store, e.g. Google drive or GCP bucket
-
-          # Just in case the base branch has no data, download it from a hardcoded location
-          # TODO: remove this in a subsequent PR, leaving just the "cp" command
-          if [ -f .github/perf-test-areas-latest.osm.pbf ]; then
-            cp .github/perf-test-areas-latest.osm.pbf data/
-          else
-            curl --silent --show-error --location -o data/perf-test-areas-latest.osm.pbf \
-              https://github.com/nyurik/openmaptiles/blob/perf-action/.github/perf-test-areas-latest.osm.pbf?raw=true
+          # Download test file from Google Drive if it is not already there (from Cache)
+          if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
+            echo "Data file does not exist, downloading..."
+            curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
+              "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
           fi
           make db-start
           time make import-data
@@ -49,7 +49,10 @@ jobs:
           # This step is the only one that differs between first and second run
           # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
           export TOOLS_VERSION=latest
-          docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein --record base-performance.json
+          docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml \
+            --minzoom 0 --maxzoom 14 \
+            --test equatorial-guinea --test liechtenstein \
+            --record base-performance.json
       - name: Save test result
         uses: actions/upload-artifact@v1
         with:
@@ -68,15 +71,23 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: base-performance.json
+      - name: Cache download area
+        uses: actions/cache@v1
+        with:
+          path: data/perf-test-areas-latest.osm.pbf
+          key: test-data
       - name: Load test data into DB and run performance test
         id: load_db
         run: |
           # Make sure these steps are identical to the other job
           make clean db-destroy
           make all
-          # TODO: Use nginx service to host this file, and use "download-osm url http://localhost/..."
-          # Eventually we could also switch to a more permanent store, e.g. Google drive or GCP bucket
-          cp .github/perf-test-areas-latest.osm.pbf data/
+          # Download test file from Google Drive if it is not already there (from Cache)
+          if [ ! -f data/perf-test-areas-latest.osm.pbf ]; then
+            echo "Data file does not exist, downloading..."
+            curl --silent --show-error --location --output data/perf-test-areas-latest.osm.pbf \
+              "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+          fi
           make db-start
           time make import-data
           time make import-osm
@@ -91,7 +102,10 @@ jobs:
           mv base-perf.json base-performance.json
           # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
           export TOOLS_VERSION=latest
-          OUTPUT="$(docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein --compare base-performance.json --record pr-performance.json)"
+          OUTPUT="$(docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml \
+            --minzoom 0 --maxzoom 14 \
+            --test equatorial-guinea --test liechtenstein \
+            --compare base-performance.json --record pr-performance.json)"
 
           # Convert multiline output into a single long string.
           # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
