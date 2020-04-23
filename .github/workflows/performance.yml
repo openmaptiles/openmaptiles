@@ -1,0 +1,127 @@
+# Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
+
+name: Performance
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  base_performance:
+    name: Evaluate base performance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get base branch (on PULL REQUEST)
+        uses: actions/checkout@v2
+        # Pull request evaluates the base performance before evaluating the proposed changes
+        if: "github.event_name == 'pull_request'"
+        with:
+          ref: "${{ github.base_ref }}"
+      - name: Get commit branch (on PUSH)
+        uses: actions/checkout@v2
+        # For commits, just get the resulting code
+        if: "github.event_name != 'pull_request'"
+      - name: Load test data into DB and run performance test
+        id: load_db
+        run: |
+          # Make sure these steps are identical to the other job
+          make clean db-destroy
+          make all
+          # TODO: Use nginx service to host this file, and use "download-osm url http://localhost/..."
+          # Eventually we could also switch to a more permanent store, e.g. Google drive or GCP bucket
+
+          # Just in case the base branch has no data, download it from a hardcoded location
+          # TODO: remove this in a subsequent PR, leaving just the "cp" command
+          if [ -f .github/perf-test-areas-latest.osm.pbf ]; then
+            cp .github/perf-test-areas-latest.osm.pbf data/
+          else
+            curl --silent --show-error --location -o data/perf-test-areas-latest.osm.pbf \
+              https://github.com/nyurik/openmaptiles/blob/perf-action/.github/perf-test-areas-latest.osm.pbf?raw=true
+          fi
+          make db-start
+          time make import-data
+          time make import-osm
+          time make import-borders
+          time make import-wikidata
+          time make import-sql
+
+          # This step is the only one that differs between first and second run
+          # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
+          export TOOLS_VERSION=latest
+          docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein --record base-performance.json
+      - name: Save test result
+        uses: actions/upload-artifact@v1
+        with:
+          name: base-performance.json
+          path: base-performance.json
+
+  pr_performance:
+    name: Evaluate PR performance
+    if: "github.event_name == 'pull_request'"
+    needs: base_performance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request code
+        uses: actions/checkout@v2
+      - name: Download base performance results
+        uses: actions/download-artifact@v1
+        with:
+          name: base-performance.json
+      - name: Load test data into DB and run performance test
+        id: load_db
+        run: |
+          # Make sure these steps are identical to the other job
+          make clean db-destroy
+          make all
+          # TODO: Use nginx service to host this file, and use "download-osm url http://localhost/..."
+          # Eventually we could also switch to a more permanent store, e.g. Google drive or GCP bucket
+          cp .github/perf-test-areas-latest.osm.pbf data/
+          make db-start
+          time make import-data
+          time make import-osm
+          time make import-borders
+          time make import-wikidata
+          time make import-sql
+
+          # This step is the only one that differs between first and second run
+          # A single file artifact is downloaded as a dir with the same name
+          mv base-performance.json/base-performance.json base-perf.json
+          rm -rf base-performance.json
+          mv base-perf.json base-performance.json
+          # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
+          export TOOLS_VERSION=latest
+          OUTPUT="$(docker-compose run --rm openmaptiles-tools test-perf openmaptiles.yaml --minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein --compare base-performance.json --record pr-performance.json)"
+
+          # Convert multiline output into a single long string.
+          # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
+          OUTPUT="${OUTPUT//'%'/'%25'}"
+          OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+          OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+
+          # Split into two parts -- before and after the ===== SUMMARY =====
+          echo "::set-output name=summary::${OUTPUT##*========}"
+          echo "::set-output name=details::${OUTPUT%%========*}"
+      - name: Save test result
+        uses: actions/upload-artifact@v1
+        with:
+          name: pr-performance.json
+          path: pr-performance.json
+      - name: Comment on Pull Request
+        uses: marocchino/sticky-pull-request-comment@v1
+        timeout-minutes: 1
+        with:
+          message: |-
+            ```
+            ${{ steps.load_db.outputs.summary }}
+            ```
+
+            <details>
+            <summary>expand for details...</summary>
+
+            ```
+            ${{ steps.load_db.outputs.details }}
+            ```
+
+            </details>
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

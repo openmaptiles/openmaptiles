@@ -38,8 +38,8 @@ jobs:
     - name: generate devdoc
       run: TEST_MODE=yes make generate-devdoc
 
-    # todo: use artifact to store result of tests
-    #- uses: actions/upload-artifact@v1
-    #  with:
-    #    name: quickstart log file
-    #    path: quickstart.log
+    - name: save quickstart.log
+      uses: actions/upload-artifact@v1
+      with:
+        name: quickstart.log
+        path: quickstart.log
