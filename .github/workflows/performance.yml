@@ -110,6 +110,7 @@ jobs:
       - name: Comment on Pull Request
         uses: marocchino/sticky-pull-request-comment@v1
         timeout-minutes: 1
+        continue-on-error: true
         with:
           message: |-
             ```
