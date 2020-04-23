@@ -1,6 +1,6 @@
 # Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
 
-name: Performance
+name: OpenMapTiles CI
 
 on:
   push:
@@ -8,9 +8,39 @@ on:
   pull_request:
 
 jobs:
+
+  integrity_test:
+    name: Run quick integrity test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout the changes
+        uses: actions/checkout@v2
+
+      - name: Run quickstart for a small area
+        env:
+          area: andorra
+        run: |
+          # For now, change the quickstart values directly in the .env file
+          # TODO: We should probably use env vars instead
+          sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
+          ./quickstart.sh $area
+
+      - name: Save quickstart.log
+        uses: actions/upload-artifact@v1
+        with:
+          name: quickstart.log
+          path: quickstart.log
+
+      - name: Test etldoc images
+        run: TEST_MODE=yes make generate-devdoc
+
   base_performance:
     name: Evaluate base performance
     runs-on: ubuntu-latest
+    # Even though we technically don't need to wait for integrity test,
+    # there is no point to run long perf test until we know the code is OK
+    needs: integrity_test
     steps:
       - name: Get base branch (on PULL REQUEST)
         uses: actions/checkout@v2
