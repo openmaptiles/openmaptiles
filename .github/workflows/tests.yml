@@ -19,7 +19,7 @@ jobs:
 
       - name: Run quickstart for a small area
         env:
-          area: andorra
+          area: monaco
         run: |
           # For now, change the quickstart values directly in the .env file
           # TODO: We should probably use env vars instead
@@ -130,7 +130,8 @@ jobs:
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
             TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-              --record ../perf_cache/results.json
+              --record /tileset/results.json
+            mv results.json ../perf_cache
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
               # For pull requests, restore to the PR version before continuing
@@ -153,9 +154,12 @@ jobs:
 
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
+            cp ../perf_cache/results.json .
             OUTPUT="$(TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-                        --compare ../perf_cache/results.json --record ../artifacts/pr-results.json)"
+                        --compare /tileset/results.json --record /tileset/pr-results.json)"
+            rm results.json
+            mv pr-results.json ../artifacts/
 
             # Convert multiline output into a single long string.
             # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
