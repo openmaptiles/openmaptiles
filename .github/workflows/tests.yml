@@ -91,7 +91,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: perf_cache
-          key: "${{ steps.calc.outputs.hash }}"
+          key: "${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
