@@ -13,7 +13,7 @@ END;
 $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
+CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
 --CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 --CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
@@ -60,8 +60,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          osm_building_street WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
-         -- etldoc: osm_building_multipolygon -> layer_building:z14_
-         -- Buildings that are inner/outer
+         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- Buildings that are from multipolygons
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
@@ -71,7 +71,10 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
+         osm_building_polygon obp
+         -- OSM mulipolygons once imported can give unique postgis polygons with holes, or multi parts polygons
+         WHERE osm_id < 0 AND ST_GeometryType(geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
+
          UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
@@ -86,7 +89,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          FROM
          osm_building_polygon obp
            LEFT JOIN osm_building_relation obr ON (obr.member = obp.osm_id)
-         WHERE obp.osm_id >= 0
+         -- Only check for ST_Polygon as we exclude buildings from relations keeping only positive ids
+         WHERE obp.osm_id >= 0 AND ST_GeometryType(obp.geometry) = 'ST_Polygon'
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
@@ -112,7 +116,7 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            WHEN 'sandstone' THEN '#b4a995' -- same as stone
            WHEN 'clay' THEN '#9d8b75' -- same as mud
        END) AS colour,
-      CASE WHEN hide_3d THEN TRUE ELSE NULL::boolean END AS hide_3d
+      CASE WHEN hide_3d THEN TRUE END AS hide_3d
     FROM (
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
         SELECT
@@ -140,6 +144,8 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
             zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL IMMUTABLE
+PARALLEL SAFE;
 
 -- not handled: where a building outline covers building parts

@@ -24,33 +24,69 @@ layer:
           shipping ways), or
           [`man_made`](http://wiki.openstreetmap.org/wiki/Key:route).
       values:
-      - motorway
-      - trunk
-      - primary
-      - secondary
-      - tertiary
-      - minor
-      - service
-      - track
-      - path
-      - raceway
-      - motorway_construction
-      - trunk_construction
-      - primary_construction
-      - secondary_construction
-      - tertiary_construction
-      - minor_construction
-      - service_construction
-      - track_construction
-      - path_construction
-      - raceway_construction
-      - rail
-      - transit
-      - cable_car
-      - gondola
-      - ferry
-      - bridge
-      - pier
+        motorway:
+          highway: ['motorway', 'motorway_link']
+        trunk:
+          highway: ['trunk', 'trunk_link']
+        primary:
+          highway: ['primary', 'primary_link']
+        secondary:
+          highway: ['secondary', 'secondary_link']
+        tertiary:
+          highway: ['tertiary', 'tertiary_link']
+        minor:
+          highway: ['unclassified', 'residential', 'living_street', 'road']
+        path:
+          highway: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+          public_transport: 'platform'
+        service:
+          highway: service
+        track:
+          highway: track
+        raceway:
+          highway: raceway
+        motorway_construction:
+          __AND__:
+            highway: construction
+            construction: ['motorway', 'motorway_link']
+        trunk_construction:
+          __AND__:
+            highway: construction
+            construction: ['trunk', 'trunk_link']
+        primary_construction:
+          __AND__:
+            highway: construction
+            construction: ['primary', 'primary_link']
+        secondary_construction:
+          __AND__:
+            highway: construction
+            construction: ['secondary', 'secondary_link']
+        tertiary_construction:
+          __AND__:
+            highway: construction
+            construction: ['tertiary', 'tertiary_link']
+        minor_construction:
+          __AND__:
+            highway: construction
+            construction: ['', 'unclassified', 'residential', 'living_street', 'road']
+        path_construction:
+          __AND__:
+            - highway: construction
+            - __OR__:
+                construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+                public_transport: platform
+        service_construction:
+          __AND__:
+            highway: construction
+            construction: service
+        track_construction:
+          __AND__:
+            highway: construction
+            construction: track
+        raceway_construction:
+          __AND__:
+            highway: construction
+            construction: raceway
     subclass:
       description: |
           Distinguish more specific classes of railway and path:

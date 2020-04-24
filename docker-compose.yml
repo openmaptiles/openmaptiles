@@ -1,10 +1,17 @@
-version: "2"
+# This version must match the MAKE_DC_VERSION value below
+version: "2.3"
+
 volumes:
   pgdata:
-  cache:
+
+networks:
+  postgres_conn:
+    driver: bridge
+
 services:
+
   postgres:
-    image: "openmaptiles/postgis:${TOOLS_VERSION}"
+    image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -12,21 +19,13 @@ services:
     ports:
       - "5432"
     env_file: .env
-  import-natural-earth:
-    image: "openmaptiles/import-natural-earth:${TOOLS_VERSION}"
+
+  import-data:
+    image: "openmaptiles/import-data:${TOOLS_VERSION}"
     env_file: .env
     networks:
       - postgres_conn
-  import-water:
-    image: "openmaptiles/import-water:${TOOLS_VERSION}"
-    env_file: .env
-    networks:
-      - postgres_conn
-  import-lakelines:
-    image: "openmaptiles/import-lakelines:${TOOLS_VERSION}"
-    env_file: .env
-    networks:
-      - postgres_conn
+
   import-osm:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
@@ -37,12 +36,8 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
-  import-osmborder:
-    image: "openmaptiles/import-osmborder:${TOOLS_VERSION}"
-    env_file: .env
-    networks:
-      - postgres_conn
+      - ./cache:/cache
+
   import-osm-diff:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
@@ -54,7 +49,8 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
+      - ./cache:/cache
+
   update-osm:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
@@ -66,34 +62,26 @@ services:
     volumes:
       - ./data:/import
       - ./build:/mapping
-      - cache:/cache
-  import-sql:
-    # This target is obsolete, and was left for backwards compatibility
-    # Use openmaptiles-tools target instead
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    command: import-sql
-    env_file: .env
-    networks:
-      - postgres_conn
-    volumes:
-      - .:/tileset
-      - ./build:/sql
-  import-wikidata:
-    image: "openmaptiles/import-wikidata:${TOOLS_VERSION}"
-    env_file: .env
-    command: import-wikidata
-    networks:
-      - postgres_conn
-    volumes:
-      - ./wikidata:/import
+      - ./cache:/cache
+
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     env_file: .env
+    environment:
+      # Must match the version of this file (first line)
+      # download-osm will use it when generating a composer file
+      MAKE_DC_VERSION: "2.3"
+      # Allow DIFF_MODE to be overwritten from shell
+      DIFF_MODE: ${DIFF_MODE}
     networks:
       - postgres_conn
     volumes:
       - .:/tileset
+      - ./data:/import
       - ./build:/sql
+      - ./build:/mapping
+      - ./cache:/cache
+
   generate-changed-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
     command: ./export-list.sh
@@ -103,6 +91,7 @@ services:
     networks:
       - postgres_conn
     env_file: .env
+
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
     volumes:
@@ -115,6 +104,7 @@ services:
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
+
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     command: postserve openmaptiles.yaml --verbose
@@ -125,7 +115,3 @@ services:
       - "8090:8090"
     volumes:
       - .:/tileset
-
-networks:
-  postgres_conn:
-    driver: bridge

@@ -2,7 +2,7 @@ tables:
   # etldoc: imposm3 -> osm_marine_point
   marine_point:
     type: point
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry

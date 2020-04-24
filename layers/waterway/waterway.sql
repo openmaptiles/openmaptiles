@@ -2,9 +2,10 @@ CREATE OR REPLACE FUNCTION waterway_brunnel(is_bridge BOOL, is_tunnel BOOL) RETU
     SELECT CASE
         WHEN is_bridge THEN 'bridge'
         WHEN is_tunnel THEN 'tunnel'
-        ELSE NULL
     END;
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$
+LANGUAGE SQL
+IMMUTABLE STRICT PARALLEL SAFE;
 
 -- etldoc: ne_110m_rivers_lake_centerlines ->  waterway_z3
 CREATE OR REPLACE VIEW waterway_z3 AS (
@@ -106,4 +107,6 @@ RETURNS TABLE(geometry geometry, class text, name text, name_en text, name_de te
         SELECT * FROM waterway_z14 WHERE zoom_level >= 14
     ) AS zoom_levels
     WHERE geometry && bbox;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

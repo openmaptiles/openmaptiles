@@ -15,7 +15,7 @@ CREATE MATERIALIZED VIEW osm_water_lakeline AS (
     FROM osm_water_polygon AS wp
     INNER JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
     WHERE wp.name <> '' AND ST_IsValid(wp.geometry)
-);
+) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline USING gist(geometry);
 
 -- Handle updates

@@ -1,6 +1,8 @@
 CREATE OR REPLACE FUNCTION highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
     SELECT highway LIKE '%_link';
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$
+LANGUAGE SQL
+IMMUTABLE STRICT PARALLEL SAFE;
 
 
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
@@ -23,7 +25,6 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             WHEN (highway IS NOT NULL OR public_transport IS NOT NULL)
                 AND highway_class(highway, public_transport, construction) = 'path'
                 THEN COALESCE(NULLIF(public_transport, ''), highway)
-            ELSE NULL
         END AS subclass,
         -- All links are considered as ramps as well
         CASE WHEN highway_is_link(highway) OR highway = 'steps'
@@ -33,7 +34,7 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
         NULLIF(service, '') AS service,
         NULLIF(layer, 0) AS layer,
         "level",
-        CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
+        CASE WHEN indoor=TRUE THEN 1 END as indoor,
         NULLIF(bicycle, '') AS bicycle,
         NULLIF(foot, '') AS foot,
         NULLIF(horse, '') AS horse,
@@ -157,12 +158,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             public_transport, service_value(service) AS service,
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, man_made,
             layer,
-            CASE WHEN highway IN ('footway', 'steps') THEN "level"
-                ELSE NULL::int
-            END AS "level",
-            CASE WHEN highway IN ('footway', 'steps') THEN indoor
-                ELSE NULL::boolean
-            END AS indoor,
+            CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
+            CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
             bicycle, foot, horse, mtb_scale,
             surface_value(surface) AS "surface",
             z_order
@@ -371,4 +368,6 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
     ) AS zoom_levels
     WHERE geometry && bbox
     ORDER BY z_order ASC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;

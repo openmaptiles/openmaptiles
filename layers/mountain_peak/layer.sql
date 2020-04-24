@@ -3,32 +3,32 @@
 -- etldoc:     style="rounded,filled", label="layer_mountain_peak | <z7_> z7+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_mountain_peak(
-    bbox geometry, 
-    zoom_level integer, 
+    bbox geometry,
+    zoom_level integer,
     pixel_width numeric)
   RETURNS TABLE(
     osm_id bigint,
-    geometry geometry, 
-    name text, 
-    name_en text, 
-    name_de text, 
-    class text, 
+    geometry geometry,
+    name text,
+    name_en text,
+    name_de text,
+    class text,
     tags hstore,
-    ele int, 
-    ele_ft int, 
-    "rank" int) AS 
+    ele int,
+    ele_ft int,
+    "rank" int) AS
 $$
    -- etldoc: osm_peak_point -> layer_mountain_peak:z7_
-  SELECT 
-    osm_id, 
-    geometry, 
-    name, 
-    name_en, 
-    name_de, 
-    tags -> 'natural' AS class, 
+  SELECT
+    osm_id,
+    geometry,
+    name,
+    name_en,
+    name_de,
+    tags -> 'natural' AS class,
     tags,
-    ele::int, 
-    ele_ft::int, 
+    ele::int,
+    ele_ft::int,
     rank::int FROM (
       SELECT osm_id, geometry, name,
       COALESCE(NULLIF(name_en, ''), name) AS name_en,
@@ -52,4 +52,6 @@ $$
   WHERE zoom_level >= 7 AND (rank <= 5 OR zoom_level >= 14)
   ORDER BY "rank" ASC;
 
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL
+IMMUTABLE PARALLEL SAFE;
