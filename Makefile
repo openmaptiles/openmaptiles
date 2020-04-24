@@ -92,10 +92,11 @@ clean:
 	rm -rf build
 
 .PHONY: db-destroy
+db-destroy: override DC_PROJECT:=$(shell echo $(DC_PROJECT) | tr A-Z a-z)
 db-destroy:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
-	docker volume ls -q -f "name=^$${DC_PROJECT,,*}_" | $(XARGS) docker volume rm
+	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 
 .PHONY: db-start
@@ -230,7 +231,7 @@ maputnik-stop:
 	-docker rm -f maputnik_editor
 
 .PHONY: generate-qareports
-generate-qareports:
+generate-qareports: db-start
 	./qa/run.sh
 
 # generate all etl and mapping graphs
