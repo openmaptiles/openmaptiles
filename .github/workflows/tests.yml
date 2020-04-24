@@ -43,7 +43,10 @@ jobs:
           path: quickstart.log
 
       - name: Test etldoc images
-        run: TEST_MODE=yes make generate-devdoc
+        run: |
+          export TEST_MODE=yes
+          # ____________TEST ______________________
+          # make generate-devdoc
 
   performance:
     name: Evaluate performance
@@ -79,6 +82,7 @@ jobs:
         run: |
           # If this is a pull request, we should cache the parent (base) revision
           # Otherwise cache the current one
+          cd code
           REV_HASH=$(git log -1 --format="%H")
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             # Take the first parent of the grafted commit (cannot use HEAD^1 with shallow clones)
