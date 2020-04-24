@@ -10,6 +10,13 @@ else
   DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
 endif
 
+# Make some operations quieter (e.g. inside the test script)
+ifeq ($(strip $(QUIET)),)
+  QUIET_FLAG:=
+else
+  QUIET_FLAG:=--quiet
+endif
+
 # Use `xargs --no-run-if-empty` flag, if supported
 XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
 
@@ -301,7 +308,7 @@ ifneq ($(strip $(NO_REFRESH)),)
 else
 	@echo ""
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
-	$(DOCKER_COMPOSE) pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) pull --ignore-pull-failures $(QUIET_FLAG)
 endif
 
 .PHONY: remove-docker-images
