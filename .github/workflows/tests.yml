@@ -7,16 +7,6 @@ on:
     branches: [ master ]
   pull_request:
 
-env:
-  # Smaller tests (runs everything in about 30 minutes)
-  TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein"
-  TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
-
-  ## Large test data -- we should switch to it after everything is working ok
-  # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
-  # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
-
-
 jobs:
 
   integrity_test:
@@ -34,7 +24,7 @@ jobs:
           # For now, change the quickstart values directly in the .env file
           # TODO: We should probably use env vars instead
           sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
-          echo ./quickstart.sh $area > quickstart.log
+          ./quickstart.sh $area
 
       - name: Save quickstart.log
         uses: actions/upload-artifact@v1
@@ -45,8 +35,7 @@ jobs:
       - name: Test etldoc images
         run: |
           export TEST_MODE=yes
-          # ____________TEST ______________________
-          # make generate-devdoc
+          make generate-devdoc
 
   performance:
     name: Evaluate performance
@@ -54,6 +43,14 @@ jobs:
     # Even though we technically don't need to wait for integrity test to finish,
     # there is no point to run long perf test until we know the code is OK
     needs: integrity_test
+    env:
+      # Smaller tests (runs everything in about 30 minutes)
+      TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein"
+      TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+
+        ## Large test data -- we should switch to it after everything is working ok
+        # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
+        # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
     steps:
       - name: Cache test data download
         id: cache-testdata
@@ -94,7 +91,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: perf_cache
-          key: "TEST_____________${{ steps.calc.outputs.hash }}"
+          key: "${{ steps.calc.outputs.hash }}"
 
       - name: Load test data into DB and run performance test
         id: main
@@ -105,14 +102,14 @@ jobs:
             make clean
             make init-dirs
             cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
-            # make db-destroy
-            # make all
-            # make db-start
-            # time make import-data
-            # time make import-osm
-            # time make import-borders
-            # time make import-wikidata
-            # time make import-sql
+            make db-destroy
+            make all
+            make db-start
+            time make import-data
+            time make import-osm
+            time make import-borders
+            time make import-wikidata
+            time make import-sql
           }
 
           mkdir -p perf_cache
@@ -131,10 +128,9 @@ jobs:
 
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            # TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
-            #   test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-            #   --record ../perf_cache/results.json
-            md5sum data/perf-test-areas-latest.osm.pbf > ../perf_cache/results.json
+            TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
+              test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+              --record ../perf_cache/results.json
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
               # For pull requests, restore to the PR version before continuing
@@ -157,10 +153,9 @@ jobs:
 
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            # OUTPUT="$(TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
-            #             test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-            #             --compare ../perf_cache/results.json --record ../artifacts/pr-results.json)"
-            OUTPUT="$(cat ../perf_cache/results.json) ========== SUMMARY ========== nothing here"
+            OUTPUT="$(TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
+                        test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+                        --compare ../perf_cache/results.json --record ../artifacts/pr-results.json)"
 
             # Convert multiline output into a single long string.
             # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
