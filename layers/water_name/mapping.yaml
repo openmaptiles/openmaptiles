@@ -2,7 +2,7 @@ tables:
   # etldoc: imposm3 -> osm_marine_point
   marine_point:
     type: point
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -24,6 +24,9 @@ tables:
     - name: rank
       key: rank
       type: integer
+    - name: is_intermittent
+      key: intermittent
+      type: bool
     filters:
       require:
         name: ["__any__"]

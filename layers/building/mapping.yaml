@@ -8,15 +8,19 @@ generalized_tables:
 tables:
   # etldoc: imposm3 -> osm_building_polygon
   building_polygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: building
       key: building
       type: string
@@ -65,19 +69,23 @@ tables:
 
   # etldoc: imposm3 -> osm_building_street
   building_street:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -153,19 +161,23 @@ tables:
 
   # etldoc: imposm3 -> osm_building_associatedstreet
   building_associatedstreet:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -241,19 +253,23 @@ tables:
 
   # etldoc: imposm3 -> osm_building_relation
   building_relation:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
       from_member: true
+    - name: material
+      key: building:material
+      type: string
+    - name: colour
+      key: building:colour
+      type: string
     - name: buildingpart
       key: building:part
       type: string
@@ -325,73 +341,4 @@ tables:
       type: member_type
     mapping:
       type: [building]
-    type: relation_member
-
-  # etldoc: imposm3 -> osm_building_multipolygon
-  building_multipolygon:
-    fields:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - name: webmerc_area
-      type: webmerc_area
-    - name: building
-      key: building
-      type: string
-      from_member: true
-    - name: buildingpart
-      key: building:part
-      type: string
-      from_member: true
-    - name: buildingheight
-      key: building:height
-      type: string
-      from_member: true
-    - name: height
-      key: height
-      type: string
-      from_member: true
-    - name: buildingmin_height
-      key: building:min_height
-      type: string
-      from_member: true
-    - name: min_height
-      key: min_height
-      type: string
-      from_member: true
-    - name: buildinglevels
-      key: building:levels
-      type: string
-      from_member: true
-    - name: levels
-      key: levels
-      type: string
-      from_member: true
-    - name: buildingmin_level
-      key: building:min_level
-      type: string
-      from_member: true
-    - name: min_level
-      key: min_level
-      type: string
-      from_member: true
-    - name: member
-      type: member_id
-    - name: index
-      type: member_index
-    - name: role
-      type: member_role
-      from_member: true
-    - name: type
-      type: member_type
-    mapping:
-      type: [multipolygon]
-    filters:
-      reject:
-        building: ["no","none","No"]
-        building:part: ["no","none","No"]
-        man_made: ["bridge"]
     type: relation_member

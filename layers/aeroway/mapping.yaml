@@ -50,7 +50,7 @@ tables:
   # etldoc: imposm3 -> osm_aeroway_polygon
   aeroway_polygon:
     type: polygon
-    fields:
+    columns:
     - *ref
     - name: osm_id
       type: id
@@ -60,8 +60,6 @@ tables:
       type: mapping_value
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     mapping:
       aeroway: *aeroway_polygon_mapping
       "area:aeroway": *aeroway_polygon_mapping
@@ -69,7 +67,7 @@ tables:
   # etldoc: imposm3 -> osm_aeroway_linestring
   aeroway_linestring:
     type: linestring
-    fields:
+    columns:
     - *ref
     - name: osm_id
       type: id

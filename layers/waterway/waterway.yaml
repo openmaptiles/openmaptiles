@@ -1,10 +1,15 @@
 layer:
   id: "waterway"
+  # waterway relies on the function waterway_brunnel() defined in water layer
+  requires: "water"
   description: |
-      OpenStreetMap [waterways](http://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels
-      and Natural Earth rivers and lake centerlines for low zoom levels.
+      OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels (z9 and more)
+      and Natural Earth rivers and lake centerlines for low zoom levels (z3 - z8).
       Linestrings without a name or which are too short are filtered
-      out at low zoom levels. Waterways do no not have a `subclass` field.
+      out at low zoom levels.
+      Till z11 there is `river` class only, in z12 there is also `canal` generated,
+      starting z13 there is no generalization according to `class` field applied.
+      Waterways do not have a `subclass` field.
   buffer_size: 4
   fields:
     name: |
@@ -27,9 +32,13 @@ layer:
       values:
         - bridge
         - tunnel
+    intermittent:
+      description: |
+        Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) waterway.
+      values: [0, 1]
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_waterway_linestring.sql
   - ./update_important_waterway.sql

@@ -13,10 +13,10 @@ END;
 $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building);
+CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
---CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role);
---CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role);
+--CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
+--CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_relation -> layer_building:z14_
@@ -26,9 +26,11 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_relation WHERE building = ''
+         osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
          -- etldoc: osm_building_associatedstreet -> layer_building:z14_
@@ -38,9 +40,11 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_associatedstreet WHERE role = 'house'
+         osm_building_associatedstreet WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
          -- etldoc: osm_building_street -> layer_building:z14_
          -- Buildings in street relations
@@ -49,21 +53,28 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_street WHERE role = 'house'
+         osm_building_street WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
-         -- etldoc: osm_building_multipolygon -> layer_building:z14_
-         -- Buildings that are inner/outer
+         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- Buildings that are from multipolygons
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+                  nullif(material, '') AS material,
+                  nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
+         osm_building_polygon obp
+         -- OSM mulipolygons once imported can give unique postgis polygons with holes, or multi parts polygons
+         WHERE osm_id < 0 AND ST_GeometryType(geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
+
          UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
@@ -72,22 +83,46 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(obp.min_height),-1),nullif(as_numeric(obp.buildingmin_height),-1)) as min_height,
                   COALESCE(nullif(as_numeric(obp.levels),-1),nullif(as_numeric(obp.buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(obp.min_level),-1),nullif(as_numeric(obp.buildingmin_level),-1)) as min_level,
+                  nullif(obp.material, '') AS material,
+                  nullif(obp.colour, '') AS colour,
                   CASE WHEN obr.role='outline' THEN TRUE ELSE FALSE END as hide_3d
          FROM
          osm_building_polygon obp
            LEFT JOIN osm_building_relation obr ON (obr.member = obp.osm_id)
-         WHERE obp.osm_id >= 0
+         -- Only check for ST_Polygon as we exclude buildings from relations keeping only positive ids
+         WHERE obp.osm_id >= 0 AND ST_GeometryType(obp.geometry) = 'ST_Polygon'
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int, hide_3d boolean) AS $$
+RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_height int, colour text, hide_3d boolean) AS $$
     SELECT geometry, osm_id, render_height, render_min_height,
-      CASE WHEN hide_3d THEN TRUE ELSE NULL::boolean END AS hide_3d
+       COALESCE(colour, CASE material
+           -- Ordered by count from taginfo
+           WHEN 'cement_block' THEN '#6a7880'
+           WHEN 'brick' THEN '#bd8161'
+           WHEN 'plaster' THEN '#dadbdb'
+           WHEN 'wood' THEN '#d48741'
+           WHEN 'concrete' THEN '#d3c2b0'
+           WHEN 'metal' THEN '#b7b1a6'
+           WHEN 'stone' THEN '#b4a995'
+           WHEN 'mud' THEN '#9d8b75'
+           WHEN 'steel' THEN '#b7b1a6' -- same as metal
+           WHEN 'glass' THEN '#5a81a0'
+           WHEN 'traditional' THEN '#bd8161' -- same as brick
+           WHEN 'masonry' THEN '#bd8161' -- same as brick
+           WHEN 'Brick' THEN '#bd8161' -- same as brick
+           WHEN 'tin' THEN '#b7b1a6' -- same as metal
+           WHEN 'timber_framing' THEN '#b3b0a9'
+           WHEN 'sandstone' THEN '#b4a995' -- same as stone
+           WHEN 'clay' THEN '#9d8b75' -- same as mud
+       END) AS colour,
+      CASE WHEN hide_3d THEN TRUE END AS hide_3d
     FROM (
         -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
         SELECT
             osm_id, geometry,
             NULL::int AS render_height, NULL::int AS render_min_height,
+            NULL::text AS material, NULL::text AS colour,
             FALSE AS hide_3d
         FROM osm_building_polygon_gen1
         WHERE zoom_level = 13 AND geometry && bbox
@@ -97,6 +132,8 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            osm_id, geometry,
            ceil( COALESCE(height, levels*3.66,5))::int AS render_height,
            floor(COALESCE(min_height, min_level*3.66,0))::int AS render_min_height,
+           material,
+           colour,
            hide_3d
         FROM osm_all_buildings
         WHERE
@@ -107,6 +144,8 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
             zoom_level >= 14 AND geometry && bbox
     ) AS zoom_levels
     ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$
+LANGUAGE SQL IMMUTABLE
+PARALLEL SAFE;
 
 -- not handled: where a building outline covers building parts

@@ -15,18 +15,31 @@ layer:
           [`aerodrome`](http://wiki.openstreetmap.org/wiki/Proposed_features/Aerodrome)
           and `aerodrome:type` tags.
       values:
-      - international
-      - public
-      - regional
-      - military
-      - private
-      - other
+        international:
+          aerodrome: 'international'
+          aerodrome_type: 'international'
+        public:
+          aerodrome: 'public'
+          aerodrome_type: ['%public%', 'civil']
+        regional:
+          aerodrome: 'regional'
+          aerodrome_type: 'regional'
+        military:
+          aerodrome: 'military'
+          aerodrome_type: '%military%'
+          military: 'airfield'
+        private:
+          aerodrome: 'private'
+          aerodrome_type: 'private'
+        other:
     iata: 3-character code issued by the IATA.
     icao: 4-letter code issued by the ICAO.
     ele: Elevation (`ele`) in meters.
     ele_ft: Elevation (`ele`) in feets.
   datasource:
     geometry_field: geometry
+    key_field: osm_id
+    key_field_as_attribute: no
     srid: 900913
     query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, iata, icao, ele, ele_ft FROM layer_aerodrome_label (!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:

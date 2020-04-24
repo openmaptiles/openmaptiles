@@ -1,4 +1,13 @@
 generalized_tables:
+  # etldoc: imposm3 -> osm_landuse_polygon_gen7
+  landuse_polygon_gen7:
+    source: landuse_polygon_gen6
+    tolerance: ZRES7
+  # etldoc: imposm3 -> osm_landuse_polygon_gen6
+  landuse_polygon_gen6:
+    source: landuse_polygon_gen5
+    sql_filter: area>power(ZRES6,2) AND (landuse='residential' OR place='suburb' OR place='neighbourhood')
+    tolerance: ZRES8
   # etldoc: imposm3 -> osm_landuse_polygon_gen5
   landuse_polygon_gen5:
     source: landuse_polygon_gen4
@@ -29,7 +38,7 @@ tables:
   # etldoc: imposm3 -> osm_landuse_polygon
   landuse_polygon:
     type: polygon
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -46,19 +55,15 @@ tables:
     - name: tourism
       key: tourism
       type: string
+    - name: place
+      key: place
+      type: string
+    - name: waterway
+      key: waterway
+      type: string
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     mapping:
-      amenity:
-      - bus_station
-      - school
-      - university
-      - kindergarten
-      - college
-      - library
-      - hospital
       landuse:
       - railway
       - cemetery
@@ -67,11 +72,26 @@ tables:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
+      amenity:
+      - bus_station
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
       leisure:
       - stadium
       - pitch
       - playground
+      - track
       tourism:
       - theme_park
       - zoo
+      place:
+      - suburb
+      - neighbourhood
+      waterway:
+      - dam

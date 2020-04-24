@@ -11,8 +11,12 @@ quickstart.log
 # imput / output data
 data/*
 
-# input wikidata
-wikidata/*
-
 # generated source files
 build/*
+
+# Import cache
+cache/*
+
+# any IDE files
+.idea/
+.vscode/

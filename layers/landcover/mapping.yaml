@@ -46,27 +46,17 @@ generalized_tables:
 tables:
   # etldoc: imposm3 -> osm_landcover_polygon
   landcover_polygon:
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
       type: validated_geometry
-    - name: landuse
-      key: landuse
-      type: string
-    - name: leisure
-      key: leisure
-      type: string
-    - name: natural
-      key: natural
-      type: string
-    - name: wetland
-      key: wetland
-      type: string
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
+    - name: subclass
+      type: mapping_value
+    - name: mapping_key
+      type: mapping_key
     mapping:
       landuse:
       - allotments
@@ -86,15 +76,21 @@ tables:
       natural:
       - wood
       - wetland
+      - fell
       - grassland
+      - heath
+      - scrub
+      - tundra
       - glacier
       - bare_rock
       - scree
       - beach
       - sand
+      - dune
       leisure:
       - park
       - garden
+      - golf_course
       wetland:
       - bog
       - swamp

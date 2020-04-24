@@ -411,7 +411,6 @@ the current output:
  OpenMapTiles  https://github.com/openmaptiles/openmaptiles
 Hints for testing areas
   make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>>
-  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>>
   ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
 
 Hints for designers:
@@ -434,8 +433,8 @@ Hints for developers:
   make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)
   make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
   make remove-docker-images            # remove openmaptiles docker images
-  make pgclimb-list-views              # list PostgreSQL public schema views
-  make pgclimb-list-tables             # list PostgreSQL public schema tables
+  make list-views                      # list PostgreSQL public schema views
+  make list-tables                     # list PostgreSQL public schema tables
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat ./quickstart.log                 # backup  of the last ./quickstart.sh
   make help                            # help about available commands

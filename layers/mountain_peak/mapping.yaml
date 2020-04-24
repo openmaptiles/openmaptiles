@@ -3,7 +3,7 @@ tables:
   # etldoc: imposm3 -> osm_peak_point
   peak_point:
     type: point
-    fields:
+    columns:
     - name: osm_id
       type: id
     - name: geometry
@@ -28,3 +28,4 @@ tables:
     mapping:
       natural:
       - peak
+      - volcano

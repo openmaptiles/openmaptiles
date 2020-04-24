@@ -27,7 +27,6 @@ BEGIN
   SET agg_stop = CASE
       WHEN p.subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
         THEN 1
-      ELSE NULL
   END;
 
   UPDATE osm_poi_point p
@@ -36,7 +35,6 @@ BEGIN
         WHEN p.subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
             AND r.rk IS NULL OR r.rk = 1
           THEN 1
-        ELSE NULL
       END)
     FROM osm_poi_stop_rank r
     WHERE p.osm_id = r.osm_id
@@ -44,6 +42,9 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+ALTER TABLE osm_poi_point ADD COLUMN IF NOT EXISTS agg_stop INTEGER DEFAULT NULL;
+SELECT update_osm_poi_point_agg();
 
 -- Handle updates
 

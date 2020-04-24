@@ -10,12 +10,20 @@ layer:
       description: |
           Use the **class** to assign natural colors for **landcover**.
       values:
-      - farmland
-      - ice
-      - wood
-      - grass
-      - wetland
-      - sand
+        farmland:
+          subclass: ['farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery']
+        ice:
+          subclass: ['glacier', 'ice_shelf']
+        wood:
+          subclass: ['wood', 'forest']
+        rock:
+          subclass: ['bare_rock', 'scree']
+        grass:
+          subclass: ['fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
+        wetland:
+          subclass: ['wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove']
+        sand:
+          subclass: ['beach', 'sand', 'dune']
     subclass:
       description: |
           Use **subclass** to do more precise styling.
@@ -26,33 +34,41 @@ layer:
           or [`wetland`](http://wiki.openstreetmap.org/wiki/Key:wetland) tag.
       values:
       - allotments
+      - bare_rock
+      - beach
+      - bog
+      - dune
+      - scrub
       - farm
       - farmland
-      - orchard
-      - plant_nursery
-      - vineyard
+      - fell
+      - forest
+      - garden
+      - glacier
       - grass
       - grassland
-      - glacier
-      - meadow
-      - forest
-      - village_green
-      - recreation_ground
-      - park
-      - garden
-      - wetland
-      - grassland
-      - bog
-      - swamp
-      - wet_meadow
+      - golf_course
+      - heath
+      - mangrove
       - marsh
+      - meadow
+      - orchard
+      - park
+      - plant_nursery
+      - recreation_ground
       - reedbed
       - saltern
-      - tidalflat
       - saltmarsh
-      - mangrove
-      - beach
       - sand
+      - scree
+      - swamp
+      - tidalflat
+      - tundra
+      - village_green
+      - vineyard
+      - wet_meadow
+      - wetland
+      - wood
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
