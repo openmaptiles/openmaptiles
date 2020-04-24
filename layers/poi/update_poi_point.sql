@@ -43,6 +43,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+ALTER TABLE osm_poi_point ADD COLUMN IF NOT EXISTS agg_stop INTEGER DEFAULT NULL;
+SELECT update_osm_poi_point_agg();
+
 -- Handle updates
 
 CREATE SCHEMA IF NOT EXISTS poi_point;
