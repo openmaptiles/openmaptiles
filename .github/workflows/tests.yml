@@ -46,7 +46,7 @@ jobs:
         run: TEST_MODE=yes make generate-devdoc
 
   performance:
-    name: Evaluate base performance (PR only)
+    name: Evaluate performance
     runs-on: ubuntu-latest
     # Even though we technically don't need to wait for integrity test to finish,
     # there is no point to run long perf test until we know the code is OK
@@ -63,7 +63,8 @@ jobs:
         if: steps.cache-testdata.outputs.cache-hit != 'true'
         run: |
           echo "Data file does not exist, downloading $TEST_DATA_URL"
-          curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf $TEST_DATA_URL
+          mkdir -p ci_cache
+          curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf "$TEST_DATA_URL"
 
       - name: Get code
         uses: actions/checkout@v2
