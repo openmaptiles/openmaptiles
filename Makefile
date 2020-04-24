@@ -39,8 +39,8 @@ help:
 	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make postserve-start                 # start dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make tileserver-start                # start klokantech/tileserver-gl     [ see $(OMT_HOST):8080 ]"
+	@echo "  make postserve-start                 # start dynamic tile server                   [ see $(OMT_HOST):8090 ]"
+	@echo "  make tileserver-start                # start maptiler/tileserver-gl                [ see $(OMT_HOST):8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
@@ -178,21 +178,21 @@ tileserver-start: init-dirs
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Download/refresh klokantech/tileserver-gl docker image"
-	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"
+	@echo "* Download/refresh maptiler/tileserver-gl docker image"
+	@echo "* see documentation: https://github.com/maptiler/tileserver-gl"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker pull klokantech/tileserver-gl
+	docker pull maptiler/tileserver-gl
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Start klokantech/tileserver-gl "
+	@echo "* Start maptiler/tileserver-gl "
 	@echo "*       ----------------------------> check $(OMT_HOST):8080 "
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 klokantech/tileserver-gl --port 8080
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 maptiler/tileserver-gl --port 8080
 
 .PHONY: postserve-start
 postserve-start: db-start
@@ -310,7 +310,7 @@ remove-docker-images:
 	@$(DOCKER_COMPOSE) down
 	@docker images "openmaptiles/*" -q                | $(XARGS) docker rmi -f
 	@docker images "maputnik/editor" -q               | $(XARGS) docker rmi -f
-	@docker images "klokantech/tileserver-gl" -q      | $(XARGS) docker rmi -f
+	@docker images "maptiler/tileserver-gl" -q        | $(XARGS) docker rmi -f
 
 .PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:

@@ -415,7 +415,7 @@ Hints for testing areas
 
 Hints for designers:
   make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ]
-  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ]
+  make start-tileserver                # start maptiler/tileserver-gl [ see localhost:8080 ]
 
 Hints for developers:
   make                                 # build source code
