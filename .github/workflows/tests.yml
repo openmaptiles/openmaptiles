@@ -34,7 +34,7 @@ jobs:
           # For now, change the quickstart values directly in the .env file
           # TODO: We should probably use env vars instead
           sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
-          ./quickstart.sh $area
+          echo ./quickstart.sh $area > quickstart.log
 
       - name: Save quickstart.log
         uses: actions/upload-artifact@v1
