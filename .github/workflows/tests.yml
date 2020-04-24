@@ -20,7 +20,7 @@ env:
 jobs:
 
   integrity_test:
-    name: Run quick integrity test
+    name: Run integrity test
     runs-on: ubuntu-latest
     steps:
 
@@ -102,8 +102,8 @@ jobs:
           CACHE_SHA: "${{ steps.calc.outputs.hash }}"
         run: |
           create_db() {
-            # make clean
-            # make init-dirs
+            make clean
+            make init-dirs
             cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
             # make db-destroy
             # make all
@@ -134,7 +134,7 @@ jobs:
             # TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
             #   test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
             #   --record ../perf_cache/results.json
-            md5sum * > ../perf_cache/results.json
+            md5sum data/perf-test-areas-latest.osm.pbf > ../perf_cache/results.json
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
               # For pull requests, restore to the PR version before continuing
