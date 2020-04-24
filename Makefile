@@ -230,7 +230,7 @@ maputnik-stop:
 	-docker rm -f maputnik_editor
 
 .PHONY: generate-qareports
-generate-qareports:
+generate-qareports: db-start
 	./qa/run.sh
 
 # generate all etl and mapping graphs
