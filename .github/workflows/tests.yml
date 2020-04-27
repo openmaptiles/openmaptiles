@@ -165,12 +165,6 @@ jobs:
             rm results.json
             mv pr-results.json ../artifacts/
 
-            # Convert multiline output into a single long string.
-            # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
-            OUTPUT="${OUTPUT//'%'/'%25'}"
-            OUTPUT="${OUTPUT//$'\n'/'%0A'}"
-            OUTPUT="${OUTPUT//$'\r'/'%0D'}"
-
             # Split into two parts -- before and after the ===== SUMMARY =====
             OUT_SUMMARY="${OUTPUT##*========}"
             OUT_DETAILS="${OUTPUT%%========*}"
