@@ -1,0 +1,187 @@
+name: Update PR comments
+
+on:
+  # This number should correspond to the IGNORE_OLDER_THAN value below.
+  # When setting up for the first time, use "on: push" instead of "on: schedule"
+  # and set IGNORE_OLDER_THAN to a very high number until it runs once.
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  update_PRs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: main
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          WORKFLOW_NAME: "OpenMapTiles CI"
+          # the name of the artifact whose content comment published by PR. Must have a single markdown file inside.
+          MSG_ARTIFACT_NAME: "pr_message"
+          # How far back to look for finished runs, in minutes.
+          # Set to 10-20 minutes higher than cron's job frequency set above.
+          IGNORE_OLDER_THAN: 20
+        run: |
+          #
+          # Strategy:
+          #  * get all open pull requests
+          #  * get all recent workflow runs
+          #  * match pull requests and their current SHA with the last workflow run for the same SHA
+          #  * for each found match of  <pull-request-number>  and  <workflow-run-id> :
+          #     * download artifact from the workflow run -- expects a single file with markdown content
+          #     * look through existing PR comments to see if we have posted a comment before
+          #       (uses a hidden magical header to identify our comment)
+          #     * either create or update the comment with the new text (if changed)
+          #
+
+          # Recompute time frame to be in seconds, and set a few more useful constants
+          export MAX_AGE_SECONDS="$(expr "$IGNORE_OLDER_THAN" "*" 60)"
+          export GITHUB_API="https://api.github.com/repos/$GITHUB_REPOSITORY"
+          export COMMENT_MAGIC_HEADER='<!--'" Do not edit. This comment will be auto-updated with artifact '$MSG_ARTIFACT_NAME' created by action '$WORKFLOW_NAME' -->"
+
+          # A useful wrapper around CURL
+          crl() {
+            curl --silent --show-error --location --retry 1 "${@:2}" \
+              -H "Accept: application/vnd.github.antiope-preview+json, application/vnd.github.v3+json" \
+              -H "authorization: Bearer $GITHUB_TOKEN" \
+             "$1"
+          }
+
+          # Resolve workflow name into workflow ID
+          WORKFLOW_ID="$(crl "$GITHUB_API/actions/workflows" \
+              | jq ".workflows[] | select(.name == \"$WORKFLOW_NAME\") | .id")"
+          echo "WORKFLOW_NAME='$WORKFLOW_NAME' ==> WORKFLOW_ID=${WORKFLOW_ID}"
+
+          # Get all open pull requests, most recently updated first
+          # (this way we don't need to page through all of them)
+          OPEN_PULL_REQUESTS="$(crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc")"
+
+          # Get all workflow runs that were triggered by pull requests
+          WORKFLOW_PR_RUNS="$(crl "$GITHUB_API/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request")"
+
+          # Create an object mapping a "key" to the pull request number
+          # {
+          #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
+          #   ...
+          # }
+          PULL_REQUEST_MAP="$(jq --arg MAX_AGE_SECONDS "$MAX_AGE_SECONDS" '
+              map(
+                  # Only select open unlocked pull requests updated within last $MAX_AGE_SECONDS seconds
+                  select(.state=="open" and .locked==false
+                         and (now - (.updated_at|fromdate)) < $MAX_AGE_SECONDS)
+                  # Prepare for "from_entries" by creating a key/value object
+                  # The key is a combination of repository name, branch name, and latest SHA
+                  | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
+              )
+              | from_entries
+              ' <( echo "$OPEN_PULL_REQUESTS" ))"
+
+          # For each workflow run, match it with the open pull request to get the PR number
+          # A match is based on "source repository + branch + SHA" key
+          # In rare cases (e.g. force push to an older revision), there could be more than one match
+          # for a given PR number, so just use the most recent one.
+          # Result is a bash style list (one per line) of  <pull_request_number> <job_number>  pairs
+          PR_JOB_MAP="$(jq -r '
+              # second input is the pull request map - use it to lookup PR numbers
+              input as $PULL_REQUEST_MAP
+              | .workflow_runs
+              | map(
+                  # Create a new object with the relevant values
+                  {
+                      id, updated_at,
+                      # lookup PR number from $PULL_REQUEST_MAP based on the "key":
+                      #    source repository + branch + SHA  ==> PR number
+                      pr_number: $PULL_REQUEST_MAP[.head_repository.full_name + "/" + .head_branch + "/" + .head_sha],
+                      # was this a sucessful run?
+                      # do not include  .conclusion=="success"  because errors could also post messages
+                      success: (.status=="completed")
+                  }
+                  # Remove runs that were not in the list of the PRs
+                  | select(.pr_number)
+              )
+              # Keep just the most recent run per pull request
+              | group_by(.pr_number)
+              | map(
+                  sort_by(.updated_at)
+                  | last
+                  # If the most recent run did not succeed, ignore it
+                  | select(.success)
+                  # Keep just the pull request number mapping to run ID
+                  | [ .pr_number, .id ]
+              )
+              | .[]
+              | @sh
+              ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$PULL_REQUEST_MAP" ) )"
+
+          # Iterate over the found pairs of PR number + run ID
+          echo "$PR_JOB_MAP" | \
+          while read PR_NUMBER RUN_ID; do
+
+            echo "Processing workflow run #$RUN_ID for pull request #$PR_NUMBER ..."
+            ARTIFACTS="$(crl "$GITHUB_API/actions/runs/$RUN_ID/artifacts")"
+
+            # Find the artifact download URL for the artifact with the expected name
+            ARTIFACT_URL="$(jq -r --arg MSG_ARTIFACT_NAME "$MSG_ARTIFACT_NAME" '
+                .artifacts
+                | map(select(.name == $MSG_ARTIFACT_NAME and .expired == false))
+                | first
+                | .archive_download_url
+                | select(.!=null)
+                ' <( echo "$ARTIFACTS" ) )"
+
+            if [ -z "$ARTIFACT_URL" ]; then
+              echo "Unable to find an artifact named '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
+              continue
+            fi
+
+            echo "Downloading artifact $ARTIFACT_URL (assuming single text file per artifact)..."
+            MESSAGE="$(crl "$ARTIFACT_URL" | gunzip)"
+            if [ $? -ne 0 ] || [ -z "$MESSAGE" ]; then
+              echo "Unable to download or parse message from artifact '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
+              continue
+            fi
+
+            # Create a message body by appending a magic header
+            # and stripping any starting and ending whitespace from the original message
+            MESSAGE_BODY="$(jq -n \
+                --arg COMMENT_MAGIC_HEADER "$COMMENT_MAGIC_HEADER" \
+                --arg MESSAGE "$MESSAGE" \
+                '{ body: ($COMMENT_MAGIC_HEADER + "\n" + ($MESSAGE | sub( "^[\\s\\p{Cc}]+"; "" ) | sub( "[\\s\\p{Cc}]+$"; "" ))) }' \
+            )"
+
+            EXISTING_PR_COMMENTS="$(crl "$GITHUB_API/issues/$PR_NUMBER/comments")"
+
+            # Get the comment URL for the first comment that begins with the magic header, or empty string
+            OLD_COMMENT="$(jq --arg COMMENT_MAGIC_HEADER "$COMMENT_MAGIC_HEADER" '
+                map(select(.body | startswith($COMMENT_MAGIC_HEADER)))
+                | first
+                | select(.!=null)
+                ' <( echo "$EXISTING_PR_COMMENTS" ) )"
+
+            if [ -z "$OLD_COMMENT" ]; then
+              COMMENT_URL="$(crl "$GITHUB_API/issues/$PR_NUMBER/comments" \
+                  -X POST -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                | jq -r '.html_url' )"
+              COMMENT_INFO="New comment $COMMENT_URL was created"
+            else
+              # Make sure the content of the message has changed
+              COMMENT_URL="$(jq -r '
+                  (input | .body) as $body
+                  | select(.body | . != $body)
+                  | .url
+                  ' <( echo "$OLD_COMMENT" ) <( echo "$MESSAGE_BODY" ) )"
+
+              if [ -z "$COMMENT_URL" ]; then
+                echo "The message has already been posted from artifact '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
+                continue
+              fi
+
+              crl "$COMMENT_URL" \
+                  -X PATCH -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                | jq -r '("Updated existing comment " + .html_url)'
+
+              COMMENT_INFO="Existing comment $COMMENT_URL was updated"
+            fi
+
+            echo "$COMMENT_INFO from workflow $WORKFLOW_NAME #$RUN_ID"
+          done
