@@ -174,21 +174,21 @@ jobs:
             OUT_DETAILS="${OUTPUT%%========*}"
 
             cat > ../pr_message/message.md <<EOF
-            Performance evaluation results for $GITHUB_SHA
+          Performance evaluation results for $GITHUB_SHA
 
-            \`\`\`
-            $OUT_SUMMARY
-            \`\`\`
+          \`\`\`
+          $OUT_SUMMARY
+          \`\`\`
 
-            <details>
-            <summary>expand for details...</summary>
+          <details>
+          <summary>expand for details...</summary>
 
-            \`\`\`
-            $OUT_DETAILS
-            \`\`\`
+          \`\`\`
+          $OUT_DETAILS
+          \`\`\`
 
-            </details>
-            EOF
+          </details>
+          EOF
 
           fi
 
