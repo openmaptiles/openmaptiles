@@ -115,6 +115,7 @@ jobs:
 
           mkdir -p perf_cache
           mkdir -p artifacts
+          mkdir -p pr_message
           cd code
 
           CURRENT_SHA=$(git log -1 --format="%H")
@@ -169,33 +170,37 @@ jobs:
             OUTPUT="${OUTPUT//$'\r'/'%0D'}"
 
             # Split into two parts -- before and after the ===== SUMMARY =====
-            echo "::set-output name=summary::${OUTPUT##*========}"
-            echo "::set-output name=details::${OUTPUT%%========*}"
+            OUT_SUMMARY="${OUTPUT##*========}"
+            OUT_DETAILS="${OUTPUT%%========*}"
+
+            cat > ../pr_message/message.md <<EOF
+          Performance evaluation results for $GITHUB_SHA
+
+          \`\`\`
+          $OUT_SUMMARY
+          \`\`\`
+
+          <details>
+          <summary>expand for details...</summary>
+
+          \`\`\`
+          $OUT_DETAILS
+          \`\`\`
+
+          </details>
+          EOF
+
           fi
 
-      - name: Save artifacts
+      - name: Save performance artifacts
         uses: actions/upload-artifact@v1
         with:
           name: performance_results
           path: artifacts
 
-      - name: Post a comment on Pull Request
-        if: "github.event_name == 'pull_request'"
-        uses: marocchino/sticky-pull-request-comment@v1
-        timeout-minutes: 1
-        continue-on-error: true
+      - name: Save PR message artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v1
         with:
-          message: |-
-            ```
-            ${{ steps.main.outputs.summary }}
-            ```
-
-            <details>
-            <summary>expand for details...</summary>
-
-            ```
-            ${{ steps.main.outputs.details }}
-            ```
-
-            </details>
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: pr_message
+          path: pr_message
