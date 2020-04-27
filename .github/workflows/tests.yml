@@ -1,0 +1,208 @@
+# Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
+
+name: OpenMapTiles CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+
+  integrity_test:
+    name: Run integrity test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout the changes
+        uses: actions/checkout@v2
+
+      - name: Run quickstart for a small area
+        env:
+          area: monaco
+          QUICKSTART_MIN_ZOOM: 0
+          QUICKSTART_MAX_ZOOM: 14
+        run: |
+          # For now, change the quickstart values directly in the .env file
+          # TODO: We should probably use env vars instead
+          sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
+          export QUIET=1
+          ./quickstart.sh $area
+
+      - name: Save quickstart.log
+        uses: actions/upload-artifact@v1
+        with:
+          name: quickstart.log
+          path: quickstart.log
+
+      - name: Test etldoc images
+        run: |
+          export TEST_MODE=yes
+          make generate-devdoc
+
+  performance:
+    name: Evaluate performance
+    runs-on: ubuntu-latest
+    # Even though we technically don't need to wait for integrity test to finish,
+    # there is no point to run long perf test until we know the code is OK
+    needs: integrity_test
+    env:
+      # Smaller tests (runs everything in about 30 minutes)
+      TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein"
+      TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+
+        ## Large test data -- we should switch to it after everything is working ok
+        # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
+        # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
+    steps:
+      - name: Cache test data download
+        id: cache-testdata
+        uses: actions/cache@v1
+        with:
+          path: ci_cache
+          key: "${{ env.TEST_DATA_URL }}"
+
+      - name: Download test data on cache miss
+        if: steps.cache-testdata.outputs.cache-hit != 'true'
+        run: |
+          echo "Data file does not exist, downloading $TEST_DATA_URL"
+          mkdir -p ci_cache
+          curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf "$TEST_DATA_URL"
+
+      - name: Get code
+        uses: actions/checkout@v2
+        with:
+          # Fetch the last two commits in case this is a PR,
+          # and we need to profile the base branch first
+          fetch-depth: 2
+          path: code
+
+      - name: Compute git revision hash to cache
+        id: calc
+        run: |
+          # If this is a pull request, we should cache the parent (base) revision
+          # Otherwise cache the current one
+          cd code
+          REV_HASH=$(git log -1 --format="%H")
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            # Take the first parent of the grafted commit (cannot use HEAD^1 with shallow clones)
+            REV_HASH=$(git cat-file -p $REV_HASH | awk 'NR > 1 {if(/^parent/){print $2; exit}}')
+          fi
+          echo "::set-output name=hash::$REV_HASH"
+
+      - name: Set up caching for the performance results
+        uses: actions/cache@v1
+        with:
+          path: perf_cache
+          key: "${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+
+      - name: Load test data into DB and run performance test
+        id: main
+        env:
+          CACHE_SHA: "${{ steps.calc.outputs.hash }}"
+        run: |
+          create_db() {
+            make clean
+            make init-dirs
+            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
+            make db-destroy
+            make all
+            make db-start
+            time make import-data
+            time make import-osm
+            time make import-borders
+            time make import-wikidata
+            time make import-sql
+          }
+
+          mkdir -p perf_cache
+          mkdir -p artifacts
+          mkdir -p pr_message
+          cd code
+
+          CURRENT_SHA=$(git log -1 --format="%H")
+
+          if [ ! -f ../perf_cache/results.json ]; then
+            echo "We do not have cached performance results, create them..."
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git reset --hard ${CURRENT_SHA}^1
+            fi
+
+            create_db
+
+            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
+            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
+            TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
+              test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+              --record /tileset/results.json
+            mv results.json ../perf_cache
+
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              # For pull requests, restore to the PR version before continuing
+              git reset --hard ${CURRENT_SHA}
+            fi
+          else
+            echo "Found cached performance results"
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            cp ../perf_cache/results.json ../artifacts/base-results.json
+          else
+            cp ../perf_cache/results.json ../artifacts/results.json
+          fi
+
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "Comparing pull request results with the base..."
+
+            create_db
+
+            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
+            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
+            cp ../perf_cache/results.json .
+            OUTPUT="$(TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
+                        test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+                        --compare /tileset/results.json --record /tileset/pr-results.json)"
+            rm results.json
+            mv pr-results.json ../artifacts/
+
+            # Convert multiline output into a single long string.
+            # See https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
+            OUTPUT="${OUTPUT//'%'/'%25'}"
+            OUTPUT="${OUTPUT//$'\n'/'%0A'}"
+            OUTPUT="${OUTPUT//$'\r'/'%0D'}"
+
+            # Split into two parts -- before and after the ===== SUMMARY =====
+            OUT_SUMMARY="${OUTPUT##*========}"
+            OUT_DETAILS="${OUTPUT%%========*}"
+
+            cat > ../pr_message/message.md <<EOF
+          Performance evaluation results for $GITHUB_SHA
+
+          \`\`\`
+          $OUT_SUMMARY
+          \`\`\`
+
+          <details>
+          <summary>expand for details...</summary>
+
+          \`\`\`
+          $OUT_DETAILS
+          \`\`\`
+
+          </details>
+          EOF
+
+          fi
+
+      - name: Save performance artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: performance_results
+          path: artifacts
+
+      - name: Save PR message artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v1
+        with:
+          name: pr_message
+          path: pr_message
