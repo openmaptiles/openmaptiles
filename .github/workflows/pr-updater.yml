@@ -47,14 +47,19 @@ jobs:
              "$1"
           }
 
+          # Get all open pull requests, most recently updated first
+          # (this way we don't need to page through all of them)
+          OPEN_PULL_REQUESTS="$(crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc")"
+
+          if [ $(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) ) -eq 0 ]; then
+            echo "There are no open pull requests. Exiting."
+            exit
+          fi
+
           # Resolve workflow name into workflow ID
           WORKFLOW_ID="$(crl "$GITHUB_API/actions/workflows" \
               | jq ".workflows[] | select(.name == \"$WORKFLOW_NAME\") | .id")"
           echo "WORKFLOW_NAME='$WORKFLOW_NAME' ==> WORKFLOW_ID=${WORKFLOW_ID}"
-
-          # Get all open pull requests, most recently updated first
-          # (this way we don't need to page through all of them)
-          OPEN_PULL_REQUESTS="$(crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc")"
 
           # Get all workflow runs that were triggered by pull requests
           WORKFLOW_PR_RUNS="$(crl "$GITHUB_API/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request")"
