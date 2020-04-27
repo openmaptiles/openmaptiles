@@ -10,6 +10,13 @@ else
   DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
 endif
 
+# Make some operations quieter (e.g. inside the test script)
+ifeq ($(strip $(QUIET)),)
+  QUIET_FLAG:=
+else
+  QUIET_FLAG:=--quiet
+endif
+
 # Use `xargs --no-run-if-empty` flag, if supported
 XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
 
@@ -39,8 +46,8 @@ help:
 	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make postserve-start                 # start dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make tileserver-start                # start klokantech/tileserver-gl     [ see $(OMT_HOST):8080 ]"
+	@echo "  make postserve-start                 # start dynamic tile server                   [ see $(OMT_HOST):8090 ]"
+	@echo "  make tileserver-start                # start maptiler/tileserver-gl                [ see $(OMT_HOST):8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
@@ -92,10 +99,11 @@ clean:
 	rm -rf build
 
 .PHONY: db-destroy
+db-destroy: override DC_PROJECT:=$(shell echo $(DC_PROJECT) | tr A-Z a-z)
 db-destroy:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
-	docker volume ls -q -f "name=^$${DC_PROJECT,,*}_" | $(XARGS) docker volume rm
+	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 
 .PHONY: db-start
@@ -177,21 +185,21 @@ tileserver-start: init-dirs
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Download/refresh klokantech/tileserver-gl docker image"
-	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"
+	@echo "* Download/refresh maptiler/tileserver-gl docker image"
+	@echo "* see documentation: https://github.com/maptiler/tileserver-gl"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker pull klokantech/tileserver-gl
+	docker pull maptiler/tileserver-gl
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Start klokantech/tileserver-gl "
+	@echo "* Start maptiler/tileserver-gl "
 	@echo "*       ----------------------------> check $(OMT_HOST):8080 "
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 klokantech/tileserver-gl --port 8080
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 maptiler/tileserver-gl --port 8080
 
 .PHONY: postserve-start
 postserve-start: db-start
@@ -300,7 +308,7 @@ ifneq ($(strip $(NO_REFRESH)),)
 else
 	@echo ""
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
-	$(DOCKER_COMPOSE) pull --ignore-pull-failures
+	$(DOCKER_COMPOSE) pull --ignore-pull-failures $(QUIET_FLAG)
 endif
 
 .PHONY: remove-docker-images
@@ -309,7 +317,7 @@ remove-docker-images:
 	@$(DOCKER_COMPOSE) down
 	@docker images "openmaptiles/*" -q                | $(XARGS) docker rmi -f
 	@docker images "maputnik/editor" -q               | $(XARGS) docker rmi -f
-	@docker images "klokantech/tileserver-gl" -q      | $(XARGS) docker rmi -f
+	@docker images "maptiler/tileserver-gl" -q        | $(XARGS) docker rmi -f
 
 .PHONY: docker-unnecessary-clean
 docker-unnecessary-clean:
