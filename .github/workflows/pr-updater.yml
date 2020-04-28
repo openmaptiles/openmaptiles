@@ -1,9 +1,9 @@
 name: Update PR comments
 
 on:
-  # This number should correspond to the IGNORE_OLDER_THAN value below.
+  # This number should correspond to the IGNORE_RUNS_OLDER_THAN value below.
   # When setting up for the first time, use "on: push" instead of "on: schedule"
-  # and set IGNORE_OLDER_THAN to a very high number until it runs once.
+  # and set IGNORE_RUNS_OLDER_THAN to a very high number until it runs once.
   schedule:
     - cron: '*/5 * * * *'
 
@@ -20,11 +20,14 @@ jobs:
           MSG_ARTIFACT_NAME: "pr_message"
           # How far back to look for finished runs, in minutes.
           # Set to 10-20 minutes higher than cron's job frequency set above.
-          IGNORE_OLDER_THAN: 20
+          IGNORE_RUNS_OLDER_THAN: 20
+          # How far back to look for updated pull requests, in minutes.
+          # Should be bigger than IGNORE_RUNS_OLDER_THAN by the maximum time a pull request jobs may take
+          IGNORE_PRS_OLDER_THAN: 80
         run: |
           #
           # Strategy:
-          #  * get all open pull requests
+          #  * get all recently updated open pull requests
           #  * get all recent workflow runs
           #  * match pull requests and their current SHA with the last workflow run for the same SHA
           #  * for each found match of  <pull-request-number>  and  <workflow-run-id> :
@@ -34,8 +37,6 @@ jobs:
           #     * either create or update the comment with the new text (if changed)
           #
 
-          # Recompute time frame to be in seconds, and set a few more useful constants
-          export MAX_AGE_SECONDS="$(expr "$IGNORE_OLDER_THAN" "*" 60)"
           export GITHUB_API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           export COMMENT_MAGIC_HEADER='<!--'" Do not edit. This comment will be auto-updated with artifact '$MSG_ARTIFACT_NAME' created by action '$WORKFLOW_NAME' -->"
 
@@ -49,16 +50,27 @@ jobs:
 
           # Get all open pull requests, most recently updated first
           # (this way we don't need to page through all of them)
-          OPEN_PULL_REQUESTS="$(crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc")"
+          # Filter out PRs that are older than X minutes
+          OPEN_PULL_REQUESTS="$(
+            crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" \
+            | jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
+                map(select((now - (.updated_at|fromdate)) / 60 < ($IGNORE_PRS_OLDER_THAN | tonumber)))
+            ')"
 
-          if [ $(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) ) -eq 0 ]; then
-            echo "There are no open pull requests. Exiting."
+          # Count how many pull requests we should process, and exit early if there are none
+          PR_COUNT="$(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) )"
+          if [ "$PR_COUNT" -eq 0 ]; then
+            echo "There are no open pull requests updated in the last $IGNORE_PRS_OLDER_THAN minutes. Exiting."
             exit
+          else
+            echo "$PR_COUNT pull requests have been updated in the last $IGNORE_PRS_OLDER_THAN minutes"
           fi
 
           # Resolve workflow name into workflow ID
           WORKFLOW_ID="$(crl "$GITHUB_API/actions/workflows" \
-              | jq ".workflows[] | select(.name == \"$WORKFLOW_NAME\") | .id")"
+              | jq --arg WORKFLOW_NAME "$WORKFLOW_NAME" '
+              .workflows[] | select(.name == $WORKFLOW_NAME) | .id
+              ')"
           echo "WORKFLOW_NAME='$WORKFLOW_NAME' ==> WORKFLOW_ID=${WORKFLOW_ID}"
 
           # Get all workflow runs that were triggered by pull requests
@@ -69,11 +81,11 @@ jobs:
           #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
           #   ...
           # }
-          PULL_REQUEST_MAP="$(jq --arg MAX_AGE_SECONDS "$MAX_AGE_SECONDS" '
+          PULL_REQUEST_MAP="$(jq --arg IGNORE_RUNS_OLDER_THAN "$IGNORE_RUNS_OLDER_THAN" '
               map(
-                  # Only select open unlocked pull requests updated within last $MAX_AGE_SECONDS seconds
+                  # Only select open unlocked pull requests updated within last $IGNORE_RUNS_OLDER_THAN minutes
                   select(.state=="open" and .locked==false
-                         and (now - (.updated_at|fromdate)) < $MAX_AGE_SECONDS)
+                         and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_RUNS_OLDER_THAN | tonumber))
                   # Prepare for "from_entries" by creating a key/value object
                   # The key is a combination of repository name, branch name, and latest SHA
                   | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
