@@ -5,7 +5,7 @@ on:
   # When setting up for the first time, use "on: push" instead of "on: schedule"
   # and set IGNORE_RUNS_OLDER_THAN to a very high number until it runs once.
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/6 * * * *'
 
 jobs:
   update_PRs:
@@ -44,18 +44,38 @@ jobs:
           crl() {
             curl --silent --show-error --location --retry 1 "${@:2}" \
               -H "Accept: application/vnd.github.antiope-preview+json, application/vnd.github.v3+json" \
-              -H "authorization: Bearer $GITHUB_TOKEN" \
              "$1"
           }
 
+          #
+          # Parse current pull requests
+          #
+
           # Get all open pull requests, most recently updated first
           # (this way we don't need to page through all of them)
-          # Filter out PRs that are older than X minutes
-          OPEN_PULL_REQUESTS="$(
-            crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" \
-            | jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
-                map(select((now - (.updated_at|fromdate)) / 60 < ($IGNORE_PRS_OLDER_THAN | tonumber)))
-            ')"
+          # Filter out PRs that are older than $IGNORE_PRS_OLDER_THAN minutes
+          # Result is an object, mapping a "key" to the pull request number:
+          # {
+          #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
+          #   ...
+          # }
+          OPEN_PULL_REQUESTS_RAW="$( crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" )"
+          if ! OPEN_PULL_REQUESTS="$(jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
+              map(
+                  # Only select open unlocked pull requests updated within last $IGNORE_PRS_OLDER_THAN minutes
+                  select(.state=="open" and .locked==false
+                         and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_PRS_OLDER_THAN | tonumber))
+                  # Prepare for "from_entries" by creating a key/value object
+                  # The key is a combination of repository name, branch name, and latest SHA
+                  | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
+              )
+              | from_entries
+            ' <( echo "$OPEN_PULL_REQUESTS_RAW" ) )"; then
+
+              echo "Error parsing open pull requests"
+              echo "$OPEN_PULL_REQUESTS_RAW"
+              exit 1
+          fi
 
           # Count how many pull requests we should process, and exit early if there are none
           PR_COUNT="$(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) )"
@@ -66,53 +86,53 @@ jobs:
             echo "$PR_COUNT pull requests have been updated in the last $IGNORE_PRS_OLDER_THAN minutes"
           fi
 
+
+
+          #
           # Resolve workflow name into workflow ID
+          #
           WORKFLOW_ID="$(crl "$GITHUB_API/actions/workflows" \
               | jq --arg WORKFLOW_NAME "$WORKFLOW_NAME" '
               .workflows[] | select(.name == $WORKFLOW_NAME) | .id
               ')"
-          echo "WORKFLOW_NAME='$WORKFLOW_NAME' ==> WORKFLOW_ID=${WORKFLOW_ID}"
+          if [ -z "$WORKFLOW_ID" ]; then
+            echo "Unable to find workflow '$WORKFLOW_NAME' in $GITHUB_REPOSITORY"
+            exit 1
+          else
+            echo "Resolved workflow '$WORKFLOW_NAME' to ID $WORKFLOW_ID"
+          fi
+
+
+
+          #
+          # Match pull requests with the workflow runs
+          #
 
           # Get all workflow runs that were triggered by pull requests
           WORKFLOW_PR_RUNS="$(crl "$GITHUB_API/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request")"
-
-          # Create an object mapping a "key" to the pull request number
-          # {
-          #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
-          #   ...
-          # }
-          PULL_REQUEST_MAP="$(jq --arg IGNORE_RUNS_OLDER_THAN "$IGNORE_RUNS_OLDER_THAN" '
-              map(
-                  # Only select open unlocked pull requests updated within last $IGNORE_RUNS_OLDER_THAN minutes
-                  select(.state=="open" and .locked==false
-                         and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_RUNS_OLDER_THAN | tonumber))
-                  # Prepare for "from_entries" by creating a key/value object
-                  # The key is a combination of repository name, branch name, and latest SHA
-                  | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
-              )
-              | from_entries
-              ' <( echo "$OPEN_PULL_REQUESTS" ))"
 
           # For each workflow run, match it with the open pull request to get the PR number
           # A match is based on "source repository + branch + SHA" key
           # In rare cases (e.g. force push to an older revision), there could be more than one match
           # for a given PR number, so just use the most recent one.
-          # Result is a bash style list (one per line) of  <pull_request_number> <job_number>  pairs
-          PR_JOB_MAP="$(jq -r '
+          # Result is a table (list of lists) - each row with PR number, JOB ID, and the above key
+          PR_JOB_MAP="$(jq --arg IGNORE_RUNS_OLDER_THAN "$IGNORE_RUNS_OLDER_THAN" '
               # second input is the pull request map - use it to lookup PR numbers
-              input as $PULL_REQUEST_MAP
+              input as $OPEN_PULL_REQUESTS
               | .workflow_runs
               | map(
                   # Create a new object with the relevant values
                   {
-                      id, updated_at,
-                      # lookup PR number from $PULL_REQUEST_MAP based on the "key":
-                      #    source repository + branch + SHA  ==> PR number
-                      pr_number: $PULL_REQUEST_MAP[.head_repository.full_name + "/" + .head_branch + "/" + .head_sha],
-                      # was this a sucessful run?
+                      id,
+                      updated_at,
+                      # create lookup key based on source repository + branch + SHA
+                      key: (.head_repository.full_name + "/" + .head_branch + "/" + .head_sha),
+                      # was this a successful run?
                       # do not include  .conclusion=="success"  because errors could also post messages
                       success: (.status=="completed")
                   }
+                  # lookup PR number from $OPEN_PULL_REQUESTS using the above key
+                  | . += { pr_number: $OPEN_PULL_REQUESTS[.key] }
                   # Remove runs that were not in the list of the PRs
                   | select(.pr_number)
               )
@@ -121,20 +141,30 @@ jobs:
               | map(
                   sort_by(.updated_at)
                   | last
-                  # If the most recent run did not succeed, ignore it
-                  | select(.success)
+                  # If the most recent run did not succeed, or if the run is too old, ignore it
+                  | select(.success and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_RUNS_OLDER_THAN | tonumber))
                   # Keep just the pull request number mapping to run ID
-                  | [ .pr_number, .id ]
+                  | [ .pr_number, .id, .key ]
               )
-              | .[]
-              | @sh
-              ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$PULL_REQUEST_MAP" ) )"
+              ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$OPEN_PULL_REQUESTS" ) )"
 
-          # Iterate over the found pairs of PR number + run ID
-          echo "$PR_JOB_MAP" | \
-          while read PR_NUMBER RUN_ID; do
 
-            echo "Processing workflow run #$RUN_ID for pull request #$PR_NUMBER ..."
+          # Count how many jobs we should process, and exit early if there are none
+          JOBS_COUNT="$(jq 'length' <( echo "$PR_JOB_MAP" ) )"
+          if [ "$JOBS_COUNT" -eq 0 ]; then
+            echo "There are no recent workflow job runs in the last $IGNORE_RUNS_OLDER_THAN minutes. Exiting."
+            exit
+          else
+            echo "$JOBS_COUNT '$WORKFLOW_NAME' jobs have been updated in the last $IGNORE_RUNS_OLDER_THAN minutes"
+          fi
+
+          #
+          # Iterate over the found pairs of PR number + run ID, and update them all
+          #
+          echo "$PR_JOB_MAP" | jq -r '.[] | @sh' | \
+          while read -r PR_NUMBER RUN_ID RUN_KEY; do
+
+            echo "Processing '$WORKFLOW_NAME' run #$RUN_ID for pull request #$PR_NUMBER $RUN_KEY..."
             ARTIFACTS="$(crl "$GITHUB_API/actions/runs/$RUN_ID/artifacts")"
 
             # Find the artifact download URL for the artifact with the expected name
@@ -152,9 +182,12 @@ jobs:
             fi
 
             echo "Downloading artifact $ARTIFACT_URL (assuming single text file per artifact)..."
-            MESSAGE="$(crl "$ARTIFACT_URL" | gunzip)"
-            if [ $? -ne 0 ] || [ -z "$MESSAGE" ]; then
+            if ! MESSAGE="$(crl "$ARTIFACT_URL" -H "authorization: Bearer $GITHUB_TOKEN" | gunzip)"; then
               echo "Unable to download or parse message from artifact '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
+              continue
+            fi
+            if [ -z "$MESSAGE" ]; then
+              echo "Empty message in artifact '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
               continue
             fi
 
@@ -177,7 +210,10 @@ jobs:
 
             if [ -z "$OLD_COMMENT" ]; then
               COMMENT_URL="$(crl "$GITHUB_API/issues/$PR_NUMBER/comments" \
-                  -X POST -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                  -X POST \
+                  -H "Content-Type: application/json" \
+                  -H "authorization: Bearer $GITHUB_TOKEN" \
+                  --data "$MESSAGE_BODY" \
                 | jq -r '.html_url' )"
               COMMENT_INFO="New comment $COMMENT_URL was created"
             else
@@ -194,7 +230,10 @@ jobs:
               fi
 
               crl "$COMMENT_URL" \
-                  -X PATCH -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                  -X PATCH \
+                  -H "authorization: Bearer $GITHUB_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  --data "$MESSAGE_BODY" \
                 | jq -r '("Updated existing comment " + .html_url)'
 
               COMMENT_INFO="Existing comment $COMMENT_URL was updated"
