@@ -35,22 +35,6 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          UNION ALL
 
          -- etldoc: osm_building_polygon -> layer_building:z14_
-         -- Buildings that are from multipolygons
-         SELECT osm_id, geometry,
-                  COALESCE(CleanNumeric(height), CleanNumeric(buildingheight)) as height,
-                  COALESCE(CleanNumeric(min_height), CleanNumeric(buildingmin_height)) as min_height,
-                  COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels)) as levels,
-                  COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
-                  FALSE as hide_3d
-         FROM
-         osm_building_polygon obp
-         -- OSM mulipolygons once imported can give unique postgis polygons with holes, or multi parts polygons
-         WHERE osm_id < 0 AND ST_GeometryType(geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
-
-         UNION ALL
-         -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
          SELECT obp.osm_id, obp.geometry,
                   COALESCE(CleanNumeric(obp.height), CleanNumeric(obp.buildingheight)) as height,
@@ -62,9 +46,11 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   obr.role IS NOT NULL AS hide_3d
          FROM
          osm_building_polygon obp
-           LEFT JOIN osm_building_relation obr ON obr.member = obp.osm_id AND obr.role = 'outline'
-         -- Only check for ST_Polygon as we exclude buildings from relations keeping only positive ids
-         WHERE obp.osm_id >= 0 AND ST_GeometryType(obp.geometry) = 'ST_Polygon'
+           LEFT JOIN osm_building_relation obr ON
+             obp.osm_id >= 0 AND
+             obr.member = obp.osm_id AND
+             obr.role = 'outline'
+         WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
 );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
