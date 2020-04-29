@@ -5,7 +5,7 @@ on:
   # When setting up for the first time, use "on: push" instead of "on: schedule"
   # and set IGNORE_RUNS_OLDER_THAN to a very high number until it runs once.
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/6 * * * *'
 
 jobs:
   update_PRs:
@@ -60,9 +60,8 @@ jobs:
           #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
           #   ...
           # }
-          OPEN_PULL_REQUESTS="$(
-            crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" \
-            | jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
+          OPEN_PULL_REQUESTS_RAW="$( crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" )"
+          if ! OPEN_PULL_REQUESTS="$(jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
               map(
                   # Only select open unlocked pull requests updated within last $IGNORE_PRS_OLDER_THAN minutes
                   select(.state=="open" and .locked==false
@@ -72,7 +71,12 @@ jobs:
                   | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
               )
               | from_entries
-            ')"
+            ' <( echo "$OPEN_PULL_REQUESTS_RAW" ) )"; then
+
+              echo "Error parsing open pull requests"
+              echo "$OPEN_PULL_REQUESTS_RAW"
+              exit 1
+          fi
 
           # Count how many pull requests we should process, and exit early if there are none
           PR_COUNT="$(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) )"
@@ -112,7 +116,7 @@ jobs:
           # A match is based on "source repository + branch + SHA" key
           # In rare cases (e.g. force push to an older revision), there could be more than one match
           # for a given PR number, so just use the most recent one.
-          # Result is a bash style list (one per line) of  <pull_request_number> <job_number>  pairs
+          # Result is a table (list of lists) - each row with PR number, JOB ID, and the above key
           PR_JOB_MAP="$(jq --arg IGNORE_RUNS_OLDER_THAN "$IGNORE_RUNS_OLDER_THAN" '
               # second input is the pull request map - use it to lookup PR numbers
               input as $OPEN_PULL_REQUESTS
@@ -128,7 +132,7 @@ jobs:
                       # do not include  .conclusion=="success"  because errors could also post messages
                       success: (.status=="completed")
                   }
-                  # lookup PR number from $OPEN_PULL_REQUESTS based on the "key" ==> PR number
+                  # lookup PR number from $OPEN_PULL_REQUESTS using the above key
                   | . += { pr_number: $OPEN_PULL_REQUESTS[.key] }
                   # Remove runs that were not in the list of the PRs
                   | select(.pr_number)
