@@ -105,9 +105,12 @@ db-destroy:
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 
-.PHONY: db-start
-db-start:
+.PHONY: db-start-nowait
+db-start-nowait:
 	$(DOCKER_COMPOSE) up --no-recreate -d postgres
+
+.PHONY: db-start
+db-start: db-start-nowait
 	@echo "Wait for PostgreSQL to start..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools pgwait
 
@@ -151,38 +154,38 @@ else
 endif
 
 .PHONY: psql
-psql: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh
+psql: db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
 .PHONY: import-osm
-import-osm: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-osm
+import-osm: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm'
 
 .PHONY: update-osm
-update-osm: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-update
+update-osm: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
-import-diff: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-diff
+import-diff: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
 import-data: db-start
 	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
 
 .PHONY: import-borders
-import-borders: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-borders
+import-borders: db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders'
 
 .PHONY: import-sql
-import-sql: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql
+import-sql: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql'
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
 endif
-generate-tiles: init-dirs db-start all
+generate-tiles: init-dirs all db-start
 	rm -rf data/tiles.mbtiles
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
