@@ -12,7 +12,8 @@ services:
 
   postgres:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
-    # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
+    # JIT must be disabled for PostgreSQL 11-12 because of slow large MVT query processing
+    command: postgres -c 'jit=off'
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
