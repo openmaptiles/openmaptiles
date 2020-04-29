@@ -44,7 +44,6 @@ jobs:
           crl() {
             curl --silent --show-error --location --retry 1 "${@:2}" \
               -H "Accept: application/vnd.github.antiope-preview+json, application/vnd.github.v3+json" \
-              -H "authorization: Bearer $GITHUB_TOKEN" \
              "$1"
           }
 
@@ -183,7 +182,7 @@ jobs:
             fi
 
             echo "Downloading artifact $ARTIFACT_URL (assuming single text file per artifact)..."
-            if ! MESSAGE="$(crl "$ARTIFACT_URL" | gunzip)"; then
+            if ! MESSAGE="$(crl "$ARTIFACT_URL" -H "authorization: Bearer $GITHUB_TOKEN" | gunzip)"; then
               echo "Unable to download or parse message from artifact '$MSG_ARTIFACT_NAME' in workflow $RUN_ID (PR #$PR_NUMBER), skipping..."
               continue
             fi
@@ -211,7 +210,10 @@ jobs:
 
             if [ -z "$OLD_COMMENT" ]; then
               COMMENT_URL="$(crl "$GITHUB_API/issues/$PR_NUMBER/comments" \
-                  -X POST -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                  -X POST \
+                  -H "Content-Type: application/json" \
+                  -H "authorization: Bearer $GITHUB_TOKEN" \
+                  --data "$MESSAGE_BODY" \
                 | jq -r '.html_url' )"
               COMMENT_INFO="New comment $COMMENT_URL was created"
             else
@@ -228,7 +230,10 @@ jobs:
               fi
 
               crl "$COMMENT_URL" \
-                  -X PATCH -H "Content-Type: application/json" --data "$MESSAGE_BODY" \
+                  -X PATCH \
+                  -H "authorization: Bearer $GITHUB_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  --data "$MESSAGE_BODY" \
                 | jq -r '("Updated existing comment " + .html_url)'
 
               COMMENT_INFO="Existing comment $COMMENT_URL was updated"
