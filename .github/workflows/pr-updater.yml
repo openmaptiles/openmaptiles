@@ -5,7 +5,7 @@ on:
   # When setting up for the first time, use "on: push" instead of "on: schedule"
   # and set IGNORE_RUNS_OLDER_THAN to a very high number until it runs once.
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/6 * * * *'
 
 jobs:
   update_PRs:
