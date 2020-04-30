@@ -4,7 +4,7 @@ name: OpenMapTiles CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, master-tools ]
   pull_request:
 
 jobs:
