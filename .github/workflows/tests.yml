@@ -207,10 +207,10 @@ jobs:
               new_avg_mem_use=$(grep -E '^K' "$file" |cut -d$'\t' -f 2)
 
               PROFILING_MSG="${PROFILING_MSG}${file:8:-4} \
-              | ${new_total_time_pretty} | $(( (new_total_time - old_total_time)*100/old_total_time ))% \
-              | ${new_user_time} | $(( (new_user_time - old_user_time)*100/old_user_time ))% \
-              | ${new_kernel_time} | $(( (new_kernel_time - old_kernel_time)*100/old_kernel_time ))% \
-              | ${new_avg_mem_use} | $(( (new_avg_mem_use - old_avg_mem_use)*100/old_avg_mem_use ))% \
+              | ${new_total_time_pretty} | $( awk "BEGIN { if ($old_total_time == 0) print \"100%\"; else print(($new_total_time - $old_total_time)*100/$old_total_time \"%\"); }" ) \
+              | ${new_user_time} | $( awk "BEGIN { if ($old_user_time == 0) print \"100%\"; else print(($new_user_time - $old_user_time)*100/$old_user_time \"%\"); }" ) \
+              | ${new_kernel_time} | $( awk "BEGIN { if ($old_kernel_time == 0) print \"100%\"; else print(($new_kernel_time - $old_kernel_time)*100/$old_kernel_time \"%\"); }" ) \
+              | ${new_avg_mem_use} | $( awk "BEGIN { if ($old_avg_mem_use == 0) print \"100%\"; else print(($new_avg_mem_use - $old_avg_mem_use)*100/$old_avg_mem_use \"%\"); }" ) \
               "$'\n'
             done
             popd
