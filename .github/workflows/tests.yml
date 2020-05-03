@@ -215,8 +215,8 @@ jobs:
             OUT_DETAILS="${OUTPUT%%========*}"
 
             pushd ../artifacts
-            PROFILING_MSG="step | total time | change | user time | change | kernel time | change | max memory KB | change
-            --- | --- | --- | --- | --- | --- | --- | --- | ---
+            PROFILING_MSG="step | total time | change | user time | change
+            --- | --- | --- | --- | ---
             "
             for file in profile*.tsv; do
               new_total_time_fmt=$(grep -E '^E' "$file"   | cut -d$'\t' -f 2)
@@ -224,22 +224,16 @@ jobs:
               new_total_time=$(grep -E '^e' "$file"       | cut -d$'\t' -f 2)
               old_user_time=$(grep -E '^U' "base-$file"   | cut -d$'\t' -f 2)
               new_user_time=$(grep -E '^U' "$file"        | cut -d$'\t' -f 2)
-              old_kernel_time=$(grep -E '^S' "base-$file" | cut -d$'\t' -f 2)
-              new_kernel_time=$(grep -E '^S' "$file"      | cut -d$'\t' -f 2)
-              old_max_mem_use=$(grep -E '^M' "base-$file" | cut -d$'\t' -f 2)
-              new_max_mem_use=$(grep -E '^M' "$file"      | cut -d$'\t' -f 2)
 
               PROFILING_MSG="${PROFILING_MSG}${file:8:-4} \
               | ${new_total_time_fmt} | $( echo "$old_total_time $new_total_time" | awk '{ if ($1 == 0) print "-"; else printf  "%.1f%%", ($2-$1)*100/$1 }' ) \
-              | $( echo "$old_user_time $new_user_time" | awk '{ if ($1 == 0) print "%d | -", $2 ; else printf  "%d | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
-              | $( echo "$old_kernel_time $new_kernel_time" | awk '{ if ($1 == 0) print "%d | -", $2 ; else printf  "%d | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
-              | $( echo "$old_max_mem_use $new_max_mem_use" | awk '{ if ($1 == 0) print "%d | -", $2 ; else printf  "%d | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
+              | $( echo "$old_user_time $new_user_time" | awk '{ if ($1 == 0) print "%s | -", $2 ; else printf  "%s | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
               "$'\n'
             done
             popd
 
             cat > ../pr_message/message.md <<EOF
-          Performance evaluation results for $GITHUB_SHA (PR=$(git log HEAD^2 -1 --format="%H") + base=$CACHE_SHA)
+          Results evaluating commit $(git log HEAD^2 -1 --format="%H") (merged with base $CACHE_SHA as $GITHUB_SHA). See [run details](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID).
 
           $PROFILING_MSG
 
