@@ -97,8 +97,7 @@ jobs:
           # If profiling result cache has incompatible format, increase the "v" number
           key: "v3-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
-      - name: Load test data into DB and run performance test
-        id: main
+      - id: main
         env:
           CACHE_SHA: "${{ steps.calc.outputs.hash }}"
         run: |
@@ -191,6 +190,19 @@ jobs:
             PROFILE_DIR=../artifacts
             create_db
 
+            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
+            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
+            cp ../perf_cache/results.json .
+            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run --rm openmaptiles-tools \
+                        test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+                        --compare /tileset/results.json --record /tileset/pr-results.json)"
+            rm results.json
+            mv pr-results.json ../artifacts/
+
+            # Split into two parts -- before and after the ===== SUMMARY =====
+            OUT_SUMMARY="${OUTPUT##*========}"
+            OUT_DETAILS="${OUTPUT%%========*}"
+
             pushd ../artifacts
             PROFILING_MSG="step | total time | change | user time | change | kernel time | change | max memory KB | change
             --- | --- | --- | --- | --- | --- | --- | --- | ---
@@ -214,19 +226,6 @@ jobs:
               "$'\n'
             done
             popd
-
-            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
-            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            cp ../perf_cache/results.json .
-            OUTPUT="$(TOOLS_VERSION=latest docker-compose run --rm openmaptiles-tools \
-                        test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-                        --compare /tileset/results.json --record /tileset/pr-results.json)"
-            rm results.json
-            mv pr-results.json ../artifacts/
-
-            # Split into two parts -- before and after the ===== SUMMARY =====
-            OUT_SUMMARY="${OUTPUT##*========}"
-            OUT_DETAILS="${OUTPUT%%========*}"
 
             cat > ../pr_message/message.md <<EOF
           Performance evaluation results for $GITHUB_SHA
