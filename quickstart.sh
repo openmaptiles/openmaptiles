@@ -66,6 +66,11 @@ if [ "$(version "$DOCKER_VER")" -lt "$(version "$MIN_DOCKER_VER")" ]; then
   exit 1
 fi
 
+# If there are no arguments, or just the area is set, use preloaded docker image to speed up
+# to force all steps, use two arguments, e.g. "./quickstart monaco empty"
+(( $# == 0 || $# == 1 )) && USE_PRELOADED_IMAGE=true || USE_PRELOADED_IMAGE=""
+export USE_PRELOADED_IMAGE
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Pulling or refreshing OpenMapTiles docker images "
@@ -82,6 +87,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $osm_area "
+echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $githash "
 echo "      : Started          : $STARTDATE "
 echo "      : Your bash version: $BASH_VERSION"
@@ -166,7 +172,7 @@ make all
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-if [ $# -eq 0 ] || [ $# -eq 1 ]; then
+if [[ "$USE_PRELOADED_IMAGE" == true ]]; then
   echo "====> : Start PostgreSQL service using postgis image preloaded with this data:"
   echo "      : * Water data from http://osmdata.openstreetmap.de"
   echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"

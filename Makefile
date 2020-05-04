@@ -1,6 +1,13 @@
+# Ensure that errors don't hide inside pipes
+SHELL         = /bin/bash
+.SHELLFLAGS   = -o pipefail -c
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
+
+# If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
+USE_PRELOADED_IMAGE?=
 
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
@@ -107,6 +114,7 @@ db-destroy:
 
 .PHONY: db-start-nowait
 db-start-nowait:
+	@echo "Starting postgres docker compose target using $${POSTGIS_IMAGE:-default} image (no recreate if exists)" && \
 	$(DOCKER_COMPOSE) up --no-recreate -d postgres
 
 .PHONY: db-start
@@ -309,8 +317,12 @@ ifneq ($(strip $(NO_REFRESH)),)
 else
 	@echo ""
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
-	$(DOCKER_COMPOSE) pull --ignore-pull-failures $(QUIET_FLAG)
-	POSTGIS_IMAGE=openmaptiles/postgis-preloaded docker-compose pull --ignore-pull-failures $(QUIET_FLAG) postgres
+ifneq ($(strip $(USE_PRELOADED_IMAGE)),)
+	POSTGIS_IMAGE=openmaptiles/postgis-preloaded \
+		docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
+else
+	docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres import-data
+endif
 endif
 
 .PHONY: remove-docker-images
