@@ -1,3 +1,7 @@
+# Ensure that errors don't hide inside pipes
+SHELL         = /bin/bash
+.SHELLFLAGS   = -o pipefail -c
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
