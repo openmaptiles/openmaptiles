@@ -245,7 +245,7 @@ jobs:
             done
 
             DB_SIZE_CHANGE=$( echo "$(cat base-db_size.tsv) $(cat db_size.tsv)" | \
-              awk '{ printf "PostgreSQL DB size in MB: %s → %s", $1, $2; if ($1 != 0) printf ", %.1f%% change", $2, ($2-$1)*100/$1 }' )
+              awk '{ printf "PostgreSQL DB size in MB: %s → %s", $1, $2; if ($1 != 0) printf ", %.1f%% change", ($2-$1)*100/$1 }' )
 
             popd
 
