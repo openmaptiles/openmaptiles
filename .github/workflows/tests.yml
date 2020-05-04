@@ -94,8 +94,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: perf_cache
-          # If profiling result cache has incompatible format, increase the "v" number
-          key: "v4-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+          # If profiling result cache has incompatible format, increase this "v" number
+          key: "v10-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
@@ -150,6 +150,17 @@ jobs:
             profile 3_borders  make import-borders
             profile 4_wikidata make import-wikidata
             profile 5_sql      make import-sql
+
+            # Get database total size, in MB
+            # Once Makefile has a few more improvements, we can use this approach instead:
+            # echo $'\\set QUIET on \\a \\x off \\t \\\\ select pg_database_size(current_database())/1024/1024;' | make -s psql
+            if grep -qE '^  import-osm:$' docker-compose.yml; then
+              # old version using dedicated import-osm docker image
+              DB_SIZE_MB=$(docker-compose run --rm -u $(id -u):$(id -g) import-osm ./psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
+            else
+              DB_SIZE_MB=$(docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
+            fi
+            echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
           }
 
           mkdir -p perf_cache
@@ -186,12 +197,14 @@ jobs:
           pushd ../perf_cache
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             cp results.json ../artifacts/base-results.json
-            for file in profile*.tsv; do
+            # Copy all tsv files, not just the ones with "profile-" prefix.
+            for file in *.tsv; do
               cp "$file" "../artifacts/base-$file"
             done
           else
             cp results.json ../artifacts/results.json
-            cp profile*.tsv ../artifacts
+            # Copy all tsv files, not just the ones with "profile-" prefix.
+            cp *.tsv ../artifacts
           fi
           popd
 
@@ -230,10 +243,16 @@ jobs:
               | $( echo "$old_user_time $new_user_time" | awk '{ if ($1 == 0) print "%s | -", $2 ; else printf  "%s | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
               "$'\n'
             done
+
+            DB_SIZE_CHANGE=$( echo "$(cat base-db_size.tsv) $(cat db_size.tsv)" | \
+              awk '{ printf "PostgreSQL DB size in MB: %s → %s", $1, $2; if ($1 != 0) printf ", %.1f%% change", $2, ($2-$1)*100/$1 }' )
+
             popd
 
             cat > ../pr_message/message.md <<EOF
           Results evaluating commit $(git log HEAD^2 -1 --format="%H") (merged with base $CACHE_SHA as $GITHUB_SHA). See [run details](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID).
+
+          $DB_SIZE_CHANGE
 
           $PROFILING_MSG
 
