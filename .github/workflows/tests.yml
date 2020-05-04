@@ -181,7 +181,7 @@ jobs:
 
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            TOOLS_VERSION=latest profile test-perf docker-compose run --rm openmaptiles-tools \
+            TOOLS_VERSION=latest profile test-perf docker-compose run -T --rm openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json
             mv results.json ../perf_cache
@@ -217,7 +217,7 @@ jobs:
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
             cp ../perf_cache/results.json .
-            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run --rm openmaptiles-tools \
+            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run -T --rm openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
                         --compare /tileset/results.json --record /tileset/pr-results.json)"
             rm results.json
