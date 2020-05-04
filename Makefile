@@ -179,7 +179,8 @@ import-borders: db-start-nowait
 
 .PHONY: import-sql
 import-sql: all db-start-nowait
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
+	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
