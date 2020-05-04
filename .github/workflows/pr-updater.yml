@@ -27,7 +27,7 @@ jobs:
         run: |
           #
           # Strategy:
-          #  * get all recently updated open pull requests
+          #  * get all recently updated pull requests
           #  * get all recent workflow runs
           #  * match pull requests and their current SHA with the last workflow run for the same SHA
           #  * for each found match of  <pull-request-number>  and  <workflow-run-id> :
@@ -55,7 +55,7 @@ jobs:
           # Parse current pull requests
           #
 
-          # Get all open pull requests, most recently updated first
+          # Get all pull requests, most recently updated first
           # (this way we don't need to page through all of them)
           # Filter out PRs that are older than $IGNORE_PRS_OLDER_THAN minutes
           # Result is an object, mapping a "key" to the pull request number:
@@ -63,28 +63,28 @@ jobs:
           #   "nyurik/openmaptiles/nyurik-patch-1/4953dd2370b9988a7832d090b5e47b3cd867f594": 6,
           #   ...
           # }
-          OPEN_PULL_REQUESTS_RAW="$( crl "$GITHUB_API/pulls?state=open&sort=updated&direction=desc" )"
-          if ! OPEN_PULL_REQUESTS="$(jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
+          PULL_REQUESTS_RAW="$( crl "$GITHUB_API/pulls?sort=updated&direction=desc" )"
+          if ! PULL_REQUESTS="$(jq --arg IGNORE_PRS_OLDER_THAN "$IGNORE_PRS_OLDER_THAN" '
               map(
-                  # Only select open unlocked pull requests updated within last $IGNORE_PRS_OLDER_THAN minutes
-                  select(.state=="open" and .locked==false
+                  # Only select unlocked pull requests updated within last $IGNORE_PRS_OLDER_THAN minutes
+                  select(.locked==false
                          and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_PRS_OLDER_THAN | tonumber))
                   # Prepare for "from_entries" by creating a key/value object
                   # The key is a combination of repository name, branch name, and latest SHA
                   | { key: (.head.repo.full_name + "/" + .head.ref + "/" + .head.sha), value: .number }
               )
               | from_entries
-            ' <( echo "$OPEN_PULL_REQUESTS_RAW" ) )"; then
+            ' <( echo "$PULL_REQUESTS_RAW" ) )"; then
 
-              echo "Error parsing open pull requests"
-              echo "$OPEN_PULL_REQUESTS_RAW"
+              echo "Error parsing pull requests"
+              echo "$PULL_REQUESTS_RAW"
               exit 1
           fi
 
           # Count how many pull requests we should process, and exit early if there are none
-          PR_COUNT="$(jq 'length' <( echo "$OPEN_PULL_REQUESTS" ) )"
+          PR_COUNT="$(jq 'length' <( echo "$PULL_REQUESTS" ) )"
           if [ "$PR_COUNT" -eq 0 ]; then
-            echo "There are no open pull requests updated in the last $IGNORE_PRS_OLDER_THAN minutes. Exiting."
+            echo "There are no pull requests updated in the last $IGNORE_PRS_OLDER_THAN minutes. Exiting."
             exit
           else
             echo "$PR_COUNT pull requests have been updated in the last $IGNORE_PRS_OLDER_THAN minutes"
@@ -115,14 +115,14 @@ jobs:
           # Get all workflow runs that were triggered by pull requests
           WORKFLOW_PR_RUNS="$(crl "$GITHUB_API/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request")"
 
-          # For each workflow run, match it with the open pull request to get the PR number
+          # For each workflow run, match it with the pull request to get the PR number
           # A match is based on "source repository + branch + SHA" key
           # In rare cases (e.g. force push to an older revision), there could be more than one match
           # for a given PR number, so just use the most recent one.
           # Result is a table (list of lists) - each row with PR number, JOB ID, and the above key
           PR_JOB_MAP="$(jq --arg IGNORE_RUNS_OLDER_THAN "$IGNORE_RUNS_OLDER_THAN" '
               # second input is the pull request map - use it to lookup PR numbers
-              input as $OPEN_PULL_REQUESTS
+              input as $PULL_REQUESTS
               | .workflow_runs
               | map(
                   # Create a new object with the relevant values
@@ -135,8 +135,8 @@ jobs:
                       # do not include  .conclusion=="success"  because errors could also post messages
                       success: (.status=="completed")
                   }
-                  # lookup PR number from $OPEN_PULL_REQUESTS using the above key
-                  | . += { pr_number: $OPEN_PULL_REQUESTS[.key] }
+                  # lookup PR number from $PULL_REQUESTS using the above key
+                  | . += { pr_number: $PULL_REQUESTS[.key] }
                   # Remove runs that were not in the list of the PRs
                   | select(.pr_number)
               )
@@ -150,7 +150,7 @@ jobs:
                   # Keep just the pull request number mapping to run ID
                   | [ .pr_number, .id, .key ]
               )
-              ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$OPEN_PULL_REQUESTS" ) )"
+              ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$PULL_REQUESTS" ) )"
 
 
           # Count how many jobs we should process, and exit early if there are none
