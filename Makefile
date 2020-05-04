@@ -167,7 +167,8 @@ import-borders: db-start
 
 .PHONY: import-sql
 import-sql: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql | \
+	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
