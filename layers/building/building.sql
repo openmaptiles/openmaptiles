@@ -13,10 +13,10 @@ END;
 $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building);
+CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member);
---CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role);
---CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role);
+--CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
+--CREATE INDEX IF NOT EXISTS osm_building_street_role_idx ON osm_building_street(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_relation -> layer_building:z14_
@@ -30,7 +30,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_relation WHERE building = ''
+         osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
          -- etldoc: osm_building_associatedstreet -> layer_building:z14_
@@ -44,7 +44,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_associatedstreet WHERE role = 'house'
+         osm_building_associatedstreet WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
          -- etldoc: osm_building_street -> layer_building:z14_
          -- Buildings in street relations
@@ -57,7 +57,7 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_street WHERE role = 'house'
+         osm_building_street WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
          -- etldoc: osm_building_multipolygon -> layer_building:z14_

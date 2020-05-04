@@ -8,8 +8,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: material
       key: building:material
       type: string
@@ -71,8 +69,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
@@ -165,8 +161,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
@@ -259,8 +253,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string
@@ -353,8 +345,6 @@ tables:
       type: validated_geometry
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     - name: building
       key: building
       type: string

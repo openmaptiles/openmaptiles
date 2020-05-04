@@ -60,8 +60,6 @@ tables:
       type: mapping_value
     - name: area
       type: area
-    - name: webmerc_area
-      type: webmerc_area
     mapping:
       aeroway: *aeroway_polygon_mapping
       "area:aeroway": *aeroway_polygon_mapping
