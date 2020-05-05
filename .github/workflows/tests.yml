@@ -52,9 +52,9 @@ jobs:
       TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --bbox 5.4172943,-1.6732196,12.3733400,4.3475256 --bbox 9.0900979,46.9688169,9.6717077,47.5258072"
       TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
 
-        ## Large test data -- we should switch to it after everything is working ok
-        # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
-        # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
+      ## Large test data -- we should switch to it after everything is working ok
+      # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
+      # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
     steps:
       - name: Cache test data download
         id: cache-testdata
