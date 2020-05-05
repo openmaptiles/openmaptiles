@@ -12,57 +12,20 @@ services:
 
   postgres:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
+    # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - postgres_conn
     ports:
       - "5432"
-    env_file: .env
+    env_file: .env-postgres
 
   import-data:
     image: "openmaptiles/import-data:${TOOLS_VERSION}"
     env_file: .env
     networks:
       - postgres_conn
-
-  import-osm:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
-    env_file: .env
-    environment:
-      DIFF_MODE: ${DIFF_MODE}
-    networks:
-      - postgres_conn
-    volumes:
-      - ./data:/import
-      - ./build:/mapping
-      - ./cache:/cache
-
-  import-osm-diff:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
-    env_file: .env
-    command: ./import_diff.sh
-    environment:
-      DIFF_MODE: ${DIFF_MODE}
-    networks:
-      - postgres_conn
-    volumes:
-      - ./data:/import
-      - ./build:/mapping
-      - ./cache:/cache
-
-  update-osm:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
-    env_file: .env
-    environment:
-      DIFF_MODE: ${DIFF_MODE}
-    command: ./import_update.sh
-    networks:
-      - postgres_conn
-    volumes:
-      - ./data:/import
-      - ./build:/mapping
-      - ./cache:/cache
 
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"

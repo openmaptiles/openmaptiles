@@ -4,7 +4,7 @@ name: OpenMapTiles CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, master-tools ]
   pull_request:
 
 jobs:
@@ -48,12 +48,13 @@ jobs:
     needs: integrity_test
     env:
       # Smaller tests (runs everything in about 30 minutes)
-      TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test equatorial-guinea --test liechtenstein"
+      # Two test areas:  equatorial-guinea  and  liechtenstein
+      TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --bbox 5.4172943,-1.6732196,12.3733400,4.3475256 --bbox 9.0900979,46.9688169,9.6717077,47.5258072"
       TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
 
-        ## Large test data -- we should switch to it after everything is working ok
-        # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
-        # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
+      ## Large test data -- we should switch to it after everything is working ok
+      # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
+      # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
     steps:
       - name: Cache test data download
         id: cache-testdata
@@ -181,7 +182,7 @@ jobs:
 
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            TOOLS_VERSION=latest profile test-perf docker-compose run --rm openmaptiles-tools \
+            TOOLS_VERSION=latest profile test-perf docker-compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json
             mv results.json ../perf_cache
@@ -217,7 +218,7 @@ jobs:
             # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
             # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
             cp ../perf_cache/results.json .
-            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run --rm openmaptiles-tools \
+            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
                         --compare /tileset/results.json --record /tileset/pr-results.json)"
             rm results.json
