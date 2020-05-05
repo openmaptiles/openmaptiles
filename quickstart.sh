@@ -66,6 +66,11 @@ if [ "$(version "$DOCKER_VER")" -lt "$(version "$MIN_DOCKER_VER")" ]; then
   exit 1
 fi
 
+# If there are no arguments, or just the area is set, use preloaded docker image to speed up
+# to force all steps, use two arguments, e.g. "./quickstart monaco empty"
+(( $# == 0 || $# == 1 )) && USE_PRELOADED_IMAGE=true || USE_PRELOADED_IMAGE=""
+export USE_PRELOADED_IMAGE
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Pulling or refreshing OpenMapTiles docker images "
@@ -82,6 +87,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $osm_area "
+echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $githash "
 echo "      : Started          : $STARTDATE "
 echo "      : Your bash version: $BASH_VERSION"
@@ -166,30 +172,42 @@ make all
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start PostgreSQL service ; create PostgreSQL data volume "
-echo "      : Source code: https://github.com/openmaptiles/postgis "
-echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-make db-start
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : Drop and Recreate PostgreSQL  public schema "
-# Drop all PostgreSQL tables
-# This adds an extra safety belt if the user modifies the docker volume settings
-make forced-clean-sql
-
-echo "====> : Importing all the data:"
-echo "      : * Water data from http://osmdata.openstreetmap.de"
-echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
-echo "      : * Natural Earth from http://www.naturalearthdata.com"
-echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
-echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
-echo "      :"
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
-echo "      :   includes all data from the import-data image"
-echo "      :"
-echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-make import-data
+if [[ "$USE_PRELOADED_IMAGE" == true ]]; then
+  echo "====> : Start PostgreSQL service using postgis image preloaded with this data:"
+  echo "      : * Water data from http://osmdata.openstreetmap.de"
+  echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
+  echo "      : * Natural Earth from http://www.naturalearthdata.com"
+  echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
+  echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
+  echo "      :   includes all data from the import-data image"
+  echo "      :"
+  echo "      : Use two-parameter quickstart to start with an empty database:"
+  echo "      :   ./quickstart.sh albania empty"
+  echo "      : If desired, you can manually import data by one using these commands:"
+  echo "      :   make db-destroy"
+  echo "      :   make db-start"
+  echo "      :   make import-data"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/postgis-preloaded"
+  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  make db-start-preloaded
+else
+  echo "====> : Start PostgreSQL service using empty database and importing all the data:"
+  echo "      : * Water data from http://osmdata.openstreetmap.de"
+  echo "      :   Data license: https://osmdata.openstreetmap.de/info/license.html"
+  echo "      : * Natural Earth from http://www.naturalearthdata.com"
+  echo "      :   Terms-of-use: http://www.naturalearthdata.com/about/terms-of-use"
+  echo "      : * OpenStreetMap Lakelines data https://github.com/lukasmartinelli/osm-lakelines"
+  echo "      :"
+  echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
+  echo "      :   includes all data from the import-data image"
+  echo "      :"
+  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  make db-start
+  make import-data
+fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -222,8 +240,7 @@ echo "====> : Start SQL postprocessing:  ./build/sql/* -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
-make import-sql | \
-    awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
+make import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

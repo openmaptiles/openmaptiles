@@ -1,6 +1,13 @@
+# Ensure that errors don't hide inside pipes
+SHELL         = /bin/bash
+.SHELLFLAGS   = -o pipefail -c
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
+
+# If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
+USE_PRELOADED_IMAGE?=
 
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
@@ -64,9 +71,8 @@ help:
 	@echo "  make tools-dev                       # start openmaptiles-tools /bin/bash terminal"
 	@echo "  make db-destroy                      # remove docker containers and PostgreSQL data volume"
 	@echo "  make db-start                        # start PostgreSQL, creating it if it doesn't exist"
+	@echo "  make db-start-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
 	@echo "  make db-stop                         # stop PostgreSQL database without destroying the data"
-	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
-	@echo "  make import-osm-dev                  # start import-osm /bin/bash terminal (imposm3)"
 	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
@@ -106,11 +112,20 @@ db-destroy:
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 
-.PHONY: db-start
-db-start:
+.PHONY: db-start-nowait
+db-start-nowait:
+	@echo "Starting postgres docker compose target using $${POSTGIS_IMAGE:-default} image (no recreate if exists)" && \
 	$(DOCKER_COMPOSE) up --no-recreate -d postgres
+
+.PHONY: db-start
+db-start: db-start-nowait
 	@echo "Wait for PostgreSQL to start..."
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./pgwait.sh
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools pgwait
+
+# Wrap db-start target but use the preloaded image
+.PHONY: db-start-preloaded
+db-start-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+db-start-preloaded: db-start
 
 .PHONY: db-stop
 db-stop:
@@ -147,33 +162,39 @@ else
 endif
 
 .PHONY: psql
-psql: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh
+psql: db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
 .PHONY: import-osm
-import-osm: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm
+import-osm: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm'
 
-.PHONY: import-osmsql
-import-osmsql: db-start all import-osm import-sql
+.PHONY: update-osm
+update-osm: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
+
+.PHONY: import-diff
+import-diff: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
 import-data: db-start
 	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
 
 .PHONY: import-borders
-import-borders: db-start
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-borders
+import-borders: db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders'
 
 .PHONY: import-sql
-import-sql: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql
+import-sql: all db-start-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
+	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
 endif
-generate-tiles: init-dirs db-start all
+generate-tiles: init-dirs all db-start
 	rm -rf data/tiles.mbtiles
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
@@ -253,49 +274,37 @@ generate-devdoc: init-dirs
 tools-dev:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash
 
-.PHONY: import-osm-dev
-import-osm-dev:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm /bin/bash
-
 .PHONY: import-wikidata
 import-wikidata:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: psql-pg-stat-reset
 psql-pg-stat-reset:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
-
-.PHONY: forced-clean-sql
-forced-clean-sql:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
-		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
-		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
-		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
-		-c "GRANT ALL ON SCHEMA public TO public; COMMENT ON SCHEMA public IS 'standard public schema';"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
 .PHONY: list-views
 list-views:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
 psql-list-tables:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
 .PHONY: psql-vacuum-analyze
 psql-vacuum-analyze:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
 .PHONY: psql-analyze
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
 .PHONY: list-docker-images
 list-docker-images:
@@ -308,7 +317,12 @@ ifneq ($(strip $(NO_REFRESH)),)
 else
 	@echo ""
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
-	$(DOCKER_COMPOSE) pull --ignore-pull-failures $(QUIET_FLAG)
+ifneq ($(strip $(USE_PRELOADED_IMAGE)),)
+	POSTGIS_IMAGE=openmaptiles/postgis-preloaded \
+		docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
+else
+	docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres import-data
+endif
 endif
 
 .PHONY: remove-docker-images
