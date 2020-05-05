@@ -222,8 +222,7 @@ echo "====> : Start SQL postprocessing:  ./build/sql/* -> PostgreSQL "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-sql"
 # If the output contains a WARNING, stop further processing
 # Adapted from https://unix.stackexchange.com/questions/307562
-make import-sql | \
-    awk -v s=": WARNING:" '$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
+make import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

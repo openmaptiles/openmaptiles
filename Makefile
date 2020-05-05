@@ -1,3 +1,7 @@
+# Ensure that errors don't hide inside pipes
+SHELL         = /bin/bash
+.SHELLFLAGS   = -o pipefail -c
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
@@ -167,7 +171,8 @@ import-borders: db-start
 
 .PHONY: import-sql
 import-sql: db-start all
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-sql | \
+	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
