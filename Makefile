@@ -346,3 +346,7 @@ docker-unnecessary-clean:
 .PHONY: test-perf-null
 test-perf-null:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+
+.PHONY: build-test-pbf
+build-test-pbf:
+	docker-compose run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
