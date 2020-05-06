@@ -47,21 +47,34 @@ jobs:
     # there is no point to run long perf test until we know the code is OK
     needs: integrity_test
     env:
-      # Smaller tests (runs everything in about 30 minutes)
-      # Two test areas:  equatorial-guinea  and  liechtenstein
-      TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --bbox 5.4172943,-1.6732196,12.3733400,4.3475256 --bbox 9.0900979,46.9688169,9.6717077,47.5258072"
-      TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+      ## Smaller tests (runs everything in about 30 minutes)
+      ## Two test areas:  equatorial-guinea  and  liechtenstein
+      #TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+      #TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --bbox 5.4172943,-1.6732196,12.3733400,4.3475256 --bbox 9.0900979,46.9688169,9.6717077,47.5258072"
+
+      # Large test, size is 79,472,850
+      #  --bbox 5.4172943,-1.6732196,12.3733400,4.3475256       `# equatorial-guinea 87,768 tiles at z14, 2.1MB, 24.9 bytes/tile [8438/7993]x[8755/8268]` \
+      #  --bbox 9.0900979,46.9688169,9.6717077,47.5258072       `# liechtenstein 1,064 tiles at z14, 2.2MB, 2,217.0 bytes/tile [8605/5727]x[8632/5764]` \
+      #  --bbox -78.7749754,38.7820235,-76.8957735,39.6985009   `# district-of-columbia 4,785 tiles at z14, 16.0MB, 3,508.9 bytes/tile [4606/6220]x[4692/6274]` \
+      #  --bbox -0.6124681,51.2268449,0.3996690,51.7873570      `# greater-london 1,974 tiles at z14, 55.5MB, 29,458.3 bytes/tile [8164/5427]x[8210/5468]` \
+      TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=18nP3f06aBBiEKhUNmAkqq30gqQnU2_VJ"
+      TEST_PERF_PARAMS: >-
+        --minzoom 0 --maxzoom 14
+        --bbox 5.4172943,-1.6732196,12.3733400,4.3475256
+        --bbox 9.0900979,46.9688169,9.6717077,47.5258072
+        --bbox -78.7749754,38.7820235,-76.8957735,39.6985009
+        --bbox -0.6124681,51.2268449,0.3996690,51.7873570
 
       ## Large test data -- we should switch to it after everything is working ok
-      # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
       # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
+      # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
     steps:
       - name: Cache test data download
         id: cache-testdata
         uses: actions/cache@v1
         with:
           path: ci_cache
-          key: "${{ env.TEST_DATA_URL }}"
+          key: "v2-${{ env.TEST_DATA_URL }}"
 
       - name: Download test data on cache miss
         if: steps.cache-testdata.outputs.cache-hit != 'true'
@@ -149,6 +162,10 @@ jobs:
             profile 1_data     make import-data
             profile 2_osm      make import-osm
             profile 3_borders  make import-borders
+
+            if [ -f ../ci_cache/wikidata-cache.json ]; then
+              cp ../ci_cache/wikidata-cache.json cache/wikidata-cache.json
+            fi
             profile 4_wikidata make import-wikidata
             profile 5_sql      make import-sql
 
@@ -179,10 +196,11 @@ jobs:
 
             PROFILE_DIR=../perf_cache
             create_db
+            if [ ! -f ../ci_cache/wikidata-cache.json ]; then
+              cp cache/wikidata-cache.json ../ci_cache/wikidata-cache.json
+            fi
 
-            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
-            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
-            TOOLS_VERSION=latest profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            profile test-perf docker-compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json
             mv results.json ../perf_cache
@@ -215,10 +233,8 @@ jobs:
             PROFILE_DIR=../artifacts
             create_db
 
-            # Use latest tools version because these specific tests do not yet exist in the 4.1 tools version
-            # Custom TOOLS_VERSION can be removed once OMT master is migrated to the next tools version
             cp ../perf_cache/results.json .
-            OUTPUT="$(TOOLS_VERSION=latest profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            OUTPUT="$(profile test-perf docker-compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
                         --compare /tileset/results.json --record /tileset/pr-results.json)"
             rm results.json

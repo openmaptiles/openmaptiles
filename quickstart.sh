@@ -27,7 +27,8 @@ if [ $# -eq 0 ]; then
 else
     osm_area=$1
 fi
-testdata="${osm_area}-latest.osm.pbf"
+
+pbf_file="./data/${osm_area}-latest.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
@@ -139,7 +140,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
 rm -f ./data/*.mbtiles
 
-if [[ ! -f "./data/${testdata}" || ! -f "./data/docker-compose-config.yml" ]]; then
+if [[ ! -f "${pbf_file}" || ! -f "./data/docker-compose-config.yml" ]]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
     echo "====> : Downloading ${osm_area} from Geofabrik..."
@@ -148,13 +149,13 @@ if [[ ! -f "./data/${testdata}" || ! -f "./data/docker-compose-config.yml" ]]; t
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : The testdata ./data/$testdata exists, we don't need to download!"
+    echo "====> : The pbf file $pbf_file exists, we don't need to download!"
 fi
 
 
-if [ !  -f "./data/${testdata}" ]; then
+if [ !  -f "${pbf_file}" ]; then
     echo " "
-    echo "Missing ./data/$testdata , Download or Parameter error? "
+    echo "Missing $pbf_file , Download or Parameter error? "
     exit 1
 fi
 
@@ -211,17 +212,17 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing OpenStreetMap data: ./data/${testdata} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
+echo "====> : Start importing OpenStreetMap data: ${pbf_file} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
 echo "      : Imposm3 documentation: https://imposm.org/docs/imposm3/latest/index.html "
 echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-make import-osm
+make import-osm "PBF_FILE=${pbf_file}"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing border data from ./data/${testdata} into PostgreSQL using osmborder"
+echo "====> : Start importing border data from ${pbf_file} into PostgreSQL using osmborder"
 echo "      : Source code: https://github.com/pnorman/osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
 echo "      : Thank you: Paul Norman"
@@ -283,9 +284,9 @@ cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
 if stat --help >/dev/null 2>&1; then
-  MODDATE=$(stat -c %y "./data/${testdata}" )
+  MODDATE=$(stat -c %y "${pbf_file}" )
 else
-  MODDATE=$(stat -f%Sm -t '%F %T %z' "./data/${testdata}" )
+  MODDATE=$(stat -f%Sm -t '%F %T %z' "${pbf_file}" )
 fi
 
 echo " "
@@ -303,7 +304,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : (disk space) We have created the new vectortiles ( ./data/tiles.mbtiles ) "
 echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
-echo "      : Created from $testdata ( file moddate: $MODDATE ) "
+echo "      : Created from $pbf_file ( file moddate: $MODDATE ) "
 echo "      : Size: "
 ls -la ./data/*.mbtiles
 
