@@ -9,6 +9,9 @@ DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
 USE_PRELOADED_IMAGE?=
 
+# If set, this file will be imported in the import-osm target
+PBF_FILE?=
+
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
   override DC_PROJECT:=$(notdir $(shell pwd))
@@ -167,7 +170,7 @@ psql: db-start-nowait
 
 .PHONY: import-osm
 import-osm: all db-start-nowait
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
 update-osm: all db-start-nowait
