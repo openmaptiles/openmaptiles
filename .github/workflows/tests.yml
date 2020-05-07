@@ -150,12 +150,17 @@ jobs:
 
             # reset system for a more predictable results (hopefully)
             sudo -- bash -c "
-              set -xeuo pipefail
+              set -euo pipefail
               echo 'Hardware reset $1 ...'
+              # Run the TRIM command (for SSDs)
               /sbin/fstrim --all
+              # Run sync to minimize the number of dirty objects on the system
               /bin/sync
+              # Give sync a little bit of time to finish. See https://linux.die.net/man/8/sync
               sleep 5
+              # Free slab objects and pagecache
               echo 3 > /proc/sys/vm/drop_caches
+              # Request compaction to reduce memory fragmentation
               echo 1 > /proc/sys/vm/compact_memory
               echo 'Hardware reset $1 done'
             "
