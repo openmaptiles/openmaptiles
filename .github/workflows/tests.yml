@@ -147,6 +147,18 @@ jobs:
           r\t%r\tNumber of socket messages received by the process.
           s\t%s\tNumber of socket messages sent by the process.
           "
+            # reset everything
+            sudo -- bash -c "
+              set -xeuo pipefail
+              echo 'Hardware reset $1 ...'
+              /sbin/fstrim --all
+              /bin/sync
+              sleep 5
+              echo 3 > /proc/sys/vm/drop_caches
+              echo 1 > /proc/sys/vm/compact_memory
+              echo 'Hardware reset $1 done'
+            "
+
             # Must use full path to get the full-featured version of time
             # profile-*.tsv filenames are parsed using ${file:8:-4} below
             /usr/bin/time --format "$TIME_FORMAT" --output "${PROFILE_DIR}/profile-${1}.tsv" "${@:2}"
