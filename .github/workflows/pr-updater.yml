@@ -88,6 +88,7 @@ jobs:
             exit
           else
             echo "$PR_COUNT pull requests have been updated in the last $IGNORE_PRS_OLDER_THAN minutes"
+            echo "$PULL_REQUESTS" | jq -r 'keys|.[]|" * " + .'
           fi
 
 

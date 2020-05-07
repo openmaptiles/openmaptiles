@@ -109,7 +109,7 @@ jobs:
         with:
           path: perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
-          key: "v10-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+          key: "v11-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
@@ -147,6 +147,24 @@ jobs:
           r\t%r\tNumber of socket messages received by the process.
           s\t%s\tNumber of socket messages sent by the process.
           "
+
+            # reset system for a more predictable results (hopefully)
+            sudo -- bash -c "
+              set -euo pipefail
+              echo 'Hardware reset $1 ...'
+              # Run the TRIM command (for SSDs)
+              /sbin/fstrim --all
+              # Run sync to minimize the number of dirty objects on the system
+              /bin/sync
+              # Give sync a little bit of time to finish. See https://linux.die.net/man/8/sync
+              sleep 5
+              # Free slab objects and pagecache
+              echo 3 > /proc/sys/vm/drop_caches
+              # Request compaction to reduce memory fragmentation
+              echo 1 > /proc/sys/vm/compact_memory
+              echo 'Hardware reset $1 done'
+            "
+
             # Must use full path to get the full-featured version of time
             # profile-*.tsv filenames are parsed using ${file:8:-4} below
             /usr/bin/time --format "$TIME_FORMAT" --output "${PROFILE_DIR}/profile-${1}.tsv" "${@:2}"
