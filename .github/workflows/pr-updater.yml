@@ -149,7 +149,7 @@ jobs:
                   # If the most recent run did not succeed, or if the run is too old, ignore it
                   | select(.success and (now - (.updated_at|fromdate)) / 60 < ($IGNORE_RUNS_OLDER_THAN | tonumber))
                   # Keep just the pull request number mapping to run ID
-                  | [ .pr_number, .id, .key ]
+                  | { pr_number, id, key }
               )
               ' <( echo "$WORKFLOW_PR_RUNS" ) <( echo "$PULL_REQUESTS" ) )"
 
@@ -161,12 +161,13 @@ jobs:
             exit
           else
             echo "$JOBS_COUNT '$WORKFLOW_NAME' jobs have been updated in the last $IGNORE_RUNS_OLDER_THAN minutes"
+            echo "$PR_JOB_MAP" | jq -r '.[] | " * PR #\(.pr_number) Job #\(.id) -- \(.key) "'
           fi
 
           #
           # Iterate over the found pairs of PR number + run ID, and update them all
           #
-          echo "$PR_JOB_MAP" | jq -r '.[] | @sh' | \
+          echo "$PR_JOB_MAP" | jq -r '.[] | [ .pr_number, .id, .key ] | @sh' | \
           while read -r PR_NUMBER RUN_ID RUN_KEY; do
 
             echo "Processing '$WORKFLOW_NAME' run #$RUN_ID for pull request #$PR_NUMBER $RUN_KEY..."
