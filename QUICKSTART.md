@@ -426,10 +426,8 @@ Hints for developers:
   make psql-analyze                    # PostgreSQL: ANALYZE
   make generate-qareports              # generate reports [./build/qareports]
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
-  make import-sql-dev                  # start import-sql  /bin/bash terminal
-  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)
-  make clean-docker                    # remove docker containers, PG data volume
-  make forced-clean-sql                # drop all PostgreSQL tables for clean environment
+  make tools-dev                       # start import-sql  /bin/bash terminal
+  make db-destroy                      # remove docker containers, PG data volume
   make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)
   make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
   make remove-docker-images            # remove openmaptiles docker images
