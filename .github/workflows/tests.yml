@@ -147,7 +147,8 @@ jobs:
           r\t%r\tNumber of socket messages received by the process.
           s\t%s\tNumber of socket messages sent by the process.
           "
-            # reset everything
+
+            # reset system for a more predictable results (hopefully)
             sudo -- bash -c "
               set -xeuo pipefail
               echo 'Hardware reset $1 ...'
