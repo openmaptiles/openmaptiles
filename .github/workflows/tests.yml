@@ -200,9 +200,9 @@ jobs:
               cp cache/wikidata-cache.json ../ci_cache/wikidata-cache.json
             fi
 
-            profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            (set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
-              --record /tileset/results.json
+              --record /tileset/results.json)
             mv results.json ../perf_cache
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
@@ -234,7 +234,7 @@ jobs:
             create_db
 
             cp ../perf_cache/results.json .
-            OUTPUT="$(profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            OUTPUT="$(set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
                         --compare /tileset/results.json --record /tileset/pr-results.json)"
             rm results.json
