@@ -1,18 +1,6 @@
 -- etldoc: layer_building[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_building | <z13> z13 | <z14_> z14+ " ] ;
 
-CREATE OR REPLACE FUNCTION as_numeric(text) RETURNS NUMERIC AS $$
- -- Inspired by http://stackoverflow.com/questions/16195986/isnumeric-with-postgresql/16206123#16206123
-DECLARE test NUMERIC;
-BEGIN
-     test = $1::NUMERIC;
-     RETURN test;
-EXCEPTION WHEN others THEN
-     RETURN -1;
-END;
-$$ STRICT
-LANGUAGE plpgsql IMMUTABLE;
-
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member) WHERE role = 'outline';
 --CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
@@ -20,11 +8,11 @@ CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_rela
 CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_relation -> layer_building:z14_
          -- Buildings built from relations
-         SELECT member AS osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+         SELECT member AS osm_id, geometry,
+                  COALESCE(CleanNumeric(height), CleanNumeric(buildingheight)) as height,
+                  COALESCE(CleanNumeric(min_height), CleanNumeric(buildingmin_height)) as min_height,
+                  COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels)) as levels,
+                  COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) as min_level,
                   nullif(material, '') AS material,
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
@@ -34,11 +22,11 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
 
          -- etldoc: osm_building_associatedstreet -> layer_building:z14_
          -- Buildings in associatedstreet relations
-         SELECT member AS osm_id,geometry,
-                  COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level,
+         SELECT member AS osm_id, geometry,
+                  COALESCE(CleanNumeric(height), CleanNumeric(buildingheight)) as height,
+                  COALESCE(CleanNumeric(min_height), CleanNumeric(buildingmin_height)) as min_height,
+                  COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels)) as levels,
+                  COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) as min_level,
                   nullif(material, '') AS material,
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
@@ -48,11 +36,11 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
 
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
-         SELECT obp.osm_id,obp.geometry,
-                  COALESCE(nullif(as_numeric(obp.height),-1),nullif(as_numeric(obp.buildingheight),-1)) as height,
-                  COALESCE(nullif(as_numeric(obp.min_height),-1),nullif(as_numeric(obp.buildingmin_height),-1)) as min_height,
-                  COALESCE(nullif(as_numeric(obp.levels),-1),nullif(as_numeric(obp.buildinglevels),-1)) as levels,
-                  COALESCE(nullif(as_numeric(obp.min_level),-1),nullif(as_numeric(obp.buildingmin_level),-1)) as min_level,
+         SELECT obp.osm_id, obp.geometry,
+                  COALESCE(CleanNumeric(obp.height), CleanNumeric(obp.buildingheight)) as height,
+                  COALESCE(CleanNumeric(obp.min_height), CleanNumeric(obp.buildingmin_height)) as min_height,
+                  COALESCE(CleanNumeric(obp.levels), CleanNumeric(obp.buildinglevels)) as levels,
+                  COALESCE(CleanNumeric(obp.min_level), CleanNumeric(obp.buildingmin_level)) as min_level,
                   nullif(obp.material, '') AS material,
                   nullif(obp.colour, '') AS colour,
                   obr.role IS NOT NULL AS hide_3d
