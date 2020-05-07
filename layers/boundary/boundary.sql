@@ -284,7 +284,7 @@ CREATE OR REPLACE VIEW boundary_z7 AS (
         NULL AS claimed_by,
         maritime
     FROM osm_border_linestring_gen7
-    WHERE admin_level <= 4
+    WHERE admin_level <= 6
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen7)
     UNION ALL
     SELECT geometry,
@@ -306,7 +306,7 @@ CREATE OR REPLACE VIEW boundary_z8 AS (
         NULL AS claimed_by,
         maritime
     FROM osm_border_linestring_gen6
-    WHERE admin_level <= 4
+    WHERE admin_level <= 6
         AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen6)
     UNION ALL
     SELECT geometry,
