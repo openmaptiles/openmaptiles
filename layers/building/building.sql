@@ -3,7 +3,6 @@
 
 CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member) WHERE role = 'outline';
---CREATE INDEX IF NOT EXISTS osm_building_associatedstreet_role_idx ON osm_building_associatedstreet(role) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
          -- etldoc: osm_building_relation -> layer_building:z14_
@@ -18,20 +17,6 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   FALSE as hide_3d
          FROM
          osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
-         UNION ALL
-
-         -- etldoc: osm_building_associatedstreet -> layer_building:z14_
-         -- Buildings in associatedstreet relations
-         SELECT member AS osm_id, geometry,
-                  COALESCE(CleanNumeric(height), CleanNumeric(buildingheight)) as height,
-                  COALESCE(CleanNumeric(min_height), CleanNumeric(buildingmin_height)) as min_height,
-                  COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels)) as levels,
-                  COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) as min_level,
-                  nullif(material, '') AS material,
-                  nullif(colour, '') AS colour,
-                  FALSE as hide_3d
-         FROM
-         osm_building_associatedstreet WHERE role = 'house' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
          -- etldoc: osm_building_polygon -> layer_building:z14_
