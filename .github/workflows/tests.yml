@@ -109,7 +109,7 @@ jobs:
         with:
           path: perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
-          key: "v10-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+          key: "v11-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
