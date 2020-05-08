@@ -7,25 +7,64 @@ set -o nounset
 ###########################################
 # OpenMapTiles quickstart.sh for x86_64 linux
 #
+# Usage:
+#   ./quickstart.sh [--empty] [area [geofabrik|osmfr|bbbike]]
+#
+# Use a preloaded docker image to speed up, unless the --empty flag is used.
+#
+# Servers:
+#   geofabik: http://download.geofabrik.de (default)
+#   osmfr:    http://download.openstreetmap.fr (default for hierarchical area names)
+#   bbbike:   https://www.bbbike.org (default for capitalized area names)
+#
 # Example calls ...
 # ./quickstart.sh
 # ./quickstart.sh africa
+# ./quickstart.sh africa geofabrik
+# ./quickstart.sh africa osmfr
 # ./quickstart.sh alabama
 # ./quickstart.sh alaska
 # ./quickstart.sh albania
 # ./quickstart.sh alberta
 # ./quickstart.sh alps
+# ./quickstart.sh europe/austria
+# ./quickstart.sh europe/austria/salzburg osmfr
+# ./quickstart.sh Adelaide
+# ./quickstart.sh Adelaide bbbike
 # ....
 #
-# to list areas :  make download-geofabrik-list
+# to list geofabrik areas:  make download-geofabrik-list
 # see more QUICKSTART.md
 #
+
+# If --empty is not given, use preloaded docker image to speed up
+if [[ $1 == --empty ]]; then
+  export USE_PRELOADED_IMAGE=""
+  shift
+else
+  export USE_PRELOADED_IMAGE=true
+fi
 
 if [ $# -eq 0 ]; then
     osm_area=albania                         #  default test country
     echo "No parameter - set area=$osm_area "
 else
     osm_area=$1
+fi
+
+if [ $# -eq 2 ]; then
+    osm_server=$2
+else
+  if [ ${osm_area} != $(basename ${osm_area}) ]; then
+    # Only openstreetmap.fr has area hierarchy
+    osm_server=osmfr
+  elif [[ ${osm_area} == [[:upper:]]* ]]; then
+    # Only bbbike area names are capitalized
+    osm_server=bbbike
+  else
+    # default OSM server
+    osm_server=geofabrik
+  fi
 fi
 
 pbf_file="./data/${osm_area}-latest.osm.pbf"
@@ -67,11 +106,6 @@ if [ "$(version "$DOCKER_VER")" -lt "$(version "$MIN_DOCKER_VER")" ]; then
   exit 1
 fi
 
-# If there are no arguments, or just the area is set, use preloaded docker image to speed up
-# to force all steps, use two arguments, e.g. "./quickstart monaco empty"
-(( $# == 0 || $# == 1 )) && USE_PRELOADED_IMAGE=true || USE_PRELOADED_IMAGE=""
-export USE_PRELOADED_IMAGE
-
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Pulling or refreshing OpenMapTiles docker images "
@@ -88,6 +122,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $osm_area "
+echo "      : Download Server  : $osm_server "
 echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $githash "
 echo "      : Started          : $STARTDATE "
@@ -143,9 +178,9 @@ rm -f ./data/*.mbtiles
 if [[ ! -f "${pbf_file}" || ! -f "./data/docker-compose-config.yml" ]]; then
     echo " "
     echo "-------------------------------------------------------------------------------------"
-    echo "====> : Downloading ${osm_area} from Geofabrik..."
+    echo "====> : Downloading ${osm_area} from ${osm_server}..."
     rm -rf ./data/*
-    make download-geofabrik "area=${osm_area}"
+    make download-${osm_server} "area=${osm_area}"
 else
     echo " "
     echo "-------------------------------------------------------------------------------------"
@@ -184,9 +219,9 @@ if [[ "$USE_PRELOADED_IMAGE" == true ]]; then
   echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
   echo "      :   includes all data from the import-data image"
   echo "      :"
-  echo "      : Use two-parameter quickstart to start with an empty database:"
-  echo "      :   ./quickstart.sh albania empty"
-  echo "      : If desired, you can manually import data by one using these commands:"
+  echo "      : Use the --empty flag to start with an empty database:"
+  echo "      :   ./quickstart.sh --empty albania "
+  echo "      : If desired, you can manually import data by using these commands:"
   echo "      :   make db-destroy"
   echo "      :   make db-start"
   echo "      :   make import-data"
