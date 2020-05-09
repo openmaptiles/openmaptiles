@@ -38,7 +38,7 @@ set -o nounset
 #
 
 # If --empty is not given, use preloaded docker image to speed up
-if [[ $1 == --empty ]]; then
+if [ $# -gt 0 ] && [[ $1 == --empty ]]; then
   export USE_PRELOADED_IMAGE=""
   shift
 else
