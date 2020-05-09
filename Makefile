@@ -55,9 +55,9 @@ help:
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
 	@echo " "
 	@echo "Hints for designers:"
-	@echo "  make maputnik-start                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make postserve-start                 # start dynamic tile server                   [ see $(OMT_HOST):8090 ]"
-	@echo "  make tileserver-start                # start maptiler/tileserver-gl                [ see $(OMT_HOST):8080 ]"
+	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
+	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):8090 ]"
+	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):8080 ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
@@ -67,16 +67,16 @@ help:
 	@echo "  make download-bbike area=Amsterdam   # download OSM data from bbike.org,        and create config file"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
-	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
-	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
+	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
+	@echo "  make analyze-db                      # PostgreSQL: ANALYZE"
 	@echo "  make generate-qareports              # generate reports                                [./build/qareports]"
 	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
-	@echo "  make tools-dev                       # start openmaptiles-tools /bin/bash terminal"
-	@echo "  make db-destroy                      # remove docker containers and PostgreSQL data volume"
-	@echo "  make db-start                        # start PostgreSQL, creating it if it doesn't exist"
-	@echo "  make db-start-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
-	@echo "  make db-stop                         # stop PostgreSQL database without destroying the data"
-	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
+	@echo "  make bash                            # start openmaptiles-tools /bin/bash terminal"
+	@echo "  make destroy-db                      # remove docker containers and PostgreSQL data volume"
+	@echo "  make start-db                        # start PostgreSQL, creating it if it doesn't exist"
+	@echo "  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
+	@echo "  make stop-db                         # stop PostgreSQL database without destroying the data"
+	@echo "  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
 	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
@@ -107,31 +107,31 @@ build-sql: init-dirs
 clean:
 	rm -rf build
 
-.PHONY: db-destroy
-db-destroy: override DC_PROJECT:=$(shell echo $(DC_PROJECT) | tr A-Z a-z)
-db-destroy:
+.PHONY: destroy-db
+destroy-db: override DC_PROJECT:=$(shell echo $(DC_PROJECT) | tr A-Z a-z)
+destroy-db:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 
-.PHONY: db-start-nowait
-db-start-nowait:
+.PHONY: start-db-nowait
+start-db-nowait:
 	@echo "Starting postgres docker compose target using $${POSTGIS_IMAGE:-default} image (no recreate if exists)" && \
 	$(DOCKER_COMPOSE) up --no-recreate -d postgres
 
-.PHONY: db-start
-db-start: db-start-nowait
+.PHONY: start-db
+start-db: start-db-nowait
 	@echo "Wait for PostgreSQL to start..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools pgwait
 
-# Wrap db-start target but use the preloaded image
-.PHONY: db-start-preloaded
-db-start-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
-db-start-preloaded: db-start
+# Wrap start-db target but use the preloaded image
+.PHONY: start-db-preloaded
+start-db-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+start-db-preloaded: start-db
 
-.PHONY: db-stop
-db-stop:
+.PHONY: stop-db
+stop-db:
 	@echo "Stopping PostgreSQL..."
 	$(DOCKER_COMPOSE) stop postgres
 
@@ -165,31 +165,31 @@ else
 endif
 
 .PHONY: psql
-psql: db-start-nowait
+psql: start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
 .PHONY: import-osm
-import-osm: all db-start-nowait
+import-osm: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
-update-osm: all db-start-nowait
+update-osm: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
-import-diff: all db-start-nowait
+import-diff: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
-import-data: db-start
+import-data: start-db
 	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
 
 .PHONY: import-borders
-import-borders: db-start-nowait
+import-borders: start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders'
 
 .PHONY: import-sql
-import-sql: all db-start-nowait
+import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
 	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
@@ -197,15 +197,15 @@ import-sql: all db-start-nowait
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
 endif
-generate-tiles: init-dirs all db-start
+generate-tiles: init-dirs all start-db
 	rm -rf data/tiles.mbtiles
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
 
-.PHONY: tileserver-start
-tileserver-start: init-dirs
+.PHONY: start-tileserver
+start-tileserver: init-dirs
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -225,13 +225,13 @@ tileserver-start: init-dirs
 	@echo " "
 	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 maptiler/tileserver-gl --port 8080
 
-.PHONY: postserve-start
-postserve-start: db-start
+.PHONY: start-postserve
+start-postserve: start-db
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Bring up postserve at $(OMT_HOST):8090"
-	@echo "*     --> can view it locally (use make maputnik-start)"
+	@echo "*     --> can view it locally (use make start-maputnik)"
 	@echo "*     --> or can use https://maputnik.github.io/editor"
 	@echo "* "
 	@echo "*  set data source / TileJSON URL to http://$(OMT_HOST):8090"
@@ -240,12 +240,12 @@ postserve-start: db-start
 	@echo " "
 	$(DOCKER_COMPOSE) up -d postserve
 
-.PHONY: postserve-stop
-postserve-stop:
+.PHONY: stop-postserve
+stop-postserve:
 	$(DOCKER_COMPOSE) stop postserve
 
-.PHONY: maputnik-start
-maputnik-start: maputnik-stop postserve-start
+.PHONY: start-maputnik
+start-maputnik: stop-maputnik start-postserve
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -257,12 +257,12 @@ maputnik-start: maputnik-stop postserve-start
 	@echo " "
 	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
-.PHONY: maputnik-stop
-maputnik-stop:
+.PHONY: stop-maputnik
+stop-maputnik:
 	-docker rm -f maputnik_editor
 
 .PHONY: generate-qareports
-generate-qareports: db-start
+generate-qareports: start-db
 	./qa/run.sh
 
 # generate all etl and mapping graphs
@@ -273,16 +273,16 @@ generate-devdoc: init-dirs
 			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
-.PHONY: tools-dev
-tools-dev:
+.PHONY: bash
+bash:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash
 
 .PHONY: import-wikidata
 import-wikidata:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
-.PHONY: psql-pg-stat-reset
-psql-pg-stat-reset:
+.PHONY: reset-db-stats
+reset-db-stats:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
 .PHONY: list-views
@@ -299,13 +299,13 @@ list-tables:
 psql-list-tables:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
-.PHONY: psql-vacuum-analyze
-psql-vacuum-analyze:
+.PHONY: vacuum-db
+vacuum-db:
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
-.PHONY: psql-analyze
-psql-analyze:
+.PHONY: analyze-db
+analyze-db:
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
@@ -336,8 +336,8 @@ remove-docker-images:
 	@docker images "maputnik/editor" -q               | $(XARGS) docker rmi -f
 	@docker images "maptiler/tileserver-gl" -q        | $(XARGS) docker rmi -f
 
-.PHONY: docker-unnecessary-clean
-docker-unnecessary-clean:
+.PHONY: clean-unnecessary-docker
+clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
 	@docker ps -a --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
