@@ -174,9 +174,9 @@ jobs:
             make clean
             make init-dirs
             cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
-            make db-destroy
+            make destroy-db
             make all
-            make db-start
+            make start-db
             profile 1_data     make import-data
             profile 2_osm      make import-osm
             profile 3_borders  make import-borders
