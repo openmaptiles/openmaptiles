@@ -158,7 +158,7 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers"
-make db-destroy
+make destroy-db
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -222,13 +222,13 @@ if [[ "$USE_PRELOADED_IMAGE" == true ]]; then
   echo "      : Use the --empty flag to start with an empty database:"
   echo "      :   ./quickstart.sh --empty albania "
   echo "      : If desired, you can manually import data by using these commands:"
-  echo "      :   make db-destroy"
-  echo "      :   make db-start"
+  echo "      :   make destroy-db"
+  echo "      :   make start-db"
   echo "      :   make import-data"
   echo "      :"
   echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/postgis-preloaded"
   echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-  make db-start-preloaded
+  make start-db-preloaded
 else
   echo "====> : Start PostgreSQL service using empty database and importing all the data:"
   echo "      : * Water data from http://osmdata.openstreetmap.de"
@@ -241,7 +241,7 @@ else
   echo "      :   includes all data from the import-data image"
   echo "      :"
   echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
-  make db-start
+  make start-db
   make import-data
 fi
 
@@ -281,7 +281,7 @@ make import-sql
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Analyze PostgreSQL tables"
-make psql-analyze
+make analyze-db
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -305,7 +305,7 @@ make generate-tiles
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stop PostgreSQL service ( but we keep PostgreSQL data volume for debugging )"
-make db-stop
+make stop-db
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -351,8 +351,8 @@ echo "We saved the log file to $log_file  ( for debugging ) You can compare with
 echo " "
 echo "Start experimenting! And check the QUICKSTART.MD file!"
 echo " "
-echo "*  Use   make maputnik-start     to explore tile generation on request"
-echo "*  Use   make tileserver-start   to view pre-generated tiles"
+echo "*  Use   make start-maputnik     to explore tile generation on request"
+echo "*  Use   make start-tileserver   to view pre-generated tiles"
 echo " "
 echo "Available help commands (make help)  "
 make help
