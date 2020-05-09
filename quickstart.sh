@@ -67,7 +67,7 @@ else
   fi
 fi
 
-pbf_file="./data/${osm_area}-latest.osm.pbf"
+pbf_file="./data/${osm_area##*/}-latest.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
