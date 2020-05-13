@@ -48,7 +48,7 @@ BEGIN
             (network = 'CA:PEI' AND ref IN ('1')) OR
             (network = 'CA:NS' AND ref IN ('104', '105')) OR
             (network = 'CA:NL:R' AND ref IN ('1')) OR
-            (name = '	Trans-Canada Highway (Super)')
+            (name = 'Trans-Canada Highway (Super)')
           THEN 'ca-transcanada'::route_network_type
         WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
         WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
