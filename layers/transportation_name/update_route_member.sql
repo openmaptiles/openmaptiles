@@ -5,22 +5,18 @@ DROP TRIGGER IF EXISTS trigger_flag_transportation_name ON osm_route_member;
 CREATE OR REPLACE FUNCTION update_gbr_route_members() RETURNS VOID AS $$
 DECLARE gbr_geom geometry;
 BEGIN
-  select st_buffer(geometry, 10000) into gbr_geom from ne_10m_admin_0_countries where iso_a2 = 'GB';
-  delete from osm_route_member where network IN('omt-gb-motorway', 'omt-gb-trunk');
+    SELECT st_buffer(geometry, 10000) INTO gbr_geom FROM ne_10m_admin_0_countries where iso_a2 = 'GB';
+    DELETE FROM osm_route_member WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk');
 
-  insert into osm_route_member (osm_id, member, ref, network)
-    (
-      SELECT 0, hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-motorway'
-      from osm_highway_linestring hw
-      where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
-        and hw.highway IN ('motorway')
-    ) UNION (
-      SELECT 0, hw.osm_id, substring(hw.ref from E'^[AM][0-9AM()]+'), 'omt-gb-trunk'
-      from osm_highway_linestring hw
-      where length(hw.ref)>0 and ST_Intersects(hw.geometry, gbr_geom)
-        and hw.highway IN ('trunk')
-    )
-  ;
+    INSERT INTO osm_route_member (osm_id, member, ref, network)
+    SELECT 0, osm_id, substring(ref FROM E'^[AM][0-9AM()]+'),
+        CASE WHEN highway = 'motorway' THEN 'omt-gb-motorway' ELSE 'omt-gb-trunk' END
+    FROM osm_highway_linestring
+    WHERE
+        length(ref)>0 AND
+        ST_Intersects(geometry, gbr_geom) AND
+        highway IN ('motorway', 'trunk')
+    ;
 END;
 $$ LANGUAGE plpgsql;
 
