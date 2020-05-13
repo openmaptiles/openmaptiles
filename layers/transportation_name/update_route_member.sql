@@ -43,12 +43,12 @@ BEGIN
             (name = 'Yellowhead Highway (AB)' AND ref IN ('16')) OR
             (network = 'CA:SK' AND ref IN ('16')) OR
             (network = 'CA:ON:primary' AND ref IN ('17', '417')) OR
-            (name = 'Route Transcanadienne (QC)') OR
+            (name = 'Route Transcanadienne') OR
             (network = 'CA:NB' AND ref IN ('2', '16')) OR
             (network = 'CA:PEI' AND ref IN ('1')) OR
             (network = 'CA:NS' AND ref IN ('104', '105')) OR
             (network = 'CA:NL:R' AND ref IN ('1')) OR
-            (name = 'Trans-Canada Highway (Super)')
+            (name = 'Trans-Canada Highway')
           THEN 'ca-transcanada'::route_network_type
         WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
         WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
