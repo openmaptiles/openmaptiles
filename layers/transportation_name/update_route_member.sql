@@ -41,11 +41,11 @@ BEGIN
             (network = 'CA:transcanada') OR
             (network = 'CA:BC:primary' AND ref IN ('16')) OR
             (name = 'Yellowhead Highway (AB)' AND ref IN ('16')) OR
-            (network = 'CA:SK' AND ref IN ('16')) OR
+            (network = 'CA:SK:primary' AND ref IN ('16')) OR
             (network = 'CA:ON:primary' AND ref IN ('17', '417')) OR
             (name = 'Route Transcanadienne') OR
-            (network = 'CA:NB' AND ref IN ('2', '16')) OR
-            (network = 'CA:PEI' AND ref IN ('1')) OR
+            (network = 'CA:NB:primary' AND ref IN ('2', '16')) OR
+            (network = 'CA:PE' AND ref IN ('1')) OR
             (network = 'CA:NS' AND ref IN ('104', '105')) OR
             (network = 'CA:NL:R' AND ref IN ('1')) OR
             (name = 'Trans-Canada Highway')
