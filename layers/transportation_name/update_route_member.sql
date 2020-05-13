@@ -1,10 +1,12 @@
+CREATE TABLE IF NOT EXISTS ne_10m_admin_0_bg_buffer AS
+SELECT ST_Buffer(geometry, 10000)
+FROM ne_10m_admin_0_countries
+WHERE iso_a2 = 'GB';
+
 -- create GBR relations (so we can use it in the same way as other relations)
 CREATE OR REPLACE FUNCTION update_gbr_route_members() RETURNS void AS
 $$
-DECLARE
-    gbr_geom geometry;
 BEGIN
-    SELECT st_buffer(geometry, 10000) INTO gbr_geom FROM ne_10m_admin_0_countries WHERE iso_a2 = 'GB';
     DELETE FROM osm_route_member WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk');
 
     INSERT INTO osm_route_member (osm_id, member, ref, network)
@@ -14,7 +16,7 @@ BEGIN
            CASE WHEN highway = 'motorway' THEN 'omt-gb-motorway' ELSE 'omt-gb-trunk' END
     FROM osm_highway_linestring
     WHERE length(ref) > 0
-      AND ST_Intersects(geometry, gbr_geom)
+      AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_bg_buffer))
       AND highway IN ('motorway', 'trunk');
 END;
 $$ LANGUAGE plpgsql;
