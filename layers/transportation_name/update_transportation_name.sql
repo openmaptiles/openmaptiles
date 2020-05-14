@@ -286,7 +286,7 @@ CREATE TRIGGER trigger_store_transportation_highway_linestring
     FOR EACH ROW
 EXECUTE PROCEDURE transportation_name.highway_linestring_store();
 
-CREATE TRIGGER trigger_flag_network
+CREATE TRIGGER trigger_flag_transportation_name
     AFTER INSERT
     ON transportation_name.network_changes
     FOR EACH STATEMENT
