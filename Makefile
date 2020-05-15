@@ -250,7 +250,7 @@ start-maputnik: stop-maputnik start-postserve
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maputnik/editor "
-	@echo "*       ---> go to http://$(OMT_HOST):8088 "
+	@echo "*       ---> go to $(OMT_HOST):8088 "
 	@echo "*       ---> set data source / TileJSON URL to $(OMT_HOST):8090"
 	@echo "* "
 	@echo "***********************************************************"
