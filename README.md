@@ -94,7 +94,7 @@ or use the provided `quickstart.sh` script.
 Now start up the database container.
 
 ```bash
-make db-start
+make start-db
 ```
 
 Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
