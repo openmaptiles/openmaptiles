@@ -88,7 +88,7 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	@mkdir -p build
+	@mkdir -p build/sql
 	@mkdir -p data
 	@mkdir -p cache
 
@@ -101,7 +101,7 @@ build/mapping.yaml: init-dirs
 
 .PHONY: build-sql
 build-sql: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml --dir ./build/sql
 
 .PHONY: clean
 clean:
