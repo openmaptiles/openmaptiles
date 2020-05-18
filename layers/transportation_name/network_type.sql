@@ -7,11 +7,6 @@ DROP TRIGGER IF EXISTS trigger_store_transportation_name_network ON osm_transpor
 DROP TRIGGER IF EXISTS trigger_flag_name ON transportation_name.name_changes;
 DROP TRIGGER IF EXISTS trigger_refresh_name ON transportation_name.updates_name;
 
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen4 CASCADE;
-
 DO
 $$
     BEGIN
