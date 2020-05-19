@@ -87,6 +87,8 @@ tables:
     mapping:
       landuse:
       - reservoir
+      leisure:
+      - swimming_pool
       natural:
       - water
       - bay
