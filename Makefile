@@ -41,7 +41,7 @@ else
 endif
 
 .PHONY: all
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
+all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
 
 # Set OpenMapTiles host
 OMT_HOST:=http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
@@ -116,7 +116,7 @@ destroy-db:
 	rm -rf cache
 
 .PHONY: start-db-nowait
-start-db-nowait:
+start-db-nowait: init-dirs
 	@echo "Starting postgres docker compose target using $${POSTGIS_IMAGE:-default} image (no recreate if exists)" && \
 	$(DOCKER_COMPOSE) up --no-recreate -d postgres
 
@@ -137,7 +137,7 @@ stop-db:
 	$(DOCKER_COMPOSE) stop postgres
 
 .PHONY: list-geofabrik
-list-geofabrik:
+list-geofabrik: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list geofabrik
 
 OSM_SERVERS:=geofabrik osmfr bbbike
@@ -198,7 +198,7 @@ import-sql: all start-db-nowait
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
 endif
-generate-tiles: init-dirs all start-db
+generate-tiles: all start-db
 	rm -rf data/tiles.mbtiles
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
@@ -275,38 +275,38 @@ generate-devdoc: init-dirs
 			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
 
 .PHONY: bash
-bash:
+bash: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash
 
 .PHONY: import-wikidata
-import-wikidata:
+import-wikidata: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: reset-db-stats
-reset-db-stats:
+reset-db-stats: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
 .PHONY: list-views
-list-views:
+list-views: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
-list-tables:
+list-tables: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
 		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
-psql-list-tables:
+psql-list-tables: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
 .PHONY: vacuum-db
-vacuum-db:
+vacuum-db: init-dirs
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
 .PHONY: analyze-db
-analyze-db:
+analyze-db: init-dirs
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
@@ -315,7 +315,7 @@ list-docker-images:
 	docker images | grep openmaptiles
 
 .PHONY: refresh-docker-images
-refresh-docker-images:
+refresh-docker-images: init-dirs
 ifneq ($(strip $(NO_REFRESH)),)
 	@echo "Skipping docker image refresh"
 else
@@ -345,9 +345,9 @@ clean-unnecessary-docker:
 	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
 
 .PHONY: test-perf-null
-test-perf-null:
+test-perf-null: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
 
 .PHONY: build-test-pbf
-build-test-pbf:
+build-test-pbf: init-dirs
 	docker-compose run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
