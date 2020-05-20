@@ -128,6 +128,7 @@ start-db: start-db-nowait
 # Wrap start-db target but use the preloaded image
 .PHONY: start-db-preloaded
 start-db-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+start-db-preloaded: export COMPOSE_HTTP_TIMEOUT=180
 start-db-preloaded: start-db
 
 .PHONY: stop-db
