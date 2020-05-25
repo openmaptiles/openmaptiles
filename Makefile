@@ -205,7 +205,7 @@ generate-tiles: all start-db
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools mbtiles-tools meta-generate ./data/tiles.mbtiles ./openmaptiles.yaml --auto-minmax
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
