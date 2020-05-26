@@ -388,3 +388,6 @@ tables:
     type: polygon
     fields: *poi_fields
     mapping: *poi_mapping
+
+tags:
+  load_all: true
