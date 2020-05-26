@@ -196,6 +196,7 @@ jobs:
             else
               DB_SIZE_MB=$(docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
             fi
+            docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools pg_dump --schema-only > "${PROFILE_DIR}/schema.sql"
             echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
           }
 
