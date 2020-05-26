@@ -67,6 +67,7 @@ services:
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
+      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
