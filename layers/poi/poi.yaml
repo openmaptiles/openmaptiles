@@ -19,7 +19,7 @@ layer:
         shop:
           subclass: ['accessories', 'antiques', 'beauty', 'bed', 'boutique', 'camera', 'carpet', 'charity', 'chemist',
                      'coffee', 'computer', 'convenience', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
-                     'erotic', 'electronics', 'e-cigarette', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
+                     'erotic', 'electronics', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
                      'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'ice_cream', 'interior_decoration',
                      'jewelry', 'kiosk', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone', 'newsagent',
                      'optician', 'outdoor', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 'shoes', 'sports',
