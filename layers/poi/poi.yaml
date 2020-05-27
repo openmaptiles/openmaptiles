@@ -73,7 +73,7 @@ layer:
         harbor:
           subclass: ['marina', 'dock']
         car:
-          subclass: ['car', 'car_repair', 'taxi']
+          subclass: ['car', 'car_repair', 'car_parts', 'taxi']
         hospital:
           subclass: ['hospital', 'nursing_home', 'clinic']
         cemetery:

@@ -141,6 +141,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - camera
   - car
   - car_repair
+  - car_parts
   - carpet
   - charity
   - chemist
