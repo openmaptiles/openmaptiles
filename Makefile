@@ -12,6 +12,13 @@ USE_PRELOADED_IMAGE?=
 # If set, this file will be imported in the import-osm target
 PBF_FILE?=
 
+# Local port to use with postserve
+PPORT?=8090
+export PPORT
+# Local port to use with tileserver
+TPORT?=8080
+export TPORT
+
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
   override DC_PROJECT:=$(notdir $(shell pwd))
@@ -56,8 +63,8 @@ help:
 	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):8090 ]"
-	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):8080 ]"
+	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT)} ]"
+	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]"
 	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
@@ -196,6 +203,10 @@ import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
 	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
+.PHONY: show-metadata
+show-metadata: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools mbtiles-tools meta-all ./data/tiles.mbtiles
+
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
@@ -222,22 +233,22 @@ start-tileserver: init-dirs
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maptiler/tileserver-gl "
-	@echo "*       ----------------------------> check $(OMT_HOST):8080 "
+	@echo "*       ----------------------------> check $(OMT_HOST):$(TPORT) "
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:8080 maptiler/tileserver-gl --port 8080
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
 
 .PHONY: start-postserve
 start-postserve: start-db
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Bring up postserve at $(OMT_HOST):8090"
+	@echo "* Bring up postserve at $(OMT_HOST):$(PPORT)"
 	@echo "*     --> can view it locally (use make start-maputnik)"
 	@echo "*     --> or can use https://maputnik.github.io/editor"
 	@echo "* "
-	@echo "*  set data source / TileJSON URL to $(OMT_HOST):8090"
+	@echo "*  set data source / TileJSON URL to $(OMT_HOST):$(PPORT)"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
@@ -254,7 +265,7 @@ start-maputnik: stop-maputnik start-postserve
 	@echo "* "
 	@echo "* Start maputnik/editor "
 	@echo "*       ---> go to $(OMT_HOST):8088 "
-	@echo "*       ---> set data source / TileJSON URL to $(OMT_HOST):8090"
+	@echo "*       ---> set data source / TileJSON URL to $(OMT_HOST):$(PPORT)"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
