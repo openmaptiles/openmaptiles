@@ -55,10 +55,7 @@ fi
 if [ $# -eq 2 ]; then
     osm_server=$2
 else
-  if [ ${osm_area} != $(basename ${osm_area}) ]; then
-    # Only openstreetmap.fr has area hierarchy
-    osm_server=osmfr
-  elif [[ ${osm_area} == [[:upper:]]* ]]; then
+  if [[ ${osm_area} == [[:upper:]]* ]]; then
     # Only bbbike area names are capitalized
     osm_server=bbbike
   else
