@@ -110,7 +110,9 @@ build/mapping.yaml: init-dirs
 build-sql: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'generate-sql openmaptiles.yaml --dir ./build/sql \
-		&& generate-sqltomvt openmaptiles.yaml --key --postgis-ver 3.0.1 --function --fname=getmvt >> "./build/sql/run_last.sql"'
+		&& generate-sqltomvt openmaptiles.yaml \
+							 --key --gzip --postgis-ver 3.0.1 \
+							 --function --fname=getmvt >> "./build/sql/run_last.sql"'
 
 .PHONY: clean
 clean:
