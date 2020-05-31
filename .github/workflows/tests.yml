@@ -173,7 +173,7 @@ jobs:
           create_db() {
             make clean
             make init-dirs
-            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
+            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas.osm.pbf
             make destroy-db
             make all
             make start-db

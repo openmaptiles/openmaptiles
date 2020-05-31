@@ -54,6 +54,10 @@ services:
     networks:
       - postgres_conn
     env_file: .env
+    environment:
+      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
+      MBTILES_NAME: ${MBTILES_FILE}
+      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
 
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -64,10 +68,12 @@ services:
       - postgres_conn
     env_file: .env
     environment:
+      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
+      MBTILES_NAME: ${MBTILES_FILE}
+      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
-      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"

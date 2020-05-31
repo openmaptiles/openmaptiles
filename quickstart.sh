@@ -46,16 +46,17 @@ else
 fi
 
 if [ $# -eq 0 ]; then
-    osm_area=albania                         #  default test country
-    echo "No parameter - set area=$osm_area "
+  #  default test area
+  export area=albania
+  echo "No parameter - set area=$area "
 else
-    osm_area=$1
+  export area=$1
 fi
 
 if [ $# -eq 2 ]; then
-    osm_server=$2
+  osm_server=$2
 else
-  if [[ ${osm_area} == [[:upper:]]* ]]; then
+  if [[ ${area} == [[:upper:]]* ]]; then
     # Only bbbike area names are capitalized
     osm_server=bbbike
   else
@@ -63,8 +64,6 @@ else
     osm_server=geofabrik
   fi
 fi
-
-pbf_file="./data/${osm_area##*/}-latest.osm.pbf"
 
 ##  Min versions ...
 MIN_COMPOSE_VER=1.7.1
@@ -117,7 +116,7 @@ echo "                                Start processing                          
 echo "-------------------------------------------------------------------------------------"
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
-echo "      : Area             : $osm_area "
+echo "      : Area             : $area "
 echo "      : Download Server  : $osm_server "
 echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $(git rev-parse HEAD) "
@@ -140,7 +139,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
       exit 1
     fi
     echo "      : --- Memory, CPU info ---- "
-    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc  )
+    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
     echo "system memory (GB): ${mem}"
     grep SwapTotal /proc/meminfo
     echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
@@ -168,27 +167,13 @@ make init-dirs
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Removing old MBTILES if exists ( ./data/*.mbtiles ) "
-rm -f ./data/*.mbtiles
+echo "====> : Removing old MBTILES if exists ( ./data/${area}.mbtiles ) "
+rm -f "./data/${area}.mbtiles"
 
-if [[ ! -f "${pbf_file}" || ! -f "./data/docker-compose-config.yml" ]]; then
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
-    echo "====> : Downloading ${osm_area} from ${osm_server}..."
-    rm -rf ./data/*
-    make download-${osm_server} "area=${osm_area}"
-else
-    echo " "
-    echo "-------------------------------------------------------------------------------------"
-    echo "====> : The pbf file $pbf_file exists, we don't need to download!"
-fi
-
-
-if [ !  -f "${pbf_file}" ]; then
-    echo " "
-    echo "Missing $pbf_file , Download or Parameter error? "
-    exit 1
-fi
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : Downloading ${area} from ${osm_server}..."
+make download-${osm_server}
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -243,17 +228,17 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing OpenStreetMap data: ${pbf_file} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
+echo "====> : Start importing OpenStreetMap data: ${area} -> imposm3[./build/mapping.yaml] -> PostgreSQL"
 echo "      : Imposm3 documentation: https://imposm.org/docs/imposm3/latest/index.html "
 echo "      :   Thank you Omniscale! "
 echo "      :   Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm "
 echo "      : The OpenstreetMap data license: https://www.openstreetmap.org/copyright (ODBL) "
 echo "      : Thank you OpenStreetMap Contributors ! "
-make import-osm "PBF_FILE=${pbf_file}"
+make import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing border data from ${pbf_file} into PostgreSQL using osmborder"
+echo "====> : Start importing border ${area} data into PostgreSQL using osmborder"
 echo "      : Source code: https://github.com/pnorman/osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
 echo "      : Thank you: Paul Norman"
@@ -288,7 +273,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
 echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
-echo "      : Output MBTiles: ./data/tiles.mbtiles  "
+echo "      : Output MBTiles: ./data/${area}.mbtiles  "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/generate-vectortiles "
 echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
 echo "      : Thank you https://www.mapbox.com !"
@@ -314,11 +299,6 @@ rm -f ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
 ENDTIME=$(date +%s)
-if stat --help >/dev/null 2>&1; then
-  MODDATE=$(stat -c %y "${pbf_file}" )
-else
-  MODDATE=$(stat -f%Sm -t '%F %T %z' "${pbf_file}" )
-fi
 
 echo " "
 echo " "
@@ -333,15 +313,14 @@ docker images | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created the new vectortiles ( ./data/tiles.mbtiles ) "
+echo "====> : (disk space) We have created the new vectortiles ( ./data/${area}.mbtiles ) "
 echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
-echo "      : Created from $pbf_file ( file moddate: $MODDATE ) "
-echo "      : Size: "
-ls -la ./data/*.mbtiles
+echo "      : Data directory content:"
+ls -la ./data
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "The ./quickstart.sh $osm_area  is finished! "
+echo "The ./quickstart.sh $area  is finished! "
 echo "It takes $((ENDTIME - STARTTIME)) seconds to complete"
 echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
 echo " "
