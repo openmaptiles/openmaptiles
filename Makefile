@@ -196,7 +196,7 @@ import-data: start-db
 
 .PHONY: import-borders
 import-borders: start-db-nowait
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders $(PBF_FILE)'
 
 .PHONY: import-sql
 import-sql: all start-db-nowait
