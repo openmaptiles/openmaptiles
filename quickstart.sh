@@ -71,7 +71,6 @@ MIN_COMPOSE_VER=1.7.1
 MIN_DOCKER_VER=1.12.3
 STARTTIME=$(date +%s)
 STARTDATE=$(date +"%Y-%m-%dT%H:%M%z")
-githash=$( git rev-parse HEAD )
 
 log_file=./quickstart.log
 rm -f $log_file
@@ -121,7 +120,7 @@ echo "      : This will be logged to the $log_file file (for debugging) and to t
 echo "      : Area             : $osm_area "
 echo "      : Download Server  : $osm_server "
 echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
-echo "      : Git version      : $githash "
+echo "      : Git version      : $(git rev-parse HEAD) "
 echo "      : Started          : $STARTDATE "
 echo "      : Your bash version: $BASH_VERSION"
 echo "      : Your OS          : $OSTYPE"
@@ -314,8 +313,8 @@ echo "--------------------------------------------------------------------------
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
 {
-  find build -type f | sort | xargs md5sum ;
-  find data -type f | sort | xargs md5sum ;
+  find build -type f | sort | xargs md5sum
+  find data -type f | sort | xargs md5sum
 } >> ./data/quickstart_checklist.chk
 cat ./data/quickstart_checklist.chk
 
