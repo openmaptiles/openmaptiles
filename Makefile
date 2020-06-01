@@ -203,10 +203,6 @@ import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
 	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
-.PHONY: show-metadata
-show-metadata: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools mbtiles-tools meta-all ./data/tiles.mbtiles
-
 .PHONY: generate-tiles
 ifneq ($(wildcard data/docker-compose-config.yml),)
   DC_CONFIG_TILES:=-f docker-compose.yml -f ./data/docker-compose-config.yml
@@ -216,7 +212,8 @@ generate-tiles: all start-db
 	echo "Generating tiles ..."; \
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-metadata ./data/tiles.mbtiles
+	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) openmaptiles-tools \
+			mbtiles-tools meta-generate ./data/tiles.mbtiles ./openmaptiles.yaml --auto-minmax --show-ranges
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
