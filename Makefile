@@ -1,41 +1,45 @@
+#
+# First section - common variable initialization
+#
+
 # Ensure that errors don't hide inside pipes
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS?=--rm -u $(shell id -u):$(shell id -g)
+DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
 
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
-USE_PRELOADED_IMAGE?=
+USE_PRELOADED_IMAGE ?=
 
 # If set, this file will be imported in the import-osm target
 PBF_FILE?=
 
 # Local port to use with postserve
-PPORT?=8090
+PPORT ?= 8090
 export PPORT
 # Local port to use with tileserver
-TPORT?=8080
+TPORT ?= 8080
 export TPORT
 
 # Allow a custom docker-compose project name
 ifeq ($(strip $(DC_PROJECT)),)
-  override DC_PROJECT:=$(notdir $(shell pwd))
-  DOCKER_COMPOSE:= docker-compose
+  DC_PROJECT := $(notdir $(shell pwd))
+  DOCKER_COMPOSE := docker-compose
 else
-  DOCKER_COMPOSE:= docker-compose --project-name $(DC_PROJECT)
+  DOCKER_COMPOSE := docker-compose --project-name $(DC_PROJECT)
 endif
 
 # Make some operations quieter (e.g. inside the test script)
 ifeq ($(strip $(QUIET)),)
-  QUIET_FLAG:=
+  QUIET_FLAG :=
 else
-  QUIET_FLAG:=--quiet
+  QUIET_FLAG := --quiet
 endif
 
 # Use `xargs --no-run-if-empty` flag, if supported
-XARGS:=xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
+XARGS := xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
 
 # If running in the test mode, compare files rather than copy them
 TEST_MODE?=no
@@ -47,11 +51,16 @@ else
   GRAPH_PARAMS=./layers
 endif
 
+# Set OpenMapTiles host
+OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+
+
+#
+#  TARGETS
+#
+
 .PHONY: all
 all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
-
-# Set OpenMapTiles host
-OMT_HOST:=http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
 
 .PHONY: help
 help:
@@ -69,9 +78,9 @@ help:
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
 	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
-	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik,        and create config file"
-	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr, and create config file"
-	@echo "  make download-bbike area=Amsterdam   # download OSM data from bbike.org,        and create config file"
+	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
+	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
+	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
@@ -119,7 +128,8 @@ clean:
 	rm -rf build
 
 .PHONY: destroy-db
-destroy-db: override DC_PROJECT:=$(shell echo $(DC_PROJECT) | tr A-Z a-z)
+# TODO:  Use https://stackoverflow.com/a/27852388/177275
+destroy-db: DC_PROJECT := $(shell echo $(DC_PROJECT) | tr A-Z a-z)
 destroy-db:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
@@ -151,8 +161,12 @@ stop-db:
 list-geofabrik: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list geofabrik
 
-OSM_SERVERS:=geofabrik osmfr bbbike
-ALL_DOWNLOADS:=$(addprefix download-,$(OSM_SERVERS))
+.PHONY: list-bbbike
+list-bbbike: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list bbbike
+
+OSM_SERVERS := geofabrik osmfr bbbike
+ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS))
 OSM_SERVER=$(patsubst download-%,%,$@)
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
