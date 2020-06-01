@@ -306,11 +306,6 @@ make stop-db
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Show generated metadata"
-make show-metadata
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Inputs - Outputs md5sum for debugging "
 rm -f ./data/quickstart_checklist.chk
 {
