@@ -28,58 +28,6 @@ else
   DOCKER_COMPOSE := docker-compose --project-name $(DC_PROJECT)
 endif
 
-# historically we have been using $(area) rather than $(AREA), so make both work
-area ?= $(AREA)
-# Ensure the $(AREA) param is set, or try to automatically determine it based on available data files
-ifeq ($(strip $(area)),)
-  # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
-  data_files := $(wildcard data/*.osm.pbf)
-  ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR="The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files)"
-  else
-    ifeq ($(word 1,$(data_files)),)
-      AREA_ERROR="The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files)"
-    else
-      # Keep just the name of the data file, without the .osm.pbf extension
-      area := $(strip $(basename $(basename $(notdir $(data_files)))))
-      # Rename area-latest.osm.pbf to area.osm.pbf
-      # TODO: This if statement could be removed in a few months once everyone is using the file without the `-latest`?
-      ifneq ($(area),$(area:-latest=))
-        $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
-        area := $(area:-latest=)
-        $(info Detected area=$(area) based on the found data/$(area)-latest.osm.pbf. Use 'area' parameter (or env var) to override. The file was renamed to $(area).osm.pbf.)
-      else
-        $(info Detected area=$(area) based on the found data/ pbf file. Use 'area' parameter (or env var) to override.)
-      endif
-    endif
-  endif
-endif
-
-ifeq ($(strip $(area)),)
-  define assert_area_is_given
-	@echo "ERROR: $(AREA_ERROR)"
-	@echo ""
-	@echo "  make $@ area=<area-id>"
-	@echo ""
-	@echo "To download an area, use   make download <area-id>"
-	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
-	@exit 1
-  endef
-endif
-
-# If set, this file will be downloaded in download-osm and imported in the import-osm targets
-PBF_FILE ?= data/$(area).osm.pbf
-
-# The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
-MBTILES_FILE ?= $(area).mbtiles
-export MBTILES_FILE
-MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
-
-# Location of the dynamically-generated imposm config file
-IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
-export IMPOSM_CONFIG_FILE
-
-
 # Make some operations quieter (e.g. inside the test script)
 ifeq ($(strip $(QUIET)),)
   QUIET_FLAG :=
@@ -102,6 +50,79 @@ endif
 
 # Set OpenMapTiles host
 OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+
+
+#
+# Determine area to work on
+# If $(area) parameter is not set and data/*.osm.pbf finds only one file, use it as $(area).
+# Otherwise all make targets requiring area param will show an error.
+# Note: If there are no data files, and user calls  make download area=... once,
+#       they will not need to use area= parameter after that because there will be just a single file.
+#
+
+# historically we have been using $(area) rather than $(AREA), so make both work
+area ?= $(AREA)
+# Ensure the $(AREA) param is set, or try to automatically determine it based on available data files
+ifeq ($(strip $(area)),)
+  # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
+  data_files := $(wildcard data/*.osm.pbf)
+  ifneq ($(word 2,$(data_files)),)
+    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files. Set area to one of these IDs, or a new one: $(patsubst data/%.osm.pbf,'%',$(data_files))
+  else
+    ifeq ($(word 1,$(data_files)),)
+      AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
+    else
+      # Keep just the name of the data file, without the .osm.pbf extension
+      area := $(strip $(basename $(basename $(notdir $(data_files)))))
+      # Rename area-latest.osm.pbf to area.osm.pbf
+      # TODO: This if statement could be removed in a few months once everyone is using the file without the `-latest`?
+      ifneq ($(area),$(area:-latest=))
+        $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
+        area := $(area:-latest=)
+        $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
+        AREA_INFO := Detected area=$(area) based on the found data/$(area)-latest.osm.pbf (renamed to $(area).osm.pbf). Use 'area' parameter (or env var) to override.
+      else
+        AREA_INFO := Detected area=$(area) based on the found data/ pbf file. Use 'area' parameter (or env var) to override.
+      endif
+    endif
+  endif
+endif
+
+# If set, this file will be downloaded in download-osm and imported in the import-osm targets
+PBF_FILE ?= data/$(area).osm.pbf
+
+export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
+export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
+export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
+
+
+# The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
+MBTILES_FILE ?= $(area).mbtiles
+export MBTILES_FILE
+MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
+
+# Location of the dynamically-generated imposm config file
+IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
+export IMPOSM_CONFIG_FILE
+
+ifeq ($(strip $(area)),)
+  define assert_area_is_given
+	@echo "ERROR: $(AREA_ERROR)"
+	@echo ""
+	@echo "  make $@ area=<area-id>"
+	@echo ""
+	@echo "To download an area, use   make download <area-id>"
+	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+	@exit 1
+  endef
+else
+  ifneq ($(strip $(AREA_INFO)),)
+    define assert_area_is_given
+	@echo "$(AREA_INFO)"
+    endef
+  endif
+endif
+
 
 
 #
@@ -154,7 +175,7 @@ help:
 .PHONY: init-dirs
 init-dirs:
 	@mkdir -p build/sql
-	@mkdir -p data
+	@mkdir -p data/borders
 	@mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
@@ -215,14 +236,13 @@ list-bbbike: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list bbbike
 
 OSM_SERVERS := geofabrik osmfr bbbike
-ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS))
-OSM_SERVER=$(patsubst download-%,%,$@)
+ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS)) download
+OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
 	@$(assert_area_is_given)
 ifeq (,$(wildcard $(PBF_FILE)))
-	@echo "=============== download-$(OSM_SERVER) ======================="
-	@echo "Download area: $(area)"
+	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'download-osm $(OSM_SERVER) $(area) \
 			--minzoom $$QUICKSTART_MIN_ZOOM \
@@ -259,7 +279,9 @@ import-data: start-db
 .PHONY: import-borders
 import-borders: start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-borders $(PBF_FILE)'
+	# If CSV borders file already exists, use it without re-parsing
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo 'load' || echo 'import') $(PBF_FILE)'
 
 .PHONY: import-sql
 import-sql: all start-db-nowait
@@ -267,11 +289,11 @@ import-sql: all start-db-nowait
 	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
 .PHONY: generate-tiles
+generate-tiles: all start-db
+	@$(assert_area_is_given)
 ifneq ($(wildcard data/$(area).dc-config.yml),)
   DC_CONFIG_TILES := -f docker-compose.yml -f data/$(area).dc-config.yml
 endif
-generate-tiles: all start-db
-	@$(assert_area_is_given)
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
