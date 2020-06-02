@@ -91,19 +91,20 @@ endif
 # If set, this file will be downloaded in download-osm and imported in the import-osm targets
 PBF_FILE ?= data/$(area).osm.pbf
 
+# import-borders uses these temp files during border parsing/import
 export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
 export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
 export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
 
-
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
-MBTILES_FILE ?= $(area).mbtiles
-export MBTILES_FILE
+export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
 # Location of the dynamically-generated imposm config file
-IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
-export IMPOSM_CONFIG_FILE
+export IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
+
+# download-osm generates this file with metadata about the file
+AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
 
 ifeq ($(strip $(area)),)
   define assert_area_is_given
@@ -247,7 +248,7 @@ ifeq (,$(wildcard $(PBF_FILE)))
 		'download-osm $(OSM_SERVER) $(area) \
 			--minzoom $$QUICKSTART_MIN_ZOOM \
 			--maxzoom $$QUICKSTART_MAX_ZOOM \
-			--make-dc data/$(area).dc-config.yml \
+			--make-dc $(AREA_DC_CONFIG_FILE) \
 			--imposm-cfg $(IMPOSM_CONFIG_FILE) \
 			--output $(PBF_FILE)'
 	@echo ""
@@ -288,12 +289,12 @@ import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
 	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
 
+ifneq ($(wildcard $(AREA_DC_CONFIG_FILE)),)
+  DC_CONFIG_TILES := -f docker-compose.yml -f $(AREA_DC_CONFIG_FILE)
+endif
 .PHONY: generate-tiles
 generate-tiles: all start-db
 	@$(assert_area_is_given)
-ifneq ($(wildcard data/$(area).dc-config.yml),)
-  DC_CONFIG_TILES := -f docker-compose.yml -f data/$(area).dc-config.yml
-endif
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles

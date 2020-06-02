@@ -55,14 +55,6 @@ fi
 
 if [ $# -eq 2 ]; then
   osm_server=$2
-else
-  if [[ ${area} == [[:upper:]]* ]]; then
-    # Only bbbike area names are capitalized
-    osm_server=bbbike
-  else
-    # default OSM server
-    osm_server=geofabrik
-  fi
 fi
 
 ##  Min versions ...
@@ -117,7 +109,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $area "
-echo "      : Download Server  : $osm_server "
+echo "      : Download Server  : ${osm_server:-unset (automatic)} "
 echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $(git rev-parse HEAD) "
 echo "      : Started          : $STARTDATE "
@@ -172,8 +164,8 @@ rm -f "./data/${area}.mbtiles"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Downloading ${area} from ${osm_server}..."
-make download-${osm_server}
+echo "====> : Downloading ${area} from ${osm_server:-any source}..."
+make "download${osm_server:+-${osm_server}}"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

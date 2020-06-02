@@ -36,6 +36,10 @@ services:
       MAKE_DC_VERSION: "2.3"
       # Allow DIFF_MODE to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
+      # Which files to use during import-borders processing
+      BORDERS_CLEANUP_FILE: ${BORDERS_CLEANUP_FILE}
+      BORDERS_PBF_FILE: ${BORDERS_PBF_FILE}
+      BORDERS_CSV_FILE: ${BORDERS_CSV_FILE}
     networks:
       - postgres_conn
     volumes:
