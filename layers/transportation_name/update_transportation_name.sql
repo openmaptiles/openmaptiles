@@ -51,6 +51,7 @@ FROM (
 ) AS t
 WHERE ("rank" = 1 OR "rank" IS NULL);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
 
 
@@ -89,6 +90,7 @@ FROM (
          GROUP BY name, name_en, name_de, tags, ref, highway, construction, "level", layer, indoor, network_type
      ) AS highway_union
 ;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_idx
@@ -335,6 +337,7 @@ CREATE TABLE IF NOT EXISTS transportation_name.name_changes
 (
     id serial PRIMARY KEY,
     is_old boolean,
+    osm_id bigint,
     name character varying,
     name_en character varying,
     name_de character varying,
@@ -352,16 +355,16 @@ $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, name, name_en, name_de, ref, highway, construction,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
                                                      level, layer, indoor, network_type)
-        VALUES (TRUE, old.name, old.name_en, old.name_de, old.ref, old.highway, old.construction, old.level,
+        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.construction, old.level,
                 old.layer, old.indoor, old.network_type);
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, name, name_en, name_de, ref, highway, construction,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
                                                      level, layer, indoor, network_type)
-        VALUES (FALSE, new.name, new.name_en, new.name_de, new.ref, new.highway, new.construction, new.level,
+        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.construction, new.level,
                 new.layer, new.indoor, new.network_type);
     END IF;
     RETURN NULL;
@@ -388,13 +391,44 @@ BEGIN
     RAISE LOG 'Refresh transportation_name';
 
     -- REFRESH osm_transportation_name_linestring
+
+    -- Compact the change history to keep only the first and last version, and then uniq version of row
+    CREATE TEMP TABLE name_changes_compact AS
+    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, construction, level, layer, indoor, network_type)
+        name,
+        name_en,
+        name_de,
+        ref,
+        highway,
+        construction,
+        level,
+        layer,
+        indoor,
+        network_type,
+        coalesce(name, ref) AS name_ref
+    FROM ((
+              SELECT DISTINCT ON (osm_id) *
+              FROM transportation_name.name_changes
+              WHERE is_old
+              ORDER BY osm_id,
+                       id ASC
+          )
+          UNION ALL
+          (
+              SELECT DISTINCT ON (osm_id) *
+              FROM transportation_name.name_changes
+              WHERE NOT is_old
+              ORDER BY osm_id,
+                       id DESC
+          )) AS t;
+
     DELETE
     FROM osm_transportation_name_linestring AS n
-        USING transportation_name.name_changes AS c
-    WHERE n.name IS NOT DISTINCT FROM c.name
+        USING name_changes_compact AS c
+    WHERE coalesce(n.name, '') = coalesce(c.name, '')
+      AND coalesce(n.ref, '') = coalesce(c.ref, '')
       AND n.name_en IS NOT DISTINCT FROM c.name_en
       AND n.name_de IS NOT DISTINCT FROM c.name_de
-      AND n.ref IS NOT DISTINCT FROM c.ref
       AND n.highway IS NOT DISTINCT FROM c.highway
       AND n.construction IS NOT DISTINCT FROM c.construction
       AND n.level IS NOT DISTINCT FROM c.level
@@ -434,11 +468,11 @@ BEGIN
             n.network_type,
             min(n.z_order) AS z_order
         FROM osm_transportation_name_network AS n
-            JOIN transportation_name.name_changes AS c ON
-                 n.name IS NOT DISTINCT FROM c.name
+            JOIN name_changes_compact AS c ON
+                 coalesce(n.name, '') = coalesce(c.name, '')
+             AND coalesce(n.ref, '') = coalesce(c.ref, '')
              AND n.name_en IS NOT DISTINCT FROM c.name_en
              AND n.name_de IS NOT DISTINCT FROM c.name_de
-             AND n.ref IS NOT DISTINCT FROM c.ref
              AND n.highway IS NOT DISTINCT FROM c.highway
              AND n.construction IS NOT DISTINCT FROM c.construction
              AND n.level IS NOT DISTINCT FROM c.level
@@ -452,6 +486,8 @@ BEGIN
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen4;
+
+    DROP TABLE name_changes_compact;
     DELETE FROM transportation_name.name_changes;
     DELETE FROM transportation_name.updates_name;
     RETURN NULL;
