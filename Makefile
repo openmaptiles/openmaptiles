@@ -254,11 +254,11 @@ ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS)) download
 OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
+	@$(assert_area_is_given)
 ifeq (,$(wildcard $(PBF_FILE)))
 ifneq ($(strip $(url)),)
 	$(if $(OSM_SERVER),$(error url parameter can only be used with the 'make download area=... url=...'))
 endif
-	@$(assert_area_is_given)
 	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
 		download-osm $(OSM_SERVER) $(DOWNLOAD_AREA) \
@@ -279,7 +279,17 @@ endif
 		fi'
 	@echo ""
 else
-	@echo "Data file $(PBF_FILE) already exists, skipping the download."
+ifeq (,$(wildcard $(AREA_DC_CONFIG_FILE)))
+	@echo "Data file $(PBF_FILE) already exists, but the $(AREA_DC_CONFIG_FILE) is not, generating..."
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
+		download-osm make-dc $(PBF_FILE) \
+			--minzoom $$QUICKSTART_MIN_ZOOM \
+			--maxzoom $$QUICKSTART_MAX_ZOOM \
+			--make-dc $(AREA_DC_CONFIG_FILE) \
+			--id "$(area)"'
+else
+	@echo "Data files $(PBF_FILE) and $(AREA_DC_CONFIG_FILE) already exists, skipping the download."
+endif
 endif
 
 .PHONY: psql
