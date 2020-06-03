@@ -91,6 +91,13 @@ endif
 # If set, this file will be downloaded in download-osm and imported in the import-osm targets
 PBF_FILE ?= data/$(area).osm.pbf
 
+# For download-osm, allow URL parameter to download file from a given URL. Area param must still be provided.
+ifneq ($(strip $(url)),)
+  DOWNLOAD_AREA := $(url)
+else
+  DOWNLOAD_AREA := $(area)
+endif
+
 # import-borders uses these temp files during border parsing/import
 export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
 export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
@@ -149,6 +156,8 @@ help:
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
 	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
+	@echo "  make list-bbbike                     # list actual BBBike OSM extracts for download"
+	@echo "  make download area=albania           # download OSM data from any source       and create config file"
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
 	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
 	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
@@ -236,21 +245,38 @@ list-geofabrik: init-dirs
 list-bbbike: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list bbbike
 
+#
+# download, download-geofabrik, download-osmfr, and download-bbbike are handled here
+# The --imposm-cfg will fail for some of the sources, but we ignore that error -- only needed for diff mode
+#
 OSM_SERVERS := geofabrik osmfr bbbike
 ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS)) download
 OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
-	@$(assert_area_is_given)
 ifeq (,$(wildcard $(PBF_FILE)))
+ifneq ($(strip $(url)),)
+	$(if $(OSM_SERVER),$(error url parameter can only be used with the 'make download area=... url=...'))
+endif
+	@$(assert_area_is_given)
 	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'download-osm $(OSM_SERVER) $(area) \
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
+		download-osm $(OSM_SERVER) $(DOWNLOAD_AREA) \
 			--minzoom $$QUICKSTART_MIN_ZOOM \
 			--maxzoom $$QUICKSTART_MAX_ZOOM \
 			--make-dc $(AREA_DC_CONFIG_FILE) \
 			--imposm-cfg $(IMPOSM_CONFIG_FILE) \
-			--output $(PBF_FILE)'
+			--output $(PBF_FILE) \
+			2>&1 \
+			| tee /tmp/download.out ; \
+		exit_code=$${PIPESTATUS[0]} ; \
+		if [[ "$$exit_code" != "0" ]]; then \
+			if grep -q "Imposm config file cannot be generated from this source" /tmp/download.out; then \
+				echo "WARNING: $(IMPOSM_CONFIG_FILE) could not be generated, but it is only needed to apply updates." ; \
+			else \
+				exit $$exit_code ; \
+			fi ; \
+		fi'
 	@echo ""
 else
 	@echo "Data file $(PBF_FILE) already exists, skipping the download."

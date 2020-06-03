@@ -83,10 +83,10 @@ make
 ```
 
 You can execute the following manual steps (for better understanding)
-or use the provided `quickstart.sh` script.
+or use the provided `quickstart.sh` script to automatically download and import given area. If area is not given, albania will be imported.
 
 ```
-./quickstart.sh
+./quickstart.sh <area>
 ```
 
 ### Prepare the Database
@@ -103,10 +103,10 @@ Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/),
 make import-data
 ```
 
-[Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
+Download OpenStreetMap data extracts from any source like [Geofabrik](http://download.geofabrik.de/), and store the PBF file in the `./data` directory. Use `download-geofabrik`, `download-bbbike`, or `download-osmfr` for a specific source. Use `download area=planet` for the entire OSM dataset (very large).  Note that if you have more than one `data/*.osm.pbf` file, every `make` command will require `area=...` parameter (or you can just `export area=...` first)
 
 ```bash
-make download-geofabrik area=albania
+make download area=albania
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
