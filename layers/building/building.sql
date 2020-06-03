@@ -63,13 +63,13 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
        END) AS colour,
       CASE WHEN hide_3d THEN TRUE END AS hide_3d
     FROM (
-        -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
+        -- etldoc: osm_building_block_gen1 -> layer_building:z13
         SELECT
             osm_id, geometry,
             NULL::int AS render_height, NULL::int AS render_min_height,
             NULL::text AS material, NULL::text AS colour,
             FALSE AS hide_3d
-        FROM osm_building_polygon_gen1
+        FROM osm_building_block_gen1
         WHERE zoom_level = 13 AND geometry && bbox
         UNION ALL
         -- etldoc: osm_building_polygon -> layer_building:z14_

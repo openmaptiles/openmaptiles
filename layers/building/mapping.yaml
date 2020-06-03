@@ -1,9 +1,9 @@
-generalized_tables:
-  # etldoc: imposm3 -> osm_building_polygon_gen1
-  building_polygon_gen1:
-    source: building_polygon
-    sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
-    tolerance: ZRES14
+#generalized_tables:
+#  # etldoc: imposm3 -> osm_building_polygon_gen1
+#  building_polygon_gen1:
+#    source: building_polygon
+#    sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
+#    tolerance: ZRES14
 
 tables:
   # etldoc: imposm3 -> osm_building_polygon
