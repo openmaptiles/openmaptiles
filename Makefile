@@ -268,8 +268,6 @@ ifeq (,$(wildcard $(PBF_FILE)))
 	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
 		download-osm $(OSM_SERVER) $(DOWNLOAD_AREA) \
-			--minzoom $$QUICKSTART_MIN_ZOOM \
-			--maxzoom $$QUICKSTART_MAX_ZOOM \
 			--make-dc $(AREA_DC_CONFIG_FILE) \
 			--imposm-cfg $(IMPOSM_CONFIG_FILE) \
 			--output $(PBF_FILE) \
@@ -291,8 +289,6 @@ ifeq (,$(wildcard $(AREA_DC_CONFIG_FILE)))
 	@echo "Configuration file $(AREA_DC_CONFIG_FILE) does not exist, generating..."
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
 		download-osm make-dc $(PBF_FILE) \
-			--minzoom $$QUICKSTART_MIN_ZOOM \
-			--maxzoom $$QUICKSTART_MAX_ZOOM \
 			--make-dc $(AREA_DC_CONFIG_FILE) \
 			--id "$(area)"'
 else
