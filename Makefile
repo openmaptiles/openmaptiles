@@ -269,11 +269,11 @@ ifeq (,$(wildcard $(PBF_FILE)))
 	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
 		if [[ "$$DIFF_MODE" == "true" ]]; then \
-			download-osm "$(OSM_SERVER)" "$(DOWNLOAD_AREA)" \
+			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
 				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
 				--output "$(PBF_FILE)" ; \
 		else \
-			download-osm "$(OSM_SERVER)" "$(DOWNLOAD_AREA)" \
+			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
 				--output "$(PBF_FILE)" ; \
 		fi'
 	@echo ""
