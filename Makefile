@@ -266,7 +266,7 @@ ifneq ($(strip $(url)),)
 	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
 endif
 ifeq (,$(wildcard $(PBF_FILE)))
-	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
 		if [[ "$$DIFF_MODE" == "true" ]]; then \
 			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
