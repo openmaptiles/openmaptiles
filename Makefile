@@ -167,6 +167,7 @@ help:
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
 	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
 	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
+	@echo "  make generate-dc-config              # scan data file and generate tile generation config file with bbox"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
@@ -267,29 +268,26 @@ endif
 ifeq (,$(wildcard $(PBF_FILE)))
 	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		download-osm $(OSM_SERVER) $(DOWNLOAD_AREA) \
-			--make-dc $(AREA_DC_CONFIG_FILE) \
-			--imposm-cfg $(IMPOSM_CONFIG_FILE) \
-			--output $(PBF_FILE) \
-			2>&1 \
-			| tee /tmp/download.out ; \
-		exit_code=$${PIPESTATUS[0]} ; \
-		if [[ "$$exit_code" != "0" ]]; then \
-			if grep -q "Imposm config file cannot be generated from this source" /tmp/download.out; then \
-				echo "WARNING: $(IMPOSM_CONFIG_FILE) could not be generated, but it is only needed to apply updates." ; \
-			else \
-				exit $$exit_code ; \
-			fi ; \
+		if [[ "$$DIFF_MODE" == "true" ]]; then \
+			download-osm "$(OSM_SERVER)" "$(DOWNLOAD_AREA)" \
+				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
+				--output "$(PBF_FILE)" ; \
+		else \
+			download-osm "$(OSM_SERVER)" "$(DOWNLOAD_AREA)" \
+				--output "$(PBF_FILE)" ; \
 		fi'
 	@echo ""
 else
 	@echo "Data files $(PBF_FILE) already exists, skipping the download."
 endif
+
+.PHONY: generate-dc-config
+generate-dc-config:
+	@$(assert_area_is_given)
 ifeq (,$(wildcard $(AREA_DC_CONFIG_FILE)))
-	@echo "Configuration file $(AREA_DC_CONFIG_FILE) does not exist, generating..."
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		download-osm make-dc $(PBF_FILE) \
-			--make-dc $(AREA_DC_CONFIG_FILE) \
+		download-osm make-dc "$(PBF_FILE)" \
+			--make-dc "$(AREA_DC_CONFIG_FILE)" \
 			--id "$(area)"'
 else
 	@echo "Configuration file $(AREA_DC_CONFIG_FILE) already exists, no need to regenerate."
