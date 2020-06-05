@@ -73,7 +73,7 @@ ifeq ($(strip $(area)),)
   # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
   data_files := $(wildcard data/*.osm.pbf)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files. Set area to one of these IDs, or a new one: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
   else
     ifeq ($(word 1,$(data_files)),)
       AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
@@ -121,6 +121,7 @@ AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
 
 ifeq ($(strip $(area)),)
   define assert_area_is_given
+	@echo ""
 	@echo "ERROR: $(AREA_ERROR)"
 	@echo ""
 	@echo "  make $@ area=<area-id>"
@@ -319,7 +320,7 @@ import-borders: start-db-nowait
 	@$(assert_area_is_given)
 	# If CSV borders file already exists, use it without re-parsing
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo 'load' || echo 'import') $(PBF_FILE)'
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
 
 .PHONY: import-sql
 import-sql: all start-db-nowait
