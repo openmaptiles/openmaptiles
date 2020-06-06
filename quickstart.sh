@@ -33,7 +33,7 @@ set -o nounset
 # ./quickstart.sh Adelaide bbbike
 # ....
 #
-# to list geofabrik areas:  make download-geofabrik-list
+# to list geofabrik areas:  make list-geofabrik or make list-bbbike
 # see more QUICKSTART.md
 #
 
@@ -260,6 +260,15 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Testing PostgreSQL tables to match layer definitions metadata"
 make test-perf-null
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+if [[ "$area" != "planet" ]]; then
+  echo "====> : Compute bounding box for tile generation"
+  make generate-dc-config
+else
+  echo "====> : Skipping bbox calculation when generating the entire planet"
+fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
