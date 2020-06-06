@@ -51,6 +51,12 @@ endif
 # Set OpenMapTiles host
 OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
 
+# This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
+define newline
+
+
+endef
+
 
 #
 # Determine area to work on
@@ -67,7 +73,7 @@ ifeq ($(strip $(area)),)
   # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
   data_files := $(wildcard data/*.osm.pbf)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files. Set area to one of these IDs, or a new one: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
   else
     ifeq ($(word 1,$(data_files)),)
       AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
@@ -115,6 +121,7 @@ AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
 
 ifeq ($(strip $(area)),)
   define assert_area_is_given
+	@echo ""
 	@echo "ERROR: $(AREA_ERROR)"
 	@echo ""
 	@echo "  make $@ area=<area-id>"
@@ -161,6 +168,7 @@ help:
 	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
 	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
 	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
+	@echo "  make generate-dc-config              # scan data file and generate tile generation config file with bbox"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
@@ -255,41 +263,35 @@ OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
 	@$(assert_area_is_given)
-ifeq (,$(wildcard $(PBF_FILE)))
 ifneq ($(strip $(url)),)
-	$(if $(OSM_SERVER),$(error url parameter can only be used with the 'make download area=... url=...'))
+	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
 endif
-	@echo "Downloading $(area) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+ifeq (,$(wildcard $(PBF_FILE)))
+	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		download-osm $(OSM_SERVER) $(DOWNLOAD_AREA) \
-			--minzoom $$QUICKSTART_MIN_ZOOM \
-			--maxzoom $$QUICKSTART_MAX_ZOOM \
-			--make-dc $(AREA_DC_CONFIG_FILE) \
-			--imposm-cfg $(IMPOSM_CONFIG_FILE) \
-			--output $(PBF_FILE) \
-			2>&1 \
-			| tee /tmp/download.out ; \
-		exit_code=$${PIPESTATUS[0]} ; \
-		if [[ "$$exit_code" != "0" ]]; then \
-			if grep -q "Imposm config file cannot be generated from this source" /tmp/download.out; then \
-				echo "WARNING: $(IMPOSM_CONFIG_FILE) could not be generated, but it is only needed to apply updates." ; \
-			else \
-				exit $$exit_code ; \
-			fi ; \
+		if [[ "$$DIFF_MODE" == "true" ]]; then \
+			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
+				--output "$(PBF_FILE)" ; \
+		else \
+			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--output "$(PBF_FILE)" ; \
 		fi'
 	@echo ""
 else
+	@echo "Data files $(PBF_FILE) already exists, skipping the download."
+endif
+
+.PHONY: generate-dc-config
+generate-dc-config:
+	@$(assert_area_is_given)
 ifeq (,$(wildcard $(AREA_DC_CONFIG_FILE)))
-	@echo "Data file $(PBF_FILE) already exists, but the $(AREA_DC_CONFIG_FILE) is not, generating..."
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		download-osm make-dc $(PBF_FILE) \
-			--minzoom $$QUICKSTART_MIN_ZOOM \
-			--maxzoom $$QUICKSTART_MAX_ZOOM \
-			--make-dc $(AREA_DC_CONFIG_FILE) \
+		download-osm make-dc "$(PBF_FILE)" \
+			--make-dc "$(AREA_DC_CONFIG_FILE)" \
 			--id "$(area)"'
 else
-	@echo "Data files $(PBF_FILE) and $(AREA_DC_CONFIG_FILE) already exists, skipping the download."
-endif
+	@echo "Configuration file $(AREA_DC_CONFIG_FILE) already exists, no need to regenerate."
 endif
 
 .PHONY: psql
@@ -318,7 +320,7 @@ import-borders: start-db-nowait
 	@$(assert_area_is_given)
 	# If CSV borders file already exists, use it without re-parsing
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo 'load' || echo 'import') $(PBF_FILE)'
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
 
 .PHONY: import-sql
 import-sql: all start-db-nowait
