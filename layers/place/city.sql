@@ -74,5 +74,6 @@ FROM (
             OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 14 OR "rank" IS NOT NULL))
             OR (zoom_level >= 13)
      ) AS city_all;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE sql STABLE
+                STRICT
                 PARALLEL SAFE;

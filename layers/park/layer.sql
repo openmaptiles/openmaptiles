@@ -328,5 +328,6 @@ FROM (
                     AND geometry_point && bbox
               ) AS park_point
      ) AS park_all;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
+-- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL

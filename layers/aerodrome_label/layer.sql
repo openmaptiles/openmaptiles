@@ -38,5 +38,6 @@ SELECT
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
   AND zoom_level >= 10;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                STRICT
                 PARALLEL SAFE;

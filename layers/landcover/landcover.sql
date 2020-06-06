@@ -15,6 +15,7 @@ SELECT CASE
            %%FIELD_MAPPING: class %%
            END;
 $$ LANGUAGE SQL IMMUTABLE
+                STRICT
                 PARALLEL SAFE;
 
 -- etldoc: ne_110m_glaciated_areas ->  landcover_z0
@@ -185,5 +186,6 @@ FROM (
          WHERE zoom_level >= 14
            AND geometry && bbox
      ) AS zoom_levels;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                STRICT
                 PARALLEL SAFE;

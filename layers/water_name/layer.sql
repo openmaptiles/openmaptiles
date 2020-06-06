@@ -74,5 +74,6 @@ WHERE geometry && bbox
         OR (zoom_level >= "rank" AND "rank" IS NOT NULL)
         OR (zoom_level >= 8)
     );
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                STRICT
                 PARALLEL SAFE;

@@ -142,5 +142,6 @@ FROM (
          FROM layer_city(bbox, zoom_level, pixel_width)
          ORDER BY "rank" ASC
      ) AS place_all
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
+-- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL
