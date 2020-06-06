@@ -14,8 +14,7 @@ SELECT wp.osm_id,
 FROM osm_water_polygon AS wp
          INNER JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
 WHERE wp.name <> ''
-  AND ST_IsValid(wp.geometry)
-;
+  AND ST_IsValid(wp.geometry);
 
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline
@@ -39,7 +38,7 @@ CREATE INDEX IF NOT EXISTS osm_water_lakeline_geometry_idx ON osm_water_lakeline
 CREATE SCHEMA IF NOT EXISTS water_lakeline;
 
 CREATE OR REPLACE FUNCTION water_lakeline.delete() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     DELETE
     FROM osm_water_lakeline
@@ -47,10 +46,10 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION water_lakeline.update() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     UPDATE osm_water_lakeline
     SET (osm_id, geometry, name, name_en, name_de, tags, area, is_intermittent) =
@@ -59,10 +58,10 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION water_lakeline.insert() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     INSERT INTO osm_water_lakeline
     SELECT *
@@ -71,7 +70,7 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_delete_line
     AFTER DELETE

@@ -1,9 +1,10 @@
-CREATE OR REPLACE FUNCTION normalize_capital_level(capital TEXT)
-RETURNS INT AS $$
-    SELECT CASE
-        WHEN capital IN ('yes', '2') THEN 2
-        WHEN capital = '4' THEN 4
-    END;
+CREATE OR REPLACE FUNCTION normalize_capital_level(capital text)
+    RETURNS int AS
 $$
-LANGUAGE SQL
-IMMUTABLE STRICT PARALLEL SAFE;
+SELECT CASE
+           WHEN capital IN ('yes', '2') THEN 2
+           WHEN capital = '4' THEN 4
+           END;
+$$ LANGUAGE sql IMMUTABLE
+                STRICT
+                PARALLEL SAFE;

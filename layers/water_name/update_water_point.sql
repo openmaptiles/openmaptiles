@@ -14,8 +14,7 @@ SELECT wp.osm_id,
 FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
 WHERE ll.osm_id IS NULL
-  AND wp.name <> ''
-;
+  AND wp.name <> '';
 
 -- etldoc:  osm_water_polygon ->  osm_water_point
 -- etldoc:  lake_centerline ->  osm_water_point
@@ -39,7 +38,7 @@ CREATE INDEX IF NOT EXISTS osm_water_point_geometry_idx ON osm_water_point USING
 CREATE SCHEMA IF NOT EXISTS water_point;
 
 CREATE OR REPLACE FUNCTION water_point.delete() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     DELETE
     FROM osm_water_point
@@ -47,10 +46,10 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION water_point.update() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     UPDATE osm_water_point
     SET (osm_id, geometry, name, name_en, name_de, tags, area, is_intermittent) =
@@ -59,10 +58,10 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION water_point.insert() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     INSERT INTO osm_water_point
     SELECT *
@@ -71,7 +70,7 @@ BEGIN
 
     RETURN NULL;
 END;
-$BODY$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_delete_point
     AFTER DELETE

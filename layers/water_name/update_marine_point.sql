@@ -55,15 +55,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION water_name_marine.refresh() RETURNS trigger AS
-$BODY$
+$$
 BEGIN
     RAISE LOG 'Refresh water_name_marine rank';
     PERFORM update_osm_marine_point();
+    -- noinspection SqlWithoutWhere
     DELETE FROM water_name_marine.updates;
     RETURN NULL;
 END;
-$BODY$
-    LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
