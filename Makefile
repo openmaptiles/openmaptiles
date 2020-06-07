@@ -210,7 +210,7 @@ endif
 .PHONY: build-sql
 build-sql: init-dirs
 ifeq (,$(wildcard build/sql))
-	@mkdir -p build/sql
+	@mkdir -p build/sql/parallel
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'generate-sql openmaptiles.yaml --dir ./build/sql \
 		&& generate-sqltomvt openmaptiles.yaml \
