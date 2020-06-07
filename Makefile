@@ -192,24 +192,31 @@ help:
 
 .PHONY: init-dirs
 init-dirs:
-	@mkdir -p build/sql
+	@mkdir -p build
 	@mkdir -p data/borders
 	@mkdir -p cache
 
 build/openmaptiles.tm2source/data.yml: init-dirs
+ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
 	mkdir -p build/openmaptiles.tm2source
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+endif
 
 build/mapping.yaml: init-dirs
+ifeq (,$(wildcard build/mapping.yaml))
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
+endif
 
 .PHONY: build-sql
 build-sql: init-dirs
+ifeq (,$(wildcard build/sql))
+	@mkdir -p build/sql
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'generate-sql openmaptiles.yaml --dir ./build/sql \
 		&& generate-sqltomvt openmaptiles.yaml \
 							 --key --gzip --postgis-ver 3.0.1 \
 							 --function --fname=getmvt >> "./build/sql/run_last.sql"'
+endif
 
 .PHONY: clean
 clean:
