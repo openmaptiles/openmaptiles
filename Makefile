@@ -286,7 +286,15 @@ ifeq (,$(wildcard $(PBF_FILE)))
 		fi'
 	@echo ""
 else
-	@echo "Data files $(PBF_FILE) already exists, skipping the download."
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
+		if [[ "$$DIFF_MODE" == "true" ]] && [[ ! -f "$(IMPOSM_CONFIG_FILE)" ]]; then \
+			echo "ERROR: Data files $(PBF_FILE) already exists, but $(IMPOSM_CONFIG_FILE) does not." ; \
+			echo "ERROR: You probably downloaded the data file befor changing DIFF_MODE to true. Delete the data file to re-download and generate config" ; \
+			echo "ERROR: Or run   export IMPOSM_CONFIG_FILE=/usr/src/app/config/repl_config.json  to use planet feed before running make commands" ; \
+			exit 1 ; \
+		else \
+			echo "Data files $(PBF_FILE) already exists, skipping the download." ; \
+		fi'
 endif
 
 .PHONY: generate-dc-config
@@ -312,10 +320,12 @@ import-osm: all start-db-nowait
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
+	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
+	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
