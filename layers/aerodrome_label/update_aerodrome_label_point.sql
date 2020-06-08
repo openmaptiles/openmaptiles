@@ -11,7 +11,7 @@ BEGIN
 
     UPDATE osm_aerodrome_label_point
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags -> 'name:latin', tags -> 'name:nonlatin', tags -> 'name_int') IS NULL;
+    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -26,7 +26,7 @@ SELECT
     name,
     name_en,
     name_de,
-    tags -> 'natural' AS class,
+    tags->'natural' AS class,
     tags,
     ele::int,
     ele_ft::int,

@@ -27,7 +27,7 @@ BEGIN
 
     UPDATE osm_poi_polygon
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags -> 'name:latin', tags -> 'name:nonlatin', tags -> 'name_int') IS NULL;
+    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
 
     ANALYZE osm_poi_polygon;
 END;
