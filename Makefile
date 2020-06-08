@@ -6,6 +6,9 @@
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
+# Make all .env variables available for make targets
+include .env
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
@@ -112,6 +115,10 @@ export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
+
+
+debug:
+	echo $(PGPORT)
 
 # Location of the dynamically-generated imposm config file
 export IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
