@@ -26,7 +26,7 @@ SELECT CASE class
            WHEN 'bar' THEN 800
            ELSE 1000
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION poi_class(subclass text, mapping_key text)
@@ -36,5 +36,5 @@ SELECT CASE
            %%FIELD_MAPPING: class %%
            ELSE subclass
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

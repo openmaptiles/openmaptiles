@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_water_name | <z0_8> z0_8 | <z9_13> z9_13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_water_name(bbox geometry, zoom_level integer)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id       bigint,
                 geometry     geometry,
@@ -74,5 +74,5 @@ WHERE geometry && bbox
         OR (zoom_level >= "rank" AND "rank" IS NOT NULL)
         OR (zoom_level >= 8)
     );
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

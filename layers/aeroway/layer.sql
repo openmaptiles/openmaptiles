@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_aeroway |<z10> z10|<z11> z11|<z12> z12|<z13> z13|<z14_> z14+" ];
 
 CREATE OR REPLACE FUNCTION layer_aeroway(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 geometry geometry,
                 class    text,
@@ -56,5 +56,5 @@ FROM (
          WHERE zoom_level >= 14
      ) AS zoom_levels
 WHERE geometry && bbox;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

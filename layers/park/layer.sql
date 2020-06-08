@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_park |<z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int, pixel_width numeric)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
@@ -328,5 +328,5 @@ FROM (
                     AND geometry_point && bbox
               ) AS park_point
      ) AS park_all;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

@@ -4,7 +4,7 @@
 CREATE OR REPLACE FUNCTION layer_mountain_peak(bbox geometry,
                                                zoom_level integer,
                                                pixel_width numeric)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
@@ -57,5 +57,5 @@ WHERE zoom_level >= 7
   AND (rank <= 5 OR zoom_level >= 14)
 ORDER BY "rank" ASC;
 
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

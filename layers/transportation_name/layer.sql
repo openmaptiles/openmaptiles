@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_transportation_name | <z6> z6 | <z7> z7 | <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id     bigint,
                 geometry   geometry,
@@ -147,5 +147,5 @@ FROM (
      ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

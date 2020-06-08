@@ -4,7 +4,7 @@ SELECT CASE
            WHEN is_bridge THEN 'bridge'
            WHEN is_tunnel THEN 'tunnel'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -152,7 +152,7 @@ FROM osm_waterway_linestring
 -- etldoc:     label="layer_waterway | <z3> z3 |<z4_5> z4-z5 |<z6_8> z6-8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ];
 
 CREATE OR REPLACE FUNCTION layer_waterway(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 geometry     geometry,
                 class        text,
@@ -220,5 +220,5 @@ FROM (
          WHERE zoom_level >= 14
      ) AS zoom_levels
 WHERE geometry && bbox;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

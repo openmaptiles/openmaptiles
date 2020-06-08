@@ -3,7 +3,7 @@
 CREATE OR REPLACE FUNCTION layer_aerodrome_label(bbox geometry,
                                                  zoom_level integer,
                                                  pixel_width numeric)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
@@ -38,5 +38,5 @@ SELECT
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
   AND zoom_level >= 10;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

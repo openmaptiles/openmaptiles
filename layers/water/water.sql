@@ -85,7 +85,7 @@ SELECT CASE
            %%FIELD_MAPPING: class %%
            ELSE 'river'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 
@@ -95,7 +95,7 @@ SELECT CASE
            WHEN is_bridge THEN 'bridge'
            WHEN is_tunnel THEN 'tunnel'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -380,7 +380,7 @@ WHERE "natural" != 'bay'
 -- etldoc:     label="layer_water |<z0> z0|<z1>z1|<z2>z2|<z3>z3 |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 geometry     geometry,
                 class        text,
@@ -466,5 +466,5 @@ FROM (
          WHERE zoom_level >= 14
      ) AS zoom_levels
 WHERE geometry && bbox;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

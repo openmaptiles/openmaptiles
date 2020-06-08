@@ -26,8 +26,8 @@ CREATE OR REPLACE FUNCTION waterway_linestring.refresh() RETURNS trigger AS
 $$
 BEGIN
     --     RAISE NOTICE 'Refresh waterway_linestring %', NEW.osm_id;
-    new.tags = update_tags(new.tags, new.geometry);
-    RETURN new;
+    NEW.tags = update_tags(NEW.tags, NEW.geometry);
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

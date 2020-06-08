@@ -95,9 +95,9 @@ CREATE OR REPLACE FUNCTION update_osm_park_polygon_row()
 AS
 $$
 BEGIN
-    new.tags = update_tags(new.tags, new.geometry);
-    new.geometry_point = st_centroid(new.geometry);
-    RETURN new;
+    NEW.tags = update_tags(NEW.tags, NEW.geometry);
+    NEW.geometry_point = st_centroid(NEW.geometry);
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

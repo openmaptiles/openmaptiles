@@ -2,7 +2,7 @@
 -- etldoc:     label="layer_place | <z0_3> z0-3|<z4_7> z4-7|<z8_11> z8-11| <z12_14> z12-z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_width numeric)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
@@ -142,5 +142,5 @@ FROM (
          FROM layer_city(bbox, zoom_level, pixel_width)
          ORDER BY "rank" ASC
      ) AS place_all
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

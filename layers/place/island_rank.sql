@@ -7,6 +7,6 @@ SELECT CASE
            WHEN area > 40000000 THEN 3
            ELSE 7
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;

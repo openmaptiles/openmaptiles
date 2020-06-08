@@ -206,7 +206,7 @@ SELECT CASE
                THEN replace(SUBSTRING(name, POSITION(' at ' IN name) + 4), ' ', '')
            ELSE replace(replace(name, ' ', ''), 'Extentof', '')
            END;
-$$ LANGUAGE sql IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE;
 
 
 -- etldoc: ne_110m_admin_0_boundary_lines_land  -> boundary_z0
@@ -534,7 +534,7 @@ FROM osm_border_disp_linestring_gen1
 -- etldoc: layer_boundary[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_boundary |<z0> z0 |<z1_2> z1_2 | <z3> z3 | <z4> z4 | <z5> z5 | <z6> z6 | <z7> z7 | <z8> z8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13+"]
 CREATE OR REPLACE FUNCTION layer_boundary(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 geometry      geometry,
                 admin_level   int,
@@ -625,5 +625,5 @@ FROM (
          WHERE geometry && bbox
            AND zoom_level >= 13
      ) AS zoom_levels;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

@@ -89,14 +89,14 @@ CREATE TABLE IF NOT EXISTS waterway_important.changes
 CREATE OR REPLACE FUNCTION waterway_important.store() RETURNS trigger AS
 $$
 BEGIN
-    IF (tg_op IN ('DELETE', 'UPDATE')) AND old.name <> '' AND old.waterway = 'river' THEN
+    IF (tg_op IN ('DELETE', 'UPDATE')) AND OLD.name <> '' AND OLD.waterway = 'river' THEN
         INSERT INTO waterway_important.changes(is_old, name, name_en, name_de, tags)
-        VALUES (TRUE, old.name, old.name_en, old.name_de, slice_language_tags(old.tags))
+        VALUES (TRUE, OLD.name, OLD.name_en, OLD.name_de, slice_language_tags(OLD.tags))
         ON CONFLICT(is_old, name, name_en, name_de, tags) DO NOTHING;
     END IF;
-    IF (tg_op IN ('UPDATE', 'INSERT')) AND new.name <> '' AND new.waterway = 'river' THEN
+    IF (tg_op IN ('UPDATE', 'INSERT')) AND NEW.name <> '' AND NEW.waterway = 'river' THEN
         INSERT INTO waterway_important.changes(is_old, name, name_en, name_de, tags)
-        VALUES (FALSE, new.name, new.name_en, new.name_de, slice_language_tags(new.tags))
+        VALUES (FALSE, NEW.name, NEW.name_en, NEW.name_de, slice_language_tags(NEW.tags))
         ON CONFLICT(is_old, name, name_en, name_de, tags) DO NOTHING;
     END IF;
     RETURN NULL;

@@ -44,7 +44,7 @@ WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
     );
 
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 geometry          geometry,
                 osm_id            bigint,
@@ -112,6 +112,6 @@ FROM (
            AND geometry && bbox
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE sql IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE;
 
 -- not handled: where a building outline covers building parts

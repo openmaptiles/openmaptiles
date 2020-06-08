@@ -3,7 +3,7 @@
 
 -- etldoc: osm_city_point -> layer_city:z2_14
 CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width numeric)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
@@ -74,5 +74,5 @@ FROM (
             OR (zoom_level BETWEEN 11 AND 12 AND (gridrank <= 14 OR "rank" IS NOT NULL))
             OR (zoom_level >= 13)
      ) AS city_all;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;

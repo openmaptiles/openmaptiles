@@ -5,7 +5,7 @@ SELECT CASE
            WHEN is_tunnel THEN 'tunnel'
            WHEN is_ford THEN 'ford'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -16,7 +16,7 @@ $$
 SELECT CASE
            %%FIELD_MAPPING: class %%
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 -- The classes for railways are derived from the classes used in ClearTables
@@ -27,7 +27,7 @@ SELECT CASE
            WHEN railway IN ('rail', 'narrow_gauge', 'preserved', 'funicular') THEN 'rail'
            WHEN railway IN ('subway', 'light_rail', 'monorail', 'tram') THEN 'transit'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -38,7 +38,7 @@ $$
 SELECT CASE
            WHEN service IN ('spur', 'yard', 'siding', 'crossover', 'driveway', 'alley', 'parking_aisle') THEN service
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -53,6 +53,6 @@ SELECT CASE
                             'gravel_turf', 'ground', 'ice', 'mud', 'pebblestone', 'salt', 'sand', 'snow', 'woodchips')
                THEN 'unpaved'
            END;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;

@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION highway_is_link(highway text) RETURNS boolean AS
 $$
 SELECT highway LIKE '%_link';
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
@@ -9,7 +9,7 @@ $$ LANGUAGE sql IMMUTABLE
 -- etldoc: layer_transportation[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_transportation |<z4> z4 |<z5> z5 |<z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
-    RETURNS table
+    RETURNS TABLE
             (
                 osm_id    bigint,
                 geometry  geometry,
@@ -698,5 +698,5 @@ FROM (
      ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
-$$ LANGUAGE sql IMMUTABLE
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
