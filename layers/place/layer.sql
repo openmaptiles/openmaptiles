@@ -21,7 +21,7 @@ SELECT *
 FROM (
          SELECT
              -- etldoc: osm_continent_point -> layer_place:z0_3
-             osm_id * 10,
+             osm_id * 10                                  AS osm_id,
              geometry,
              name,
              COALESCE(NULLIF(name_en, ''), name)          AS name_en,
@@ -42,7 +42,7 @@ FROM (
              -- etldoc: osm_country_point -> layer_place:z4_7
              -- etldoc: osm_country_point -> layer_place:z8_11
              -- etldoc: osm_country_point -> layer_place:z12_14
-             osm_id * 10,
+             osm_id * 10                                  AS osm_id,
              geometry,
              name,
              COALESCE(NULLIF(name_en, ''), name)          AS name_en,
@@ -64,7 +64,7 @@ FROM (
              -- etldoc: osm_state_point  -> layer_place:z4_7
              -- etldoc: osm_state_point  -> layer_place:z8_11
              -- etldoc: osm_state_point  -> layer_place:z12_14
-             osm_id * 10,
+             osm_id * 10                                  AS osm_id,
              geometry,
              name,
              COALESCE(NULLIF(name_en, ''), name)          AS name_en,
@@ -87,7 +87,7 @@ FROM (
 
          SELECT
              -- etldoc: osm_island_point    -> layer_place:z12_14
-             osm_id * 10,
+             osm_id * 10                                  AS osm_id,
              geometry,
              name,
              COALESCE(NULLIF(name_en, ''), name)          AS name_en,
@@ -106,7 +106,7 @@ FROM (
          SELECT
              -- etldoc: osm_island_polygon  -> layer_place:z8_11
              -- etldoc: osm_island_polygon  -> layer_place:z12_14
-             osm_id * 10,
+             osm_id * 10                                  AS osm_id,
              geometry,
              name,
              COALESCE(NULLIF(name_en, ''), name)          AS name_en,
@@ -129,7 +129,7 @@ FROM (
              -- etldoc: layer_city          -> layer_place:z4_7
              -- etldoc: layer_city          -> layer_place:z8_11
              -- etldoc: layer_city          -> layer_place:z12_14
-             osm_id * 10,
+             osm_id * 10 AS osm_id,
              geometry,
              name,
              name_en,

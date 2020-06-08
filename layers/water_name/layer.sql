@@ -59,7 +59,7 @@ SELECT
     -- etldoc: osm_marine_point ->  layer_water_name:z0_8
     -- etldoc: osm_marine_point ->  layer_water_name:z9_13
     -- etldoc: osm_marine_point ->  layer_water_name:z14_
-    osm_id * 10,
+    osm_id * 10                                  AS osm_id_hash,
     geometry,
     name,
     COALESCE(NULLIF(name_en, ''), name)          AS name_en,
