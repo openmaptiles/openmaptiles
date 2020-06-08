@@ -23,7 +23,7 @@ DECLARE
 BEGIN
     FOR osm_id, geometry IN
         WITH dta AS ( -- CTE is used because of optimization
-            SELECT o.osm_id, o.geometry, ST_ClusterDBSCAN(o.geometry, eps := zres14, minpoints := 1) over () cid
+            SELECT o.osm_id, o.geometry, ST_ClusterDBSCAN(o.geometry, eps := zres14, minpoints := 1) OVER () cid
             FROM osm_building_polygon o
         )
         SELECT (array_agg(dta.osm_id))[1]                                                                   osm_id,
@@ -77,8 +77,8 @@ CREATE MATERIALIZED VIEW osm_building_block_gen1 AS
 SELECT *
 FROM osm_building_block_gen1();
 
-CREATE INDEX on osm_building_block_gen1 USING gist (geometry);
-CREATE UNIQUE INDEX on osm_building_block_gen1 USING btree (osm_id);
+CREATE INDEX ON osm_building_block_gen1 USING gist (geometry);
+CREATE UNIQUE INDEX ON osm_building_block_gen1 USING btree (osm_id);
 
 
 -- Handle updates
@@ -87,16 +87,16 @@ CREATE SCHEMA IF NOT EXISTS buildings;
 
 CREATE TABLE IF NOT EXISTS buildings.updates
 (
-    id serial primary key,
+    id serial PRIMARY KEY,
     t  text,
-    unique (t)
+    UNIQUE (t)
 );
 
 CREATE OR REPLACE FUNCTION buildings.flag() RETURNS trigger AS
 $$
 BEGIN
     INSERT INTO buildings.updates(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
-    RETURN null;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -107,7 +107,7 @@ BEGIN
     REFRESH MATERIALIZED VIEW osm_building_block_gen1;
     -- noinspection SqlWithoutWhere
     DELETE FROM buildings.updates;
-    RETURN null;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
