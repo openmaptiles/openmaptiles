@@ -20,12 +20,9 @@ jobs:
       - name: Run quickstart for a small area
         env:
           area: monaco
-          QUICKSTART_MIN_ZOOM: 0
-          QUICKSTART_MAX_ZOOM: 14
+          MIN_ZOOM: 0
+          MAX_ZOOM: 14
         run: |
-          # For now, change the quickstart values directly in the .env file
-          # TODO: We should probably use env vars instead
-          sed -i 's/QUICKSTART_MAX_ZOOM=7/QUICKSTART_MAX_ZOOM=14/g' .env
           export QUIET=1
           ./quickstart.sh $area
 
@@ -173,7 +170,7 @@ jobs:
           create_db() {
             make clean
             make init-dirs
-            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas-latest.osm.pbf
+            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas.osm.pbf
             make destroy-db
             make all
             make start-db

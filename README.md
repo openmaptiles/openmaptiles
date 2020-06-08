@@ -83,10 +83,10 @@ make
 ```
 
 You can execute the following manual steps (for better understanding)
-or use the provided `quickstart.sh` script.
+or use the provided `quickstart.sh` script to automatically download and import given area. If area is not given, albania will be imported.
 
 ```
-./quickstart.sh
+./quickstart.sh <area>
 ```
 
 ### Prepare the Database
@@ -103,10 +103,10 @@ Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/),
 make import-data
 ```
 
-[Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
+Download OpenStreetMap data extracts from any source like [Geofabrik](http://download.geofabrik.de/), and store the PBF file in the `./data` directory. To use a specific download source, use `download-geofabrik`, `download-bbbike`, or `download-osmfr`, or use `download` to make it auto-pick the area. You can use `area=planet` for the entire OSM dataset (very large).  Note that if you have more than one `data/*.osm.pbf` file, every `make` command will always require `area=...` parameter (or you can just `export area=...` first).
 
 ```bash
-make download-geofabrik area=albania
+make download area=albania
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
@@ -135,11 +135,11 @@ make
 make import-sql
 ```
 
-Now you are ready to **generate the vector tiles**. Using environment variables
-you can limit the bounding box and zoom levels of what you want to generate (`docker-compose.yml`).
+Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-dc-config` will analyze the data file and set the `BBOX` param to limit tile generation. It will also modify `MIN_ZOOM` and `MAX_ZOOM` values based on the .env, but can be changed.
 
 ```
-make generate-tiles
+make generate-dc-config  # compute data bbox -- not needed for the whole planet
+make generate-tiles      # generate tiles
 ```
 
 ## License
