@@ -482,7 +482,7 @@ remove-docker-images:
 .PHONY: clean-unnecessary-docker
 clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
-	@docker ps -a --filter "status=exited" | $(XARGS) docker rm
+	@docker ps -a -q --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
 	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
 
