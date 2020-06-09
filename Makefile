@@ -6,6 +6,9 @@
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
+# Make all .env variables available for make targets
+include .env
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
@@ -113,8 +116,12 @@ export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
-# Location of the dynamically-generated imposm config file
-export IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
+ifeq ($(strip $(DIFF_MODE)),true)
+  # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
+  # For static (no-updates) import, we don't need to override the default value
+  # For the update mode, set location of the dynamically-generated area-based config file
+  export IMPOSM_CONFIG_FILE = data/$(area).repl.json
+endif
 
 # download-osm generates this file with metadata about the file
 AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
@@ -274,19 +281,33 @@ ifneq ($(strip $(url)),)
 	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
 endif
 ifeq (,$(wildcard $(PBF_FILE)))
-	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
-	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		if [[ "$$DIFF_MODE" == "true" ]]; then \
-			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+ ifeq ($(strip $(DIFF_MODE)),true)
+	@echo "Downloading $(DOWNLOAD_AREA) with replication support into $(PBF_FILE) and $(IMPOSM_CONFIG_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
 				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
-				--output "$(PBF_FILE)" ; \
-		else \
-			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
-				--output "$(PBF_FILE)" ; \
-		fi'
+				--output "$(PBF_FILE)"
+ else
+	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--output "$(PBF_FILE)"
+ endif
 	@echo ""
 else
+ ifeq ($(strip $(DIFF_MODE)),true)
+  ifeq (,$(wildcard $(IMPOSM_CONFIG_FILE)))
+	$(error \
+		$(newline)   Data files $(PBF_FILE) already exists, but $(IMPOSM_CONFIG_FILE) does not. \
+		$(newline)   You probably downloaded the data file before setting DIFF_MODE=true. \
+		$(newline)   You can delete the data file  $(PBF_FILE) and re-run  make download \
+		$(newline)   to re-download and generate config, or manually create  $(IMPOSM_CONFIG_FILE) \
+		$(newline)   See example    https://github.com/openmaptiles/openmaptiles-tools/blob/v5.2/bin/config/repl_config.json \
+		$(newline))
+  else
+	@echo "Data files $(PBF_FILE) and replication config $(IMPOSM_CONFIG_FILE) already exists, skipping the download."
+  endif
+ else
 	@echo "Data files $(PBF_FILE) already exists, skipping the download."
+ endif
 endif
 
 .PHONY: generate-dc-config
@@ -312,10 +333,12 @@ import-osm: all start-db-nowait
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
+	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
+	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data

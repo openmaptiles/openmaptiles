@@ -36,6 +36,8 @@ services:
       MAKE_DC_VERSION: "2.3"
       # Allow DIFF_MODE to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
+      # Imposm configuration file describes how to load updates when enabled
+      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       # Which files to use during import-borders processing
       BORDERS_CLEANUP_FILE: ${BORDERS_CLEANUP_FILE}
       BORDERS_PBF_FILE: ${BORDERS_PBF_FILE}
@@ -63,7 +65,6 @@ services:
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
-      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
 
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -76,7 +77,6 @@ services:
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
-      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
