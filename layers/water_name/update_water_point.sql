@@ -6,8 +6,6 @@ CREATE OR REPLACE VIEW osm_water_point_view AS
 SELECT wp.osm_id,
        ST_PointOnSurface(wp.geometry)                       AS geometry,
        wp.name,
-       wp.name_en,
-       wp.name_de,
        update_tags(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
        ST_Area(wp.geometry)                                 AS area,
        wp.is_intermittent
@@ -52,7 +50,7 @@ CREATE OR REPLACE FUNCTION water_point.update() RETURNS trigger AS
 $$
 BEGIN
     UPDATE osm_water_point
-    SET (osm_id, geometry, name, name_en, name_de, tags, area, is_intermittent) =
+    SET (osm_id, geometry, name, tags, area, is_intermittent) =
             (SELECT * FROM osm_water_point_view WHERE osm_water_point_view.osm_id = NEW.osm_id)
     WHERE osm_water_point.osm_id = NEW.osm_id;
 

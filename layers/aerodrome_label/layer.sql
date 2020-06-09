@@ -8,8 +8,6 @@ CREATE OR REPLACE FUNCTION layer_aerodrome_label(bbox geometry,
                 osm_id   bigint,
                 geometry geometry,
                 name     text,
-                name_en  text,
-                name_de  text,
                 tags     hstore,
                 class    text,
                 iata     text,
@@ -24,8 +22,6 @@ SELECT
     osm_id,
     geometry,
     name,
-    COALESCE(NULLIF(name_en, ''), name)                                  AS name_en,
-    COALESCE(NULLIF(name_de, ''), name, name_en)                         AS name_de,
     tags,
     CASE
         %%FIELD_MAPPING: class %%

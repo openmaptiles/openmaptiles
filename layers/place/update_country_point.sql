@@ -23,7 +23,6 @@ BEGIN
         SELECT osm.geometry,
                osm.osm_id,
                osm.name,
-               COALESCE(NULLIF(osm.name_en, ''), ne.name) AS name_en,
                ne.scalerank,
                ne.labelrank
         FROM ne_10m_admin_0_countries AS ne,
