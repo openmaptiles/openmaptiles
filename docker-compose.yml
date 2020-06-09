@@ -42,6 +42,8 @@ services:
       BORDERS_CLEANUP_FILE: ${BORDERS_CLEANUP_FILE}
       BORDERS_PBF_FILE: ${BORDERS_PBF_FILE}
       BORDERS_CSV_FILE: ${BORDERS_CSV_FILE}
+      # Control import-sql processes
+      MAX_PARALLEL_PSQL: ${MAX_PARALLEL_PSQL}
     networks:
       - postgres_conn
     volumes:
