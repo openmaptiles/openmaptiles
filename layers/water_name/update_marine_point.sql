@@ -13,7 +13,7 @@ BEGIN
     -- etldoc: osm_marine_point              -> osm_marine_point
 
     WITH important_marine_point AS (
-        SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, ne.scalerank, osm.is_intermittent
+        SELECT osm.geometry, osm.osm_id, osm.name, ne.scalerank, osm.is_intermittent
         FROM ne_10m_geography_marine_polys AS ne,
              osm_marine_point AS osm
         WHERE trim(regexp_replace(ne.name, '\\s+', ' ', 'g')) ILIKE osm.name

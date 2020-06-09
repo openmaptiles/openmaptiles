@@ -15,21 +15,24 @@ BEGIN
     -- etldoc: osm_city_point          -> osm_city_point
 
     WITH important_city_point AS (
-        SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, ne.scalerank, ne.labelrank
+        SELECT osm.geometry, osm.osm_id, osm.name, ne.scalerank, ne.labelrank
         FROM ne_10m_populated_places AS ne,
              osm_city_point AS osm
         WHERE (
                 (osm.tags ? 'wikidata' AND osm.tags->'wikidata' = ne.wikidataid) OR
                 ne.name ILIKE osm.name OR
-                ne.name ILIKE osm.name_en OR
                 ne.namealt ILIKE osm.name OR
-                ne.namealt ILIKE osm.name_en OR
                 ne.meganame ILIKE osm.name OR
-                ne.meganame ILIKE osm.name_en OR
                 ne.gn_ascii ILIKE osm.name OR
-                ne.gn_ascii ILIKE osm.name_en OR
                 ne.nameascii ILIKE osm.name OR
-                ne.nameascii ILIKE osm.name_en OR
+                (osm.tags ? 'name:en' AND (
+                        -- TODO FIXME: ILIKE misshandles special chars like % and _
+                        ne.name ILIKE osm.tags->'name:en' OR
+                        ne.namealt ILIKE osm.tags->'name:en' OR
+                        ne.meganame ILIKE osm.tags->'name:en' OR
+                        ne.gn_ascii ILIKE osm.tags->'name:en' OR
+                        ne.nameascii ILIKE osm.tags->'name:en'
+                    )) OR
                 ne.name = unaccent(osm.name)
             )
           AND osm.place IN ('city', 'town', 'village')
