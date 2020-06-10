@@ -9,7 +9,7 @@ on:
 
 jobs:
   update_PRs:
-    runs-on: ubuntu-latest
+    runs-on: ralph
 
     steps:
       - name: main
