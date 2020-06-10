@@ -9,7 +9,7 @@ on:
 
 jobs:
   update_PRs:
-    runs-on: ralph
+    runs-on: self-hosted
 
     steps:
       - name: main
