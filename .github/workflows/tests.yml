@@ -11,7 +11,7 @@ jobs:
 
   integrity_test:
     name: Run integrity test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout the changes
