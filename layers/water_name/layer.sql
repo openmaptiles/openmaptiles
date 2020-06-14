@@ -75,5 +75,5 @@ WHERE geometry && bbox
         OR (zoom_level >= 8)
     );
 $$ LANGUAGE SQL STABLE
-                -- STRICT
+                STRICT
                 PARALLEL SAFE;

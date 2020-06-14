@@ -8,5 +8,5 @@ SELECT CASE
            ELSE 7
            END;
 $$ LANGUAGE SQL IMMUTABLE
-                -- STRICT
+                STRICT
                 PARALLEL SAFE;
