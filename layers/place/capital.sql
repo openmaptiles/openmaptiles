@@ -6,5 +6,5 @@ SELECT CASE
            WHEN capital = '4' THEN 4
            END;
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
+                -- STRICT
                 PARALLEL SAFE;
