@@ -113,7 +113,7 @@ FROM (
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL STABLE
-                STRICT
+                -- STRICT
                 -- PARALLEL SAFE
                 ;
 

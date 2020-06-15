@@ -75,5 +75,5 @@ FROM (
             OR (zoom_level >= 13)
      ) AS city_all;
 $$ LANGUAGE SQL STABLE
-                STRICT
+                -- STRICT
                 PARALLEL SAFE;

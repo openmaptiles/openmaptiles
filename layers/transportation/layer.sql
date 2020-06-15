@@ -699,5 +699,5 @@ FROM (
 WHERE geometry && bbox
 ORDER BY z_order ASC;
 $$ LANGUAGE SQL STABLE
-                STRICT
+                -- STRICT
                 PARALLEL SAFE;
