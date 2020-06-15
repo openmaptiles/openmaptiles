@@ -208,7 +208,7 @@ SELECT CASE
            END;
 $$ LANGUAGE SQL IMMUTABLE
                 -- STRICT
-                PARALLEL SAFE
+                -- PARALLEL SAFE
                 ;
 
 
