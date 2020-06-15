@@ -113,8 +113,8 @@ FROM (
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL STABLE
-                STRICT
-                -- PARALLEL SAFE
+                -- STRICT
+                PARALLEL SAFE
                 ;
 
 -- not handled: where a building outline covers building parts

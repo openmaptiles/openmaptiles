@@ -19,5 +19,5 @@ FROM osm_housenumber_point
 WHERE zoom_level >= 14
   AND geometry && bbox;
 $$ LANGUAGE SQL STABLE
-                STRICT
+                -- STRICT
                 PARALLEL SAFE;

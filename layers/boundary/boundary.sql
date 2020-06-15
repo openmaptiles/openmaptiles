@@ -207,8 +207,8 @@ SELECT CASE
            ELSE replace(replace(name, ' ', ''), 'Extentof', '')
            END;
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
-                -- PARALLEL SAFE
+                -- STRICT
+                PARALLEL SAFE
                 ;
 
 
@@ -629,5 +629,5 @@ FROM (
            AND zoom_level >= 13
      ) AS zoom_levels;
 $$ LANGUAGE SQL STABLE
-                STRICT
+                -- STRICT
                 PARALLEL SAFE;
