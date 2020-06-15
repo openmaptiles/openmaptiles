@@ -215,5 +215,5 @@ FROM (
      ) AS zoom_levels
 WHERE geometry && bbox;
 $$ LANGUAGE SQL STABLE
-                -- STRICT
+                STRICT
                 PARALLEL SAFE;
