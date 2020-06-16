@@ -158,4 +158,3 @@ tables:
     mapping:
       type: [building]
     type: relation_member
-    
