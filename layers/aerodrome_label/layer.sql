@@ -1,8 +1,8 @@
+
 -- etldoc: layer_aerodrome_label[shape=record fillcolor=lightpink, style="rounded,filled", label="layer_aerodrome_label | <z10_> z10+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_aerodrome_label(bbox geometry,
-                                                 zoom_level integer,
-                                                 pixel_width numeric)
+                                                 zoom_level integer)
     RETURNS TABLE
             (
                 osm_id   bigint,
@@ -38,5 +38,6 @@ SELECT
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
   AND zoom_level >= 10;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;

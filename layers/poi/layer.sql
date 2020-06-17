@@ -94,5 +94,6 @@ FROM (
            AND zoom_level >= 14
      ) AS poi_union
 ORDER BY "rank"
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
+-- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL
