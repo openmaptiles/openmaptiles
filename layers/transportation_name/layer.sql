@@ -147,5 +147,6 @@ FROM (
      ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;
