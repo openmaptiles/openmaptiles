@@ -20,6 +20,7 @@ layer:
     hide_3d: |
         If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d.
 schema:
+  - ./update_building.sql
   - ./building.sql
 datasources:
   - type: imposm3
