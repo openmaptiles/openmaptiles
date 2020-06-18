@@ -112,6 +112,9 @@ FROM (
            AND geometry && bbox
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL STABLE
+                -- STRICT
+                PARALLEL SAFE
+                ;
 
 -- not handled: where a building outline covers building parts

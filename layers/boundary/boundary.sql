@@ -206,7 +206,10 @@ SELECT CASE
                THEN replace(SUBSTRING(name, POSITION(' at ' IN name) + 4), ' ', '')
            ELSE replace(replace(name, ' ', ''), 'Extentof', '')
            END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE
+                -- STRICT
+                PARALLEL SAFE
+                ;
 
 
 -- etldoc: ne_110m_admin_0_boundary_lines_land  -> boundary_z0
@@ -625,5 +628,6 @@ FROM (
          WHERE geometry && bbox
            AND zoom_level >= 13
      ) AS zoom_levels;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;
