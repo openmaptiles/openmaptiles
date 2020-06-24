@@ -1,7 +1,6 @@
 DROP TRIGGER IF EXISTS trigger_update_point ON osm_peak_point;
 
 -- etldoc:  osm_peak_point ->  osm_peak_point
--- etldoc:  osm_peak_point ->  osm_peak_point
 CREATE OR REPLACE FUNCTION update_osm_peak_point(new_osm_id bigint) RETURNS void AS
 $$
 UPDATE osm_peak_point
