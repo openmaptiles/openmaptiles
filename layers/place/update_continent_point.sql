@@ -1,22 +1,39 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_continent_point;
+DROP TRIGGER IF EXISTS trigger_store ON osm_continent_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON place_continent_point.updates;
 
+CREATE SCHEMA IF NOT EXISTS place_continent_point;
+
+CREATE TABLE IF NOT EXISTS place_continent_point.osm_ids
+(
+    osm_id bigint
+);
+
 -- etldoc:  osm_continent_point ->  osm_continent_point
-CREATE OR REPLACE FUNCTION update_osm_continent_point() RETURNS void AS
+CREATE OR REPLACE FUNCTION update_osm_continent_point(full_update boolean) RETURNS void AS
 $$
-BEGIN
     UPDATE osm_continent_point
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_continent_point.osm_ids))
+      AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
+      AND tags != update_tags(tags, geometry);
+$$ LANGUAGE SQL;
 
-END;
-$$ LANGUAGE plpgsql;
-
-SELECT update_osm_continent_point();
+SELECT update_osm_continent_point(true);
 
 -- Handle updates
 
-CREATE SCHEMA IF NOT EXISTS place_continent_point;
+CREATE OR REPLACE FUNCTION place_continent_point.store() RETURNS trigger AS
+$$
+BEGIN
+    IF (tg_op = 'DELETE') THEN
+        INSERT INTO place_continent_point.osm_ids VALUES (OLD.osm_id);
+    ELSE
+        INSERT INTO place_continent_point.osm_ids VALUES (NEW.osm_id);
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS place_continent_point.updates
 (
@@ -36,12 +53,20 @@ CREATE OR REPLACE FUNCTION place_continent_point.refresh() RETURNS trigger AS
 $$
 BEGIN
     RAISE LOG 'Refresh place_continent_point';
-    PERFORM update_osm_continent_point();
+    PERFORM update_osm_continent_point(false);
+    -- noinspection SqlWithoutWhere
+    DELETE FROM place_continent_point.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM place_continent_point.updates;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_store
+    AFTER INSERT OR UPDATE OR DELETE
+    ON osm_continent_point
+    FOR EACH ROW
+EXECUTE PROCEDURE place_continent_point.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
