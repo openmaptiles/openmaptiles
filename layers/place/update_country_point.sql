@@ -1,20 +1,28 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_country_point;
+DROP TRIGGER IF EXISTS trigger_store ON osm_country_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON place_country.updates;
+
+CREATE SCHEMA IF NOT EXISTS place_country;
+
+CREATE TABLE IF NOT EXISTS place_country.osm_ids
+(
+    osm_id bigint
+);
 
 -- etldoc: ne_10m_admin_0_countries   -> osm_country_point
 -- etldoc: osm_country_point          -> osm_country_point
 
-CREATE OR REPLACE FUNCTION update_osm_country_point() RETURNS void AS
+CREATE OR REPLACE FUNCTION update_osm_country_point(full_update boolean) RETURNS void AS
 $$
-BEGIN
-
     UPDATE osm_country_point AS osm
     SET "rank"            = 7,
         iso3166_1_alpha_2 = COALESCE(
                 NULLIF(osm.country_code_iso3166_1_alpha_2, ''),
                 NULLIF(osm.iso3166_1_alpha_2, ''),
                 NULLIF(osm.iso3166_1, '')
-            );
+            )
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND rank IS NULL;
 
     WITH important_country_point AS (
         SELECT osm.geometry,
@@ -36,7 +44,9 @@ BEGIN
         -- where the ranks are still distributed uniform enough across all countries
     SET "rank" = LEAST(6, CEILING((scalerank + labelrank) / 2.0))
     FROM important_country_point AS ne
-    WHERE osm.osm_id = ne.osm_id;
+    WHERE (full_update OR osm.osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND rank = 7
+      AND osm.osm_id = ne.osm_id;
 
     -- Repeat the step for archipelago countries like Philippines or Indonesia
     -- whose label point is not within country's polygon
@@ -62,32 +72,47 @@ BEGIN
         -- where the ranks are still distributed uniform enough across all countries
     SET "rank" = LEAST(6, CEILING((ne.scalerank + ne.labelrank) / 2.0))
     FROM important_country_point AS ne
-    WHERE osm.osm_id = ne.osm_id
+    WHERE (full_update OR osm.osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND rank = 7
+      AND osm.osm_id = ne.osm_id
       AND ne.rk = 1;
 
     UPDATE osm_country_point AS osm
     SET "rank" = 6
-    WHERE "rank" = 7;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND "rank" = 7;
 
     -- TODO: This shouldn't be necessary? The rank function makes something wrong...
     UPDATE osm_country_point AS osm
     SET "rank" = 1
-    WHERE "rank" = 0;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND "rank" = 0;
 
     UPDATE osm_country_point
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_country.osm_ids))
+      AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
+      AND tags != update_tags(tags, geometry);
 
-END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE SQL;
 
-SELECT update_osm_country_point();
+SELECT update_osm_country_point(true);
 
 CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point ("rank");
 
 -- Handle updates
 
-CREATE SCHEMA IF NOT EXISTS place_country;
+CREATE OR REPLACE FUNCTION place_country.store() RETURNS trigger AS
+$$
+BEGIN
+    IF (tg_op = 'DELETE') THEN
+        INSERT INTO place_country.osm_ids VALUES (OLD.osm_id);
+    ELSE
+        INSERT INTO place_country.osm_ids VALUES (NEW.osm_id);
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS place_country.updates
 (
@@ -107,12 +132,20 @@ CREATE OR REPLACE FUNCTION place_country.refresh() RETURNS trigger AS
 $$
 BEGIN
     RAISE LOG 'Refresh place_country rank';
-    PERFORM update_osm_country_point();
+    PERFORM update_osm_country_point(false);
+    -- noinspection SqlWithoutWhere
+    DELETE FROM place_country.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM place_country.updates;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_store
+    AFTER INSERT OR UPDATE OR DELETE
+    ON osm_country_point
+    FOR EACH ROW
+EXECUTE PROCEDURE place_country.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
