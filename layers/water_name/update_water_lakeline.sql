@@ -68,7 +68,7 @@ BEGIN
     FROM osm_water_lakeline_view
     WHERE osm_water_lakeline_view.osm_id = NEW.osm_id
     -- May happen in case we replay update
-    ON CONFLICT ON CONSTRAINT osm_water_point_pk
+    ON CONFLICT ON CONSTRAINT osm_water_lakeline_pk
     DO NOTHING;
 
     RETURN NULL;
