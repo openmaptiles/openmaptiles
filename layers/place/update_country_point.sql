@@ -96,7 +96,7 @@ CREATE SCHEMA IF NOT EXISTS place_country;
 CREATE TABLE IF NOT EXISTS place_country.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION place_country.flag() RETURNS trigger AS

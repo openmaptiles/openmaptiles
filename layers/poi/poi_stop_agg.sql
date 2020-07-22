@@ -2,7 +2,7 @@ DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_centroid CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS
 (
 SELECT uic_ref,
-       count(*)                                                        AS count,
+       count(*) AS count,
        CASE WHEN count(*) > 2 THEN ST_Centroid(ST_UNION(geometry)) END AS centroid
 FROM osm_poi_point
 WHERE nullif(uic_ref, '') IS NOT NULL

@@ -25,7 +25,7 @@ CREATE SCHEMA IF NOT EXISTS housenumber;
 CREATE TABLE IF NOT EXISTS housenumber.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION housenumber.flag() RETURNS trigger AS

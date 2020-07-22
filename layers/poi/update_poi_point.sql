@@ -57,7 +57,7 @@ CREATE SCHEMA IF NOT EXISTS poi_point;
 CREATE TABLE IF NOT EXISTS poi_point.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION poi_point.flag() RETURNS trigger AS

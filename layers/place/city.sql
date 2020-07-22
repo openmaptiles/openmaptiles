@@ -22,12 +22,12 @@ FROM (
          SELECT osm_id,
                 geometry,
                 name,
-                COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+                COALESCE(NULLIF(name_en, ''), name) AS name_en,
                 COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
                 tags,
                 place,
                 "rank",
-                normalize_capital_level(capital)             AS capital
+                normalize_capital_level(capital) AS capital
          FROM osm_city_point
          WHERE geometry && bbox
            AND ((zoom_level = 2 AND "rank" = 1)
@@ -37,17 +37,17 @@ FROM (
          SELECT osm_id,
                 geometry,
                 name,
-                COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+                COALESCE(NULLIF(name_en, ''), name) AS name_en,
                 COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
                 tags,
                 place,
                 COALESCE("rank", gridrank + 10),
-                normalize_capital_level(capital)             AS capital
+                normalize_capital_level(capital) AS capital
          FROM (
                   SELECT osm_id,
                          geometry,
                          name,
-                         COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+                         COALESCE(NULLIF(name_en, ''), name) AS name_en,
                          COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
                          tags,
                          place,
@@ -59,7 +59,7 @@ FROM (
                                  place ASC NULLS LAST,
                                  population DESC NULLS LAST,
                                  length(name) ASC
-                             )::int                                   AS gridrank
+                             )::int AS gridrank
                   FROM osm_city_point
                   WHERE geometry && bbox
                     AND ((zoom_level = 7 AND place <= 'town'::city_place

@@ -35,10 +35,10 @@ FROM (
          SELECT osm_id,
                 geometry,
                 name,
-                COALESCE(NULLIF(name_en, ''), name)                                  AS name_en,
-                COALESCE(NULLIF(name_de, ''), name, name_en)                         AS name_de,
+                COALESCE(NULLIF(name_en, ''), name) AS name_en,
+                COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
                 tags,
-                substring(ele FROM E'^(-?\\d+)(\\D|$)')::int                         AS ele,
+                substring(ele FROM E'^(-?\\d+)(\\D|$)')::int AS ele,
                 round(substring(ele FROM E'^(-?\\d+)(\\D|$)')::int * 3.2808399)::int AS ele_ft,
                 row_number() OVER (
                     PARTITION BY LabelGrid(geometry, 100 * pixel_width)
@@ -47,7 +47,7 @@ FROM (
                             (CASE WHEN NULLIF(wikipedia, '') IS NOT NULL THEN 10000 ELSE 0 END) +
                             (CASE WHEN NULLIF(name, '') IS NOT NULL THEN 10000 ELSE 0 END)
                         ) DESC
-                    )::int                                                           AS "rank"
+                    )::int AS "rank"
          FROM osm_peak_point
          WHERE geometry && bbox
            AND ele IS NOT NULL

@@ -43,7 +43,7 @@ CREATE SCHEMA IF NOT EXISTS water_name_marine;
 CREATE TABLE IF NOT EXISTS water_name_marine.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION water_name_marine.flag() RETURNS trigger AS

@@ -28,7 +28,7 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
 (
 SELECT (ST_Dump(geometry)).geom AS geometry,
-       NULL::bigint             AS osm_id,
+       NULL::bigint AS osm_id,
        highway,
        construction,
        z_order
@@ -36,7 +36,7 @@ FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
                 highway,
                 construction,
-                min(z_order)                       AS z_order
+                min(z_order) AS z_order
          FROM osm_highway_linestring
          WHERE (highway IN ('motorway', 'trunk', 'primary') OR
                 highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
@@ -126,7 +126,7 @@ CREATE SCHEMA IF NOT EXISTS transportation;
 CREATE TABLE IF NOT EXISTS transportation.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION transportation.flag() RETURNS trigger AS

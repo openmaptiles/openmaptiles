@@ -88,7 +88,7 @@ CREATE SCHEMA IF NOT EXISTS buildings;
 CREATE TABLE IF NOT EXISTS buildings.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 

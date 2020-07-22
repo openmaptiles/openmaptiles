@@ -30,7 +30,7 @@ FROM (
                         LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
-                    )     AS class,
+                    ) AS class,
                 name,
                 name_en,
                 name_de,
@@ -171,7 +171,7 @@ FROM (
                         LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
-                    )          AS class,
+                    ) AS class,
                 name,
                 name_en,
                 name_de,
@@ -182,7 +182,7 @@ FROM (
                         (CASE WHEN boundary = 'national_park' THEN TRUE ELSE FALSE END) DESC,
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                         area DESC
-                    )::int     AS "rank"
+                    )::int AS "rank"
          FROM (
                   -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
                   SELECT osm_id,

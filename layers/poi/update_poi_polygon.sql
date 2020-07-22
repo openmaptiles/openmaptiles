@@ -42,7 +42,7 @@ CREATE SCHEMA IF NOT EXISTS poi_polygon;
 CREATE TABLE IF NOT EXISTS poi_polygon.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION poi_polygon.flag() RETURNS trigger AS
