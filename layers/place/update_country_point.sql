@@ -1,9 +1,6 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_country_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON place_country.updates;
 
-ALTER TABLE osm_country_point
-    DROP CONSTRAINT IF EXISTS osm_country_point_rank_constraint;
-
 -- etldoc: ne_10m_admin_0_countries   -> osm_country_point
 -- etldoc: osm_country_point          -> osm_country_point
 
@@ -86,7 +83,6 @@ $$ LANGUAGE plpgsql;
 
 SELECT update_osm_country_point();
 
--- ALTER TABLE osm_country_point ADD CONSTRAINT osm_country_point_rank_constraint CHECK("rank" BETWEEN 1 AND 6);
 CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point ("rank");
 
 -- Handle updates
