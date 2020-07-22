@@ -126,7 +126,7 @@ CREATE SCHEMA IF NOT EXISTS transportation;
 CREATE TABLE IF NOT EXISTS transportation.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION transportation.flag() RETURNS trigger AS

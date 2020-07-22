@@ -182,7 +182,7 @@ CREATE SCHEMA IF NOT EXISTS transportation_name;
 CREATE TABLE IF NOT EXISTS transportation_name.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION transportation_name.flag() RETURNS trigger AS

@@ -78,12 +78,12 @@ CREATE SCHEMA IF NOT EXISTS waterway_important;
 
 CREATE TABLE IF NOT EXISTS waterway_important.changes
 (
-    id      serial PRIMARY KEY,
-    is_old  boolean,
-    name    character varying,
+    id serial PRIMARY KEY,
+    is_old boolean,
+    name character varying,
     name_en character varying,
     name_de character varying,
-    tags    hstore,
+    tags hstore,
     UNIQUE (is_old, name, name_en, name_de, tags)
 );
 CREATE OR REPLACE FUNCTION waterway_important.store() RETURNS trigger AS
@@ -106,7 +106,7 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE IF NOT EXISTS waterway_important.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION waterway_important.flag() RETURNS trigger AS

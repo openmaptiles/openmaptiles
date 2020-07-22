@@ -21,7 +21,7 @@ CREATE SCHEMA IF NOT EXISTS place_continent_point;
 CREATE TABLE IF NOT EXISTS place_continent_point.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION place_continent_point.flag() RETURNS trigger AS

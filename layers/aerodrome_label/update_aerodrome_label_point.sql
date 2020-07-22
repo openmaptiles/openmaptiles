@@ -24,7 +24,7 @@ CREATE SCHEMA IF NOT EXISTS aerodrome_label;
 CREATE TABLE IF NOT EXISTS aerodrome_label.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION aerodrome_label.flag() RETURNS trigger AS
