@@ -21,14 +21,14 @@ SELECT
     CASE
         WHEN osm_id < 0 THEN -osm_id * 10 + 4
         ELSE osm_id * 10 + 1
-        END                                      AS osm_id_hash,
+        END AS osm_id_hash,
     geometry,
     name,
-    COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    'lake'::text                                 AS class,
-    is_intermittent::int                         AS intermittent
+    'lake'::text AS class,
+    is_intermittent::int AS intermittent
 FROM osm_water_lakeline
 WHERE geometry && bbox
   AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
@@ -40,14 +40,14 @@ SELECT
     CASE
         WHEN osm_id < 0 THEN -osm_id * 10 + 4
         ELSE osm_id * 10 + 1
-        END                                      AS osm_id_hash,
+        END AS osm_id_hash,
     geometry,
     name,
-    COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    'lake'::text                                 AS class,
-    is_intermittent::int                         AS intermittent
+    'lake'::text AS class,
+    is_intermittent::int AS intermittent
 FROM osm_water_point
 WHERE geometry && bbox
   AND (
@@ -59,14 +59,14 @@ SELECT
     -- etldoc: osm_marine_point ->  layer_water_name:z0_8
     -- etldoc: osm_marine_point ->  layer_water_name:z9_13
     -- etldoc: osm_marine_point ->  layer_water_name:z14_
-    osm_id * 10                                  AS osm_id_hash,
+    osm_id * 10 AS osm_id_hash,
     geometry,
     name,
-    COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    place::text                                  AS class,
-    is_intermittent::int                         AS intermittent
+    place::text AS class,
+    is_intermittent::int AS intermittent
 FROM osm_marine_point
 WHERE geometry && bbox
   AND (

@@ -1,14 +1,14 @@
 -- etldoc: ne_50m_urban_areas -> landuse_z4
 CREATE OR REPLACE VIEW landuse_z4 AS
 (
-SELECT NULL::bigint        AS osm_id,
+SELECT NULL::bigint AS osm_id,
        geometry,
        'residential'::text AS landuse,
-       NULL::text          AS amenity,
-       NULL::text          AS leisure,
-       NULL::text          AS tourism,
-       NULL::text          AS place,
-       NULL::text          AS waterway
+       NULL::text AS amenity,
+       NULL::text AS leisure,
+       NULL::text AS tourism,
+       NULL::text AS place,
+       NULL::text AS waterway
 FROM ne_50m_urban_areas
 WHERE scalerank <= 2
     );
@@ -16,14 +16,14 @@ WHERE scalerank <= 2
 -- etldoc: ne_50m_urban_areas -> landuse_z5
 CREATE OR REPLACE VIEW landuse_z5 AS
 (
-SELECT NULL::bigint        AS osm_id,
+SELECT NULL::bigint AS osm_id,
        geometry,
        'residential'::text AS landuse,
-       NULL::text          AS amenity,
-       NULL::text          AS leisure,
-       NULL::text          AS tourism,
-       NULL::text          AS place,
-       NULL::text          AS waterway
+       NULL::text AS amenity,
+       NULL::text AS leisure,
+       NULL::text AS tourism,
+       NULL::text AS place,
+       NULL::text AS waterway
 FROM ne_50m_urban_areas
     );
 

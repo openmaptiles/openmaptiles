@@ -4,12 +4,12 @@ DROP TRIGGER IF EXISTS trigger_insert_point ON osm_water_polygon;
 
 CREATE OR REPLACE VIEW osm_water_point_view AS
 SELECT wp.osm_id,
-       ST_PointOnSurface(wp.geometry)                       AS geometry,
+       ST_PointOnSurface(wp.geometry) AS geometry,
        wp.name,
        wp.name_en,
        wp.name_de,
        update_tags(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
-       ST_Area(wp.geometry)                                 AS area,
+       ST_Area(wp.geometry) AS area,
        wp.is_intermittent
 FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id

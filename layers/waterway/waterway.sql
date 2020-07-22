@@ -13,10 +13,10 @@ CREATE OR REPLACE VIEW waterway_z3 AS
 (
 SELECT geometry,
        'river'::text AS class,
-       NULL::text    AS name,
-       NULL::text    AS name_en,
-       NULL::text    AS name_de,
-       NULL::hstore  AS tags,
+       NULL::text AS name,
+       NULL::text AS name_en,
+       NULL::text AS name_de,
+       NULL::hstore AS tags,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
        NULL::boolean AS is_intermittent
@@ -29,10 +29,10 @@ CREATE OR REPLACE VIEW waterway_z4 AS
 (
 SELECT geometry,
        'river'::text AS class,
-       NULL::text    AS name,
-       NULL::text    AS name_en,
-       NULL::text    AS name_de,
-       NULL::hstore  AS tags,
+       NULL::text AS name,
+       NULL::text AS name_en,
+       NULL::text AS name_de,
+       NULL::hstore AS tags,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
        NULL::boolean AS is_intermittent
@@ -45,10 +45,10 @@ CREATE OR REPLACE VIEW waterway_z6 AS
 (
 SELECT geometry,
        'river'::text AS class,
-       NULL::text    AS name,
-       NULL::text    AS name_en,
-       NULL::text    AS name_de,
-       NULL::hstore  AS tags,
+       NULL::text AS name,
+       NULL::text AS name_en,
+       NULL::text AS name_de,
+       NULL::hstore AS tags,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
        NULL::boolean AS is_intermittent
@@ -167,11 +167,11 @@ AS
 $$
 SELECT geometry,
        class,
-       NULLIF(name, '')                             AS name,
-       COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+       NULLIF(name, '') AS name,
+       COALESCE(NULLIF(name_en, ''), name) AS name_en,
        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
-       waterway_brunnel(is_bridge, is_tunnel)       AS brunnel,
-       is_intermittent::int                         AS intermittent,
+       waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
+       is_intermittent::int AS intermittent,
        tags
 FROM (
          -- etldoc: waterway_z3 ->  layer_waterway:z3

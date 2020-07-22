@@ -26,7 +26,7 @@ FROM (
                 name,
                 name_en,
                 name_de,
-                slice_language_tags(tags)        AS tags
+                slice_language_tags(tags) AS tags
          FROM osm_waterway_linestring
          WHERE name <> ''
            AND waterway = 'river'
@@ -143,7 +143,7 @@ BEGIN
                     w.name,
                     w.name_en,
                     w.name_de,
-                    slice_language_tags(w.tags)      AS tags
+                    slice_language_tags(w.tags) AS tags
              FROM osm_waterway_linestring AS w
                       JOIN waterway_important.changes AS c ON
                      w.name = c.name AND w.name_en IS NOT DISTINCT FROM c.name_en AND
