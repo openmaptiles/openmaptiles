@@ -1,8 +1,6 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_marine_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON water_name_marine.updates;
 
-CREATE EXTENSION IF NOT EXISTS unaccent;
-
 CREATE OR REPLACE FUNCTION update_osm_marine_point() RETURNS void AS
 $$
 BEGIN
