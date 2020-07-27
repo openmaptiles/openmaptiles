@@ -105,6 +105,24 @@ AS $$
             WHERE zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
+    WHERE
+        subclass NOT IN ('yes', 'Yes', 'no', 'No', 'none')
+        AND CASE
+            WHEN mapping_key = 'amenity' THEN
+                subclass NOT IN (
+                    'bench', 'drinking_water', 'fountain', 'parking_entrance',
+                    'parking_space', 'vending_machine', 'waste_disposal',
+                    'water_point'
+                )
+            WHEN mapping_key = 'shop' THEN
+                subclass NOT IN ('vacant')
+            WHEN mapping_key = 'leisure' THEN
+                subclass NOT IN (
+                    'common', 'nature_reserve', 'picnic_table',
+                    'swimming_pool', 'track'
+                )
+            ELSE true
+        END
     ;
 $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
 
