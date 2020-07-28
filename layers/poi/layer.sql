@@ -54,7 +54,7 @@ AS $$
                 THEN NULLIF(information, '')
             WHEN subclass = 'place_of_worship'
                 THEN NULLIF(religion, '')
-            WHEN subclass = 'pitch'
+            WHEN subclass IN ('pitch', 'sports_centre')
                 THEN NULLIF(sport, '')
             ELSE subclass
         END AS subclass,
