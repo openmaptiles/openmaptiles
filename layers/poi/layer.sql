@@ -110,16 +110,16 @@ AS $$
         AND CASE
             WHEN mapping_key = 'amenity' THEN
                 subclass NOT IN (
-                    'bench', 'drinking_water', 'fountain', 'parking_entrance',
-                    'parking_space', 'vending_machine', 'waste_disposal',
-                    'water_point'
+                    'bench', 'clock', 'drinking_water', 'fountain', 'parking_entrance',
+                    'parking_space', 'photo_booth', 'reception_desk', 'ticket_validator',
+                    'vending_machine', 'waste_disposal', 'water_point'
                 )
             WHEN mapping_key = 'shop' THEN
                 subclass NOT IN ('vacant')
             WHEN mapping_key = 'leisure' THEN
                 subclass NOT IN (
                     'common', 'nature_reserve', 'picnic_table',
-                    'swimming_pool', 'track'
+                    'slipway', 'swimming_pool', 'track'
                 )
             ELSE true
         END
