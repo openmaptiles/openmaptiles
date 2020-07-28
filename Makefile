@@ -76,10 +76,10 @@ ifeq ($(strip $(area)),)
   # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
   data_files := $(wildcard data/*.osm.pbf)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    AREA_ERROR := The 'area' parameter or environment variable have not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
   else
     ifeq ($(word 1,$(data_files)),)
-      AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
+      AREA_ERROR := The 'area' parameter or environment variable have not been set, and there is no data/*.osm.pbf file
     else
       # Keep just the name of the data file, without the .osm.pbf extension
       area := $(strip $(basename $(basename $(notdir $(data_files)))))
@@ -89,9 +89,9 @@ ifeq ($(strip $(area)),)
         $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
         area := $(area:-latest=)
         $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
-        AREA_INFO := Detected area=$(area) based on the found data/$(area)-latest.osm.pbf (renamed to $(area).osm.pbf). Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area)-latest.osm.pbf file - renamed to $(area).osm.pbf. Use 'area' parameter or environment variable to override.
       else
-        AREA_INFO := Detected area=$(area) based on the found data/ pbf file. Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area).pbf file. Use 'area' parameter or environment variable to override.
       endif
     endif
   endif
