@@ -53,6 +53,7 @@ endif
 
 # Set OpenMapTiles host
 OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+export OMT_HOST
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
