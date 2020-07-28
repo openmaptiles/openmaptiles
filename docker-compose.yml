@@ -83,7 +83,7 @@ services:
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    command: "postserve openmaptiles.yaml --verbose --port ${PPORT:-8090}"
+    command: "postserve openmaptiles.yaml --verbose --serve=${OMT_HOST:-localhost}:${PPORT:-8090}"
     env_file: .env
     networks:
       - postgres_conn
