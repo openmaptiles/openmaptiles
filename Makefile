@@ -11,7 +11,7 @@ include .env
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
+DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
 
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
 USE_PRELOADED_IMAGE ?=
@@ -327,24 +327,32 @@ endif
 psql: start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
+# Special cache handling for Docker Toolbox on Windows
+ifeq ($(MSYSTEM),MINGW64)
+  DC_CONFIG_CACHE := -f docker-compose.yml -f docker-compose-$(MSYSTEM).yml
+  DC_OPTS_CACHE := $(strip $(filter-out --user=%,$(DC_OPTS)))
+else
+  DC_OPTS_CACHE := $(DC_OPTS)
+endif
+
 .PHONY: import-osm
 import-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
 import-data: start-db
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
 .PHONY: import-borders
 import-borders: start-db-nowait
@@ -446,7 +454,7 @@ bash: init-dirs
 
 .PHONY: import-wikidata
 import-wikidata: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: reset-db-stats
 reset-db-stats: init-dirs
