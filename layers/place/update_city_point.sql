@@ -20,16 +20,16 @@ BEGIN
              osm_city_point AS osm
         WHERE (
                 (osm.tags ? 'wikidata' AND osm.tags->'wikidata' = ne.wikidataid) OR
-                ne.name ILIKE replace(osm.name, '\', '\\') OR
-                ne.name ILIKE replace(osm.name_en, '\', '\\') OR
-                ne.namealt ILIKE replace(osm.name, '\', '\\') OR
-                ne.namealt ILIKE replace(osm.name_en, '\', '\\') OR
-                ne.meganame ILIKE replace(osm.name, '\', '\\') OR
-                ne.meganame ILIKE replace(osm.name_en, '\', '\\') OR
-                ne.gn_ascii ILIKE replace(osm.name, '\', '\\') OR
-                ne.gn_ascii ILIKE replace(osm.name_en, '\', '\\') OR
-                ne.nameascii ILIKE replace(osm.name, '\', '\\') OR
-                ne.nameascii ILIKE replace(osm.name_en, '\', '\\') OR
+                ne.name ILIKE TRIM(TRAILING '\' FROM osm.name) OR
+                ne.name ILIKE TRIM(TRAILING '\' FROM osm.name_en) OR
+                ne.namealt ILIKE TRIM(TRAILING '\' FROM osm.name) OR
+                ne.namealt ILIKE TRIM(TRAILING '\' FROM osm.name_en)OR
+                ne.meganame ILIKE TRIM(TRAILING '\' FROM osm.name) OR
+                ne.meganame ILIKE TRIM(TRAILING '\' FROM osm.name_en) OR
+                ne.gn_ascii ILIKE TRIM(TRAILING '\' FROM osm.name) OR
+                ne.gn_ascii ILIKE TRIM(TRAILING '\' FROM osm.name_en) OR
+                ne.nameascii ILIKE TRIM(TRAILING '\' FROM osm.name) OR
+                ne.nameascii ILIKE TRIM(TRAILING '\' FROM osm.name_en) OR
                 ne.name = unaccent(osm.name)
             )
           AND osm.place IN ('city', 'town', 'village')
