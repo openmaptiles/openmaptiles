@@ -20,16 +20,16 @@ BEGIN
              osm_city_point AS osm
         WHERE (
                 (osm.tags ? 'wikidata' AND osm.tags->'wikidata' = ne.wikidataid) OR
-                ne.name ILIKE osm.name OR
-                ne.name ILIKE osm.name_en OR
-                ne.namealt ILIKE osm.name OR
-                ne.namealt ILIKE osm.name_en OR
-                ne.meganame ILIKE osm.name OR
-                ne.meganame ILIKE osm.name_en OR
-                ne.gn_ascii ILIKE osm.name OR
-                ne.gn_ascii ILIKE osm.name_en OR
-                ne.nameascii ILIKE osm.name OR
-                ne.nameascii ILIKE osm.name_en OR
+                lower(ne.name) = lower(osm.name) OR
+                lower(ne.name) = lower(osm.name_en) OR
+                lower(ne.namealt) = lower(osm.name) OR
+                lower(ne.namealt) = lower(osm.name_en) OR
+                lower(ne.meganame) = lower(osm.name) OR
+                lower(ne.meganame) = lower(osm.name_en) OR
+                lower(ne.gn_ascii) = lower(osm.name) OR
+                lower(ne.gn_ascii) = lower(osm.name_en) OR
+                lower(ne.nameascii) = lower(osm.name) OR
+                lower(ne.nameascii) = lower(osm.name_en) OR
                 ne.name = unaccent(osm.name)
             )
           AND osm.place IN ('city', 'town', 'village')
