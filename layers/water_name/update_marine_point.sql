@@ -16,9 +16,7 @@ BEGIN
         SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, ne.scalerank, osm.is_intermittent
         FROM ne_10m_geography_marine_polys AS ne,
              osm_marine_point AS osm
-        WHERE lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) = lower(osm.name)
-           OR lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) = lower(osm.tags->'name:en')
-           OR lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) = lower(osm.tags->'name:es')
+        WHERE lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) IN (lower(osm.name), lower(osm.tags->'name:en'), lower(osm.tags->'name:es'))
            OR substring(lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) FROM 1 FOR length(lower(osm.name))) = lower(osm.name)
     )
     UPDATE osm_marine_point AS osm
