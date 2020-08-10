@@ -1,6 +1,3 @@
-DROP TRIGGER IF EXISTS trigger_flag_transportation_name ON osm_route_member;
-
-
 -- create GBR relations (so we can use it in the same way as other relations)
 CREATE OR REPLACE FUNCTION update_gbr_route_members() RETURNS void AS
 $$
