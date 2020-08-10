@@ -364,7 +364,7 @@ import-borders: start-db-nowait
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
+	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
 
 ifneq ($(wildcard $(AREA_DC_CONFIG_FILE)),)
   DC_CONFIG_TILES := -f docker-compose.yml -f $(AREA_DC_CONFIG_FILE)
