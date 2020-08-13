@@ -30,7 +30,7 @@ FROM (
                         LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
-                    )     AS class,
+                    ) AS class,
                 name,
                 name_en,
                 name_de,
@@ -171,7 +171,7 @@ FROM (
                         LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
-                    )          AS class,
+                    ) AS class,
                 name,
                 name_en,
                 name_de,
@@ -182,7 +182,7 @@ FROM (
                         (CASE WHEN boundary = 'national_park' THEN TRUE ELSE FALSE END) DESC,
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                         area DESC
-                    )::int     AS "rank"
+                    )::int AS "rank"
          FROM (
                   -- etldoc: osm_park_polygon_gen8 -> layer_park:z6
                   SELECT osm_id,
@@ -198,6 +198,7 @@ FROM (
                   FROM osm_park_polygon_gen8
                   WHERE zoom_level = 6
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen7 -> layer_park:z7
@@ -214,6 +215,7 @@ FROM (
                   FROM osm_park_polygon_gen7
                   WHERE zoom_level = 7
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen6 -> layer_park:z8
@@ -230,6 +232,7 @@ FROM (
                   FROM osm_park_polygon_gen6
                   WHERE zoom_level = 8
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen5 -> layer_park:z9
@@ -246,6 +249,7 @@ FROM (
                   FROM osm_park_polygon_gen5
                   WHERE zoom_level = 9
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen4 -> layer_park:z10
@@ -262,6 +266,7 @@ FROM (
                   FROM osm_park_polygon_gen4
                   WHERE zoom_level = 10
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen3 -> layer_park:z11
@@ -278,6 +283,7 @@ FROM (
                   FROM osm_park_polygon_gen3
                   WHERE zoom_level = 11
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen2 -> layer_park:z12
@@ -294,6 +300,7 @@ FROM (
                   FROM osm_park_polygon_gen2
                   WHERE zoom_level = 12
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon_gen1 -> layer_park:z13
@@ -310,6 +317,7 @@ FROM (
                   FROM osm_park_polygon_gen1
                   WHERE zoom_level = 13
                     AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
                   UNION ALL
 
                   -- etldoc: osm_park_polygon -> layer_park:z14
@@ -328,5 +336,6 @@ FROM (
                     AND geometry_point && bbox
               ) AS park_point
      ) AS park_all;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
+-- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL

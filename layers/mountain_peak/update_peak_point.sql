@@ -1,57 +1,32 @@
-DROP TRIGGER IF EXISTS trigger_flag ON osm_peak_point;
-DROP TRIGGER IF EXISTS trigger_refresh ON mountain_peak_point.updates;
+DROP TRIGGER IF EXISTS trigger_update_point ON osm_peak_point;
 
 -- etldoc:  osm_peak_point ->  osm_peak_point
-CREATE OR REPLACE FUNCTION update_osm_peak_point() RETURNS void AS
+CREATE OR REPLACE FUNCTION update_osm_peak_point(new_osm_id bigint) RETURNS void AS
 $$
-BEGIN
-    UPDATE osm_peak_point
-    SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+UPDATE osm_peak_point
+SET tags = update_tags(tags, geometry)
+WHERE (new_osm_id IS NULL OR osm_id = new_osm_id)
+  AND COALESCE(tags -> 'name:latin', tags -> 'name:nonlatin', tags -> 'name_int') IS NULL
+  AND tags != update_tags(tags, geometry)
+$$ LANGUAGE SQL;
 
-END;
-$$ LANGUAGE plpgsql;
-
-SELECT update_osm_peak_point();
+SELECT update_osm_peak_point(NULL);
 
 -- Handle updates
 
 CREATE SCHEMA IF NOT EXISTS mountain_peak_point;
 
-CREATE TABLE IF NOT EXISTS mountain_peak_point.updates
-(
-    id serial PRIMARY KEY,
-    t  text,
-    UNIQUE (t)
-);
-CREATE OR REPLACE FUNCTION mountain_peak_point.flag() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION mountain_peak_point.update() RETURNS trigger AS
 $$
 BEGIN
-    INSERT INTO mountain_peak_point.updates(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
+    PERFORM update_osm_peak_point(new.osm_id);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION mountain_peak_point.refresh() RETURNS trigger AS
-$$
-BEGIN
-    RAISE LOG 'Refresh mountain_peak_point';
-    PERFORM update_osm_peak_point();
-    -- noinspection SqlWithoutWhere
-    DELETE FROM mountain_peak_point.updates;
-    RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+CREATE CONSTRAINT TRIGGER trigger_update_point
+    AFTER INSERT OR UPDATE
     ON osm_peak_point
-    FOR EACH STATEMENT
-EXECUTE PROCEDURE mountain_peak_point.flag();
-
-CREATE CONSTRAINT TRIGGER trigger_refresh
-    AFTER INSERT
-    ON mountain_peak_point.updates
     INITIALLY DEFERRED
     FOR EACH ROW
-EXECUTE PROCEDURE mountain_peak_point.refresh();
+EXECUTE PROCEDURE mountain_peak_point.update();

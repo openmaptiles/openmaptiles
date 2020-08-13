@@ -6,9 +6,12 @@
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
+# Make all .env variables available for make targets
+include .env
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
+DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
 
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
 USE_PRELOADED_IMAGE ?=
@@ -50,6 +53,7 @@ endif
 
 # Set OpenMapTiles host
 OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+export OMT_HOST
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
@@ -73,10 +77,10 @@ ifeq ($(strip $(area)),)
   # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
   data_files := $(wildcard data/*.osm.pbf)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    AREA_ERROR := The 'area' parameter or environment variable have not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
   else
     ifeq ($(word 1,$(data_files)),)
-      AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
+      AREA_ERROR := The 'area' parameter or environment variable have not been set, and there is no data/*.osm.pbf file
     else
       # Keep just the name of the data file, without the .osm.pbf extension
       area := $(strip $(basename $(basename $(notdir $(data_files)))))
@@ -86,9 +90,9 @@ ifeq ($(strip $(area)),)
         $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
         area := $(area:-latest=)
         $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
-        AREA_INFO := Detected area=$(area) based on the found data/$(area)-latest.osm.pbf (renamed to $(area).osm.pbf). Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area)-latest.osm.pbf file - renamed to $(area).osm.pbf. Use 'area' parameter or environment variable to override.
       else
-        AREA_INFO := Detected area=$(area) based on the found data/ pbf file. Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area).pbf file. Use 'area' parameter or environment variable to override.
       endif
     endif
   endif
@@ -113,8 +117,12 @@ export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
-# Location of the dynamically-generated imposm config file
-export IMPOSM_CONFIG_FILE ?= data/$(area).repl.json
+ifeq ($(strip $(DIFF_MODE)),true)
+  # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
+  # For static (no-updates) import, we don't need to override the default value
+  # For the update mode, set location of the dynamically-generated area-based config file
+  export IMPOSM_CONFIG_FILE = data/$(area).repl.json
+endif
 
 # download-osm generates this file with metadata about the file
 AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
@@ -274,19 +282,33 @@ ifneq ($(strip $(url)),)
 	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
 endif
 ifeq (,$(wildcard $(PBF_FILE)))
-	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
-	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c ' \
-		if [[ "$$DIFF_MODE" == "true" ]]; then \
-			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+ ifeq ($(strip $(DIFF_MODE)),true)
+	@echo "Downloading $(DOWNLOAD_AREA) with replication support into $(PBF_FILE) and $(IMPOSM_CONFIG_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
 				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
-				--output "$(PBF_FILE)" ; \
-		else \
-			download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
-				--output "$(PBF_FILE)" ; \
-		fi'
+				--output "$(PBF_FILE)"
+ else
+	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--output "$(PBF_FILE)"
+ endif
 	@echo ""
 else
+ ifeq ($(strip $(DIFF_MODE)),true)
+  ifeq (,$(wildcard $(IMPOSM_CONFIG_FILE)))
+	$(error \
+		$(newline)   Data files $(PBF_FILE) already exists, but $(IMPOSM_CONFIG_FILE) does not. \
+		$(newline)   You probably downloaded the data file before setting DIFF_MODE=true. \
+		$(newline)   You can delete the data file  $(PBF_FILE) and re-run  make download \
+		$(newline)   to re-download and generate config, or manually create  $(IMPOSM_CONFIG_FILE) \
+		$(newline)   See example    https://github.com/openmaptiles/openmaptiles-tools/blob/v5.2/bin/config/repl_config.json \
+		$(newline))
+  else
+	@echo "Data files $(PBF_FILE) and replication config $(IMPOSM_CONFIG_FILE) already exists, skipping the download."
+  endif
+ else
 	@echo "Data files $(PBF_FILE) already exists, skipping the download."
+ endif
 endif
 
 .PHONY: generate-dc-config
@@ -305,22 +327,32 @@ endif
 psql: start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
+# Special cache handling for Docker Toolbox on Windows
+ifeq ($(MSYSTEM),MINGW64)
+  DC_CONFIG_CACHE := -f docker-compose.yml -f docker-compose-$(MSYSTEM).yml
+  DC_OPTS_CACHE := $(strip $(filter-out --user=%,$(DC_OPTS)))
+else
+  DC_OPTS_CACHE := $(DC_OPTS)
+endif
+
 .PHONY: import-osm
 import-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
 import-data: start-db
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
 .PHONY: import-borders
 import-borders: start-db-nowait
@@ -332,7 +364,7 @@ import-borders: start-db-nowait
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
+	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
 
 ifneq ($(wildcard $(AREA_DC_CONFIG_FILE)),)
   DC_CONFIG_TILES := -f docker-compose.yml -f $(AREA_DC_CONFIG_FILE)
@@ -422,7 +454,7 @@ bash: init-dirs
 
 .PHONY: import-wikidata
 import-wikidata: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
 
 .PHONY: reset-db-stats
 reset-db-stats: init-dirs

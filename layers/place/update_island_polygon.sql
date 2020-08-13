@@ -24,7 +24,7 @@ CREATE SCHEMA IF NOT EXISTS place_island_polygon;
 CREATE TABLE IF NOT EXISTS place_island_polygon.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION place_island_polygon.flag() RETURNS trigger AS

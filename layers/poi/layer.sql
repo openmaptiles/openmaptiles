@@ -20,13 +20,13 @@ CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_wi
             )
 AS
 $$
-SELECT osm_id_hash                                  AS osm_id,
+SELECT osm_id_hash AS osm_id,
        geometry,
-       NULLIF(name, '')                             AS name,
-       COALESCE(NULLIF(name_en, ''), name)          AS name_en,
+       NULLIF(name, '') AS name,
+       COALESCE(NULLIF(name_en, ''), name) AS name_en,
        COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
        tags,
-       poi_class(subclass, mapping_key)             AS class,
+       poi_class(subclass, mapping_key) AS class,
        CASE
            WHEN subclass = 'information'
                THEN NULLIF(information, '')
@@ -35,15 +35,15 @@ SELECT osm_id_hash                                  AS osm_id,
            WHEN subclass = 'pitch'
                THEN NULLIF(sport, '')
            ELSE subclass
-           END                                      AS subclass,
+           END AS subclass,
        agg_stop,
-       NULLIF(layer, 0)                             AS layer,
+       NULLIF(layer, 0) AS layer,
        "level",
-       CASE WHEN indoor = TRUE THEN 1 END           AS indoor,
+       CASE WHEN indoor = TRUE THEN 1 END AS indoor,
        row_number() OVER (
            PARTITION BY LabelGrid(geometry, 100 * pixel_width)
            ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_class_rank(poi_class(subclass, mapping_key)) END ASC
-           )::int                                   AS "rank"
+           )::int AS "rank"
 FROM (
          -- etldoc: osm_poi_point ->  layer_poi:z12
          -- etldoc: osm_poi_point ->  layer_poi:z13
@@ -73,7 +73,7 @@ FROM (
                 CASE
                     WHEN osm_id < 0 THEN -osm_id * 10 + 4
                     ELSE osm_id * 10 + 1
-                    END       AS osm_id_hash
+                    END AS osm_id_hash
          FROM osm_poi_polygon
          WHERE geometry && bbox
            AND zoom_level BETWEEN 12 AND 13
@@ -88,11 +88,12 @@ FROM (
                 CASE
                     WHEN osm_id < 0 THEN -osm_id * 10 + 4
                     ELSE osm_id * 10 + 1
-                    END       AS osm_id_hash
+                    END AS osm_id_hash
          FROM osm_poi_polygon
          WHERE geometry && bbox
            AND zoom_level >= 14
      ) AS poi_union
 ORDER BY "rank"
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
+-- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL

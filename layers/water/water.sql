@@ -32,7 +32,7 @@ FROM ne_110m_ocean
 UNION ALL
 -- etldoc:  ne_110m_lakes ->  water_z0
 SELECT geometry,
-       'lake'::text  AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -51,7 +51,7 @@ FROM ne_110m_ocean
 UNION ALL
 -- etldoc:  ne_110m_lakes ->  water_z1
 SELECT geometry,
-       'lake'::text  AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -70,7 +70,7 @@ FROM ne_50m_ocean
 UNION ALL
 -- etldoc:  ne_50m_lakes ->  water_z2
 SELECT geometry,
-       'lake'::text  AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -89,7 +89,7 @@ FROM ne_50m_ocean
 UNION ALL
 -- etldoc:  ne_10m_lakes ->  water_z4
 SELECT geometry,
-       'lake'::text  AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -108,7 +108,7 @@ FROM ne_10m_ocean
 UNION ALL
 -- etldoc:  ne_10m_lakes ->  water_z5
 SELECT geometry,
-       'lake'::text  AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -129,8 +129,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen6
 WHERE "natural" != 'bay'
     );
@@ -149,8 +149,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen5
 WHERE "natural" != 'bay'
     );
@@ -169,8 +169,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen4
 WHERE "natural" != 'bay'
     );
@@ -189,8 +189,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen3
 WHERE "natural" != 'bay'
     );
@@ -209,8 +209,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen2
 WHERE "natural" != 'bay'
     );
@@ -229,8 +229,8 @@ UNION ALL
 SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
-       NULL::boolean         AS is_bridge,
-       NULL::boolean         AS is_tunnel
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
 FROM osm_water_polygon_gen1
 WHERE "natural" != 'bay'
     );
@@ -311,7 +311,7 @@ $$
 SELECT geometry,
        class::text,
        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
-       is_intermittent::int                   AS intermittent
+       is_intermittent::int AS intermittent
 FROM (
          -- etldoc: water_z0 ->  layer_water:z0
          SELECT *
@@ -385,5 +385,6 @@ FROM (
          WHERE zoom_level >= 14
      ) AS zoom_levels
 WHERE geometry && bbox;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;

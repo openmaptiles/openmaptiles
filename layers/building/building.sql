@@ -9,15 +9,15 @@ CREATE OR REPLACE VIEW osm_all_buildings AS
 SELECT
     -- etldoc: osm_building_relation -> layer_building:z14_
     -- Buildings built from relations
-    member                                                               AS osm_id,
+    member AS osm_id,
     geometry,
-    COALESCE(CleanNumeric(height), CleanNumeric(buildingheight))         AS height,
+    COALESCE(CleanNumeric(height), CleanNumeric(buildingheight)) AS height,
     COALESCE(CleanNumeric(min_height), CleanNumeric(buildingmin_height)) AS min_height,
-    COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels))         AS levels,
-    COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level))   AS min_level,
-    nullif(material, '')                                                 AS material,
-    nullif(colour, '')                                                   AS colour,
-    FALSE                                                                AS hide_3d
+    COALESCE(CleanNumeric(levels), CleanNumeric(buildinglevels)) AS levels,
+    COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) AS min_level,
+    nullif(material, '') AS material,
+    nullif(colour, '') AS colour,
+    FALSE AS hide_3d
 FROM osm_building_relation
 WHERE building = ''
   AND ST_GeometryType(geometry) = 'ST_Polygon'
@@ -28,13 +28,13 @@ SELECT
     -- Standalone buildings
     obp.osm_id,
     obp.geometry,
-    COALESCE(CleanNumeric(obp.height), CleanNumeric(obp.buildingheight))         AS height,
+    COALESCE(CleanNumeric(obp.height), CleanNumeric(obp.buildingheight)) AS height,
     COALESCE(CleanNumeric(obp.min_height), CleanNumeric(obp.buildingmin_height)) AS min_height,
-    COALESCE(CleanNumeric(obp.levels), CleanNumeric(obp.buildinglevels))         AS levels,
-    COALESCE(CleanNumeric(obp.min_level), CleanNumeric(obp.buildingmin_level))   AS min_level,
-    nullif(obp.material, '')                                                     AS material,
-    nullif(obp.colour, '')                                                       AS colour,
-    obr.role IS NOT NULL                                                         AS hide_3d
+    COALESCE(CleanNumeric(obp.levels), CleanNumeric(obp.buildinglevels)) AS levels,
+    COALESCE(CleanNumeric(obp.min_level), CleanNumeric(obp.buildingmin_level)) AS min_level,
+    nullif(obp.material, '') AS material,
+    nullif(obp.colour, '') AS colour,
+    obr.role IS NOT NULL AS hide_3d
 FROM osm_building_polygon obp
          LEFT JOIN osm_building_relation obr ON
         obp.osm_id >= 0 AND
@@ -78,19 +78,19 @@ SELECT geometry,
                             WHEN 'timber_framing' THEN '#b3b0a9'
                             WHEN 'sandstone' THEN '#b4a995' -- same as stone
                             WHEN 'clay' THEN '#9d8b75' -- same as mud
-           END)                        AS colour,
+           END) AS colour,
        CASE WHEN hide_3d THEN TRUE END AS hide_3d
 FROM (
          SELECT
-             -- etldoc: osm_building_polygon_gen1 -> layer_building:z13
+             -- etldoc: osm_building_block_gen1 -> layer_building:z13
              osm_id,
              geometry,
-             NULL::int  AS render_height,
-             NULL::int  AS render_min_height,
+             NULL::int AS render_height,
+             NULL::int AS render_min_height,
              NULL::text AS material,
              NULL::text AS colour,
-             FALSE      AS hide_3d
-         FROM osm_building_polygon_gen1
+             FALSE AS hide_3d
+         FROM osm_building_block_gen1
          WHERE zoom_level = 13
            AND geometry && bbox
          UNION ALL
@@ -98,7 +98,7 @@ FROM (
                                   -- etldoc: osm_building_polygon -> layer_building:z14_
              DISTINCT ON (osm_id) osm_id,
                                   geometry,
-                                  ceil(COALESCE(height, levels * 3.66, 5))::int         AS render_height,
+                                  ceil(COALESCE(height, levels * 3.66, 5))::int AS render_height,
                                   floor(COALESCE(min_height, min_level * 3.66, 0))::int AS render_min_height,
                                   material,
                                   colour,
@@ -112,6 +112,9 @@ FROM (
            AND geometry && bbox
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL STABLE
+                -- STRICT
+                PARALLEL SAFE
+                ;
 
 -- not handled: where a building outline covers building parts

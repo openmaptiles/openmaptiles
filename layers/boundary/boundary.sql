@@ -206,18 +206,21 @@ SELECT CASE
                THEN replace(SUBSTRING(name, POSITION(' at ' IN name) + 4), ' ', '')
            ELSE replace(replace(name, ' ', ''), 'Extentof', '')
            END;
-$$ LANGUAGE SQL IMMUTABLE;
+$$ LANGUAGE SQL IMMUTABLE
+                -- STRICT
+                PARALLEL SAFE
+                ;
 
 
 -- etldoc: ne_110m_admin_0_boundary_lines_land  -> boundary_z0
 CREATE OR REPLACE VIEW boundary_z0 AS
 (
 SELECT geometry,
-       2                                                                AS admin_level,
+       2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL::text                                                       AS disputed_name,
-       NULL::text                                                       AS claimed_by,
-       FALSE                                                            AS maritime
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
+       FALSE AS maritime
 FROM ne_110m_admin_0_boundary_lines_land
     );
 
@@ -227,24 +230,24 @@ FROM ne_110m_admin_0_boundary_lines_land
 CREATE OR REPLACE VIEW boundary_z1 AS
 (
 SELECT geometry,
-       2                                                                AS admin_level,
+       2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL                                                             AS disputed_name,
-       NULL                                                             AS claimed_by,
-       FALSE                                                            AS maritime
+       NULL AS disputed_name,
+       NULL AS claimed_by,
+       FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
 UNION ALL
 SELECT geometry,
-       4     AS admin_level,
+       4 AS admin_level,
        FALSE AS disputed,
-       NULL  AS disputed_name,
-       NULL  AS claimed_by,
+       NULL AS disputed_name,
+       NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_1_states_provinces_lines
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -258,24 +261,24 @@ FROM osm_border_disp_linestring_gen11
 CREATE OR REPLACE VIEW boundary_z3 AS
 (
 SELECT geometry,
-       2                                                                AS admin_level,
+       2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL                                                             AS disputed_name,
-       NULL                                                             AS claimed_by,
-       FALSE                                                            AS maritime
+       NULL AS disputed_name,
+       NULL AS claimed_by,
+       FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
 UNION ALL
 SELECT geometry,
-       4     AS admin_level,
+       4 AS admin_level,
        FALSE AS disputed,
-       NULL  AS disputed_name,
-       NULL  AS claimed_by,
+       NULL AS disputed_name,
+       NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_1_states_provinces_lines
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -290,19 +293,19 @@ FROM osm_border_disp_linestring_gen11
 CREATE OR REPLACE VIEW boundary_z4 AS
 (
 SELECT geometry,
-       2                                                                AS admin_level,
+       2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL                                                             AS disputed_name,
-       NULL                                                             AS claimed_by,
-       FALSE                                                            AS maritime
+       NULL AS disputed_name,
+       NULL AS claimed_by,
+       FALSE AS maritime
 FROM ne_10m_admin_0_boundary_lines_land
 WHERE featurecla <> 'Lease limit'
 UNION ALL
 SELECT geometry,
-       4     AS admin_level,
+       4 AS admin_level,
        FALSE AS disputed,
-       NULL  AS disputed_name,
-       NULL  AS claimed_by,
+       NULL AS disputed_name,
+       NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_1_states_provinces_lines
 WHERE min_zoom <= 5
@@ -319,7 +322,7 @@ WHERE maritime = TRUE
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -342,7 +345,7 @@ WHERE admin_level <= 4
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -365,7 +368,7 @@ WHERE admin_level <= 4
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -388,7 +391,7 @@ WHERE admin_level <= 6
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -411,7 +414,7 @@ WHERE admin_level <= 6
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -434,7 +437,7 @@ WHERE admin_level <= 6
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -457,7 +460,7 @@ WHERE admin_level <= 6
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -480,7 +483,7 @@ WHERE admin_level <= 8
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -502,7 +505,7 @@ WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen2
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -524,7 +527,7 @@ WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen1
 UNION ALL
 SELECT geometry,
        admin_level,
-       TRUE            AS disputed,
+       TRUE AS disputed,
        edit_name(name) AS disputed_name,
        claimed_by,
        maritime
@@ -625,5 +628,6 @@ FROM (
          WHERE geometry && bbox
            AND zoom_level >= 13
      ) AS zoom_levels;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;

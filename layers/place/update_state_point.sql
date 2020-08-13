@@ -61,7 +61,7 @@ CREATE SCHEMA IF NOT EXISTS place_state;
 CREATE TABLE IF NOT EXISTS place_state.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION place_state.flag() RETURNS trigger AS

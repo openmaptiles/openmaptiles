@@ -36,10 +36,14 @@ services:
       MAKE_DC_VERSION: "2.3"
       # Allow DIFF_MODE to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
+      # Imposm configuration file describes how to load updates when enabled
+      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       # Which files to use during import-borders processing
       BORDERS_CLEANUP_FILE: ${BORDERS_CLEANUP_FILE}
       BORDERS_PBF_FILE: ${BORDERS_PBF_FILE}
       BORDERS_CSV_FILE: ${BORDERS_CSV_FILE}
+      # Control import-sql processes
+      MAX_PARALLEL_PSQL: ${MAX_PARALLEL_PSQL}
     networks:
       - postgres_conn
     volumes:
@@ -61,7 +65,6 @@ services:
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
-      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
 
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -74,14 +77,13 @@ services:
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
-      IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    command: "postserve openmaptiles.yaml --verbose --port ${PPORT:-8090}"
+    command: "postserve openmaptiles.yaml --verbose --serve=${OMT_HOST:-localhost}:${PPORT:-8090}"
     env_file: .env
     networks:
       - postgres_conn
