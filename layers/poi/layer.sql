@@ -1,3 +1,33 @@
+-- Filter the imported POIs, mostly by blacklisting some subclasses.
+CREATE OR REPLACE FUNCTION poi_filter(
+    name varchar,
+    subclass varchar,
+    mapping_key varchar
+)
+RETURNS BOOLEAN AS $$
+SELECT
+    CASE
+        WHEN mapping_key = 'amenity' THEN
+            LOWER(subclass) NOT IN (
+                'yes', 'no', 'none', 'bench', 'clock', 'drinking_water',
+                'fountain', 'parking_entrance', 'parking_space', 'photo_booth',
+                'reception_desk', 'ticket_validator', 'vending_machine',
+                'waste_disposal', 'water_point'
+            )
+        WHEN mapping_key = 'leisure' THEN
+            LOWER(subclass) NOT IN (
+                'yes', 'no', 'none', 'common', 'nature_reserve',
+                'picnic_table', 'slipway', 'swimming_pool', 'track'
+            )
+        WHEN mapping_key = 'office' THEN
+            name <> '' AND LOWER(subclass) NOT IN ('no', 'none')
+        WHEN mapping_key = 'shop' THEN
+            LOWER(subclass) NOT IN ('yes', 'no', 'none', 'vacant')
+        ELSE
+            LOWER(subclass) NOT IN ('yes', 'no', 'none')
+    END;
+$$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
+
 -- Compute the weight of an OSM POI, primarily this function relies on the
 -- count of page views for the Wikipedia pages of this POI.
 CREATE OR REPLACE FUNCTION poi_display_weight(
@@ -105,25 +135,7 @@ AS $$
             WHERE zoom_level >= 14
                 AND (name <> '' OR (subclass <> 'garden' AND subclass <> 'park'))
         ) as poi_union
-    WHERE
-        subclass NOT IN ('yes', 'Yes', 'no', 'No', 'none')
-        AND CASE
-            WHEN mapping_key = 'amenity' THEN
-                subclass NOT IN (
-                    'bench', 'clock', 'drinking_water', 'fountain', 'parking_entrance',
-                    'parking_space', 'photo_booth', 'reception_desk', 'ticket_validator',
-                    'vending_machine', 'waste_disposal', 'water_point'
-                )
-            WHEN mapping_key = 'shop' THEN
-                subclass NOT IN ('vacant')
-            WHEN mapping_key = 'leisure' THEN
-                subclass NOT IN (
-                    'common', 'nature_reserve', 'picnic_table',
-                    'slipway', 'swimming_pool', 'track'
-                )
-            ELSE true
-        END
-    ;
+    WHERE poi_filter(name, subclass, mapping_key);
 $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
 
 -- etldoc: layer_poi[shape=record fillcolor=lightpink, style="rounded,filled",

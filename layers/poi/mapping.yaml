@@ -109,6 +109,7 @@ def_poi_mapping: &poi_mapping
   historic: *poi_mapping_historic
   landuse: *poi_mapping_landuse
   leisure: [__any__]
+  office: [__any__]
   railway: *poi_mapping_railway
   shop: [__any__]
   sport: [__any__]
