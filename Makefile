@@ -377,7 +377,7 @@ generate-tiles: all start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) openmaptiles-tools \
-			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" ./$(TILESET_DEF) --auto-minmax --show-ranges
+			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_DEF) --auto-minmax --show-ranges
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
