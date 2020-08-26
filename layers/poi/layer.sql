@@ -14,6 +14,8 @@ SELECT
                 'reception_desk', 'ticket_validator', 'vending_machine',
                 'waste_disposal', 'water_point'
             )
+        WHEN mapping_key = 'healthcare' THEN
+            name <> ''
         WHEN mapping_key = 'leisure' THEN
             LOWER(subclass) NOT IN (
                 'yes', 'no', 'none', 'common', 'nature_reserve',

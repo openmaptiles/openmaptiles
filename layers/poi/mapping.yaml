@@ -105,6 +105,7 @@ def_poi_mapping: &poi_mapping
   barrier: *poi_mapping_barrier
   building: *poi_mapping_building
   craft: [__any__]
+  healthcare: [__any__]
   highway: *poi_mapping_highway
   historic: *poi_mapping_historic
   landuse: *poi_mapping_landuse
