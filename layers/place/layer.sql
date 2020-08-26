@@ -77,6 +77,7 @@ FROM (
          FROM osm_state_point
          WHERE geometry && bbox
            AND name <> ''
+           AND zoom_level > 1
 
          UNION ALL
 
