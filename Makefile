@@ -207,12 +207,12 @@ init-dirs:
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_DEF) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
 endif
 
 build/mapping.yaml: init-dirs
 ifeq (,$(wildcard build/mapping.yaml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_DEF) > $@
 endif
 
 .PHONY: build-sql
@@ -220,8 +220,8 @@ build-sql: init-dirs
 ifeq (,$(wildcard build/sql/run_last.sql))
 	@mkdir -p build/sql/parallel
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'generate-sql openmaptiles.yaml --dir ./build/sql \
-		&& generate-sqltomvt openmaptiles.yaml \
+		'generate-sql $(TILESET_DEF) --dir ./build/sql \
+		&& generate-sqltomvt $(TILESET_DEF) \
 							 --key --gzip --postgis-ver 3.0.1 \
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
@@ -377,7 +377,7 @@ generate-tiles: all start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) openmaptiles-tools \
-			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" ./openmaptiles.yaml --auto-minmax --show-ranges
+			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" ./$(TILESET_DEF) --auto-minmax --show-ranges
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
@@ -445,8 +445,8 @@ generate-qareports: start-db
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
-			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
+			'generate-etlgraph $(TILESET_DEF) $(GRAPH_PARAMS) && \
+			 generate-mapping-graph $(TILESET_DEF) $(GRAPH_PARAMS)'
 
 .PHONY: bash
 bash: init-dirs
@@ -454,7 +454,7 @@ bash: init-dirs
 
 .PHONY: import-wikidata
 import-wikidata: init-dirs
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json $(TILESET_DEF)
 
 .PHONY: reset-db-stats
 reset-db-stats: init-dirs
@@ -520,7 +520,7 @@ clean-unnecessary-docker:
 
 .PHONY: test-perf-null
 test-perf-null: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf $(TILESET_DEF) --test null --no-color
 
 .PHONY: build-test-pbf
 build-test-pbf: init-dirs
