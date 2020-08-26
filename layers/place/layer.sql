@@ -77,11 +77,6 @@ FROM (
          FROM osm_state_point
          WHERE geometry && bbox
            AND name <> ''
-           AND ("rank" + 2 <= zoom_level)
-           AND (
-                 zoom_level >= 5 OR
-                 is_in_country IN ('United Kingdom', 'USA', 'Россия', 'Brasil', 'China', 'India') OR
-                 is_in_country_code IN ('AU', 'CN', 'IN', 'BR', 'US'))
 
          UNION ALL
 
