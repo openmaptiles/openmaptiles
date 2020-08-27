@@ -9,6 +9,9 @@ SHELL         = /bin/bash
 # Make all .env variables available for make targets
 include .env
 
+# Layers definition and meta data
+TILESET_FILE ?= openmaptiles.yaml
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
 DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
