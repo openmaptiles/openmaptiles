@@ -1,10 +1,17 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_housenumber_point;
+DROP TRIGGER IF EXISTS trigger_store ON osm_housenumber_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON housenumber.updates;
 
+CREATE SCHEMA IF NOT EXISTS housenumber;
+
+CREATE TABLE IF NOT EXISTS housenumber.osm_ids
+(
+    osm_id bigint
+);
+
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
-CREATE OR REPLACE FUNCTION convert_housenumber_point() RETURNS void AS
+CREATE OR REPLACE FUNCTION convert_housenumber_point(full_update boolean) RETURNS void AS
 $$
-BEGIN
     UPDATE osm_housenumber_point
     SET geometry =
             CASE
@@ -12,15 +19,25 @@ BEGIN
                     THEN ST_Centroid(geometry)
                 ELSE ST_PointOnSurface(geometry)
                 END
-    WHERE ST_GeometryType(geometry) <> 'ST_Point';
-END;
-$$ LANGUAGE plpgsql;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
+        AND ST_GeometryType(geometry) <> 'ST_Point';
+$$ LANGUAGE SQL;
 
-SELECT convert_housenumber_point();
+SELECT convert_housenumber_point(true);
 
 -- Handle updates
 
-CREATE SCHEMA IF NOT EXISTS housenumber;
+CREATE OR REPLACE FUNCTION housenumber.store() RETURNS trigger AS
+$$
+BEGIN
+    IF (tg_op = 'DELETE') THEN
+        INSERT INTO housenumber.osm_ids VALUES (OLD.osm_id);
+    ELSE
+        INSERT INTO housenumber.osm_ids VALUES (NEW.osm_id);
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS housenumber.updates
 (
@@ -40,12 +57,20 @@ CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
 $$
 BEGIN
     RAISE LOG 'Refresh housenumber';
-    PERFORM convert_housenumber_point();
+    PERFORM convert_housenumber_point(false);
+    -- noinspection SqlWithoutWhere
+    DELETE FROM housenumber.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM housenumber.updates;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_store
+    AFTER INSERT OR UPDATE OR DELETE
+    ON osm_housenumber_point
+    FOR EACH ROW
+EXECUTE PROCEDURE housenumber.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
