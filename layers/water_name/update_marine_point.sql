@@ -1,42 +1,58 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_marine_point;
+DROP TRIGGER IF EXISTS trigger_store ON osm_marine_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON water_name_marine.updates;
 
-CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE SCHEMA IF NOT EXISTS water_name_marine;
 
-CREATE OR REPLACE FUNCTION update_osm_marine_point() RETURNS void AS
+CREATE TABLE IF NOT EXISTS water_name_marine.osm_ids
+(
+    osm_id bigint
+);
+
+CREATE OR REPLACE FUNCTION update_osm_marine_point(full_update boolean) RETURNS void AS
 $$
-BEGIN
-    -- etldoc: osm_marine_point              -> osm_marine_point
-    UPDATE osm_marine_point AS osm SET "rank" = NULL WHERE "rank" IS NOT NULL;
-
     -- etldoc: ne_10m_geography_marine_polys -> osm_marine_point
     -- etldoc: osm_marine_point              -> osm_marine_point
 
     WITH important_marine_point AS (
-        SELECT osm.geometry, osm.osm_id, osm.name, osm.name_en, ne.scalerank, osm.is_intermittent
-        FROM ne_10m_geography_marine_polys AS ne,
-             osm_marine_point AS osm
-        WHERE lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) IN (lower(osm.name), lower(osm.tags->'name:en'), lower(osm.tags->'name:es'))
+        SELECT osm.osm_id, ne.scalerank
+        FROM osm_marine_point AS osm
+             LEFT JOIN ne_10m_geography_marine_polys AS ne ON
+              lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) IN (lower(osm.name), lower(osm.tags->'name:en'), lower(osm.tags->'name:es'))
            OR substring(lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) FROM 1 FOR length(lower(osm.name))) = lower(osm.name)
     )
     UPDATE osm_marine_point AS osm
     SET "rank" = scalerank
     FROM important_marine_point AS ne
-    WHERE osm.osm_id = ne.osm_id;
+    WHERE (full_update OR osm.osm_id IN (SELECT osm_id FROM water_name_marine.osm_ids))
+      AND osm.osm_id = ne.osm_id
+      AND "rank" IS DISTINCT FROM scalerank;
 
     UPDATE osm_marine_point
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL;
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM water_name_marine.osm_ids))
+      AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
+      AND tags != update_tags(tags, geometry);
 
-END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE SQL;
 
-SELECT update_osm_marine_point();
+SELECT update_osm_marine_point(true);
 
 CREATE INDEX IF NOT EXISTS osm_marine_point_rank_idx ON osm_marine_point ("rank");
 
 -- Handle updates
-CREATE SCHEMA IF NOT EXISTS water_name_marine;
+
+CREATE OR REPLACE FUNCTION water_name_marine.store() RETURNS trigger AS
+$$
+BEGIN
+    IF (tg_op = 'DELETE') THEN
+        INSERT INTO water_name_marine.osm_ids VALUES (OLD.osm_id);
+    ELSE
+        INSERT INTO water_name_marine.osm_ids VALUES (NEW.osm_id);
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS water_name_marine.updates
 (
@@ -56,12 +72,20 @@ CREATE OR REPLACE FUNCTION water_name_marine.refresh() RETURNS trigger AS
 $$
 BEGIN
     RAISE LOG 'Refresh water_name_marine rank';
-    PERFORM update_osm_marine_point();
+    PERFORM update_osm_marine_point(false);
+    -- noinspection SqlWithoutWhere
+    DELETE FROM water_name_marine.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM water_name_marine.updates;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_store
+    AFTER INSERT OR UPDATE OR DELETE
+    ON osm_marine_point
+    FOR EACH ROW
+EXECUTE PROCEDURE water_name_marine.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
