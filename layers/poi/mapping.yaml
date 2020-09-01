@@ -36,7 +36,13 @@ def_poi_mapping_landuse: &poi_mapping_landuse
   - basin
   - brownfield
   - cemetery
+  - commercial
+  - military
+  - port
+  - recreation_ground
+  - religious
   - reservoir
+  - retail
   - winter_sports
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
