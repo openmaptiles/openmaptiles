@@ -218,7 +218,7 @@ CREATE OR REPLACE VIEW boundary_z0 AS
 SELECT geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL::text AS disputed_name,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne110m_' || ogc_fid ELSE NULL END) AS disputed_name,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_110m_admin_0_boundary_lines_land
@@ -232,7 +232,7 @@ CREATE OR REPLACE VIEW boundary_z1 AS
 SELECT geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL AS disputed_name,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne50m_' || ogc_fid ELSE NULL END) AS disputed_name,
        NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
@@ -263,7 +263,7 @@ CREATE OR REPLACE VIEW boundary_z3 AS
 SELECT geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL AS disputed_name,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne50m_' || ogc_fid ELSE NULL END) AS disputed_name,
        NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
@@ -295,7 +295,7 @@ CREATE OR REPLACE VIEW boundary_z4 AS
 SELECT geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       NULL AS disputed_name,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne10m_' || ogc_fid ELSE NULL END) AS disputed_name,
        NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_0_boundary_lines_land
