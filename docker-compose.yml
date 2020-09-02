@@ -90,6 +90,8 @@ services:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     command: "postserve ${TILESET_FILE} --verbose --serve=${OMT_HOST:-localhost}:${PPORT:-8090}"
     env_file: .env
+    environment:
+      TILESET_FILE: ${TILESET_FILE}
     networks:
       - postgres_conn
     ports:
