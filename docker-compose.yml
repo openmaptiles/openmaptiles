@@ -65,6 +65,8 @@ services:
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
+      # Control tilelive-copy threads
+      COPY_CONCURRENCY: ${COPY_CONCURRENCY}
 
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -80,11 +82,16 @@ services:
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
+      # Control tilelive-copy threads
+      COPY_CONCURRENCY: ${COPY_CONCURRENCY}
+      #
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     command: "postserve ${TILESET_FILE} --verbose --serve=${OMT_HOST:-localhost}:${PPORT:-8090}"
     env_file: .env
+    environment:
+      TILESET_FILE: ${TILESET_FILE}
     networks:
       - postgres_conn
     ports:

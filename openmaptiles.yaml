@@ -52,6 +52,7 @@ tileset:
     - ga # Irish, Latin
     - gd # Scottish Gaelic, Latin
     - he # Hebrew
+    - hi # Hindi
     - hr # Croatian, Latin
     - hu # Hungarian, Latin
     - hy # Armenian
@@ -88,6 +89,8 @@ tileset:
     - sr # Serbian, Cyrillic
     - sr-Latn # Serbian, Latin
     - sv # Swedish, Latin
+    - ta # Tamil
+    - te # Telugu
     - th # Thai
     - tr # Turkish, Latin
     - uk # Ukrainian
