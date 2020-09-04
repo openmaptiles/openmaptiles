@@ -16,6 +16,8 @@ SELECT
             )
         WHEN mapping_key = 'healthcare' THEN
             name <> ''
+        WHEN mapping_key = 'landuse' THEN
+            name <> '' AND LOWER(subclass) NOT IN ('yes', 'no', 'none')
         WHEN mapping_key = 'leisure' THEN
             LOWER(subclass) NOT IN (
                 'yes', 'no', 'none', 'common', 'nature_reserve',
