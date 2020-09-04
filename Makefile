@@ -9,9 +9,12 @@ SHELL         = /bin/bash
 # Make all .env variables available for make targets
 include .env
 
+# Layers definition and meta data
+TILESET_FILE ?= openmaptiles.yaml
+
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS ?= --rm -u $(shell id -u):$(shell id -g)
+DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
 
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
 USE_PRELOADED_IMAGE ?=
@@ -53,6 +56,7 @@ endif
 
 # Set OpenMapTiles host
 OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+export OMT_HOST
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
@@ -76,10 +80,10 @@ ifeq ($(strip $(area)),)
   # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
   data_files := $(wildcard data/*.osm.pbf)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    AREA_ERROR := The 'area' parameter or environment variable have not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
   else
     ifeq ($(word 1,$(data_files)),)
-      AREA_ERROR := The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files
+      AREA_ERROR := The 'area' parameter or environment variable have not been set, and there is no data/*.osm.pbf file
     else
       # Keep just the name of the data file, without the .osm.pbf extension
       area := $(strip $(basename $(basename $(notdir $(data_files)))))
@@ -89,9 +93,9 @@ ifeq ($(strip $(area)),)
         $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
         area := $(area:-latest=)
         $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
-        AREA_INFO := Detected area=$(area) based on the found data/$(area)-latest.osm.pbf (renamed to $(area).osm.pbf). Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area)-latest.osm.pbf file - renamed to $(area).osm.pbf. Use 'area' parameter or environment variable to override.
       else
-        AREA_INFO := Detected area=$(area) based on the found data/ pbf file. Use 'area' parameter (or env var) to override.
+        AREA_INFO := Detected area=$(area) based on finding a data/$(area).pbf file. Use 'area' parameter or environment variable to override.
       endif
     endif
   endif
@@ -206,12 +210,12 @@ init-dirs:
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
 endif
 
 build/mapping.yaml: init-dirs
 ifeq (,$(wildcard build/mapping.yaml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_FILE) > $@
 endif
 
 .PHONY: build-sql
@@ -219,8 +223,8 @@ build-sql: init-dirs
 ifeq (,$(wildcard build/sql/run_last.sql))
 	@mkdir -p build/sql/parallel
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'generate-sql openmaptiles.yaml --dir ./build/sql \
-		&& generate-sqltomvt openmaptiles.yaml \
+		'generate-sql $(TILESET_FILE) --dir ./build/sql \
+		&& generate-sqltomvt $(TILESET_FILE) \
 							 --key --gzip --postgis-ver 3.0.1 \
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
@@ -326,24 +330,32 @@ endif
 psql: start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
 
+# Special cache handling for Docker Toolbox on Windows
+ifeq ($(MSYSTEM),MINGW64)
+  DC_CONFIG_CACHE := -f docker-compose.yml -f docker-compose-$(MSYSTEM).yml
+  DC_OPTS_CACHE := $(strip $(filter-out --user=%,$(DC_OPTS)))
+else
+  DC_OPTS_CACHE := $(DC_OPTS)
+endif
+
 .PHONY: import-osm
 import-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-update'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-diff'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 .PHONY: import-data
 import-data: start-db
-	$(DOCKER_COMPOSE) run $(DC_OPTS) import-data
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
 .PHONY: import-borders
 import-borders: start-db-nowait
@@ -355,7 +367,7 @@ import-borders: start-db-nowait
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-	  awk -v s=": WARNING:" '$$0~s{print; print "\n*** WARNING detected, aborting"; exit(1)} 1'
+	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
 
 ifneq ($(wildcard $(AREA_DC_CONFIG_FILE)),)
   DC_CONFIG_TILES := -f docker-compose.yml -f $(AREA_DC_CONFIG_FILE)
@@ -368,7 +380,7 @@ generate-tiles: all start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_TILES) run $(DC_OPTS) openmaptiles-tools \
-			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" ./openmaptiles.yaml --auto-minmax --show-ranges
+			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs
@@ -436,8 +448,8 @@ generate-qareports: start-db
 generate-devdoc: init-dirs
 	mkdir -p ./build/devdoc && \
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-			'generate-etlgraph openmaptiles.yaml $(GRAPH_PARAMS) && \
-			 generate-mapping-graph openmaptiles.yaml $(GRAPH_PARAMS)'
+			'generate-etlgraph $(TILESET_FILE) $(GRAPH_PARAMS) && \
+			 generate-mapping-graph $(TILESET_FILE) $(GRAPH_PARAMS)'
 
 .PHONY: bash
 bash: init-dirs
@@ -445,7 +457,7 @@ bash: init-dirs
 
 .PHONY: import-wikidata
 import-wikidata: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json openmaptiles.yaml
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json $(TILESET_FILE)
 
 .PHONY: reset-db-stats
 reset-db-stats: init-dirs
@@ -511,7 +523,7 @@ clean-unnecessary-docker:
 
 .PHONY: test-perf-null
 test-perf-null: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf openmaptiles.yaml --test null --no-color
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf $(TILESET_FILE) --test null --no-color
 
 .PHONY: build-test-pbf
 build-test-pbf: init-dirs

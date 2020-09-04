@@ -24,19 +24,20 @@ SELECT
     osm_id,
     geometry,
     name,
-    COALESCE(NULLIF(name_en, ''), name)                                  AS name_en,
-    COALESCE(NULLIF(name_de, ''), name, name_en)                         AS name_de,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
+    COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
     CASE
         %%FIELD_MAPPING: class %%
         ELSE 'other'
-        END                                                              AS class,
-    NULLIF(iata, '')                                                     AS iata,
-    NULLIF(icao, '')                                                     AS icao,
-    substring(ele FROM E'^(-?\\d+)(\\D|$)')::int                         AS ele,
+        END AS class,
+    NULLIF(iata, '') AS iata,
+    NULLIF(icao, '') AS icao,
+    substring(ele FROM E'^(-?\\d+)(\\D|$)')::int AS ele,
     round(substring(ele FROM E'^(-?\\d+)(\\D|$)')::int * 3.2808399)::int AS ele_ft
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
   AND zoom_level >= 10;
-$$ LANGUAGE SQL IMMUTABLE
+$$ LANGUAGE SQL STABLE
+                -- STRICT
                 PARALLEL SAFE;

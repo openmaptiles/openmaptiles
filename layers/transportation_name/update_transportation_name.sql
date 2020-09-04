@@ -13,7 +13,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS
 (
 SELECT hl.geometry,
        hl.osm_id,
-       CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END         AS "name",
+       CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
        CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
        CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
        hl.tags,
@@ -22,14 +22,14 @@ SELECT hl.geometry,
            WHEN (rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL)
                THEN rm.ref::text
            ELSE hl.ref
-           END                                                                                         AS ref,
+           END AS ref,
        hl.highway,
        hl.construction,
-       CASE WHEN highway IN ('footway', 'steps') THEN layer END                                        AS layer,
-       CASE WHEN highway IN ('footway', 'steps') THEN "level" END                                      AS "level",
-       CASE WHEN highway IN ('footway', 'steps') THEN indoor END                                       AS indoor,
+       CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
+       CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
+       CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
        ROW_NUMBER() OVER (PARTITION BY hl.osm_id
-           ORDER BY rm.network_type)                                                                   AS "rank",
+           ORDER BY rm.network_type) AS "rank",
        hl.z_order
 FROM osm_highway_linestring hl
          LEFT JOIN osm_route_member rm ON (rm.member = hl.osm_id)
@@ -40,8 +40,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_t
 -- etldoc: osm_transportation_name_network ->  osm_transportation_name_linestring
 CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS
 (
-SELECT (ST_Dump(geometry)).geom                AS geometry,
-       NULL::bigint                            AS osm_id,
+SELECT (ST_Dump(geometry)).geom AS geometry,
+       NULL::bigint AS osm_id,
        name,
        name_en,
        name_de,
@@ -52,7 +52,7 @@ SELECT (ST_Dump(geometry)).geom                AS geometry,
        "level",
        layer,
        indoor,
-       network_type                            AS network,
+       network_type AS network,
        z_order
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
@@ -61,8 +61,7 @@ FROM (
                 name_de,
                 hstore(string_agg(nullif(slice_language_tags(tags ||
                                                              hstore(ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]))::text,
-                                         ''), ','))
-                                                   AS "tags",
+                                         ''), ',')) AS "tags",
                 ref,
                 highway,
                 construction,
@@ -70,7 +69,7 @@ FROM (
                 layer,
                 indoor,
                 network_type,
-                min(z_order)                       AS z_order
+                min(z_order) AS z_order
          FROM osm_transportation_name_network
          WHERE ("rank" = 1 OR "rank" IS NULL)
            AND (name <> '' OR ref <> '')
@@ -183,7 +182,7 @@ CREATE SCHEMA IF NOT EXISTS transportation_name;
 CREATE TABLE IF NOT EXISTS transportation_name.updates
 (
     id serial PRIMARY KEY,
-    t  text,
+    t text,
     UNIQUE (t)
 );
 CREATE OR REPLACE FUNCTION transportation_name.flag() RETURNS trigger AS
