@@ -243,7 +243,8 @@ SELECT geometry,
        NULL AS disputed_name,
        NULL AS claimed_by,
        FALSE AS maritime
-FROM ne_50m_admin_1_states_provinces_lines
+FROM ne_10m_admin_1_states_provinces_lines
+WHERE min_zoom <= 5
 UNION ALL
 SELECT geometry,
        admin_level,
@@ -274,7 +275,8 @@ SELECT geometry,
        NULL AS disputed_name,
        NULL AS claimed_by,
        FALSE AS maritime
-FROM ne_50m_admin_1_states_provinces_lines
+FROM ne_10m_admin_1_states_provinces_lines
+WHERE min_zoom <= 7
 UNION ALL
 SELECT geometry,
        admin_level,
@@ -308,7 +310,7 @@ SELECT geometry,
        NULL AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_1_states_provinces_lines
-WHERE min_zoom <= 5
+WHERE min_zoom <= 7
 UNION ALL
 SELECT geometry,
        admin_level,
