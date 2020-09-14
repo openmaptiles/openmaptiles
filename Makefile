@@ -466,12 +466,12 @@ reset-db-stats: init-dirs
 .PHONY: list-views
 list-views: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
-		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
+		-c "select viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
-		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
+		-c "select tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
 psql-list-tables: init-dirs
