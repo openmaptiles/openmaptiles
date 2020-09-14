@@ -368,6 +368,7 @@ Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is no
 ```
 mkdir -p data
 mv my-latest.osm.pbf data/
+make generate-dc-config
 ./quickstart.sh my
 ```
 
