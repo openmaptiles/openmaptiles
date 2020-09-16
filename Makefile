@@ -194,8 +194,8 @@ help:
 	@echo "  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
-	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
-	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tables"
+	@echo "  make list-views                      # list PostgreSQL public schema views"
+	@echo "  make list-tables                     # list PostgreSQL public schema tables"
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
 	@echo "  cat  quickstart.log                  # transcript of the last ./quickstart.sh run"
 	@echo "  make help                            # help about available commands"
@@ -466,12 +466,12 @@ reset-db-stats: init-dirs
 .PHONY: list-views
 list-views: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
-		-c "select schemaname, viewname from pg_views where schemaname='public' order by viewname;"
+		-c "select viewname from pg_views where schemaname='public' order by viewname;"
 
 .PHONY: list-tables
 list-tables: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
-		-c "select schemaname, tablename from pg_tables where schemaname='public' order by tablename;"
+		-c "select tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
 psql-list-tables: init-dirs
