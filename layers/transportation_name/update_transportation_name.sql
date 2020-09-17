@@ -60,7 +60,7 @@ FROM (
                 name_en,
                 name_de,
                 tags || hstore( -- store results of osml10n_street_abbrev_* above
-                               ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS "tags",
+                               ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS tags,
                 ref,
                 highway,
                 construction,
