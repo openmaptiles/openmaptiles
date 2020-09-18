@@ -1,5 +1,8 @@
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_network CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring CASCADE;
+DROP TRIGGER IF EXISTS trigger_store_transportation_route_member ON osm_route_member;
+DROP TRIGGER IF EXISTS trigger_store_transportation_highway_linestring ON osm_highway_linestring;
+DROP TRIGGER IF EXISTS trigger_flag_transportation_name ON transportation_name.network_changes;
+DROP TRIGGER IF EXISTS trigger_refresh_network ON transportation_name.updates_network;
+
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
