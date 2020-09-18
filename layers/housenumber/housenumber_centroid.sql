@@ -22,9 +22,9 @@ $$
           AND ST_GeometryType(pt.geometry) = 'ST_Point'
           AND pt.geometry && poly.geometry
           AND pt.housenumber = poly.housenumber
+          AND (full_update OR pt.osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
       )
-    )
-    AND (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids));
+    );
 
     UPDATE osm_housenumber_point
     SET geometry =
