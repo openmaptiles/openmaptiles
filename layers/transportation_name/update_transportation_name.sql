@@ -239,7 +239,7 @@ BEGIN
            CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
            CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
            CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
-           hl.tags,
+           slice_language_tags(hl.tags) AS tags,
            rm.network_type,
            CASE
                WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
