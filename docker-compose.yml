@@ -34,8 +34,10 @@ services:
       # Must match the version of this file (first line)
       # download-osm will use it when generating a composer file
       MAKE_DC_VERSION: "2.3"
-      # Allow DIFF_MODE to be overwritten from shell
+      # Allow DIFF_MODE, MIN_ZOOM, and MAX_ZOOM to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
+      MIN_ZOOM: ${MIN_ZOOM}
+      MAX_ZOOM: ${MAX_ZOOM}
       # Imposm configuration file describes how to load updates when enabled
       IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       # Which files to use during import-borders processing
