@@ -9,15 +9,15 @@
 CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
 SELECT hl.geometry,
        hl.osm_id,
-       CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
-       CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
-       CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
+       CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
+       CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
+       CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
        slice_language_tags(hl.tags) AS tags,
        rm.network_type,
        CASE
-           WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
+           WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
                THEN rm.ref::text
-           ELSE hl.ref
+           ELSE NULLIF(hl.ref, '')
            END AS ref,
        hl.highway,
        hl.construction,
@@ -236,15 +236,15 @@ BEGIN
     INSERT INTO osm_transportation_name_network
     SELECT hl.geometry,
            hl.osm_id,
-           CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
-           CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
-           CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
+           CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
+           CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
+           CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
            slice_language_tags(hl.tags) AS tags,
            rm.network_type,
            CASE
-               WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
+               WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
                    THEN rm.ref::text
-               ELSE hl.ref
+               ELSE NULLIF(hl.ref, '')
                END AS ref,
            hl.highway,
            hl.construction,
