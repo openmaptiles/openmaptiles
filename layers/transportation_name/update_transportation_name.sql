@@ -7,30 +7,49 @@
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_network
 -- etldoc: osm_route_member ->  osm_transportation_name_network
 CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
-SELECT hl.geometry,
-       hl.osm_id,
-       CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
-       CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
-       CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
-       slice_language_tags(hl.tags) AS tags,
-       rm.network_type,
-       CASE
-           WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
-               THEN rm.ref::text
-           ELSE NULLIF(hl.ref, '')
-           END AS ref,
-       hl.highway,
-       hl.construction,
-       CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
-       CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
-       CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-       ROW_NUMBER() OVER (PARTITION BY hl.osm_id
-           ORDER BY rm.network_type) AS "rank",
-       hl.z_order
-FROM osm_highway_linestring hl
-         LEFT JOIN osm_route_member rm ON
-    rm.member = hl.osm_id
-;
+SELECT
+    geometry,
+    osm_id,
+    name,
+    name_en,
+    name_de,
+    tags,
+    ref,
+    highway,
+    construction,
+    "level",
+    layer,
+    indoor,
+    network_type,
+    z_order
+FROM (
+    SELECT hl.geometry,
+        hl.osm_id,
+        CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
+        CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
+        CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
+        slice_language_tags(hl.tags) AS tags,
+        rm.network_type,
+        CASE
+            WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
+                THEN rm.ref::text
+            ELSE NULLIF(hl.ref, '')
+            END AS ref,
+        hl.highway,
+        hl.construction,
+        CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
+        CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+        CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+        ROW_NUMBER() OVER (PARTITION BY hl.osm_id
+            ORDER BY rm.network_type) AS "rank",
+        hl.z_order
+    FROM osm_highway_linestring hl
+            LEFT JOIN osm_route_member rm ON
+        rm.member = hl.osm_id
+    WHERE (hl.name <> '' OR hl.ref <> '')
+      AND NULLIF(hl.highway, '') IS NOT NULL
+) AS t
+WHERE ("rank" = 1 OR "rank" IS NULL);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
 
@@ -68,9 +87,6 @@ FROM (
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
-         WHERE ("rank" = 1 OR "rank" IS NULL)
-           AND (name <> '' OR ref <> '' OR tags <> ''::hstore)
-           AND NULLIF(highway, '') IS NOT NULL
          GROUP BY name, name_en, name_de, tags, ref, highway, construction, "level", layer, indoor, network_type
      ) AS highway_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
