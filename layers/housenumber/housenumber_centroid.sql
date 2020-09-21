@@ -18,10 +18,11 @@ $$
       SELECT pt.osm_id
       FROM osm_housenumber_point pt
       INNER JOIN osm_housenumber_point poly
-      ON (ST_GeometryType(poly.geometry) = 'ST_Polygon'
+      ON (ST_GeometryType(poly.geometry) <> 'ST_Point'
           AND ST_GeometryType(pt.geometry) = 'ST_Point'
           AND pt.geometry && poly.geometry
           AND pt.housenumber = poly.housenumber
+          AND (full_update OR pt.osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
       )
     );
 
