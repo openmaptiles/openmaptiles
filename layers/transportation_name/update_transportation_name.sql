@@ -25,15 +25,15 @@ SELECT
 FROM (
     SELECT hl.geometry,
         hl.osm_id,
-        CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
-        CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
-        CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
-        hl.tags,
+        CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
+        CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
+        CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
+        slice_language_tags(hl.tags) AS tags,
         rm.network_type,
         CASE
             WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
                 THEN rm.ref::text
-            ELSE hl.ref
+            ELSE NULLIF(hl.ref, '')
             END AS ref,
         hl.highway,
         hl.construction,
@@ -76,9 +76,8 @@ FROM (
                 name,
                 name_en,
                 name_de,
-                hstore(string_agg(nullif(slice_language_tags(tags ||
-                                                             hstore(ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]))::text,
-                                         ''), ',')) AS "tags",
+                tags || hstore( -- store results of osml10n_street_abbrev_* above
+                               ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS tags,
                 ref,
                 highway,
                 construction,
@@ -88,7 +87,7 @@ FROM (
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
-         GROUP BY name, name_en, name_de, ref, highway, construction, "level", layer, indoor, network_type
+         GROUP BY name, name_en, name_de, tags, ref, highway, construction, "level", layer, indoor, network_type
      ) AS highway_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
@@ -253,15 +252,15 @@ BEGIN
     INSERT INTO osm_transportation_name_network
     SELECT hl.geometry,
            hl.osm_id,
-           CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE hl.name END AS "name",
-           CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE hl.name_en END AS "name_en",
-           CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE hl.name_de END AS "name_de",
-           hl.tags,
+           CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
+           CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
+           CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
+           slice_language_tags(hl.tags) AS tags,
            rm.network_type,
            CASE
-               WHEN rm.network_type IS NOT NULL AND nullif(rm.ref::text, '') IS NOT NULL
+               WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
                    THEN rm.ref::text
-               ELSE hl.ref
+               ELSE NULLIF(hl.ref, '')
                END AS ref,
            hl.highway,
            hl.construction,
