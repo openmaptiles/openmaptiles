@@ -79,25 +79,23 @@ CREATE SCHEMA IF NOT EXISTS waterway_important;
 CREATE TABLE IF NOT EXISTS waterway_important.changes
 (
     id serial PRIMARY KEY,
+    osm_id bigint,
     is_old boolean,
     name character varying,
     name_en character varying,
     name_de character varying,
-    tags hstore,
-    UNIQUE (is_old, name, name_en, name_de, tags)
+    tags hstore
 );
 CREATE OR REPLACE FUNCTION waterway_important.store() RETURNS trigger AS
 $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE')) AND OLD.name <> '' AND OLD.waterway = 'river' THEN
         INSERT INTO waterway_important.changes(is_old, name, name_en, name_de, tags)
-        VALUES (TRUE, OLD.name, OLD.name_en, OLD.name_de, slice_language_tags(OLD.tags))
-        ON CONFLICT(is_old, name, name_en, name_de, tags) DO NOTHING;
+        VALUES (TRUE, OLD.name, OLD.name_en, OLD.name_de, slice_language_tags(OLD.tags));
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT')) AND NEW.name <> '' AND NEW.waterway = 'river' THEN
         INSERT INTO waterway_important.changes(is_old, name, name_en, name_de, tags)
-        VALUES (FALSE, NEW.name, NEW.name_en, NEW.name_de, slice_language_tags(NEW.tags))
-        ON CONFLICT(is_old, name, name_en, name_de, tags) DO NOTHING;
+        VALUES (FALSE, NEW.name, NEW.name_en, NEW.name_de, slice_language_tags(NEW.tags));
     END IF;
     RETURN NULL;
 END;
@@ -123,11 +121,34 @@ BEGIN
     RAISE LOG 'Refresh waterway';
 
     -- REFRESH osm_important_waterway_linestring
+
+    -- Compact the change history to keep only the first and last version, and then uniq version of row
+    CREATE TEMP TABLE changes_compact AS
+    SELECT DISTINCT ON (name, name_en, name_de, tags)
+        name,
+        name_en,
+        name_de,
+        tags
+    FROM ((
+              SELECT DISTINCT ON (osm_id) *
+              FROM waterway_important.changes
+              WHERE is_old
+              ORDER BY osm_id,
+                       id ASC
+          )
+          UNION ALL
+          (
+              SELECT DISTINCT ON (osm_id) *
+              FROM waterway_important.changes
+              WHERE NOT is_old
+              ORDER BY osm_id,
+                       id DESC
+          )) AS t;
+
     DELETE
     FROM osm_important_waterway_linestring AS w
-        USING waterway_important.changes AS c
-    WHERE c.is_old
-      AND w.name = c.name
+        USING changes_compact AS c
+    WHERE w.name = c.name
       AND w.name_en IS NOT DISTINCT FROM c.name_en
       AND w.name_de IS NOT DISTINCT FROM c.name_de
       AND w.tags IS NOT DISTINCT FROM c.tags;
@@ -145,23 +166,21 @@ BEGIN
                     w.name_de,
                     slice_language_tags(w.tags) AS tags
              FROM osm_waterway_linestring AS w
-                      JOIN waterway_important.changes AS c ON
+                      JOIN changes_compact AS c ON
                      w.name = c.name AND w.name_en IS NOT DISTINCT FROM c.name_en AND
                      w.name_de IS NOT DISTINCT FROM c.name_de AND
                      slice_language_tags(w.tags) IS NOT DISTINCT FROM c.tags
              WHERE w.name <> ''
                AND w.waterway = 'river'
                AND ST_IsValid(geometry)
-               AND NOT c.is_old
              GROUP BY w.name, w.name_en, w.name_de, slice_language_tags(w.tags)
          ) AS waterway_union;
 
     -- REFRESH sm_important_waterway_linestring_gen1
     DELETE
     FROM osm_important_waterway_linestring_gen1 AS w
-        USING waterway_important.changes AS c
-    WHERE c.is_old
-      AND w.name = c.name
+        USING changes_compact AS c
+    WHERE w.name = c.name
       AND w.name_en IS NOT DISTINCT FROM c.name_en
       AND w.name_de IS NOT DISTINCT FROM c.name_de
       AND w.tags IS NOT DISTINCT FROM c.tags;
@@ -169,15 +188,13 @@ BEGIN
     INSERT INTO osm_important_waterway_linestring_gen1
     SELECT w.*
     FROM osm_important_waterway_linestring_gen1_view AS w
-             NATURAL JOIN waterway_important.changes AS c
-    WHERE NOT c.is_old;
+             NATURAL JOIN changes_compact AS c;
 
     -- REFRESH osm_important_waterway_linestring_gen2
     DELETE
     FROM osm_important_waterway_linestring_gen2 AS w
-        USING waterway_important.changes AS c
-    WHERE c.is_old
-      AND w.name = c.name
+        USING changes_compact AS c
+    WHERE w.name = c.name
       AND w.name_en IS NOT DISTINCT FROM c.name_en
       AND w.name_de IS NOT DISTINCT FROM c.name_de
       AND w.tags IS NOT DISTINCT FROM c.tags;
@@ -185,15 +202,13 @@ BEGIN
     INSERT INTO osm_important_waterway_linestring_gen2
     SELECT w.*
     FROM osm_important_waterway_linestring_gen2_view AS w
-             NATURAL JOIN waterway_important.changes AS c
-    WHERE NOT c.is_old;
+             NATURAL JOIN changes_compact AS c;
 
     -- REFRESH osm_important_waterway_linestring_gen3
     DELETE
     FROM osm_important_waterway_linestring_gen3 AS w
-        USING waterway_important.changes AS c
-    WHERE c.is_old
-      AND w.name = c.name
+        USING changes_compact AS c
+    WHERE w.name = c.name
       AND w.name_en IS NOT DISTINCT FROM c.name_en
       AND w.name_de IS NOT DISTINCT FROM c.name_de
       AND w.tags IS NOT DISTINCT FROM c.tags;
@@ -201,9 +216,9 @@ BEGIN
     INSERT INTO osm_important_waterway_linestring_gen3
     SELECT w.*
     FROM osm_important_waterway_linestring_gen3_view AS w
-             NATURAL JOIN waterway_important.changes AS c
-    WHERE NOT c.is_old;
+             NATURAL JOIN changes_compact AS c;
 
+    DROP TABLE changes_compact;
     -- noinspection SqlWithoutWhere
     DELETE FROM waterway_important.changes;
     -- noinspection SqlWithoutWhere
