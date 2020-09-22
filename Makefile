@@ -168,7 +168,7 @@ help:
 	@echo " "
 	@echo "Hints for designers:"
 	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT)} ]"
+	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]"
 	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]"
 	@echo " "
 	@echo "Hints for developers:"
