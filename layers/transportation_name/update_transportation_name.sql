@@ -250,31 +250,51 @@ BEGIN
     WHERE n.osm_id = c.osm_id;
 
     INSERT INTO osm_transportation_name_network
-    SELECT hl.geometry,
-           hl.osm_id,
-           CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
-           CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
-           CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
-           slice_language_tags(hl.tags) AS tags,
-           rm.network_type,
-           CASE
-               WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
-                   THEN rm.ref::text
-               ELSE NULLIF(hl.ref, '')
-               END AS ref,
-           hl.highway,
-           hl.construction,
-           CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
-           CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
-           CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-           ROW_NUMBER() OVER (PARTITION BY hl.osm_id
-               ORDER BY rm.network_type) AS "rank",
-           hl.z_order
-    FROM osm_highway_linestring hl
-             JOIN transportation_name.network_changes AS c ON
-        hl.osm_id = c.osm_id
-             LEFT JOIN osm_route_member rm ON
-        rm.member = hl.osm_id;
+    SELECT
+        geometry,
+        osm_id,
+        name,
+        name_en,
+        name_de,
+        tags,
+        ref,
+        highway,
+        construction,
+        level,
+        layer,
+        indoor,
+        network_type,
+        z_order
+    FROM (
+        SELECT hl.geometry,
+            hl.osm_id,
+            CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS name,
+            CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS name_en,
+            CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS name_de,
+            slice_language_tags(hl.tags) AS tags,
+            rm.network_type,
+            CASE
+                WHEN rm.network_type IS NOT NULL AND NULLIF(rm.ref::text, '') IS NOT NULL
+                    THEN rm.ref::text
+                ELSE NULLIF(hl.ref, '')
+                END AS ref,
+            hl.highway,
+            hl.construction,
+            CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
+            CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+            CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+            ROW_NUMBER() OVER (PARTITION BY hl.osm_id
+                ORDER BY rm.network_type) AS "rank",
+            hl.z_order
+        FROM osm_highway_linestring hl
+                JOIN transportation_name.network_changes AS c ON
+            hl.osm_id = c.osm_id
+                LEFT JOIN osm_route_member rm ON
+            rm.member = hl.osm_id
+        WHERE (hl.name <> '' OR hl.ref <> '')
+          AND NULLIF(hl.highway, '') IS NOT NULL
+    ) AS t
+    WHERE ("rank" = 1 OR "rank" IS NULL);
 
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
