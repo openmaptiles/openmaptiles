@@ -22,11 +22,8 @@ jobs:
           area: monaco
           MIN_ZOOM: 0
           MAX_ZOOM: 14
+          QUIET: 1
         run: |
-          # For now, change the quickstart values directly in the .env file	
-          # TODO: We should probably use env vars instead	
-          sed -i 's/MAX_ZOOM=7/MAX_ZOOM=14/g' .env
-          export QUIET=1
           ./quickstart.sh $area
 
       - name: Save quickstart.log

@@ -265,7 +265,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 if [[ "$area" != "planet" ]]; then
   echo "====> : Compute bounding box for tile generation"
-  make generate-dc-config
+  make generate-dc-config ${MIN_ZOOM:+MIN_ZOOM="${MIN_ZOOM}"} ${MAX_ZOOM:+MAX_ZOOM="${MAX_ZOOM}"}
 else
   echo "====> : Skipping bbox calculation when generating the entire planet"
 fi
