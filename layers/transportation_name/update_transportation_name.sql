@@ -51,12 +51,12 @@ FROM (
 ) AS t
 WHERE ("rank" = 1 OR "rank" IS NULL);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
+CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
 
 
 -- etldoc: osm_transportation_name_network ->  osm_transportation_name_linestring
-CREATE MATERIALIZED VIEW osm_transportation_name_linestring AS
-(
+CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS
 SELECT (ST_Dump(geometry)).geom AS geometry,
        NULL::bigint AS osm_id,
        name,
@@ -89,7 +89,8 @@ FROM (
          FROM osm_transportation_name_network
          GROUP BY name, name_en, name_de, tags, ref, highway, construction, "level", layer, indoor, network_type
      ) AS highway_union
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_idx
@@ -97,8 +98,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_id
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
-CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen1 AS
-(
+CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen1_view AS
 SELECT ST_Simplify(geometry, 50) AS geometry,
        osm_id,
        name,
@@ -113,7 +113,11 @@ SELECT ST_Simplify(geometry, 50) AS geometry,
 FROM osm_transportation_name_linestring
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 8000
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+;
+CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS
+SELECT *
+FROM osm_transportation_name_linestring_gen1_view;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx ON osm_transportation_name_linestring_gen1((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_partial_idx
@@ -121,8 +125,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_parti
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
-CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen2 AS
-(
+CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen2_view AS
 SELECT ST_Simplify(geometry, 120) AS geometry,
        osm_id,
        name,
@@ -137,7 +140,11 @@ SELECT ST_Simplify(geometry, 120) AS geometry,
 FROM osm_transportation_name_linestring_gen1
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 14000
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+;
+CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS
+SELECT *
+FROM osm_transportation_name_linestring_gen2_view;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx ON osm_transportation_name_linestring_gen2((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_partial_idx
@@ -145,8 +152,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_parti
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
-CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen3 AS
-(
+CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen3_view AS
 SELECT ST_Simplify(geometry, 200) AS geometry,
        osm_id,
        name,
@@ -161,7 +167,11 @@ SELECT ST_Simplify(geometry, 200) AS geometry,
 FROM osm_transportation_name_linestring_gen2
 WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
   AND ST_Length(geometry) > 20000
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+;
+CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS
+SELECT *
+FROM osm_transportation_name_linestring_gen3_view;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx ON osm_transportation_name_linestring_gen3((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_partial_idx
@@ -169,8 +179,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_parti
     WHERE highway IN ('motorway', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen3 -> osm_transportation_name_linestring_gen4
-CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen4 AS
-(
+CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen4_view AS
 SELECT ST_Simplify(geometry, 500) AS geometry,
        osm_id,
        name,
@@ -185,7 +194,11 @@ SELECT ST_Simplify(geometry, 500) AS geometry,
 FROM osm_transportation_name_linestring_gen3
 WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
   AND ST_Length(geometry) > 20000
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+;
+CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen4 AS
+SELECT *
+FROM osm_transportation_name_linestring_gen4_view;
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_name_ref_idx ON osm_transportation_name_linestring_gen4((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_geometry_idx ON osm_transportation_name_linestring_gen4 USING gist (geometry);
 
 -- Handle updates
@@ -239,7 +252,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION transportation_name.refresh_network() RETURNS trigger AS
 $$
 BEGIN
-    RAISE LOG 'Refresh transportation_name';
+    RAISE LOG 'Refresh transportation_name_network';
     PERFORM update_osm_route_member();
 
     -- REFRESH osm_transportation_name_network
@@ -296,11 +309,6 @@ BEGIN
     ) AS t
     WHERE ("rank" = 1 OR "rank" IS NULL);
 
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen4;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.network_changes;
     -- noinspection SqlWithoutWhere
@@ -334,3 +342,238 @@ CREATE CONSTRAINT TRIGGER trigger_refresh_network
     INITIALLY DEFERRED
     FOR EACH ROW
 EXECUTE PROCEDURE transportation_name.refresh_network();
+
+-- Trigger to update "osm_transportation_name_linestring" from "osm_transportation_name_network"
+
+CREATE TABLE IF NOT EXISTS transportation_name.name_changes
+(
+    id serial PRIMARY KEY,
+    is_old boolean,
+    osm_id bigint,
+    name character varying,
+    name_en character varying,
+    name_de character varying,
+    ref character varying,
+    highway character varying,
+    construction character varying,
+    level integer,
+    layer integer,
+    indoor boolean,
+    network_type route_network_type
+);
+
+CREATE OR REPLACE FUNCTION transportation_name.name_network_store() RETURNS trigger AS
+$$
+BEGIN
+    IF (tg_op IN ('DELETE', 'UPDATE'))
+    THEN
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
+                                                     level, layer, indoor, network_type)
+        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.construction, old.level,
+                old.layer, old.indoor, old.network_type);
+    END IF;
+    IF (tg_op IN ('UPDATE', 'INSERT'))
+    THEN
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
+                                                     level, layer, indoor, network_type)
+        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.construction, new.level,
+                new.layer, new.indoor, new.network_type);
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TABLE IF NOT EXISTS transportation_name.updates_name
+(
+    id serial PRIMARY KEY,
+    t  text,
+    UNIQUE (t)
+);
+CREATE OR REPLACE FUNCTION transportation_name.flag_name() RETURNS trigger AS
+$$
+BEGIN
+    INSERT INTO transportation_name.updates_name(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION transportation_name.refresh_name() RETURNS trigger AS
+$BODY$
+BEGIN
+    RAISE LOG 'Refresh transportation_name';
+
+    -- REFRESH osm_transportation_name_linestring
+
+    -- Compact the change history to keep only the first and last version, and then uniq version of row
+    CREATE TEMP TABLE name_changes_compact AS
+    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, construction, level, layer, indoor, network_type)
+        name,
+        name_en,
+        name_de,
+        ref,
+        highway,
+        construction,
+        level,
+        layer,
+        indoor,
+        network_type,
+        coalesce(name, ref) AS name_ref
+    FROM ((
+              SELECT DISTINCT ON (osm_id) *
+              FROM transportation_name.name_changes
+              WHERE is_old
+              ORDER BY osm_id,
+                       id ASC
+          )
+          UNION ALL
+          (
+              SELECT DISTINCT ON (osm_id) *
+              FROM transportation_name.name_changes
+              WHERE NOT is_old
+              ORDER BY osm_id,
+                       id DESC
+          )) AS t;
+
+    DELETE
+    FROM osm_transportation_name_linestring AS n
+        USING name_changes_compact AS c
+    WHERE coalesce(n.name, '') = coalesce(c.name, '')
+      AND coalesce(n.ref, '') = coalesce(c.ref, '')
+      AND n.name_en IS NOT DISTINCT FROM c.name_en
+      AND n.name_de IS NOT DISTINCT FROM c.name_de
+      AND n.highway IS NOT DISTINCT FROM c.highway
+      AND n.construction IS NOT DISTINCT FROM c.construction
+      AND n.level IS NOT DISTINCT FROM c.level
+      AND n.layer IS NOT DISTINCT FROM c.layer
+      AND n.indoor IS NOT DISTINCT FROM c.indoor
+      AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    INSERT INTO osm_transportation_name_linestring
+    SELECT (ST_Dump(geometry)).geom AS geometry,
+           NULL::bigint AS osm_id,
+           name,
+           name_en,
+           name_de,
+           tags || get_basic_names(tags, geometry) AS tags,
+           ref,
+           highway,
+           construction,
+           level,
+           layer,
+           indoor,
+           network_type AS network,
+           z_order
+    FROM (
+        SELECT ST_LineMerge(ST_Collect(n.geometry)) AS geometry,
+            n.name,
+            n.name_en,
+            n.name_de,
+            hstore(string_agg(nullif(slice_language_tags(tags ||
+                                                         hstore(ARRAY ['name', n.name, 'name:en', n.name_en, 'name:de', n.name_de]))::text,
+                                     ''), ',')) AS tags,
+            n.ref,
+            n.highway,
+            n.construction,
+            n.level,
+            n.layer,
+            n.indoor,
+            n.network_type,
+            min(n.z_order) AS z_order
+        FROM osm_transportation_name_network AS n
+            JOIN name_changes_compact AS c ON
+                 coalesce(n.name, '') = coalesce(c.name, '')
+             AND coalesce(n.ref, '') = coalesce(c.ref, '')
+             AND n.name_en IS NOT DISTINCT FROM c.name_en
+             AND n.name_de IS NOT DISTINCT FROM c.name_de
+             AND n.highway IS NOT DISTINCT FROM c.highway
+             AND n.construction IS NOT DISTINCT FROM c.construction
+             AND n.level IS NOT DISTINCT FROM c.level
+             AND n.layer IS NOT DISTINCT FROM c.layer
+             AND n.indoor IS NOT DISTINCT FROM c.indoor
+             AND n.network_type IS NOT DISTINCT FROM c.network_type
+        GROUP BY n.name, n.name_en, n.name_de, n.ref, n.highway, n.construction, n.level, n.layer, n.indoor, n.network_type
+    ) AS highway_union;
+
+    -- REFRESH osm_transportation_name_linestring_gen1
+    DELETE FROM osm_transportation_name_linestring_gen1 AS n
+    USING name_changes_compact AS c
+    WHERE
+        coalesce(n.name, n.ref) = c.name_ref AND
+        n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    INSERT INTO osm_transportation_name_linestring_gen1
+    SELECT n.*
+    FROM osm_transportation_name_linestring_gen1_view AS n
+        JOIN name_changes_compact AS c ON
+            coalesce(n.name, n.ref) = c.name_ref AND
+            n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    -- REFRESH osm_transportation_name_linestring_gen2
+    DELETE FROM osm_transportation_name_linestring_gen2 AS n
+    USING name_changes_compact AS c
+    WHERE
+        coalesce(n.name, n.ref) = c.name_ref AND
+        n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    INSERT INTO osm_transportation_name_linestring_gen2
+    SELECT n.*
+    FROM osm_transportation_name_linestring_gen2_view AS n
+        JOIN name_changes_compact AS c ON
+            coalesce(n.name, n.ref) = c.name_ref AND
+            n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    -- REFRESH osm_transportation_name_linestring_gen3
+    DELETE FROM osm_transportation_name_linestring_gen3 AS n
+    USING name_changes_compact AS c
+    WHERE
+        coalesce(n.name, n.ref) = c.name_ref AND
+        n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    INSERT INTO osm_transportation_name_linestring_gen3
+    SELECT n.*
+    FROM osm_transportation_name_linestring_gen3_view AS n
+        JOIN name_changes_compact AS c ON
+            coalesce(n.name, n.ref) = c.name_ref AND
+            n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    -- REFRESH osm_transportation_name_linestring_gen4
+    DELETE FROM osm_transportation_name_linestring_gen4 AS n
+    USING name_changes_compact AS c
+    WHERE
+        coalesce(n.name, n.ref) = c.name_ref AND
+        n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    INSERT INTO osm_transportation_name_linestring_gen4
+    SELECT n.*
+    FROM osm_transportation_name_linestring_gen4_view AS n
+        JOIN name_changes_compact AS c ON
+            coalesce(n.name, n.ref) = c.name_ref AND
+            n.name IS NOT DISTINCT FROM c.name AND n.name_en IS NOT DISTINCT FROM c.name_en AND n.name_de IS NOT DISTINCT FROM c.name_de AND n.ref IS NOT DISTINCT FROM c.ref AND n.highway IS NOT DISTINCT FROM c.highway AND n.construction IS NOT DISTINCT FROM c.construction AND n.network IS NOT DISTINCT FROM c.network_type;
+
+    DROP TABLE name_changes_compact;
+    DELETE FROM transportation_name.name_changes;
+    DELETE FROM transportation_name.updates_name;
+    RETURN NULL;
+END;
+$BODY$
+    LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_store_transportation_name_network
+    AFTER INSERT OR UPDATE OR DELETE
+    ON osm_transportation_name_network
+    FOR EACH ROW
+EXECUTE PROCEDURE transportation_name.name_network_store();
+
+CREATE TRIGGER trigger_flag_name
+    AFTER INSERT
+    ON transportation_name.name_changes
+    FOR EACH STATEMENT
+EXECUTE PROCEDURE transportation_name.flag_name();
+
+CREATE CONSTRAINT TRIGGER trigger_refresh_name
+    AFTER INSERT
+    ON transportation_name.updates_name
+    INITIALLY DEFERRED
+    FOR EACH ROW
+EXECUTE PROCEDURE transportation_name.refresh_name();
