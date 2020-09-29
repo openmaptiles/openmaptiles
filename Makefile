@@ -67,38 +67,64 @@ endef
 
 #
 # Determine area to work on
-# If $(area) parameter is not set and data/*.osm.pbf finds only one file, use it as $(area).
-# Otherwise all make targets requiring area param will show an error.
-# Note: If there are no data files, and user calls  make download area=... once,
-#       they will not need to use area= parameter after that because there will be just a single file.
+# If $(area) parameter is not set, and only one *.osm.pbf file is found in ./data, use it as $(area).
+# Otherwise, all make targets requiring an area will show an error.
+# Note: If no *.osm.pbf files are found, once the users call  "make download area=..."
+#       they will not need to use an "area=" parameter again because there will be just a single file.
 #
 
 # historically we have been using $(area) rather than $(AREA), so make both work
 area ?= $(AREA)
-# Ensure the $(AREA) param is set, or try to automatically determine it based on available data files
+# Ensure the $(area) param is set, or try to automatically determine it based on available data files
 ifeq ($(strip $(area)),)
-  # if $area is not set. set it to the name of the *.osm.pbf file, but only if there is only one
-  data_files := $(wildcard data/*.osm.pbf)
+  # An $(area) parameter is not set. If only one *.osm.pbf file is found in ./data, use it as $(area).
+  data_files := $(shell find data -name '*.osm.pbf' 2>/dev/null)
   ifneq ($(word 2,$(data_files)),)
-    AREA_ERROR := The 'area' parameter or environment variable have not been set, and there are more than one data/*.osm.pbf files: $(patsubst data/%.osm.pbf,'%',$(data_files))
+    define assert_area_is_given
+	  @echo ""
+	  @echo "ERROR: The 'area' parameter or environment variable have not been set, and there several 'area' options:"
+	  @$(patsubst data/%.osm.pbf,echo "  '%'";,$(data_files))
+	  @echo ""
+	  @echo "To specify an area use:"
+	  @echo "  make $@ area=<area-id>"
+	  @echo ""
+	  @exit 1
+    endef
   else
     ifeq ($(word 1,$(data_files)),)
-      AREA_ERROR := The 'area' parameter or environment variable have not been set, and there is no data/*.osm.pbf file
+      define assert_area_is_given
+        @echo ""
+        @echo "ERROR: The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files"
+        @echo ""
+        @echo "To specify an area use"
+        @echo "  make $@ area=<area-id>"
+        @echo ""
+        @echo "To download an area, use   make download area=<area-id>"
+        @echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+        @exit 1
+        @echo ""
+      endef
     else
       # Keep just the name of the data file, without the .osm.pbf extension
-      area := $(strip $(basename $(basename $(notdir $(data_files)))))
+      area := $(patsubst data/%.osm.pbf,%,$(data_files))
       # Rename area-latest.osm.pbf to area.osm.pbf
       # TODO: This if statement could be removed in a few months once everyone is using the file without the `-latest`?
       ifneq ($(area),$(area:-latest=))
         $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
         area := $(area:-latest=)
         $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
-        AREA_INFO := Detected area=$(area) based on finding a data/$(area)-latest.osm.pbf file - renamed to $(area).osm.pbf. Use 'area' parameter or environment variable to override.
+        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area)-latest.osm.pbf' file - renamed to '$(area).osm.pbf'. Use 'area' parameter or environment variable to override.
       else
-        AREA_INFO := Detected area=$(area) based on finding a data/$(area).pbf file. Use 'area' parameter or environment variable to override.
+        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area).pbf' file. Use 'area' parameter or environment variable to override.
       endif
     endif
   endif
+endif
+
+ifneq ($(strip $(AREA_INFO)),)
+  define assert_area_is_given
+      @echo "$(AREA_INFO)"
+  endef
 endif
 
 # If set, this file will be downloaded in download-osm and imported in the import-osm targets
@@ -129,26 +155,6 @@ endif
 
 # download-osm generates this file with metadata about the file
 AREA_DC_CONFIG_FILE ?= data/$(area).dc-config.yml
-
-ifeq ($(strip $(area)),)
-  define assert_area_is_given
-	@echo ""
-	@echo "ERROR: $(AREA_ERROR)"
-	@echo ""
-	@echo "  make $@ area=<area-id>"
-	@echo ""
-	@echo "To download an area, use   make download <area-id>"
-	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
-	@exit 1
-  endef
-else
-  ifneq ($(strip $(AREA_INFO)),)
-    define assert_area_is_given
-	@echo "$(AREA_INFO)"
-    endef
-  endif
-endif
-
 
 
 #
