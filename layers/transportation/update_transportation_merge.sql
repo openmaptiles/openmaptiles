@@ -16,10 +16,6 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
 
 -- Improve performance of the sql in transportation_name/network_type.sql
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
-    ON osm_highway_linestring (highway);
-
--- Improve performance of the sql below
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
     WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
