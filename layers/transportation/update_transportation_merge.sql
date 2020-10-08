@@ -135,8 +135,10 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
-    RAISE NOTICE 'Refresh transportation';
+    RAISE LOG 'Refresh transportation';
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen3;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen4;
@@ -145,6 +147,8 @@ BEGIN
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen7;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.updates;
+
+    RAISE LOG 'Refresh transportation done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

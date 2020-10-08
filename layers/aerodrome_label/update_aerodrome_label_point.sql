@@ -56,6 +56,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION aerodrome_label.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh aerodrome_label';
     PERFORM update_aerodrome_label_point(false);
@@ -63,6 +65,8 @@ BEGIN
     DELETE FROM aerodrome_label.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM aerodrome_label.updates;
+
+    RAISE LOG 'Refresh aerodrome_label done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
