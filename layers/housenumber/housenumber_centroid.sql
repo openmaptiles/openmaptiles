@@ -34,7 +34,8 @@ $$
                 ELSE ST_PointOnSurface(geometry)
                 END
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
-        AND ST_GeometryType(geometry) <> 'ST_Point';
+        AND ST_GeometryType(geometry) <> 'ST_Point'
+        AND ST_IsValid(geometry);
 $$ LANGUAGE SQL;
 
 SELECT convert_housenumber_point(true);
