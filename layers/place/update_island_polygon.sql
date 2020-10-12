@@ -57,6 +57,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION place_island_polygon.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh place_island_polygon';
     PERFORM update_osm_island_polygon(false);
@@ -64,6 +66,8 @@ BEGIN
     DELETE FROM place_island_polygon.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM place_island_polygon.updates;
+
+    RAISE LOG 'Refresh place_island_polygon done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

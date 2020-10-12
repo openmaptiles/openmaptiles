@@ -70,6 +70,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh housenumber';
     PERFORM convert_housenumber_point(false);
@@ -77,6 +79,8 @@ BEGIN
     DELETE FROM housenumber.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM housenumber.updates;
+
+    RAISE LOG 'Refresh housenumber done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
