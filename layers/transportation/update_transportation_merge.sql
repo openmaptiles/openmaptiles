@@ -16,10 +16,6 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
 
 -- Improve performance of the sql in transportation_name/network_type.sql
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
-    ON osm_highway_linestring (highway);
-
--- Improve performance of the sql below
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
     WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
@@ -139,8 +135,10 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
-    RAISE NOTICE 'Refresh transportation';
+    RAISE LOG 'Refresh transportation';
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen3;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen4;
@@ -149,6 +147,8 @@ BEGIN
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen7;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.updates;
+
+    RAISE LOG 'Refresh transportation done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
