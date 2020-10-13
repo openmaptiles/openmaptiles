@@ -92,6 +92,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION place_state.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh place_state rank';
     PERFORM update_osm_state_point(false);
@@ -99,6 +101,8 @@ BEGIN
     DELETE FROM place_state.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM place_state.updates;
+
+    RAISE LOG 'Refresh place_state done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
