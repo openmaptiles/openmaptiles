@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
                 network    text,
                 class      text,
                 subclass   text,
+                brunnel    text,
                 layer      int,
                 level      int,
                 indoor     int
@@ -41,6 +42,7 @@ SELECT osm_id,
            WHEN highway IS NOT NULL AND highway_class(highway, '', construction) = 'path'
                THEN highway
            END AS subclass,
+       brunnel,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor
@@ -94,6 +96,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,
@@ -116,6 +119,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,
@@ -137,6 +141,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,
