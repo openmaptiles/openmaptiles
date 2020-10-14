@@ -62,11 +62,13 @@ tileset:
     - ja # Japanese
     - ja_kana # Japanese Kana form
     - ja_rm # romanization of Japanese, Latin
+    - ja-Latn # romanisation of Japanese, Latin since 2018
+    - ja-Hira # Japanese Hiragana form
     - ka # Georgian
     - kk # Kazakh
     - kn # Kannada
     - ko # Korean
-    - ko_rm # romanization of Korean, Latin
+    - ko-Latn # romanization of Korean, Latin
     - ku # Kurdish, Latin
     - la # Latin, Latin
     - lb # Luxembourgish, Latin
