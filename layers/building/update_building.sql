@@ -27,7 +27,7 @@ BEGIN
             FROM osm_building_polygon o
         )
         SELECT (array_agg(dta.osm_id))[1]                                                                   osm_id,
-               ST_Buffer(ST_MemUnion(ST_Buffer(dta.geometry, zres14, 'join=mitre')), -zres14, 'join=mitre') geometry
+               ST_Buffer(ST_MemUnion(ST_Buffer(dta.geometry, -zres14, 'join=mitre')), zres14, 'join=mitre') geometry
         FROM dta
         GROUP BY cid
 
