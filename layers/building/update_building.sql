@@ -102,11 +102,15 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION buildings.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh buildings block';
     REFRESH MATERIALIZED VIEW osm_building_block_gen1;
     -- noinspection SqlWithoutWhere
     DELETE FROM buildings.updates;
+
+    RAISE LOG 'Update buildings block done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

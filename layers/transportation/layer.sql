@@ -36,7 +36,7 @@ SELECT osm_id,
            WHEN NULLIF(highway, '') IS NOT NULL OR NULLIF(public_transport, '') IS NOT NULL
                THEN highway_class(highway, public_transport, construction)
            WHEN NULLIF(railway, '') IS NOT NULL THEN railway_class(railway)
-           WHEN NULLIF(aerialway, '') IS NOT NULL THEN aerialway
+           WHEN NULLIF(aerialway, '') IS NOT NULL THEN 'aerialway'
            WHEN NULLIF(shipway, '') IS NOT NULL THEN shipway
            WHEN NULLIF(man_made, '') IS NOT NULL THEN man_made
            END AS class,
@@ -45,6 +45,7 @@ SELECT osm_id,
            WHEN (highway IS NOT NULL OR public_transport IS NOT NULL)
                AND highway_class(highway, public_transport, construction) = 'path'
                THEN COALESCE(NULLIF(public_transport, ''), highway)
+           WHEN aerialway IS NOT NULL THEN aerialway
            END AS subclass,
        -- All links are considered as ramps as well
        CASE
@@ -219,9 +220,9 @@ FROM (
                 NULL AS shipway,
                 NULL AS public_transport,
                 NULL AS service,
-                NULL::boolean AS is_bridge,
-                NULL::boolean AS is_tunnel,
-                NULL::boolean AS is_ford,
+                is_bridge,
+                is_tunnel,
+                is_ford,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -249,9 +250,9 @@ FROM (
                 NULL AS shipway,
                 NULL AS public_transport,
                 NULL AS service,
-                NULL::boolean AS is_bridge,
-                NULL::boolean AS is_tunnel,
-                NULL::boolean AS is_ford,
+                is_bridge,
+                is_tunnel,
+                is_ford,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
