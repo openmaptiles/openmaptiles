@@ -14,7 +14,8 @@ SELECT wp.osm_id,
 FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
 WHERE ll.osm_id IS NULL
-  AND wp.name <> '';
+  AND wp.name <> ''
+  AND ST_IsValid(wp.geometry);
 
 -- etldoc:  osm_water_polygon ->  osm_water_point
 -- etldoc:  lake_centerline ->  osm_water_point
