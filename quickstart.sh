@@ -263,15 +263,15 @@ make test-perf-null
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-if [[ "$area" != "planet" ]]; then
-  if [[ "$(source .env ; echo "$BBOX")" = "-180.0,-85.0511,180.0,85.0511" ]]; then
+if [[ "$(source .env ; echo "$BBOX")" = "-180.0,-85.0511,180.0,85.0511" ]]; then
+  if [[ "$area" != "planet" ]]; then
     echo "====> : Compute bounding box for tile generation"
     make generate-dc-config ${MIN_ZOOM:+MIN_ZOOM="${MIN_ZOOM}"} ${MAX_ZOOM:+MAX_ZOOM="${MAX_ZOOM}"}
   else
-      echo "====> : Bounding box is set in .env file"
+    echo "====> : Skipping bbox calculation when generating the entire planet"
   fi
 else
-  echo "====> : Skipping bbox calculation when generating the entire planet"
+  echo "====> : Bounding box is set in .env file"
 fi
 
 echo " "
