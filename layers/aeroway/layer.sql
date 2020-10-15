@@ -54,6 +54,12 @@ FROM (
          SELECT geometry, aeroway, ref
          FROM osm_aeroway_polygon
          WHERE zoom_level >= 14
+         UNION ALL
+         
+         -- etldoc:  osm_aeroway_point -> layer_aeroway:z14_
+         SELECT geometry, aeroway, ref
+         FROM osm_aeroway_point 
+         WHERE zoom_level >= 14
      ) AS zoom_levels
 WHERE geometry && bbox;
 $$ LANGUAGE SQL STABLE
