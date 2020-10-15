@@ -81,18 +81,18 @@ tables:
       - runway
       - taxiway
       
-# etldoc: imposm3 -> osm_aeroway_point
-aeroway_point:
-  type: point
-  columns:
-  - *ref
-  - name: osm_id
-    type: id
-  - name: geometry
-    type: geometry
-  - name: aeroway
-    key: aeroway
-    type: string
-  mapping:
-    aeroway:
-    - gate
+  # etldoc: imposm3 -> osm_aeroway_point
+  aeroway_point:
+    type: point
+    columns:
+    - *ref
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      key: aeroway
+      type: string
+    mapping:
+      aeroway:
+      - gate
