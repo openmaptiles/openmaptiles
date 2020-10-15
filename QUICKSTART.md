@@ -406,7 +406,7 @@ If you want to generate a tiles for a smaller extent, modify the settings in the
 Delete the `./data/<area>.dc-config.yml` file, and re-start `./quickstart.sh <area>`
 
 Hint:
-* The [bboxfinder.com](http://bboxfinder.com) site can be used to find a bounding box using a map.
+* The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
 
 ### Check other commands
 
