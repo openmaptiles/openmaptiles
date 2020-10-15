@@ -397,6 +397,17 @@ Hints:
 * Small increments! Never starts with the `MAX_ZOOM = 14`
 * The suggested  `MAX_ZOOM = 14`  - use only with small extracts
 
+### Set the bounding box to generate
+
+By default, tile generation is done for the full extent of the area.
+If you want to generate a tiles for a smaller extent, modify the settings in the `.env` file, the default:
+* `BBOX=-180.0,-85.0511,180.0,85.0511`
+
+Delete the `./data/<area>.dc-config.yml` file, and re-start `./quickstart.sh <area>`
+
+Hint:
+* The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
+
 ### Check other commands
 
 `make help`
