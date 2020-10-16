@@ -38,6 +38,8 @@ services:
       DIFF_MODE: ${DIFF_MODE}
       MIN_ZOOM: ${MIN_ZOOM}
       MAX_ZOOM: ${MAX_ZOOM}
+      #Provide BBOX from *.bbox file if exists, else from .env
+      BBOX: ${BBOX}
       # Imposm configuration file describes how to load updates when enabled
       IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       # Which files to use during import-borders processing
