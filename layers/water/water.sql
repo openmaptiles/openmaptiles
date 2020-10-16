@@ -237,13 +237,13 @@ WHERE "natural" != 'bay'
 
 CREATE OR REPLACE VIEW water_z12 AS
 (
--- etldoc:  osm_ocean_polygon_gen1 ->  water_z12
+-- etldoc:  osm_ocean_polygon_union ->  water_z12
 SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
-FROM osm_ocean_polygon
+FROM osm_ocean_polygon_union
 UNION ALL
 -- etldoc:  osm_water_polygon ->  water_z12
 SELECT geometry,
@@ -257,13 +257,13 @@ WHERE "natural" != 'bay'
 
 CREATE OR REPLACE VIEW water_z13 AS
 (
--- etldoc:  osm_ocean_polygon ->  water_z13
+-- etldoc:  osm_ocean_polygon_union ->  water_z13
 SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
-FROM osm_ocean_polygon
+FROM osm_ocean_polygon_union
 UNION ALL
 -- etldoc:  osm_water_polygon ->  water_z13
 SELECT geometry,
@@ -277,13 +277,13 @@ WHERE "natural" != 'bay'
 
 CREATE OR REPLACE VIEW water_z14 AS
 (
--- etldoc:  osm_ocean_polygon ->  water_z14
+-- etldoc:  osm_ocean_polygon_union ->  water_z14
 SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
-FROM osm_ocean_polygon
+FROM osm_ocean_polygon_union
 UNION ALL
 -- etldoc:  osm_water_polygon ->  water_z14
 SELECT geometry,
