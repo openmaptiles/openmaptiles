@@ -433,7 +433,7 @@ Hints for developers:
   make psql-list-tables                # list all PostgreSQL tables
   make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
   make psql-analyze                    # PostgreSQL: ANALYZE
-  make generate-qareports              # generate reports [./build/qareports]
+  make generate-qa                     # statistics for a given layer's field
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
   make tools-dev                       # start import-sql  /bin/bash terminal
   make db-destroy                      # remove docker containers, PG data volume

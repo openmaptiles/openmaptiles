@@ -213,7 +213,7 @@ help:
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
 	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
 	@echo "  make analyze-db                      # PostgreSQL: ANALYZE"
-	@echo "  make generate-qareports              # generate reports                                [./build/qareports]"
+	@echo "  make generate-qa                     # statistics for a given layer's field"
 	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
 	@echo "  make bash                            # start openmaptiles-tools /bin/bash terminal"
 	@echo "  make destroy-db                      # remove docker containers and PostgreSQL data volume"
@@ -464,9 +464,15 @@ start-maputnik: stop-maputnik start-postserve
 stop-maputnik:
 	-docker rm -f maputnik_editor
 
-.PHONY: generate-qareports
-generate-qareports: start-db
-	./qa/run.sh
+# STAT_FUNCTION=frequency|toplength|variance;
+# e.g. make generate-qa STAT_FUNCTION=frequency LAYER=transportation ATTRIBUTE=class
+.PHONY: generate-qa
+generate-qa: all start-db-nowait
+	@echo " "
+	@echo "e.g. make generate-qa STAT_FUNCTION=frequency LAYER=transportation ATTRIBUTE=class"
+	@echo " "
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
+		layer-stats $(STAT_FUNCTION) $(TILESET_FILE) $(LAYER) $(ATTRIBUTE) -m 0 -n 14 -v
 
 # generate all etl and mapping graphs
 .PHONY: generate-devdoc
