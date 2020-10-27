@@ -464,8 +464,7 @@ start-maputnik: stop-maputnik start-postserve
 stop-maputnik:
 	-docker rm -f maputnik_editor
 
-# STAT_FUNCTION=frequency|toplength|variance;
-# e.g. make generate-qa STAT_FUNCTION=frequency LAYER=transportation ATTRIBUTE=class
+# STAT_FUNCTION=frequency|toplength|variance
 .PHONY: generate-qa
 generate-qa: all start-db-nowait
 	@echo " "
