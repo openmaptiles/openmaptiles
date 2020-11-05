@@ -150,7 +150,7 @@ schema:
   - ./poi_stop_agg.sql
   - ./update_poi_polygon.sql
   - ./update_poi_point.sql
-  - ./layer.sql
+  - ./poi.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

@@ -178,7 +178,7 @@ layer:
 schema:
   - ./class.sql
   - ./update_transportation_merge.sql
-  - ./layer.sql
+  - ./transportation.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml
