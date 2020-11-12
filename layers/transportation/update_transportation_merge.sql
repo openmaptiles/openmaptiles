@@ -27,17 +27,23 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        NULL::bigint AS osm_id,
        highway,
        construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
        z_order
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
                 highway,
                 construction,
+                is_bridge,
+                is_tunnel,
+                is_ford,
                 min(z_order) AS z_order
          FROM osm_highway_linestring
          WHERE (highway IN ('motorway', 'trunk', 'primary') OR
                 highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
            AND ST_IsValid(geometry)
-         GROUP BY highway, construction
+         GROUP BY highway, construction, is_bridge, is_tunnel, is_ford
      ) AS highway_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
@@ -49,7 +55,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_highway_partial_i
 -- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen3
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen3 AS
 (
-SELECT ST_Simplify(geometry, 120) AS geometry, osm_id, highway, construction, z_order
+SELECT ST_Simplify(geometry, 120) AS geometry, osm_id, highway, construction, is_bridge, is_tunnel, is_ford, z_order
 FROM osm_transportation_merge_linestring
 WHERE highway IN ('motorway', 'trunk', 'primary')
    OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary')
@@ -63,7 +69,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen3_highway_part
 -- etldoc: osm_transportation_merge_linestring_gen3 -> osm_transportation_merge_linestring_gen4
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen4 AS
 (
-SELECT ST_Simplify(geometry, 200) AS geometry, osm_id, highway, construction, z_order
+SELECT ST_Simplify(geometry, 200) AS geometry, osm_id, highway, construction, is_bridge, is_tunnel, is_ford, z_order
 FROM osm_transportation_merge_linestring_gen3
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
@@ -78,7 +84,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen4_highway_part
 -- etldoc: osm_transportation_merge_linestring_gen4 -> osm_transportation_merge_linestring_gen5
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS
 (
-SELECT ST_Simplify(geometry, 500) AS geometry, osm_id, highway, construction, z_order
+SELECT ST_Simplify(geometry, 500) AS geometry, osm_id, highway, construction, is_bridge, is_tunnel, is_ford, z_order
 FROM osm_transportation_merge_linestring_gen4
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 100
@@ -92,7 +98,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_highway_part
 -- etldoc: osm_transportation_merge_linestring_gen5 -> osm_transportation_merge_linestring_gen6
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen6 AS
 (
-SELECT ST_Simplify(geometry, 1000) AS geometry, osm_id, highway, construction, z_order
+SELECT ST_Simplify(geometry, 1000) AS geometry, osm_id, highway, construction, is_bridge, is_tunnel, is_ford, z_order
 FROM osm_transportation_merge_linestring_gen5
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 500
@@ -106,7 +112,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen6_highway_part
 -- etldoc: osm_transportation_merge_linestring_gen6 -> osm_transportation_merge_linestring_gen7
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen7 AS
 (
-SELECT ST_Simplify(geometry, 2000) AS geometry, osm_id, highway, construction, z_order
+SELECT ST_Simplify(geometry, 2000) AS geometry, osm_id, highway, construction, is_bridge, is_tunnel, is_ford, z_order
 FROM osm_transportation_merge_linestring_gen6
 WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
   AND ST_Length(geometry) > 1000

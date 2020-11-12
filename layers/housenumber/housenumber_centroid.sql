@@ -12,20 +12,6 @@ CREATE TABLE IF NOT EXISTS housenumber.osm_ids
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
 CREATE OR REPLACE FUNCTION convert_housenumber_point(full_update boolean) RETURNS void AS
 $$
-    -- Delete housenumber duplicates
-    DELETE FROM osm_housenumber_point
-    WHERE osm_id IN (
-      SELECT pt.osm_id
-      FROM osm_housenumber_point pt
-      INNER JOIN osm_housenumber_point poly
-      ON (ST_GeometryType(poly.geometry) <> 'ST_Point'
-          AND ST_GeometryType(pt.geometry) = 'ST_Point'
-          AND pt.geometry && poly.geometry
-          AND pt.housenumber = poly.housenumber
-          AND (full_update OR pt.osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
-      )
-    );
-
     UPDATE osm_housenumber_point
     SET geometry =
             CASE

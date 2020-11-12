@@ -26,7 +26,7 @@ layer:
     query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./update_park_polygon.sql
-  - ./layer.sql
+  - ./park.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

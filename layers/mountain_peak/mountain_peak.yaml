@@ -25,7 +25,7 @@ layer:
     query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, ele, ele_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./update_peak_point.sql
-  - ./layer.sql
+  - ./mountain_peak.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

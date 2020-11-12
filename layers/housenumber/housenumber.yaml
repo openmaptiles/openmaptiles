@@ -13,7 +13,7 @@ layer:
     query: (SELECT geometry, housenumber FROM layer_housenumber(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./housenumber_centroid.sql
-  - ./layer.sql
+  - ./housenumber.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

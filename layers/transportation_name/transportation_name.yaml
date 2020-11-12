@@ -98,7 +98,7 @@ schema:
   - ./network_type.sql
   - ./update_route_member.sql
   - ./update_transportation_name.sql
-  - ./layer.sql
+  - ./transportation_name.sql
 datasources:
   - type: imposm3
     mapping_file: ../transportation/mapping.yaml
