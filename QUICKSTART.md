@@ -368,7 +368,7 @@ Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is no
 ```
 mkdir -p data
 mv my-latest.osm.pbf data/
-make generate-dc-config
+make generate-bbox-file
 ./quickstart.sh my
 ```
 
@@ -391,8 +391,6 @@ modify the settings in the `.env` file, the defaults:
 * `MIN_ZOOM=0`
 * `MAX_ZOOM=7`
 
-Delete the `./data/<area>.dc-config.yml` file, and re-start `./quickstart.sh <area>`
-
 Hints:
 * Small increments! Never starts with the `MAX_ZOOM = 14`
 * The suggested  `MAX_ZOOM = 14`  - use only with small extracts
@@ -403,7 +401,7 @@ By default, tile generation is done for the full extent of the area.
 If you want to generate a tiles for a smaller extent, modify the settings in the `.env` file, the default:
 * `BBOX=-180.0,-85.0511,180.0,85.0511`
 
-Delete the `./data/<area>.dc-config.yml` file, and re-start `./quickstart.sh <area>`
+Delete the `./data/<area>.bbox` file, and re-start `./quickstart.sh <area>`
 
 Hint:
 * The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
