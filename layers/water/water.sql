@@ -73,7 +73,7 @@ FROM ne_50m_ocean
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z4_idx ON ne_50m_ocean_gen_z4 USING gist (geometry);
 
--- etldoc:  ne_50m_ocean ->  ne_50m_ocean_gen_z3
+-- etldoc:  ne_50m_ocean_gen_z4 ->  ne_50m_ocean_gen_z3
 DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z3 CASCADE;
 CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z3 AS
 (
@@ -86,7 +86,7 @@ FROM ne_50m_ocean_gen_z4
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z3_idx ON ne_50m_ocean_gen_z3 USING gist (geometry);
 
--- etldoc:  ne_50m_ocean ->  ne_50m_ocean_gen_z2
+-- etldoc:  ne_50m_ocean_gen_z3 ->  ne_50m_ocean_gen_z2
 DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z2 CASCADE;
 CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z2 AS
 (
@@ -113,7 +113,7 @@ FROM ne_50m_lakes
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z3_idx ON ne_50m_lakes_gen_z3 USING gist (geometry);
 
--- etldoc:  ne_50m_lakes ->  ne_50m_lakes_gen_z2
+-- etldoc:  ne_50m_lakes_gen_z3 ->  ne_50m_lakes_gen_z2
 DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z2 CASCADE;
 CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z2 AS
 (
@@ -140,7 +140,7 @@ FROM ne_110m_ocean
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z1_idx ON ne_110m_ocean_gen_z1 USING gist (geometry);
 
--- etldoc:  ne_110m_ocean ->  ne_110m_ocean_gen_z0
+-- etldoc:  ne_110m_ocean_gen_z1 ->  ne_110m_ocean_gen_z0
 DROP MATERIALIZED VIEW IF EXISTS ne_110m_ocean_gen_z0 CASCADE;
 CREATE MATERIALIZED VIEW ne_110m_ocean_gen_z0 AS
 (
@@ -168,7 +168,7 @@ FROM ne_110m_lakes
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z1_idx ON ne_110m_lakes_gen_z1 USING gist (geometry);
 
--- etldoc:  ne_110m_lakes ->  ne_110m_lakes_gen_z0
+-- etldoc:  ne_110m_lakes_gen_z1 ->  ne_110m_lakes_gen_z0
 DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z0 CASCADE;
 CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z0 AS
 (

@@ -52,7 +52,7 @@ $$
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z10
+-- etldoc: osm_ocean_polygon_gen_z11 -> osm_ocean_polygon_gen_z10
 DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z10 CASCADE;
 CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z10 AS
 (
@@ -72,7 +72,7 @@ $$
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z9
+-- etldoc: osm_ocean_polygon_gen_z10 -> osm_ocean_polygon_gen_z9
 DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z9 CASCADE;
 CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z9 AS
 (
@@ -92,7 +92,7 @@ $$
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z8
+-- etldoc: osm_ocean_polygon_gen_z9 -> osm_ocean_polygon_gen_z8
 DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z8 CASCADE;
 CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z8 AS
 (
@@ -112,7 +112,7 @@ $$
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z7
+-- etldoc: osm_ocean_polygon_gen_z8 -> osm_ocean_polygon_gen_z7
 DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z7 CASCADE;
 CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z7 AS
 (
@@ -132,7 +132,7 @@ $$
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z6
+-- etldoc: osm_ocean_polygon_gen_z7 -> osm_ocean_polygon_gen_z6
 DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z6 AS
 (

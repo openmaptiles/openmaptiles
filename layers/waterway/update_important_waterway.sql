@@ -51,7 +51,7 @@ WHERE ST_Length(geometry) > 1000
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z11_name_idx ON osm_important_waterway_linestring_gen_z11 (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z11_geometry_idx ON osm_important_waterway_linestring_gen_z11 USING gist (geometry);
 
--- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen_z10
+-- etldoc: osm_important_waterway_linestring_gen_z11 -> osm_important_waterway_linestring_gen_z10
 DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen_z10 CASCADE;
 CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen_z10 AS
 (
@@ -66,7 +66,7 @@ WHERE ST_Length(geometry) > 4000
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z10_name_idx ON osm_important_waterway_linestring_gen_z10 (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z10_geometry_idx ON osm_important_waterway_linestring_gen_z10 USING gist (geometry);
 
--- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen_z9
+-- etldoc: osm_important_waterway_linestring_gen_z10 -> osm_important_waterway_linestring_gen_z9
 DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen_z9 CASCADE;
 CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen_z9 AS
 (
