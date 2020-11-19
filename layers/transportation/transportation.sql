@@ -64,7 +64,7 @@ SELECT osm_id,
        NULLIF(mtb_scale, '') AS mtb_scale,
        NULLIF(surface, '') AS surface
 FROM (
-         -- etldoc: osm_transportation_merge_linestring_gen7 -> layer_transportation:z4
+         -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
          SELECT osm_id,
                 geometry,
                 highway,
@@ -89,11 +89,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_transportation_merge_linestring_gen7
+         FROM osm_transportation_merge_linestring_gen_z4
          WHERE zoom_level = 4
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen6 -> layer_transportation:z5
+         -- etldoc: osm_transportation_merge_linestring_gen_z5 -> layer_transportation:z5
          SELECT osm_id,
                 geometry,
                 highway,
@@ -118,11 +118,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_transportation_merge_linestring_gen6
+         FROM osm_transportation_merge_linestring_gen_z5
          WHERE zoom_level = 5
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen5 -> layer_transportation:z6
+         -- etldoc: osm_transportation_merge_linestring_gen_z6 -> layer_transportation:z6
          SELECT osm_id,
                 geometry,
                 highway,
@@ -147,11 +147,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_transportation_merge_linestring_gen5
+         FROM osm_transportation_merge_linestring_gen_z6
          WHERE zoom_level = 6
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen4  ->  layer_transportation:z7
+         -- etldoc: osm_transportation_merge_linestring_gen_z7  ->  layer_transportation:z7
          SELECT osm_id,
                 geometry,
                 highway,
@@ -176,11 +176,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_transportation_merge_linestring_gen4
+         FROM osm_transportation_merge_linestring_gen_z7
          WHERE zoom_level = 7
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen3  ->  layer_transportation:z8
+         -- etldoc: osm_transportation_merge_linestring_gen_z8  ->  layer_transportation:z8
          SELECT osm_id,
                 geometry,
                 highway,
@@ -205,12 +205,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_transportation_merge_linestring_gen3
+         FROM osm_transportation_merge_linestring_gen_z8
          WHERE zoom_level = 8
          UNION ALL
 
-         -- etldoc: osm_highway_linestring_gen2  ->  layer_transportation:z9
-         -- etldoc: osm_highway_linestring_gen2  ->  layer_transportation:z10
+         -- etldoc: osm_highway_linestring_gen_z9  ->  layer_transportation:z9
          SELECT osm_id,
                 geometry,
                 highway,
@@ -235,12 +234,12 @@ FROM (
                 mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_highway_linestring_gen2
-         WHERE zoom_level BETWEEN 9 AND 10
-           AND st_length(geometry) > zres(11)
+         FROM osm_highway_linestring_gen_z9
+         WHERE zoom_level = 9
+           AND ST_Length(geometry) > ZRes(11)
          UNION ALL
 
-         -- etldoc: osm_highway_linestring_gen1  ->  layer_transportation:z11
+         -- etldoc: osm_highway_linestring_gen_z10  ->  layer_transportation:z10
          SELECT osm_id,
                 geometry,
                 highway,
@@ -265,14 +264,44 @@ FROM (
                 mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_highway_linestring_gen1
+         FROM osm_highway_linestring_gen_z10
+         WHERE zoom_level = 10
+           AND ST_Length(geometry) > ZRes(11)
+         UNION ALL
+
+         -- etldoc: osm_highway_linestring_gen_z11  ->  layer_transportation:z11
+         SELECT osm_id,
+                geometry,
+                highway,
+                construction,
+                NULL AS railway,
+                NULL AS aerialway,
+                NULL AS shipway,
+                NULL AS public_transport,
+                NULL AS service,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS is_ramp,
+                NULL::int AS is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                bicycle,
+                foot,
+                horse,
+                mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_highway_linestring_gen_z11
          WHERE zoom_level = 11
-           AND st_length(geometry) > zres(12)
+           AND ST_Length(geometry) > ZRes(12)
          UNION ALL
 
-         -- etldoc: osm_highway_linestring       ->  layer_transportation:z12
-         -- etldoc: osm_highway_linestring       ->  layer_transportation:z13
-         -- etldoc: osm_highway_linestring       ->  layer_transportation:z14_
+         -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
+         -- etldoc: osm_highway_linestring  ->  layer_transportation:z13
+         -- etldoc: osm_highway_linestring  ->  layer_transportation:z14_
          SELECT osm_id,
                 geometry,
                 highway,
@@ -320,7 +349,7 @@ FROM (
              )
          UNION ALL
 
-         -- etldoc: osm_railway_linestring_gen5  ->  layer_transportation:z8
+         -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -345,14 +374,14 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_railway_linestring_gen5
+         FROM osm_railway_linestring_gen_z8
          WHERE zoom_level = 8
            AND railway = 'rail'
            AND service = ''
            AND usage = 'main'
          UNION ALL
 
-         -- etldoc: osm_railway_linestring_gen4  ->  layer_transportation:z9
+         -- etldoc: osm_railway_linestring_gen_z9  ->  layer_transportation:z9
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -377,14 +406,14 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_railway_linestring_gen4
+         FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
            AND railway = 'rail'
            AND service = ''
            AND usage = 'main'
          UNION ALL
 
-         -- etldoc: osm_railway_linestring_gen3  ->  layer_transportation:z10
+         -- etldoc: osm_railway_linestring_gen_z10  ->  layer_transportation:z10
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -409,13 +438,13 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_railway_linestring_gen3
+         FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
            AND railway IN ('rail', 'narrow_gauge')
            AND service = ''
          UNION ALL
 
-         -- etldoc: osm_railway_linestring_gen2  ->  layer_transportation:z11
+         -- etldoc: osm_railway_linestring_gen_z11  ->  layer_transportation:z11
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -440,13 +469,13 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_railway_linestring_gen2
+         FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
            AND service = ''
          UNION ALL
 
-         -- etldoc: osm_railway_linestring_gen1  ->  layer_transportation:z12
+         -- etldoc: osm_railway_linestring_gen_z12  ->  layer_transportation:z12
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -471,14 +500,14 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_railway_linestring_gen1
+         FROM osm_railway_linestring_gen_z12
          WHERE zoom_level = 12
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
            AND service = ''
          UNION ALL
 
-         -- etldoc: osm_railway_linestring       ->  layer_transportation:z13
-         -- etldoc: osm_railway_linestring       ->  layer_transportation:z14_
+         -- etldoc: osm_railway_linestring ->  layer_transportation:z13
+         -- etldoc: osm_railway_linestring ->  layer_transportation:z14_
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -505,11 +534,12 @@ FROM (
                 z_order
          FROM osm_railway_linestring
          WHERE zoom_level = 13
-             AND railway IN ('rail', 'narrow_gauge', 'light_rail') AND service = ''
-            OR zoom_level >= 14
+           AND railway IN ('rail', 'narrow_gauge', 'light_rail')
+           AND service = ''
+           OR zoom_level >= 14
          UNION ALL
 
-         -- etldoc: osm_aerialway_linestring_gen1  ->  layer_transportation:z12
+         -- etldoc: osm_aerialway_linestring_gen_z12  ->  layer_transportation:z12
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -534,12 +564,12 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_aerialway_linestring_gen1
+         FROM osm_aerialway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
 
-         -- etldoc: osm_aerialway_linestring       ->  layer_transportation:z13
-         -- etldoc: osm_aerialway_linestring       ->  layer_transportation:z14_
+         -- etldoc: osm_aerialway_linestring ->  layer_transportation:z13
+         -- etldoc: osm_aerialway_linestring ->  layer_transportation:z14_
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -568,7 +598,7 @@ FROM (
          WHERE zoom_level >= 13
          UNION ALL
 
-         -- etldoc: osm_shipway_linestring_gen2  ->  layer_transportation:z11
+         -- etldoc: osm_shipway_linestring_gen_z11  ->  layer_transportation:z11
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -593,11 +623,11 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_shipway_linestring_gen2
+         FROM osm_shipway_linestring_gen_z11
          WHERE zoom_level = 11
          UNION ALL
 
-         -- etldoc: osm_shipway_linestring_gen1  ->  layer_transportation:z12
+         -- etldoc: osm_shipway_linestring_gen_z12  ->  layer_transportation:z12
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -622,12 +652,12 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_shipway_linestring_gen1
+         FROM osm_shipway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
 
-         -- etldoc: osm_shipway_linestring       ->  layer_transportation:z13
-         -- etldoc: osm_shipway_linestring       ->  layer_transportation:z14_
+         -- etldoc: osm_shipway_linestring ->  layer_transportation:z13
+         -- etldoc: osm_shipway_linestring ->  layer_transportation:z14_
          SELECT osm_id,
                 geometry,
                 NULL AS highway,
@@ -660,8 +690,8 @@ FROM (
          -- careful to net get false positives here because
          -- it is possible that closed linestrings appear both as
          -- highway linestrings and as polygon
-         -- etldoc: osm_highway_polygon          ->  layer_transportation:z13
-         -- etldoc: osm_highway_polygon          ->  layer_transportation:z14_
+         -- etldoc: osm_highway_polygon ->  layer_transportation:z13
+         -- etldoc: osm_highway_polygon ->  layer_transportation:z14_
          SELECT osm_id,
                 geometry,
                 highway,
