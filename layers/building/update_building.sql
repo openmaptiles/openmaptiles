@@ -97,6 +97,7 @@ FROM osm_building_block_gen1();
 
 CREATE INDEX ON osm_building_block_gen1_dup USING gist (geometry);
 
+-- etldoc: osm_building_polygon -> osm_building_block_gen_z13
 DROP MATERIALIZED VIEW IF EXISTS osm_building_block_gen_z13;
 CREATE MATERIALIZED VIEW osm_building_block_gen_z13 AS
 (
