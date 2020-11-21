@@ -135,10 +135,10 @@ make
 make import-sql
 ```
 
-Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-dc-config` will analyze the data file and set the `BBOX` param to limit tile generation. It will also modify `MIN_ZOOM` and `MAX_ZOOM` values based on the .env, but can be changed.
+Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
 ```
-make generate-dc-config  # compute data bbox -- not needed for the whole planet
+make generate-bbox-file  # compute data bbox -- not needed for the whole planet
 make generate-tiles      # generate tiles
 ```
 
