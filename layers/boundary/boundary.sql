@@ -13,7 +13,7 @@ $$ LANGUAGE plpgsql;
 DROP MATERIALIZED VIEW IF EXISTS osm_border_linestring_gen_z13 CASCADE;
 CREATE MATERIALIZED VIEW osm_border_linestring_gen_z13 AS
 (
-SELECT ST_Simplify(geometry, ZRes(14)) AS geometry, NULL AS adm0_l, NULL AS adm0_r, admin_level, disputed, maritime
+SELECT ST_Simplify(geometry, ZRes(14)) AS geometry, NULL::text AS adm0_l, NULL::text AS adm0_r, admin_level, disputed, maritime
 FROM osm_border_linestring
 WHERE admin_level BETWEEN 3 AND 10
 UNION ALL
@@ -210,8 +210,8 @@ CREATE MATERIALIZED VIEW ne_10m_admin_0_boundary_lines_land_gen_z4 AS
 SELECT ST_Simplify(geometry, ZRes(6)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne10m_' || ogc_fid ELSE NULL END) AS disputed_name,
-       NULL AS claimed_by,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne10m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
+       NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_0_boundary_lines_land
 WHERE featurecla <> 'Lease limit'
@@ -226,8 +226,8 @@ CREATE MATERIALIZED VIEW ne_10m_admin_1_states_provinces_lines_gen_z4 AS
 SELECT ST_Simplify(geometry, ZRes(6)) as geometry,
        4 AS admin_level,
        FALSE AS disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_1_states_provinces_lines
 WHERE min_zoom <= 7
@@ -285,8 +285,8 @@ CREATE MATERIALIZED VIEW ne_50m_admin_0_boundary_lines_land_gen_z3 AS
 SELECT ST_Simplify(geometry, ZRes(5)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne50m_' || ogc_fid ELSE NULL END) AS disputed_name,
-       NULL AS claimed_by,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne50m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
+       NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
@@ -328,7 +328,7 @@ CREATE MATERIALIZED VIEW ne_110m_admin_0_boundary_lines_land_gen_z0 AS
 SELECT ST_Simplify(geometry, ZRes(2)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne110m_' || ogc_fid ELSE NULL END) AS disputed_name,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne110m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_110m_admin_0_boundary_lines_land
@@ -503,8 +503,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z4
 WHERE maritime = TRUE
@@ -530,8 +530,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z5
 WHERE admin_level <= 4
@@ -558,8 +558,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z6
 WHERE admin_level <= 4
@@ -585,8 +585,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z7
 WHERE admin_level <= 6
@@ -612,8 +612,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z8
 WHERE admin_level <= 6
@@ -639,8 +639,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z9
 WHERE admin_level <= 6
@@ -666,8 +666,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z10
 WHERE admin_level <= 6
@@ -693,8 +693,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z11
 WHERE admin_level <= 8
@@ -720,8 +720,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z12
 --WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen_z12)
@@ -746,8 +746,8 @@ SELECT geometry,
        adm0_l,
        adm0_r,
        disputed,
-       NULL AS disputed_name,
-       NULL AS claimed_by,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
        maritime
 FROM osm_border_linestring_gen_z13
 --WHERE osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring_gen_z13)
