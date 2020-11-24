@@ -6,15 +6,6 @@ $$
     BEGIN
         UPDATE osm_waterway_linestring
         SET tags = update_tags(tags, geometry);
-
-        UPDATE osm_waterway_linestring_gen1
-        SET tags = update_tags(tags, geometry);
-
-        UPDATE osm_waterway_linestring_gen2
-        SET tags = update_tags(tags, geometry);
-
-        UPDATE osm_waterway_linestring_gen3
-        SET tags = update_tags(tags, geometry);
     END
 $$;
 
