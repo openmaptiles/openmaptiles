@@ -1,20 +1,3 @@
-generalized_tables:
-  # etldoc: imposm3 -> osm_waterway_linestring_gen3
-  waterway_linestring_gen3:
-    source: waterway_linestring_gen2
-    sql_filter: waterway IN ('river')
-    tolerance: ZRES9
-  # etldoc: imposm3 -> osm_waterway_linestring_gen2
-  waterway_linestring_gen2:
-    source: waterway_linestring_gen1
-    sql_filter: waterway IN ('river')
-    tolerance: ZRES10
-  # etldoc: imposm3 -> osm_waterway_linestring_gen1
-  waterway_linestring_gen1:
-    source: waterway_linestring
-    sql_filter: waterway IN ('river') AND ST_IsValid(geometry)
-    tolerance: ZRES11
-
 tunnel_field: &tunnel
   key: tunnel
   name: is_tunnel
