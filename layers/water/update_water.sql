@@ -26,77 +26,117 @@ TRUNCATE TABLE osm_ocean_polygon;
 DO
 $$
     BEGIN
-        DROP TABLE IF EXISTS osm_ocean_polygon_gen1 CASCADE;
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z11 CASCADE;
     EXCEPTION
         WHEN wrong_object_type THEN
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen1
-DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen1 CASCADE;
-CREATE MATERIALIZED VIEW osm_ocean_polygon_gen1 AS
+-- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen_z11
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z11 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z11 AS
 (
-SELECT ST_Simplify(geometry, 20) AS geometry
+SELECT ST_Simplify(geometry, ZRes(13)) AS geometry
 FROM osm_ocean_polygon_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen1_idx ON osm_ocean_polygon_gen1 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z11_idx ON osm_ocean_polygon_gen_z11 USING gist (geometry);
 
 
 -- This statement can be deleted after the water importer image stops creating this object as a table
 DO
 $$
     BEGIN
-        DROP TABLE IF EXISTS osm_ocean_polygon_gen2 CASCADE;
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z10 CASCADE;
     EXCEPTION
         WHEN wrong_object_type THEN
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen2
-DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen2 CASCADE;
-CREATE MATERIALIZED VIEW osm_ocean_polygon_gen2 AS
+-- etldoc: osm_ocean_polygon_gen_z11 -> osm_ocean_polygon_gen_z10
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z10 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z10 AS
 (
-SELECT ST_Simplify(geometry, 40) AS geometry
-FROM osm_ocean_polygon_union
+SELECT ST_Simplify(geometry, ZRes(12)) AS geometry
+FROM osm_ocean_polygon_gen_z11
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen2_idx ON osm_ocean_polygon_gen2 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z10_idx ON osm_ocean_polygon_gen_z10 USING gist (geometry);
 
 
 -- This statement can be deleted after the water importer image stops creating this object as a table
 DO
 $$
     BEGIN
-        DROP TABLE IF EXISTS osm_ocean_polygon_gen3 CASCADE;
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z9 CASCADE;
     EXCEPTION
         WHEN wrong_object_type THEN
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen3
-DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen3 CASCADE;
-CREATE MATERIALIZED VIEW osm_ocean_polygon_gen3 AS
+-- etldoc: osm_ocean_polygon_gen_z10 -> osm_ocean_polygon_gen_z9
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z9 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z9 AS
 (
-SELECT ST_Simplify(geometry, 80) AS geometry
-FROM osm_ocean_polygon_union
+SELECT ST_Simplify(geometry, ZRes(11)) AS geometry
+FROM osm_ocean_polygon_gen_z10
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen3_idx ON osm_ocean_polygon_gen3 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z9_idx ON osm_ocean_polygon_gen_z9 USING gist (geometry);
 
 
 -- This statement can be deleted after the water importer image stops creating this object as a table
 DO
 $$
     BEGIN
-        DROP TABLE IF EXISTS osm_ocean_polygon_gen4 CASCADE;
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z8 CASCADE;
     EXCEPTION
         WHEN wrong_object_type THEN
     END;
 $$ LANGUAGE plpgsql;
 
--- etldoc: osm_ocean_polygon_union -> osm_ocean_polygon_gen4
-DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen4 CASCADE;
-CREATE MATERIALIZED VIEW osm_ocean_polygon_gen4 AS
+-- etldoc: osm_ocean_polygon_gen_z9 -> osm_ocean_polygon_gen_z8
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z8 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z8 AS
 (
-SELECT ST_Simplify(geometry, 160) AS geometry
-FROM osm_ocean_polygon_union
+SELECT ST_Simplify(geometry, ZRes(10)) AS geometry
+FROM osm_ocean_polygon_gen_z9
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen4_idx ON osm_ocean_polygon_gen4 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z8_idx ON osm_ocean_polygon_gen_z8 USING gist (geometry);
+
+
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO
+$$
+    BEGIN
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z7 CASCADE;
+    EXCEPTION
+        WHEN wrong_object_type THEN
+    END;
+$$ LANGUAGE plpgsql;
+
+-- etldoc: osm_ocean_polygon_gen_z8 -> osm_ocean_polygon_gen_z7
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z7 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z7 AS
+(
+SELECT ST_Simplify(geometry, ZRes(9)) AS geometry
+FROM osm_ocean_polygon_gen_z8
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z7_idx ON osm_ocean_polygon_gen_z7 USING gist (geometry);
+
+
+-- This statement can be deleted after the water importer image stops creating this object as a table
+DO
+$$
+    BEGIN
+        DROP TABLE IF EXISTS osm_ocean_polygon_gen_z6 CASCADE;
+    EXCEPTION
+        WHEN wrong_object_type THEN
+    END;
+$$ LANGUAGE plpgsql;
+
+-- etldoc: osm_ocean_polygon_gen_z7 -> osm_ocean_polygon_gen_z6
+DROP MATERIALIZED VIEW IF EXISTS osm_ocean_polygon_gen_z6 CASCADE;
+CREATE MATERIALIZED VIEW osm_ocean_polygon_gen_z6 AS
+(
+SELECT ST_Simplify(geometry, ZRes(8)) AS geometry
+FROM osm_ocean_polygon_gen_z7
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS osm_ocean_polygon_gen_z6_idx ON osm_ocean_polygon_gen_z6 USING gist (geometry);

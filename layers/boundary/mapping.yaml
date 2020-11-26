@@ -1,70 +1,82 @@
 generalized_tables:
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen11
-  border_disp_linestring_gen11:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z2 -> osm_border_disp_linestring_gen_z1
+  border_disp_linestring_gen_z1:
+    source: border_disp_linestring_gen_z2
     sql_filter: admin_level = 2
-    tolerance: 9600
+    tolerance: ZRES2
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen10
-  border_disp_linestring_gen10:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z3 -> osm_border_disp_linestring_gen_z2
+  border_disp_linestring_gen_z2:
+    source: border_disp_linestring_gen_z3
     sql_filter: admin_level = 2
-    tolerance: 4800
+    tolerance: ZRES3
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen9
-  border_disp_linestring_gen9:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z4 -> osm_border_disp_linestring_gen_z3
+  border_disp_linestring_gen_z3:
+    source: border_disp_linestring_gen_z4
     sql_filter: admin_level = 2
-    tolerance: 2400
+    tolerance: ZRES4
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen8
-  border_disp_linestring_gen8:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z5 -> osm_border_disp_linestring_gen_z4
+  border_disp_linestring_gen_z4:
+    source: border_disp_linestring_gen_z5
     sql_filter: admin_level = 2
-    tolerance: 1200
+    tolerance: ZRES5
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen7
-  border_disp_linestring_gen7:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z6 -> osm_border_disp_linestring_gen_z5
+  border_disp_linestring_gen_z5:
+    source: border_disp_linestring_gen_z6
     sql_filter: admin_level = 2
-    tolerance: 600
+    tolerance: ZRES6
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen6
-  border_disp_linestring_gen6:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z7 -> osm_border_disp_linestring_gen_z6
+  border_disp_linestring_gen_z6:
+    source: border_disp_linestring_gen_z7
     sql_filter: admin_level = 2
-    tolerance: 300
+    tolerance: ZRES7
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen5
-  border_disp_linestring_gen5:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z8 -> osm_border_disp_linestring_gen_z7
+  border_disp_linestring_gen_z7:
+    source: border_disp_linestring_gen_z8
     sql_filter: admin_level = 2
-    tolerance: 160
+    tolerance: ZRES8
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen4
-  border_disp_linestring_gen4:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z9 -> osm_border_disp_linestring_gen_z8
+  border_disp_linestring_gen_z8:
+    source: border_disp_linestring_gen_z9
     sql_filter: admin_level = 2
-    tolerance: 80
+    tolerance: ZRES9
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen3
-  border_disp_linestring_gen3:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z10 -> osm_border_disp_linestring_gen_z9
+  border_disp_linestring_gen_z9:
+    source: border_disp_linestring_gen_z10
     sql_filter: admin_level = 2
-    tolerance: 40
+    tolerance: ZRES10
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen2
-  border_disp_linestring_gen2:
-    source: border_disp_linestring
+  # etldoc: osm_border_disp_linestring_gen_z11 -> osm_border_disp_linestring_gen_z10
+  border_disp_linestring_gen_z10:
+    source: border_disp_linestring_gen_z11
     sql_filter: admin_level = 2
-    tolerance: 20
+    tolerance: ZRES11
 
-  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen1
-  border_disp_linestring_gen1:
+  # etldoc: osm_border_disp_linestring_gen_z12 -> osm_border_disp_linestring_gen_z11
+  border_disp_linestring_gen_z11:
+    source: border_disp_linestring_gen_z12
+    sql_filter: admin_level = 2
+    tolerance: ZRES12
+
+  # etldoc: osm_border_disp_linestring_gen_z13 -> osm_border_disp_linestring_gen_z12
+  border_disp_linestring_gen_z12:
+    source: border_disp_linestring_gen_z13
+    sql_filter: admin_level = 2
+    tolerance: ZRES13
+
+  # etldoc: osm_border_disp_linestring -> osm_border_disp_linestring_gen_z13
+  border_disp_linestring_gen_z13:
     source: border_disp_linestring
     sql_filter: admin_level = 2
-    tolerance: 10
+    tolerance: ZRES14
 
   # etldoc: osm_border_disp_relation -> osm_border_disp_linestring
   border_disp_linestring:
