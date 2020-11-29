@@ -1,39 +1,38 @@
 generalized_tables:
-
-  # etldoc: imposm3 -> osm_water_polygon_gen6
-  water_polygon_gen6:
-    source: water_polygon_gen5
+  # etldoc: osm_water_polygon_gen_z7 -> osm_water_polygon_gen_z6
+  water_polygon_gen_z6:
+    source: water_polygon_gen_z7
     sql_filter: area>power(ZRES5,2)
     tolerance: ZRES7
 
-  # etldoc: imposm3 -> osm_water_polygon_gen5
-  water_polygon_gen5:
-    source: water_polygon_gen4
+  # etldoc: osm_water_polygon_gen_z8 -> osm_water_polygon_gen_z7
+  water_polygon_gen_z7:
+    source: water_polygon_gen_z8
     sql_filter: area>power(ZRES6,2)
     tolerance: ZRES8
 
-  # etldoc: imposm3 -> osm_water_polygon_gen4
-  water_polygon_gen4:
-    source: water_polygon_gen3
+  # etldoc: osm_water_polygon_gen_z9 -> osm_water_polygon_gen_z8
+  water_polygon_gen_z8:
+    source: water_polygon_gen_z9
     sql_filter: area>power(ZRES7,2)
     tolerance: ZRES9
 
-  # etldoc: imposm3 -> osm_water_polygon_gen3
-  water_polygon_gen3:
-    source: water_polygon_gen2
+  # etldoc: osm_water_polygon_gen_z10 -> osm_water_polygon_gen_z9
+  water_polygon_gen_z9:
+    source: water_polygon_gen_z10
     sql_filter: area>power(ZRES8,2)
     tolerance: ZRES10
 
-  # etldoc: imposm3 -> osm_water_polygon_gen2
-  water_polygon_gen2:
-    source: water_polygon_gen1
+  # etldoc: osm_water_polygon_gen_z11 -> osm_water_polygon_gen_z10
+  water_polygon_gen_z10:
+    source: water_polygon_gen_z11
     sql_filter: area>power(ZRES9,2)
     tolerance: ZRES11
 
-  # etldoc: imposm3 -> osm_water_polygon_gen1
-  water_polygon_gen1:
+  # etldoc: osm_water_polygon -> osm_water_polygon_gen_z11
+  water_polygon_gen_z11:
     source: water_polygon
-    sql_filter: area>power(ZRES10,2) AND ST_IsValid(geometry)
+    sql_filter: area>power(ZRES10,2)
     tolerance: ZRES12
 
 tunnel_field: &tunnel
