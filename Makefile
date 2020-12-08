@@ -115,7 +115,7 @@ ifeq ($(strip $(area)),)
         $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
         AREA_INFO := Detected area=$(area) based on finding a 'data/$(area)-latest.osm.pbf' file - renamed to '$(area).osm.pbf'. Use 'area' parameter or environment variable to override.
       else
-        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area).pbf' file. Use 'area' parameter or environment variable to override.
+        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area).osm.pbf' file. Use 'area' parameter or environment variable to override.
       endif
     endif
   endif
