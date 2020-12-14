@@ -203,7 +203,7 @@ SELECT subclass,
            geometry
     FROM simplify_vw_z10
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
-       OR (subclass IN ('wood', 'forest'))
+       OR (subclass NOT IN ('wood', 'forest'))
     );
 
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
