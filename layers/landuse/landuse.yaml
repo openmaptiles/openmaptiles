@@ -22,6 +22,7 @@ layer:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
       - bus_station
       - school
