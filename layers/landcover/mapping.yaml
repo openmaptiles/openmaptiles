@@ -2,6 +2,8 @@ tables:
   # etldoc: imposm3 -> osm_landcover_polygon
   landcover_polygon:
     columns:
+    - name: osm_id
+      type: id
     - name: geometry
       type: validated_geometry
     - name: area
