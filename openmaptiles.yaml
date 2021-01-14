@@ -21,7 +21,7 @@ tileset:
   id: openmaptiles
   description: "A tileset showcasing all layers in OpenMapTiles. https://openmaptiles.org"
   attribution: '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-  center: [-12.2168, 28.6135, 4]
+  center: [0, 0, 1]
   bounds: [-180.0,-85.0511,180.0,85.0511]
   maxzoom: 14
   minzoom: 0
