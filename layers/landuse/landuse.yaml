@@ -38,6 +38,7 @@ layer:
       - theme_park
       - zoo
       - suburb
+      - quarter
       - neighbourhood
       - dam
   datasource:
