@@ -412,7 +412,7 @@ generate-tiles-pg: all start-db
 	@$(assert_area_is_given)
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
+	$(DOCKER_COMPOSE) run $(DC_OPTS) -e EXPORT_DIR=/import openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
 			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
