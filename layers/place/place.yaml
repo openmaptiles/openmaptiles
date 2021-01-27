@@ -37,7 +37,7 @@ layer:
       - isolated_dwelling
     iso_a2:
       description: |
-          Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+          Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Available only for `class=country`.
           Original value of the
           [`country_code_iso3166_1_alpha_2`](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry) tag.
     rank:
