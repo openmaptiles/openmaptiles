@@ -53,6 +53,7 @@ services:
     volumes:
       - .:/tileset
       - ./data:/import
+      - ./data:/export
       - ./build/sql:/sql
       - ./build:/mapping
       - ./cache:/cache
