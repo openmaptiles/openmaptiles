@@ -41,9 +41,6 @@ FROM (
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
     ON osm_transportation_merge_linestring USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_highway_partial_idx
-    ON osm_transportation_merge_linestring (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
 
 -- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen_z8
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
@@ -63,9 +60,6 @@ WHERE highway IN ('motorway', 'trunk', 'primary')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen_z8 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
 
 -- etldoc: osm_transportation_merge_linestring_gen_z8 -> osm_transportation_merge_linestring_gen_z7
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z7 CASCADE;
@@ -86,9 +80,6 @@ WHERE (highway IN ('motorway', 'trunk', 'primary') OR
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_idx
     ON osm_transportation_merge_linestring_gen_z7 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen_z7 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
 
 -- etldoc: osm_transportation_merge_linestring_gen_z7 -> osm_transportation_merge_linestring_gen_z6
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
@@ -108,9 +99,6 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construc
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
     ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen_z6 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z5
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z5 CASCADE;
@@ -130,9 +118,6 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construc
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_idx
     ON osm_transportation_merge_linestring_gen_z5 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen_z5 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_merge_linestring_gen_z5 -> osm_transportation_merge_linestring_gen_z4
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z4 CASCADE;
