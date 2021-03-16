@@ -559,7 +559,7 @@ clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
 	@docker ps -a -q --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
+	@docker images | awk -F" " '/<none>/{print $$3}' | $(XARGS) docker rmi
 
 .PHONY: test-perf-null
 test-perf-null: init-dirs
