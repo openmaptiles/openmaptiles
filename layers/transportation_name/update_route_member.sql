@@ -56,7 +56,7 @@ $$ LANGUAGE sql IMMUTABLE
 UPDATE osm_route_member
 SET network_type = osm_route_member_network_type(network, name, ref)
 WHERE network != ''
-  AND network_type != osm_route_member_network_type(network, name, ref)
+  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, name, ref)
 ;
 
 CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
@@ -80,7 +80,7 @@ BEGIN
     SET network_type = osm_route_member_network_type(network, name, ref)
     FROM transportation_name.network_changes AS c
     WHERE network != ''
-      AND network_type != osm_route_member_network_type(network, name, ref)
+      AND network_type IS DISTINCT FROM osm_route_member_network_type(network, name, ref)
       AND r.member = c.osm_id;
 END;
 $$ LANGUAGE plpgsql;
