@@ -5,7 +5,7 @@ volumes:
   pgdata:
 
 networks:
-  postgres-conn:
+  postgres:
     driver: bridge
 
 services:
@@ -16,7 +16,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - postgres-conn
+      - postgres
     ports:
       - "5432"
     env_file: .env-postgres
@@ -25,7 +25,7 @@ services:
     image: "openmaptiles/import-data:${TOOLS_VERSION}"
     env_file: .env
     networks:
-      - postgres-conn
+      - postgres
 
   openmaptiles-tools:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
@@ -49,7 +49,7 @@ services:
       # Control import-sql processes
       MAX_PARALLEL_PSQL: ${MAX_PARALLEL_PSQL}
     networks:
-      - postgres-conn
+      - postgres
     volumes:
       - .:/tileset
       - ./data:/import
@@ -65,7 +65,7 @@ services:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
     networks:
-      - postgres-conn
+      - postgres
     env_file: .env
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
@@ -79,7 +79,7 @@ services:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
     networks:
-      - postgres-conn
+      - postgres
     env_file: .env
     environment:
       FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
@@ -98,7 +98,7 @@ services:
     environment:
       TILESET_FILE: ${TILESET_FILE}
     networks:
-      - postgres-conn
+      - postgres
     ports:
       - "${PPORT:-8090}:${PPORT:-8090}"
     volumes:
