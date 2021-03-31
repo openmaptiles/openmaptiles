@@ -351,7 +351,7 @@ generate-bbox-file:
 ifeq (,$(wildcard $(AREA_BBOX_FILE)))
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm bbox "$(PBF_FILE)" "$(AREA_BBOX_FILE)"
 else
-	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate."
+	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate.  BBOX=$(BBOX)"
 endif
 
 .PHONY: psql
