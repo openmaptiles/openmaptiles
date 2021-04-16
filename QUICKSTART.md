@@ -367,9 +367,9 @@ Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is no
 
 ```
 mkdir -p data
-mv my-latest.osm.pbf data/
-make generate-bbox-file area=my-latest
-./quickstart.sh my-latest
+mv Tanzania-latest.osm.pbf data/
+make generate-bbox-file area=Tanzania-latest
+./quickstart.sh Tanzania-latest
 ```
 
 ### Check postserve
