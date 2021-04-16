@@ -20,7 +20,8 @@ $$
                 ELSE ST_PointOnSurface(geometry)
                 END
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
-        AND ST_GeometryType(geometry) <> 'ST_Point';
+        AND ST_GeometryType(geometry) <> 'ST_Point'
+        AND ST_IsValid(geometry);
 $$ LANGUAGE SQL;
 
 SELECT convert_housenumber_point(true);
@@ -55,6 +56,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh housenumber';
     PERFORM convert_housenumber_point(false);
@@ -62,6 +65,8 @@ BEGIN
     DELETE FROM housenumber.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM housenumber.updates;
+
+    RAISE LOG 'Refresh housenumber done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

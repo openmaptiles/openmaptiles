@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
                 network    text,
                 class      text,
                 subclass   text,
+                brunnel    text,
                 layer      int,
                 level      int,
                 indoor     int
@@ -23,11 +24,11 @@ AS
 $$
 SELECT osm_id,
        geometry,
-       NULLIF(name, '') AS name,
-       COALESCE(NULLIF(name_en, ''), name) AS name_en,
-       COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
+       name,
+       COALESCE(name_en, name) AS name_en,
+       COALESCE(name_de, name, name_en) AS name_de,
        tags,
-       NULLIF(ref, ''),
+       ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
        --TODO: The road network of the road is not yet implemented
        CASE
@@ -41,6 +42,7 @@ SELECT osm_id,
            WHEN highway IS NOT NULL AND highway_class(highway, '', construction) = 'path'
                THEN highway
            END AS subclass,
+       brunnel,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor
@@ -94,6 +96,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,
@@ -101,7 +104,7 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 12
-           AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
+           AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
            AND highway_class(highway, '', construction) NOT IN ('minor', 'track', 'path')
            AND NOT highway_is_link(highway)
          UNION ALL
@@ -116,6 +119,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,
@@ -123,7 +127,7 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 13
-           AND LineLabel(zoom_level, COALESCE(NULLIF(name, ''), ref), geometry)
+           AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
            AND highway_class(highway, '', construction) NOT IN ('track', 'path')
          UNION ALL
 
@@ -137,6 +141,7 @@ FROM (
                 ref,
                 highway,
                 construction,
+                brunnel,
                 network,
                 z_order,
                 layer,

@@ -14,6 +14,10 @@ layer:
         The `admin_level` corresponds to the lowest `admin_level`
         the line participates in.
         At low zoom levels the Natural Earth boundaries are mapped to the equivalent admin levels.
+    adm0_l: |
+        State name on the left of the border. For country boundaries only (`admin_level = 2`).
+    adm0_r: |
+        State name on the right of the border. For country boundaries only (`admin_level = 2`).
     disputed:
       description: |
           Mark with `1` if the border is disputed.
@@ -46,8 +50,9 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, adm0_l, adm0_r, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./boundary_name.sql
   - ./boundary.sql
 datasources:
   - type: imposm3

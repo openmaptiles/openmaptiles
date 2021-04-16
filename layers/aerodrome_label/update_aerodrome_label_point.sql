@@ -21,7 +21,7 @@ $$
     SET tags = update_tags(tags, geometry)
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM aerodrome_label.osm_ids))
         AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
-        AND tags = update_tags(tags, geometry);
+        AND tags != update_tags(tags, geometry);
 $$ LANGUAGE SQL;
 
 SELECT update_aerodrome_label_point(true);
@@ -56,6 +56,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION aerodrome_label.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh aerodrome_label';
     PERFORM update_aerodrome_label_point(false);
@@ -63,6 +65,8 @@ BEGIN
     DELETE FROM aerodrome_label.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM aerodrome_label.updates;
+
+    RAISE LOG 'Refresh aerodrome_label done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

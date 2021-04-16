@@ -22,6 +22,7 @@ layer:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
       - bus_station
       - school
@@ -37,6 +38,7 @@ layer:
       - theme_park
       - zoo
       - suburb
+      - quarter
       - neighbourhood
       - dam
   datasource:

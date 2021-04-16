@@ -1,35 +1,41 @@
 generalized_tables:
-  # etldoc: imposm3 -> osm_landuse_polygon_gen7
-  landuse_polygon_gen7:
-    source: landuse_polygon_gen6
+  # etldoc: osm_landuse_polygon_gen_z7 -> osm_landuse_polygon_gen_z6
+  landuse_polygon_gen_z6:
+    source: landuse_polygon_gen_z7
+    tolerance: ZRES6
+    sql_filter: area>power(ZRES6,2)
+  # etldoc: osm_landuse_polygon_gen_z8 -> osm_landuse_polygon_gen_z7
+  landuse_polygon_gen_z7:
+    source: landuse_polygon_gen_z8
     tolerance: ZRES7
-  # etldoc: imposm3 -> osm_landuse_polygon_gen6
-  landuse_polygon_gen6:
-    source: landuse_polygon_gen5
-    sql_filter: area>power(ZRES6,2) AND (landuse='residential' OR place='suburb' OR place='neighbourhood')
+    sql_filter: area>power(ZRES6,2)
+  # etldoc: osm_landuse_polygon_gen_z9 -> osm_landuse_polygon_gen_z8
+  landuse_polygon_gen_z8:
+    source: landuse_polygon_gen_z9
+    sql_filter: area>power(ZRES6,2) AND (landuse='residential' OR place='suburb' OR place='quarter' OR place='neighbourhood')
     tolerance: ZRES8
-  # etldoc: imposm3 -> osm_landuse_polygon_gen5
-  landuse_polygon_gen5:
-    source: landuse_polygon_gen4
+  # etldoc: osm_landuse_polygon_gen_z10 -> osm_landuse_polygon_gen_z9
+  landuse_polygon_gen_z9:
+    source: landuse_polygon_gen_z10
     sql_filter: area>power(ZRES7,2)
     tolerance: ZRES9
-  # etldoc: imposm3 -> osm_landuse_polygon_gen4
-  landuse_polygon_gen4:
-    source: landuse_polygon_gen3
+  # etldoc: osm_landuse_polygon_gen_z11 -> osm_landuse_polygon_gen_z10
+  landuse_polygon_gen_z10:
+    source: landuse_polygon_gen_z11
     sql_filter: area>power(ZRES8,2)
     tolerance: ZRES10
-  # etldoc: imposm3 -> osm_landuse_polygon_gen3
-  landuse_polygon_gen3:
-    source: landuse_polygon_gen2
+  # etldoc: osm_landuse_polygon_gen_z12 -> osm_landuse_polygon_gen_z11
+  landuse_polygon_gen_z11:
+    source: landuse_polygon_gen_z12
     sql_filter: area>power(ZRES9,2)
     tolerance: ZRES11
-  # etldoc: imposm3 -> osm_landuse_polygon_gen2
-  landuse_polygon_gen2:
-    source: landuse_polygon_gen1
+  # etldoc: osm_landuse_polygon_gen_z13 -> osm_landuse_polygon_gen_z12
+  landuse_polygon_gen_z12:
+    source: landuse_polygon_gen_z13
     sql_filter: area>power(ZRES10,2)
     tolerance: ZRES12
-  # etldoc: imposm3 -> osm_landuse_polygon_gen1
-  landuse_polygon_gen1:
+  # etldoc: osm_landuse_polygon -> osm_landuse_polygon_gen_z13
+  landuse_polygon_gen_z13:
     source: landuse_polygon
     sql_filter: area>power(ZRES11,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
@@ -92,6 +98,7 @@ tables:
       - zoo
       place:
       - suburb
+      - quarter
       - neighbourhood
       waterway:
       - dam
