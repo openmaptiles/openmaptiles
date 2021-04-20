@@ -71,6 +71,9 @@ To work on OpenMapTiles you need Docker.
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
 
+### Microsoft Windows Subsystem for Linux (WSL)
+Please use `/home/user/` directory, not `/mnt` directory
+ 
 ### Build
 
 Build the tileset.
