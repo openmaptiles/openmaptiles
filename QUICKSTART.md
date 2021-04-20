@@ -363,13 +363,13 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh yukon                        # Yukon, Canada
 ```
 ### Using your own OSM data
-Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *-latest.osm.pbf inside. Inside of folder have to be `docker-compose-config.yml` file too, otherwize whole folder `data/` will be deleted and `download-osm` will try to download osm.pbf file from `geofabric`, `osmfr` or `bbbike`.
+Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *.osm.pbf (e.g. `mydata.osm.pbf`) inside.
 
 ```
 mkdir -p data
-mv my-latest.osm.pbf data/
-make generate-bbox-file
-./quickstart.sh my
+mv mydata.osm.pbf data/
+make generate-bbox-file area=mydata
+./quickstart.sh mydata
 ```
 
 ### Check postserve
