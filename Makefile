@@ -161,7 +161,7 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
-ifeq ($(shell $(DOCKER_COMPOSE) 2>/dev/null run --rm openmaptiles-tools df --output=fstype /tileset),Type 9p)
+ifeq ($(shell $(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset),Type 9p)
   define assert_area_is_given
 	@echo ""
 	@echo "ERROR: Windows native filesystem"
