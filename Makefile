@@ -4,7 +4,7 @@
 
 # Ensure that errors don't hide inside pipes
 SHELL         = /bin/bash
-.SHELLFLAGS   = -o pipefail -c
+.SHELLFLAGS   = -o pipefail -c 
 
 # Make all .env variables available for make targets
 include .env
@@ -161,17 +161,6 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
-ifeq ($(shell $(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset),Type 9p)
-  define assert_area_is_given
-	@echo ""
-	@echo "ERROR: Windows native filesystem"
-	@echo ""
-	@echo "Please avoid running OpenMapTiles in a Windows filesystem."
-	@echo "See https://github.com/openmaptiles/openmaptiles/issues/1095#issuecomment-817095465"
-	@exit 1
-  endef
-endif
-
 #
 #  TARGETS
 #
@@ -222,12 +211,25 @@ help:
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
+define win_fs_error
+	( \
+	echo "" ;\
+	echo "ERROR: Windows native filesystem" ;\
+	echo "" ;\
+	echo "Please avoid running OpenMapTiles in a Windows filesystem." ;\
+	echo "See https://github.com/openmaptiles/openmaptiles/issues/1095#issuecomment-817095465" ;\
+	echo "" ;\
+	exit 1 ;\
+	)
+endef
+
 .PHONY: init-dirs
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
 	@mkdir -p data/borders
 	@mkdir -p cache
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
