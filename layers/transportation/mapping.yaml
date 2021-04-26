@@ -42,18 +42,6 @@ generalized_tables:
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
-# etldoc: osm_highway_linestring_gen_z10 -> osm_highway_linestring_gen_z9
-  highway_linestring_gen_z9:
-    source: highway_linestring_gen_z10
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
-    tolerance: ZRES10
-
-# etldoc: osm_highway_linestring_gen_z11 -> osm_highway_linestring_gen_z10
-  highway_linestring_gen_z10:
-    source: highway_linestring_gen_z11
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
-    tolerance: ZRES11
-
 # etldoc: osm_highway_linestring -> osm_highway_linestring_gen_z11
   highway_linestring_gen_z11:
     source: highway_linestring
