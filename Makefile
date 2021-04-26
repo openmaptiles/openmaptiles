@@ -161,23 +161,15 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
-ifeq ($(strip $(area)),)
+ifeq ($(shell $(DOCKER_COMPOSE) 2>/dev/null run --rm openmaptiles-tools df --output=fstype /tileset),Type 9p)
   define assert_area_is_given
 	@echo ""
-	@echo "ERROR: $(AREA_ERROR)"
+	@echo "ERROR: Windows native filesystem"
 	@echo ""
-	@echo "  make $@ area=<area-id>"
-	@echo ""
-	@echo "To download an area, use   make download <area-id>"
-	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+	@echo "Please avoid running OpenMapTiles in a Windows filesystem."
+	@echo "See https://github.com/openmaptiles/openmaptiles/issues/1095#issuecomment-817095465"
 	@exit 1
   endef
-else
-  ifneq ($(strip $(AREA_INFO)),)
-    define assert_area_is_given
-	@echo "$(AREA_INFO)"
-    endef
-  endif
 endif
 
 #
