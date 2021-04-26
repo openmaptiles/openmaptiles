@@ -90,6 +90,8 @@ AS $$
                 THEN NULLIF(religion, '')
             WHEN subclass IN ('pitch', 'sports_centre')
                 THEN NULLIF(sport, '')
+            WHEN subclass = 'recycling'
+                THEN COALESCE(tags->'recycling_type', 'recycling')
             ELSE subclass
         END AS subclass,
         agg_stop,
