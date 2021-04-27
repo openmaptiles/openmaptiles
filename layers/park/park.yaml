@@ -16,7 +16,7 @@ layer:
     rank: Rank of the park within one tile, starting at 1 that is the most important park (point features only).
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park(!bbox!, z(!scale_denominator!), zres(z(!scale_denominator!))::numeric)) AS t
 schema:
   - ./update_park_polygon.sql
   - ./layer.sql
