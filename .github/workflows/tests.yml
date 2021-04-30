@@ -203,7 +203,8 @@ jobs:
             echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
           }
 
-          echo "Ensuring we have the needed dirs: PWD=$PWD"
+          echo "Ensuring we have the needed dirs"
+          pwd
           mkdir -p perf_cache
           mkdir -p artifacts
           mkdir -p pr_message
@@ -226,6 +227,8 @@ jobs:
             (set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json)
+            echo "Done generating base perf results, moving them to ../perf_cache"
+            pwd
             mv results.json ../perf_cache
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
@@ -237,7 +240,8 @@ jobs:
           fi
 
           pushd ../perf_cache
-          echo "Should be in perf_cache: PWD=$PWD"
+          echo "Should be in perf_cache"
+          pwd
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             cp results.json ../artifacts/base-results.json
             # Copy all tsv files, not just the ones with "profile-" prefix.
@@ -257,6 +261,8 @@ jobs:
             PROFILE_DIR=../artifacts
             create_db
 
+            echo "Copying existing perf_cache results to current dir"
+            pwd
             cp ../perf_cache/results.json .
             OUTPUT="$(set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
