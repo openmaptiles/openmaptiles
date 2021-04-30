@@ -27,7 +27,7 @@ jobs:
           ./quickstart.sh $area
 
       - name: Save quickstart.log
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: quickstart.log
           path: quickstart.log
@@ -65,9 +65,9 @@ jobs:
     steps:
       - name: Cache test data download
         id: cache-testdata
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: ci_cache
+          path: ~/ci_cache
           key: "v2-${{ env.TEST_DATA_URL }}"
 
       - name: Download test data on cache miss
@@ -98,12 +98,22 @@ jobs:
           fi
           echo "::set-output name=hash::$REV_HASH"
 
+      - name: Test if perf-cache already exists (debugging)
+        id: perf-cache-test
+        run: |
+          if [ -f ~/perf_cache/results.json ]; then
+            echo "~/perf_cache/results.json exists before loading!"
+          else
+            echo "There is no ~/perf_cache/results.json"
+          fi
+          ls -al ~/
+
       - name: Set up caching for the performance results
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
-          path: perf_cache
+          path: ~/perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
-          key: "v12-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+          key: "v13-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
@@ -303,14 +313,14 @@ jobs:
           fi
 
       - name: Save performance artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: performance_results
           path: artifacts
 
       - name: Save PR message artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: pr_message
           path: pr_message
