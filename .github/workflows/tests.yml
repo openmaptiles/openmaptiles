@@ -27,7 +27,7 @@ jobs:
           ./quickstart.sh $area
 
       - name: Save quickstart.log
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: quickstart.log
           path: quickstart.log
@@ -63,9 +63,18 @@ jobs:
       # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
       # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
     steps:
+      - name: Cleanup workdir
+        id: cleanup
+        run: |
+          set -euo pipefail
+          pwd
+          ls -al .
+          shopt -s dotglob
+          rm -rf *
+
       - name: Cache test data download
         id: cache-testdata
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ci_cache
           key: "v2-${{ env.TEST_DATA_URL }}"
@@ -99,11 +108,11 @@ jobs:
           echo "::set-output name=hash::$REV_HASH"
 
       - name: Set up caching for the performance results
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
-          key: "v12-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+          key: "v13-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
 
       - name: Load test data into DB and run performance test
         id: main
@@ -194,6 +203,8 @@ jobs:
             echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
           }
 
+          echo "Ensuring we have the needed dirs"
+          pwd
           mkdir -p perf_cache
           mkdir -p artifacts
           mkdir -p pr_message
@@ -216,6 +227,8 @@ jobs:
             (set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json)
+            echo "Done generating base perf results, moving them to ../perf_cache"
+            pwd
             mv results.json ../perf_cache
 
             if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
@@ -227,6 +240,8 @@ jobs:
           fi
 
           pushd ../perf_cache
+          echo "Should be in perf_cache"
+          pwd
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             cp results.json ../artifacts/base-results.json
             # Copy all tsv files, not just the ones with "profile-" prefix.
@@ -246,6 +261,8 @@ jobs:
             PROFILE_DIR=../artifacts
             create_db
 
+            echo "Copying existing perf_cache results to current dir"
+            pwd
             cp ../perf_cache/results.json .
             OUTPUT="$(set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
@@ -303,14 +320,14 @@ jobs:
           fi
 
       - name: Save performance artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: performance_results
           path: artifacts
 
       - name: Save PR message artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: pr_message
           path: pr_message
