@@ -63,6 +63,15 @@ jobs:
       # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
       # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
     steps:
+      - name: Cleanup workdir
+        id: cleanup
+        run: |
+          set -euo pipefail
+          pwd
+          ls -al .
+          shopt -s dotglob
+          rm -rf *
+
       - name: Cache test data download
         id: cache-testdata
         uses: actions/cache@v2
@@ -74,7 +83,6 @@ jobs:
         if: steps.cache-testdata.outputs.cache-hit != 'true'
         run: |
           echo "Data file does not exist, downloading $TEST_DATA_URL"
-          echo "PWD=$PWD"
           mkdir -p ci_cache
           curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf "$TEST_DATA_URL"
 
@@ -92,24 +100,12 @@ jobs:
           # If this is a pull request, we should cache the parent (base) revision
           # Otherwise cache the current one
           cd code
-          echo "PWD=$PWD"
           REV_HASH=$(git log -1 --format="%H")
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             # Take the first parent of the grafted commit (cannot use HEAD^1 with shallow clones)
             REV_HASH=$(git cat-file -p $REV_HASH | awk 'NR > 1 {if(/^parent/){print $2; exit}}')
           fi
           echo "::set-output name=hash::$REV_HASH"
-
-      - name: Test if perf-cache already exists (debugging)
-        id: perf-cache-test
-        run: |
-          echo "PWD=$PWD"
-          if [ -f perf_cache/results.json ]; then
-            echo "perf_cache/results.json exists before loading!"
-          else
-            echo "There is no perf_cache/results.json"
-          fi
-          ls -al .
 
       - name: Set up caching for the performance results
         uses: actions/cache@v2
