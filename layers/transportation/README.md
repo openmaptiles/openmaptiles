@@ -1,5 +1,5 @@
 ## transportation
- 
+
 ### Docs
 Read the layer documentation at **http://openmaptiles.org/schema#transportation**
 
