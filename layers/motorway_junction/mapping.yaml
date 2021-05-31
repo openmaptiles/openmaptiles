@@ -1,0 +1,28 @@
+tables:
+
+  # etldoc: imposm3 -> osm_motorway_junction
+  motorway_junction:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: ref
+      key: ref
+      type: string
+    mapping:
+      highway:
+      - motorway_junction
+
