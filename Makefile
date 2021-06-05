@@ -4,7 +4,7 @@
 
 # Ensure that errors don't hide inside pipes
 SHELL         = /bin/bash
-.SHELLFLAGS   = -o pipefail -c 
+.SHELLFLAGS   = -o pipefail -c
 
 # Make all .env variables available for make targets
 include .env
