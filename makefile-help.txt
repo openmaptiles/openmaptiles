@@ -1,0 +1,40 @@
+==============================================================================
+ OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+Hints for testing areas
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>>
+  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
+
+Hints for designers:
+  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]
+  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]
+  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]
+
+Hints for developers:"
+  make                                 # build source code
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download
+  make list-bbbike                     # list actual BBBike OSM extracts for download
+  make download area=albania           # download OSM data from any source       and create config file
+  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file
+  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file
+  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
+  make generate-bbox-file              # compute bounding box of a data file and store it in a file
+  make psql                            # start PostgreSQL console
+  make psql-list-tables                # list all PostgreSQL tables
+  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE
+  make analyze-db                      # PostgreSQL: ANALYZE
+  make generate-qa                     # statistics for a given layer's field
+  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
+  make bash                            # start openmaptiles-tools /bin/bash terminal
+  make destroy-db                      # remove docker containers and PostgreSQL data volume
+  make start-db                        # start PostgreSQL, creating it if it doesn't exist
+  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist
+  make stop-db                         # stop PostgreSQL database without destroying the data
+  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)
+  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
+  make remove-docker-images            # remove openmaptiles docker images
+  make list-views                      # list PostgreSQL public schema views
+  make list-tables                     # list PostgreSQL public schema tables
+  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
+  cat  quickstart.log                  # transcript of the last ./quickstart.sh run
+  make help                            # help about available commands
+==============================================================================
