@@ -4,7 +4,7 @@
 
 # Ensure that errors don't hide inside pipes
 SHELL         = /bin/bash
-.SHELLFLAGS   = -o pipefail -c 
+.SHELLFLAGS   = -o pipefail -c
 
 # Make all .env variables available for make targets
 include .env
@@ -161,6 +161,65 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
+define HELP_MESSAGE
+==============================================================================
+ OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+
+Hints for testing areas
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>>
+  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
+
+Hints for designers:
+  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]
+  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]
+  make stop-postserve                  # stop dynamic tile server
+  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]
+
+Hints for developers:
+  make                                 # build source code
+  make bash                            # start openmaptiles-tools /bin/bash terminal
+  make generate-bbox-file              # compute bounding box of a data file and store it in a file
+  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
+  make generate-qa                     # statistics for a given layer's field
+  make generate-tiles                  # generate vector tiles based on .env settings
+  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
+  cat  quickstart.log                  # transcript of the last ./quickstart.sh run
+  make help                            # help about available commands
+
+Hints for downloading & importing data:
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download
+  make list-bbbike                     # list actual BBBike OSM extracts for download
+  make download area=albania           # download OSM data from any source       and create config file
+  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file
+  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file
+  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
+  make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
+  make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
+  make import-borders                  # Create borders table using extra processing with osmborder tool
+  make import-wikidata                 # Import labels from Wikidata
+  make import-sql                      # Import layers (run this after modifying layer SQL)
+
+Hints for database management:
+  make psql                            # start PostgreSQL console
+  make psql-list-tables                # list all PostgreSQL tables
+  make list-views                      # list PostgreSQL public schema views
+  make list-tables                     # list PostgreSQL public schema tables
+  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE
+  make analyze-db                      # PostgreSQL: ANALYZE
+  make destroy-db                      # remove docker containers and PostgreSQL data volume
+  make start-db                        # start PostgreSQL, creating it if it doesn't exist
+  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist
+  make stop-db                         # stop PostgreSQL database without destroying the data
+
+Hints for Docker management:
+  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)
+  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
+  make remove-docker-images            # remove openmaptiles docker images
+  make list-docker-images              # show a list of available docker images
+==============================================================================
+endef
+export HELP_MESSAGE
+
 #
 #  TARGETS
 #
@@ -170,46 +229,7 @@ all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sq
 
 .PHONY: help
 help:
-	@echo "=============================================================================="
-	@echo " OpenMapTiles  https://github.com/openmaptiles/openmaptiles "
-	@echo "Hints for testing areas                "
-	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>> "
-	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
-	@echo " "
-	@echo "Hints for designers:"
-	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
-	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]"
-	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]"
-	@echo " "
-	@echo "Hints for developers:"
-	@echo "  make                                 # build source code"
-	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
-	@echo "  make list-bbbike                     # list actual BBBike OSM extracts for download"
-	@echo "  make download area=albania           # download OSM data from any source       and create config file"
-	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
-	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
-	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
-	@echo "  make generate-bbox-file              # compute bounding box of a data file and store it in a file"
-	@echo "  make psql                            # start PostgreSQL console"
-	@echo "  make psql-list-tables                # list all PostgreSQL tables"
-	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
-	@echo "  make analyze-db                      # PostgreSQL: ANALYZE"
-	@echo "  make generate-qa                     # statistics for a given layer's field"
-	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
-	@echo "  make bash                            # start openmaptiles-tools /bin/bash terminal"
-	@echo "  make destroy-db                      # remove docker containers and PostgreSQL data volume"
-	@echo "  make start-db                        # start PostgreSQL, creating it if it doesn't exist"
-	@echo "  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
-	@echo "  make stop-db                         # stop PostgreSQL database without destroying the data"
-	@echo "  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)"
-	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
-	@echo "  make remove-docker-images            # remove openmaptiles docker images"
-	@echo "  make list-views                      # list PostgreSQL public schema views"
-	@echo "  make list-tables                     # list PostgreSQL public schema tables"
-	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
-	@echo "  cat  quickstart.log                  # transcript of the last ./quickstart.sh run"
-	@echo "  make help                            # help about available commands"
-	@echo "=============================================================================="
+	@echo "$$HELP_MESSAGE" | less
 
 define win_fs_error
 	( \
