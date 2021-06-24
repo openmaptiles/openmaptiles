@@ -261,40 +261,24 @@ BEGIN
 
     -- Get new version of buildings with full attributes
     CREATE TEMP VIEW new_buildings_full AS
-    SELECT osm_buildings.*
+    SELECT osm_buildings.osm_id
     FROM new_buildings
         JOIN osm_buildings_relation AS osm_buildings ON
             osm_buildings.osm_id = new_buildings.osm_id
     UNION ALL
-    SELECT osm_buildings.*
+    SELECT osm_buildings.osm_id
     FROM new_buildings
         JOIN osm_buildings_standalone AS osm_buildings ON
             osm_buildings.osm_id = new_buildings.osm_id;
 
     -- Unpack impacted clusters
     CREATE TEMP VIEW unclustered_buildings AS
-    SELECT unnest(osm_ids) AS osm_id,
-           (ST_Dump(geometry)).geom AS geometry, -- Set Returning Functions are dumped in parallel
-           height,
-           min_height,
-           levels,
-           min_level,
-           material,
-           colour,
-           hide_3d
+    SELECT unnest(osm_ids) AS osm_id
     FROM impacted_clusters;
 
     -- Discart touched buildings from clusters
     CREATE TEMP VIEW untouched_buildings AS
-    SELECT unclustered_buildings.osm_id,
-           unclustered_buildings.geometry,
-           height,
-           min_height,
-           levels,
-           min_level,
-           material,
-           colour,
-           hide_3d
+    SELECT unclustered_buildings.osm_id
     FROM unclustered_buildings
         LEFT JOIN touched_buildings ON
             touched_buildings.osm_id = unclustered_buildings.osm_id
@@ -302,19 +286,11 @@ BEGIN
         touched_buildings.osm_id IS NULL;
 
     -- Reassemble previous untouched buildings and new buildings
-    CREATE TEMP VIEW current_buildings AS
-    SELECT *
+    CREATE TEMP TABLE current_buildings AS
+    SELECT osm_id
     FROM untouched_buildings
     UNION ALL
-    SELECT osm_id,
-           geometry,
-           height,
-           min_height,
-           levels,
-           min_level,
-           material,
-           colour,
-           hide_3d
+    SELECT osm_id
     FROM new_buildings_full;
 
     -- Build and save new clusters
@@ -328,15 +304,31 @@ BEGIN
            material,
            colour,
            hide_3d
-    FROM current_buildings AS t
+    FROM (
+        SELECT DISTINCT ON (osm_id)
+            *
+        FROM (
+            SELECT osm_buildings_relation.*
+            FROM osm_buildings_relation
+            JOIN current_buildings ON
+                current_buildings.osm_id = osm_buildings_relation.osm_id
+            UNION ALL
+            SELECT osm_buildings_standalone.*
+            FROM osm_buildings_standalone
+            JOIN current_buildings ON
+                current_buildings.osm_id = osm_buildings_standalone.osm_id
+        ) AS t
+    ) AS t
     GROUP BY
         -- Cluster by windows to lower time and memory required
+        -- 100: scale of a building block at 45° of latitude, optimized on Paris area.
         (ST_XMin(geometry) / 100)::int,
         (ST_YMin(geometry) / 100)::int,
         height, min_height, levels, min_level, material, colour, hide_3d;
 
     DELETE FROM building_polygon.buildings;
     DELETE FROM building_polygon.updates;
+    DROP TABLE current_buildings CASCADE;
     DROP TABLE touched_buildings CASCADE;
     DROP TABLE impacted_clusters CASCADE;
 
