@@ -1,4 +1,61 @@
-## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OMT_CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
+# Fork of OpenMapTiles for Mapwize
+
+This fork aims at providing a simpler (and therefore more efficient to generate) version of the OpenMapTiles tiles that are suitable for Mapwize's needs.
+
+Running on a `Standard H16m (16 vcpus, 224 GiB memory)` virtual machine on Microsoft Azure
+
+## Run
+
+Install 
+
+```sh
+sudo apt-get -y install make
+sudo apt-get -y install bc
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo mkdir /mnt/docker
+sudo systemctl stop docker
+sudo vim /etc/docker/daemon.json
+### {
+###  "data-root": "/mnt/docker"
+### }
+sudo systemctl start docker
+sudo docker info
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+cd /mnt
+sudo git clone https://github.com/mapwize/openmaptiles
+cd openmaptiles
+```
+
+Config env
+
+```sh
+sudo vim .env
+### COPY_CONCURRENCY=60
+```
+
+```sh
+sudo ./quickstart.sh planet
+```
+
+It will crash after a few minutes after the download of the pbf file because of `UnboundLocalError: local variable 'bbox' referenced before assignment`. No worries. Just start again.
+
+```sh
+sudo ./quickstart.sh planet
+```
+
+## Timing
+
+- Machine setup / install + start of quickstart: ~ 10 min
+- imposm read: ~ 1h
+- imposm write: ~ 8h
+- other import: ~ 1h
+- import-sql: ~ 24h
+- generate-tiles: ~ 7d
+
+
+# OpenMapTiles
 
 OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [maptiler.com/data/](https://www.maptiler.com/data/).
 

@@ -10,6 +10,7 @@ quickstart.log
 
 # imput / output data
 data/*
+pgdata/*
 
 # generated source files
 build/*

@@ -249,6 +249,7 @@ init-dirs:
 	@mkdir -p build/openmaptiles.tm2source
 	@mkdir -p data/borders
 	@mkdir -p cache
+	@mkdir -p pgdata
 	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs

@@ -12,7 +12,7 @@ services:
 
   postgres:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
-    # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
+    command: postgres -c work_mem=4GB -c maintenance_work_mem=4GB -c shared_buffers=4GB -c temp_buffers=256MB -c fsync=off
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -89,7 +89,7 @@ services:
       MAX_ZOOM: ${MAX_ZOOM}
       # Control tilelive-copy threads
       COPY_CONCURRENCY: ${COPY_CONCURRENCY}
-      #
+      UV_THREADPOOL_SIZE: ${COPY_CONCURRENCY}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"

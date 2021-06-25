@@ -82,19 +82,6 @@ SELECT geometry,
        CASE WHEN hide_3d THEN TRUE END AS hide_3d
 FROM (
          SELECT
-             -- etldoc: osm_building_block_gen_z13 -> layer_building:z13
-             osm_id,
-             geometry,
-             NULL::int AS render_height,
-             NULL::int AS render_min_height,
-             NULL::text AS material,
-             NULL::text AS colour,
-             FALSE AS hide_3d
-         FROM osm_building_block_gen_z13
-         WHERE zoom_level = 13
-           AND geometry && bbox
-         UNION ALL
-         SELECT
                                   -- etldoc: osm_building_polygon -> layer_building:z14_
              DISTINCT ON (osm_id) osm_id,
                                   geometry,
