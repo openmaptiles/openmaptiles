@@ -367,6 +367,33 @@ tables:
       - bridge
       - pier
 
+  # etldoc: imposm3 -> highway_point
+  highway_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - *layer
+    - *level
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: ref
+      key: ref
+      type: string
+    mapping:
+      highway:
+      - motorway_junction
+
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
   route_member:

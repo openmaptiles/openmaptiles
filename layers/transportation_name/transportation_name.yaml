@@ -55,11 +55,13 @@ layer:
       - raceway_construction
       - rail
       - transit
+      - motorway_junction
     subclass:
       description: |
           Distinguish more specific classes of path:
           Subclass is value of the
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths).
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths),
+          and "junction" for [`motorway junctions`](http://wiki.openstreetmap.org/wiki/Tag:highway=motorway_junction).
       values:
       - pedestrian
       - path
@@ -69,6 +71,7 @@ layer:
       - bridleway
       - corridor
       - platform
+      - junction
     brunnel:
       description: |
           Mark whether way is a bridge, a tunnel or a ford.
@@ -96,6 +99,7 @@ layer:
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
+  - ./highway_classification.sql
   - ./update_route_member.sql
   - ./update_transportation_name.sql
   - ./transportation_name.sql
