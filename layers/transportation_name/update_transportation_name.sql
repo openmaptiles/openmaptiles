@@ -16,7 +16,7 @@ SELECT
     tags,
     ref,
     highway,
-    construction,
+    subclass,
     brunnel,
     "level",
     layer,
@@ -37,7 +37,7 @@ FROM (
             ELSE NULLIF(hl.ref, '')
             END AS ref,
         hl.highway,
-        hl.construction,
+        hl.construction AS subclass,
         brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
@@ -67,7 +67,7 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        tags || get_basic_names(tags, geometry) AS "tags",
        ref,
        highway,
-       construction,
+       subclass,
        brunnel,
        "level",
        layer,
@@ -83,7 +83,7 @@ FROM (
                                ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS tags,
                 ref,
                 highway,
-                construction,
+                subclass,
                 brunnel,
                 "level",
                 layer,
@@ -91,14 +91,14 @@ FROM (
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
-         GROUP BY name, name_en, name_de, tags, ref, highway, construction, brunnel, "level", layer, indoor, network_type
+         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, brunnel, "level", layer, indoor, network_type
      ) AS highway_union
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_idx
-    ON osm_transportation_name_linestring (highway, construction)
+    ON osm_transportation_name_linestring (highway, subclass)
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
@@ -111,12 +111,12 @@ SELECT ST_Simplify(geometry, 50) AS geometry,
        tags,
        ref,
        highway,
-       construction,
+       subclass,
        brunnel,
        network,
        z_order
 FROM osm_transportation_name_linestring
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
+WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 8000
 ;
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS
@@ -126,7 +126,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_partial_idx
-    ON osm_transportation_name_linestring_gen1 (highway, construction)
+    ON osm_transportation_name_linestring_gen1 (highway, subclass)
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
@@ -139,12 +139,12 @@ SELECT ST_Simplify(geometry, 120) AS geometry,
        tags,
        ref,
        highway,
-       construction,
+       subclass,
        brunnel,
        network,
        z_order
 FROM osm_transportation_name_linestring_gen1
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
+WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 14000
 ;
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS
@@ -154,7 +154,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_partial_idx
-    ON osm_transportation_name_linestring_gen2 (highway, construction)
+    ON osm_transportation_name_linestring_gen2 (highway, subclass)
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
@@ -167,12 +167,12 @@ SELECT ST_Simplify(geometry, 200) AS geometry,
        tags,
        ref,
        highway,
-       construction,
+       subclass,
        brunnel,
        network,
        z_order
 FROM osm_transportation_name_linestring_gen2
-WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
+WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
   AND ST_Length(geometry) > 20000
 ;
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS
@@ -182,7 +182,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_partial_idx
-    ON osm_transportation_name_linestring_gen3 (highway, construction)
+    ON osm_transportation_name_linestring_gen3 (highway, subclass)
     WHERE highway IN ('motorway', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen3 -> osm_transportation_name_linestring_gen4
@@ -195,12 +195,12 @@ SELECT ST_Simplify(geometry, 500) AS geometry,
        tags,
        ref,
        highway,
-       construction,
+       subclass,
        brunnel,
        network,
        z_order
 FROM osm_transportation_name_linestring_gen3
-WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
+WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
   AND ST_Length(geometry) > 20000
 ;
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen4 AS
@@ -282,7 +282,7 @@ BEGIN
         tags,
         ref,
         highway,
-        construction,
+        subclass,
         brunnel,
         level,
         layer,
@@ -303,7 +303,7 @@ BEGIN
                 ELSE NULLIF(hl.ref, '')
                 END AS ref,
             hl.highway,
-            hl.construction,
+            hl.subclass,
             brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS transportation_name.name_changes
     name_de character varying,
     ref character varying,
     highway character varying,
-    construction character varying,
+    subclass character varying,
     brunnel character varying,
     level integer,
     layer integer,
@@ -382,16 +382,16 @@ $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
                                                      brunnel, level, layer, indoor, network_type)
-        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.construction,
+        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.subclass,
                 old.brunnel, old.level, old.layer, old.indoor, old.network_type);
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, construction,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
                                                      brunnel, level, layer, indoor, network_type)
-        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.construction,
+        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.subclass,
                 new.brunnel, new.level, new.layer, new.indoor, new.network_type);
     END IF;
     RETURN NULL;
@@ -423,13 +423,13 @@ BEGIN
 
     -- Compact the change history to keep only the first and last version, and then uniq version of row
     CREATE TEMP TABLE name_changes_compact AS
-    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, construction, brunnel, level, layer, indoor, network_type)
+    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, subclass, brunnel, level, layer, indoor, network_type)
         name,
         name_en,
         name_de,
         ref,
         highway,
-        construction,
+        subclass,
         brunnel,
         level,
         layer,
@@ -460,7 +460,7 @@ BEGIN
       AND n.name_en IS NOT DISTINCT FROM c.name_en
       AND n.name_de IS NOT DISTINCT FROM c.name_de
       AND n.highway IS NOT DISTINCT FROM c.highway
-      AND n.construction IS NOT DISTINCT FROM c.construction
+      AND n.subclass IS NOT DISTINCT FROM c.subclass
       AND n.brunnel IS NOT DISTINCT FROM c.brunnel
       AND n.level IS NOT DISTINCT FROM c.level
       AND n.layer IS NOT DISTINCT FROM c.layer
@@ -476,7 +476,7 @@ BEGIN
            tags || get_basic_names(tags, geometry) AS tags,
            ref,
            highway,
-           construction,
+           subclass,
            brunnel,
            level,
            layer,
@@ -493,7 +493,7 @@ BEGIN
                                      ''), ',')) AS tags,
             n.ref,
             n.highway,
-            n.construction,
+            n.subclass,
             n.brunnel,
             n.level,
             n.layer,
@@ -507,13 +507,13 @@ BEGIN
              AND n.name_en IS NOT DISTINCT FROM c.name_en
              AND n.name_de IS NOT DISTINCT FROM c.name_de
              AND n.highway IS NOT DISTINCT FROM c.highway
-             AND n.construction IS NOT DISTINCT FROM c.construction
+             AND n.subclass IS NOT DISTINCT FROM c.subclass
              AND n.brunnel IS NOT DISTINCT FROM c.brunnel
              AND n.level IS NOT DISTINCT FROM c.level
              AND n.layer IS NOT DISTINCT FROM c.layer
              AND n.indoor IS NOT DISTINCT FROM c.indoor
              AND n.network_type IS NOT DISTINCT FROM c.network_type
-        GROUP BY n.name, n.name_en, n.name_de, n.ref, n.highway, n.construction, n.brunnel, n.level, n.layer, n.indoor, n.network_type
+        GROUP BY n.name, n.name_en, n.name_de, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type
     ) AS highway_union;
 
     -- REFRESH osm_transportation_name_linestring_gen1
@@ -526,7 +526,7 @@ BEGIN
         AND n.name_de IS NOT DISTINCT FROM c.name_de
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.construction IS NOT DISTINCT FROM c.construction
+        AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
         AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -540,7 +540,7 @@ BEGIN
             AND n.name_de IS NOT DISTINCT FROM c.name_de
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.construction IS NOT DISTINCT FROM c.construction
+            AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
             AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -554,7 +554,7 @@ BEGIN
         AND n.name_de IS NOT DISTINCT FROM c.name_de
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.construction IS NOT DISTINCT FROM c.construction
+        AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
         AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -568,7 +568,7 @@ BEGIN
             AND n.name_de IS NOT DISTINCT FROM c.name_de
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.construction IS NOT DISTINCT FROM c.construction
+            AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
             AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -582,7 +582,7 @@ BEGIN
         AND n.name_de IS NOT DISTINCT FROM c.name_de
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.construction IS NOT DISTINCT FROM c.construction
+        AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
         AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -596,7 +596,7 @@ BEGIN
             AND n.name_de IS NOT DISTINCT FROM c.name_de
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.construction IS NOT DISTINCT FROM c.construction
+            AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
             AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -610,7 +610,7 @@ BEGIN
         AND n.name_de IS NOT DISTINCT FROM c.name_de
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.construction IS NOT DISTINCT FROM c.construction
+        AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
         AND n.network IS NOT DISTINCT FROM c.network_type;
 
@@ -624,7 +624,7 @@ BEGIN
             AND n.name_de IS NOT DISTINCT FROM c.name_de
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.construction IS NOT DISTINCT FROM c.construction
+            AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
             AND n.network IS NOT DISTINCT FROM c.network_type;
 
