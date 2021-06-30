@@ -84,6 +84,26 @@ FROM (
                 ref,
                 highway,
                 subclass,
+                NULL::text AS brunnel,
+                "level",
+                layer,
+                indoor,
+                network_type,
+                min(z_order) AS z_order
+         FROM osm_transportation_name_network
+         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, "level", layer, indoor, network_type
+
+         UNION ALL
+
+         SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+                name,
+                name_en,
+                name_de,
+                tags || hstore( -- store results of osml10n_street_abbrev_* above
+                               ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS tags,
+                ref,
+                highway,
+                subclass,
                 brunnel,
                 "level",
                 layer,
@@ -91,7 +111,10 @@ FROM (
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
+         WHERE brunnel IS NOT NULL
+           AND (name IS NOT NULL OR name_en IS NOT NULL OR name_de IS NOT NULL)
          GROUP BY name, name_en, name_de, tags, ref, highway, subclass, brunnel, "level", layer, indoor, network_type
+
      ) AS highway_union
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
