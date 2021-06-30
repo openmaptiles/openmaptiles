@@ -37,7 +37,7 @@ FROM (
             ELSE NULLIF(hl.ref, '')
             END AS ref,
         hl.highway,
-        hl.construction AS subclass,
+        NULLIF(hl.construction, '') AS subclass,
         brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
@@ -326,7 +326,7 @@ BEGIN
                 ELSE NULLIF(hl.ref, '')
                 END AS ref,
             hl.highway,
-            hl.subclass,
+            NULLIF(hl.subclass, '') AS subclass,
             brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
