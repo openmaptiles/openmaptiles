@@ -42,16 +42,12 @@ FROM (
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
         CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-        ROW_NUMBER() OVER (PARTITION BY hl.osm_id
-            ORDER BY rm.network_type) AS "rank",
         hl.z_order
     FROM osm_highway_linestring hl
-            LEFT JOIN osm_route_member rm ON
-        rm.member = hl.osm_id
+            LEFT OUTER JOIN osm_route_member rm ON rm.member = hl.osm_id AND rm.concurrency_index=1
     WHERE (hl.name <> '' OR hl.ref <> '')
       AND NULLIF(hl.highway, '') IS NOT NULL
-) AS t
-WHERE ("rank" = 1 OR "rank" IS NULL);
+) AS t;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(name, ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
@@ -308,18 +304,14 @@ BEGIN
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
             CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-            ROW_NUMBER() OVER (PARTITION BY hl.osm_id
-                ORDER BY rm.network_type) AS "rank",
             hl.z_order
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
             hl.osm_id = c.osm_id
-                LEFT JOIN osm_route_member rm ON
-            rm.member = hl.osm_id
+                LEFT OUTER JOIN osm_route_member rm ON rm.member = hl.osm_id AND rm.concurrency_index=1
         WHERE (hl.name <> '' OR hl.ref <> '')
           AND NULLIF(hl.highway, '') IS NOT NULL
-    ) AS t
-    WHERE ("rank" = 1 OR "rank" IS NULL);
+    ) AS t;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.network_changes;
