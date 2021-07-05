@@ -45,7 +45,7 @@ FROM (
         hl.z_order
     FROM osm_highway_linestring hl
             LEFT OUTER JOIN osm_route_member rm ON rm.member = hl.osm_id AND rm.concurrency_index=1
-    WHERE (hl.name <> '' OR hl.ref <> '')
+    WHERE (hl.name <> '' OR hl.ref <> '' OR rm.ref <> '')
       AND NULLIF(hl.highway, '') IS NOT NULL
 ) AS t;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
