@@ -1,0 +1,86 @@
+layer:
+  id: "transportation_ref"
+  # transportation_name relies [fixme] on the function highway_class() defined in transportation layer
+  requires: "transportation_name"
+  description: |
+      This is the layer for labelling routes. Only routes that have a `ref=*` or are part of a route relation,
+      and are long enough to place text upon appear. The OSM roads are stitched together if they are part of the 
+      same route(s), to have better label placement than having many small linestrings.
+  buffer_size: 8
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  fields:
+    network:
+      description: |
+          The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+          See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
+          [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
+          or [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads).
+      values:
+      - us-interstate
+      - us-highway
+      - us-state
+      - ca-transcanada
+      - gb-motorway
+      - gb-trunk
+      - road (default)
+    ref_1: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or its network.
+    network_1: network
+    ref_2: 
+    network_2: 
+    ref_3: 
+    network_3: 
+    ref_4: 
+    network_4: 
+    ref_5: 
+    network_5: 
+    ref_6: 
+    network_6: 
+    class:
+      description: |
+          Distinguish between more and less important roads and roads under construction.
+      values:
+      - motorway
+      - trunk
+      - primary
+      - secondary
+      - tertiary
+      - minor
+      - service
+      - track
+      - path
+      - raceway
+      - motorway_construction
+      - trunk_construction
+      - primary_construction
+      - secondary_construction
+      - tertiary_construction
+      - minor_construction
+      - service_construction
+      - track_construction
+      - path_construction
+      - raceway_construction
+      - rail
+      - transit
+    subclass:
+      description: |
+          Distinguish more specific classes of path:
+          Subclass is value of the [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway)
+      values:
+      - pedestrian
+      - path
+      - footway
+      - cycleway
+      - steps
+      - bridleway
+      - corridor
+      - platform
+  datasource:
+    geometry_field: geometry
+    srid: 900913
+    query: (SELECT geometry, class::text, subclass, network, ref_1, network_1, ref_2, network_2, ref_3, network_3, ref_4, network_4, ref_5, network_5, ref_6, network_6 FROM layer_transportation_ref(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./update_transportation_ref.sql
+  - ./transportation_ref.sql
+datasources:
+  - type: imposm3
+    mapping_file: ../transportation/mapping.yaml
