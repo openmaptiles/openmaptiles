@@ -8,7 +8,7 @@ SELECT
     subclass,
     network,
     network_1, network_2, network_3, network_4, network_5, network_6,
-        ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6,
+    ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6,
     z_order
 FROM (
     SELECT hl.geometry,
@@ -360,7 +360,7 @@ CREATE TABLE IF NOT EXISTS transportation_ref.ref_changes
     network_type route_network_type
 );
 
-CREATE OR REPLACE FUNCTION transportation_name.name_network_store() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION transportation_ref.ref_network_store() RETURNS trigger AS
 $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
