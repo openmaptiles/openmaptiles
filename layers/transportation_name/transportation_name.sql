@@ -4,7 +4,6 @@
 CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level integer)
     RETURNS TABLE
             (
-                osm_id     bigint,
                 geometry   geometry,
                 name       text,
                 name_en    text,
@@ -22,8 +21,7 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
             )
 AS
 $$
-SELECT osm_id,
-       geometry,
+SELECT geometry,
        name,
        COALESCE(name_en, name) AS name_en,
        COALESCE(name_de, name, name_en) AS name_de,
@@ -89,7 +87,6 @@ FROM (
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12
          SELECT geometry,
-                osm_id,
                 name,
                 name_en,
                 name_de,
@@ -112,7 +109,6 @@ FROM (
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z13
          SELECT geometry,
-                osm_id,
                 name,
                 name_en,
                 name_de,
@@ -134,7 +130,6 @@ FROM (
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z14_
          SELECT geometry,
-                osm_id,
                 name,
                 name_en,
                 name_de,
@@ -155,7 +150,6 @@ FROM (
          -- etldoc: osm_highway_point ->  layer_transportation_name:z10
          SELECT
 		p.geometry,
-                p.osm_id,
                 p.name,
                 p.name_en,
                 p.name_de,
