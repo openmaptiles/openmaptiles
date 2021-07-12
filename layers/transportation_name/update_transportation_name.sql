@@ -80,17 +80,14 @@ FROM (
                 ref,
                 highway,
                 subclass,
-                CASE WHEN COUNT(*) = COUNT(brunnel) AND MAX(brunnel) = MIN(brunnel)
-                     THEN MAX(brunnel)
-                     ELSE NULL::text END AS brunnel,
+                brunnel,
                 "level",
                 layer,
                 indoor,
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
-         WHERE name <> '' OR ref <> ''
-         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, "level", layer, indoor, network_type
+         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, brunnel, "level", layer, indoor, network_type
      ) AS highway_union
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
