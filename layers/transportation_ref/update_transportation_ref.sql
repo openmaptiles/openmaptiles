@@ -12,8 +12,8 @@ SELECT
     z_order
 FROM (
     SELECT hl.geometry,
-        hl.highway AS highway,
         hl.osm_id AS osm_id,
+        hl.highway AS highway,
         NULLIF(hl.construction, '') AS subclass,
         rm1.network_type as network,
         rm1.network AS network_1,
@@ -104,7 +104,7 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass
 CREATE TABLE IF NOT EXISTS osm_transportation_ref_linestring_gen1 AS
 SELECT *
 FROM osm_transportation_ref_linestring_gen1_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_ref_linestring_gen1_name_ref_idx ON osm_transportation_ref_linestring_gen1(
+CREATE INDEX IF NOT EXISTS osm_transportation_ref_linestring_gen1_ref_idx ON osm_transportation_ref_linestring_gen1(
        coalesce(network_1, ref_1),
        coalesce(network_2, ref_2),
        coalesce(network_3, ref_3),
@@ -254,7 +254,7 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation_ref_network';
-    -- update_osm_route_member() performed by transportation_name update
+    -- update_osm_route_member() performed by transportation_ref update
 
     -- REFRESH osm_transportation_ref_network
     DELETE
@@ -338,26 +338,28 @@ CREATE CONSTRAINT TRIGGER trigger_refresh_network_ref
     FOR EACH ROW
 EXECUTE PROCEDURE transportation_ref.refresh_network();
 
-/*
-
 -- Trigger to update "osm_transportation_ref_linestring" from "osm_transportation_ref_network"
-
 CREATE TABLE IF NOT EXISTS transportation_ref.ref_changes
 (
     id serial PRIMARY KEY,
     is_old boolean,
+
     osm_id bigint,
-    name character varying,
-    name_en character varying,
-    name_de character varying,
-    ref character varying,
     highway character varying,
     subclass character varying,
-    brunnel character varying,
-    level integer,
-    layer integer,
-    indoor boolean,
-    network_type route_network_type
+    network character varying,
+    network_1 character varying,
+    network_2 character varying,
+    network_3 character varying,
+    network_4 character varying,
+    network_5 character varying,
+    network_6 character varying,
+    ref_1 character varying,
+    ref_2 character varying,
+    ref_3 character varying,
+    ref_4 character varying,
+    ref_5 character varying,
+    ref_6 character varying
 );
 
 CREATE OR REPLACE FUNCTION transportation_ref.ref_network_store() RETURNS trigger AS
@@ -365,63 +367,72 @@ $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
-                                                     brunnel, level, layer, indoor, network_type)
-        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.subclass,
-                old.brunnel, old.level, old.layer, old.indoor, old.network_type);
+        INSERT INTO transportation_ref.ref_changes(is_old, osm_id, highway, subclass, network,
+               network_1, network_2, network_3, network_4, network_5, network_6,
+                   ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6)
+        VALUES (TRUE, old.osm_id, old.highway, old.subclass, old.network,
+               old.network_1, old.network_2, old.network_3, old.network_4, old.network_5, old.network_6,
+                   old.ref_1,     old.ref_2,     old.ref_3,     old.ref_4,     old.ref_5,     old.ref_6);
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
-                                                     brunnel, level, layer, indoor, network_type)
-        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.subclass,
-                new.brunnel, new.level, new.layer, new.indoor, new.network_type);
+        INSERT INTO transportation_ref.ref_changes(is_old, osm_id, highway, subclass, network,
+               network_1, network_2, network_3, network_4, network_5, network_6,
+                   ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6)
+        VALUES (FALSE, new.osm_id, new.highway, new.subclass, new.network,
+               new.network_1, new.network_2, new.network_3, new.network_4, new.network_5, new.network_6,
+                   new.ref_1,     new.ref_2,     new.ref_3,     new.ref_4,     new.ref_5,     new.ref_6);
     END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TABLE IF NOT EXISTS transportation_name.updates_name
+CREATE TABLE IF NOT EXISTS transportation_ref.updates_ref
 (
     id serial PRIMARY KEY,
     t  text,
     UNIQUE (t)
 );
-CREATE OR REPLACE FUNCTION transportation_name.flag_name() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION transportation_ref.flag_ref() RETURNS trigger AS
 $$
 BEGIN
-    INSERT INTO transportation_name.updates_name(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
+    INSERT INTO transportation_ref.updates_ref(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION transportation_name.refresh_name() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION transportation_ref.refresh_ref() RETURNS trigger AS
 $BODY$
 DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
-    RAISE LOG 'Refresh transportation_name';
+    RAISE LOG 'Refresh transportation_ref';
 
-    -- REFRESH osm_transportation_name_linestring
+    -- REFRESH osm_transportation_ref_linestring
 
     -- Compact the change history to keep only the first and last version, and then uniq version of row
-    CREATE TEMP TABLE name_changes_compact AS
-    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, subclass, brunnel, level, layer, indoor, network_type)
-        name,
-        name_en,
-        name_de,
-        ref,
+    CREATE TEMP TABLE ref_changes_compact AS
+    SELECT DISTINCT ON (highway, subclass, network,
+                        network_1, network_2, network_3, network_4, network_5, network_6,
+                            ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6)
         highway,
         subclass,
-        brunnel,
-        level,
-        layer,
-        indoor,
-        network_type,
-        coalesce(name, ref) AS name_ref
+        network,
+        network_1,
+        network_2,
+        network_3,
+        network_4,
+        network_5,
+        network_6,
+        ref_1,
+        ref_2,
+        ref_3,
+        ref_4,
+        ref_5,
+        ref_6
     FROM ((
               SELECT DISTINCT ON (osm_id) *
-              FROM transportation_name.name_changes
+              FROM transportation_ref.ref_changes
               WHERE is_old
               ORDER BY osm_id,
                        id ASC
@@ -429,215 +440,240 @@ BEGIN
           UNION ALL
           (
               SELECT DISTINCT ON (osm_id) *
-              FROM transportation_name.name_changes
+              FROM transportation_ref.ref_changes
               WHERE NOT is_old
               ORDER BY osm_id,
                        id DESC
           )) AS t;
 
     DELETE
-    FROM osm_transportation_name_linestring AS n
-        USING name_changes_compact AS c
-    WHERE coalesce(n.name, '') = coalesce(c.name, '')
-      AND coalesce(n.ref, '') = coalesce(c.ref, '')
-      AND n.name_en IS NOT DISTINCT FROM c.name_en
-      AND n.name_de IS NOT DISTINCT FROM c.name_de
-      AND n.highway IS NOT DISTINCT FROM c.highway
+    FROM osm_transportation_ref_linestring AS n
+        USING ref_changes_compact AS c
+    WHERE n.highway IS NOT DISTINCT FROM c.highway
       AND n.subclass IS NOT DISTINCT FROM c.subclass
-      AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-      AND n.level IS NOT DISTINCT FROM c.level
-      AND n.layer IS NOT DISTINCT FROM c.layer
-      AND n.indoor IS NOT DISTINCT FROM c.indoor
-      AND n.network IS NOT DISTINCT FROM c.network_type;
+      AND n.network IS NOT DISTINCT FROM c.network
+      AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+      AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+      AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+      AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+      AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+      AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+      AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+      AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+      AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+      AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+      AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+      AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    INSERT INTO osm_transportation_name_linestring
+    INSERT INTO osm_transportation_ref_linestring
     SELECT (ST_Dump(geometry)).geom AS geometry,
-           NULL::bigint AS osm_id,
-           name,
-           name_en,
-           name_de,
-           tags || get_basic_names(tags, geometry) AS tags,
-           ref,
            highway,
            subclass,
-           brunnel,
-           level,
-           layer,
-           indoor,
-           network_type AS network,
+           network,
+           network_1, network_2, network_3, network_4, network_5, network_6,
+           ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6,
            z_order
     FROM (
-        SELECT ST_LineMerge(ST_Collect(n.geometry)) AS geometry,
-            n.name,
-            n.name_en,
-            n.name_de,
-            hstore(string_agg(nullif(slice_language_tags(tags ||
-                                                         hstore(ARRAY ['name', n.name, 'name:en', n.name_en, 'name:de', n.name_de]))::text,
-                                     ''), ',')) AS tags,
-            n.ref,
-            n.highway,
-            n.subclass,
-            n.brunnel,
-            n.level,
-            n.layer,
-            n.indoor,
-            n.network_type,
-            min(n.z_order) AS z_order
-        FROM osm_transportation_name_network AS n
-            JOIN name_changes_compact AS c ON
-                 coalesce(n.name, '') = coalesce(c.name, '')
-             AND coalesce(n.ref, '') = coalesce(c.ref, '')
-             AND n.name_en IS NOT DISTINCT FROM c.name_en
-             AND n.name_de IS NOT DISTINCT FROM c.name_de
-             AND n.highway IS NOT DISTINCT FROM c.highway
-             AND n.subclass IS NOT DISTINCT FROM c.subclass
-             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-             AND n.level IS NOT DISTINCT FROM c.level
-             AND n.layer IS NOT DISTINCT FROM c.layer
-             AND n.indoor IS NOT DISTINCT FROM c.indoor
-             AND n.network_type IS NOT DISTINCT FROM c.network_type
-        GROUP BY n.name, n.name_en, n.name_de, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type
-    ) AS highway_union;
+         SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+                highway,
+                subclass,
+                network,
+                network_1, network_2, network_3, network_4, network_5, network_6,
+                ref_1,     ref_2,     ref_3,     ref_4,     ref_5,     ref_6,
+                min(z_order) AS z_order
+         FROM osm_transportation_ref_network
+         GROUP BY highway, subclass, network,
+                  network_1, ref_1,
+                  network_2, ref_2,
+                  network_3, ref_3,
+                  network_4, ref_4,
+                  network_5, ref_5,
+                  network_6, ref_6
+     ) AS highway_ref_union
+    ;
 
-    -- REFRESH osm_transportation_name_linestring_gen1
-    DELETE FROM osm_transportation_name_linestring_gen1 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type;
+    -- REFRESH osm_transportation_ref_linestring_gen1
+    DELETE FROM osm_transportation_ref_linestring_gen1 AS n
+    USING ref_changes_compact AS c
+    WHERE n.highway IS NOT DISTINCT FROM c.highway
+      AND n.subclass IS NOT DISTINCT FROM c.subclass
+      AND n.network IS NOT DISTINCT FROM c.network
+      AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+      AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+      AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+      AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+      AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+      AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+      AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+      AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+      AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+      AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+      AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+      AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    INSERT INTO osm_transportation_name_linestring_gen1
+    INSERT INTO osm_transportation_ref_linestring_gen1
     SELECT n.*
-    FROM osm_transportation_name_linestring_gen1_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
+    FROM osm_transportation_ref_linestring_gen1_view AS n
+        JOIN ref_changes_compact AS c ON
+            n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type;
+            AND n.network IS NOT DISTINCT FROM c.network
+            AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+            AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+            AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+            AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+            AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+            AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+            AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+            AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+            AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+            AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+            AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+            AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    -- REFRESH osm_transportation_name_linestring_gen2
-    DELETE FROM osm_transportation_name_linestring_gen2 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type;
+    -- REFRESH osm_transportation_ref_linestring_gen2
+    DELETE FROM osm_transportation_ref_linestring_gen2 AS n
+    USING ref_changes_compact AS c
+    WHERE n.highway IS NOT DISTINCT FROM c.highway
+      AND n.subclass IS NOT DISTINCT FROM c.subclass
+      AND n.network IS NOT DISTINCT FROM c.network
+      AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+      AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+      AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+      AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+      AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+      AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+      AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+      AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+      AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+      AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+      AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+      AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    INSERT INTO osm_transportation_name_linestring_gen2
+    INSERT INTO osm_transportation_ref_linestring_gen2
     SELECT n.*
-    FROM osm_transportation_name_linestring_gen2_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
+    FROM osm_transportation_ref_linestring_gen2_view AS n
+        JOIN ref_changes_compact AS c ON
+            n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type;
+            AND n.network IS NOT DISTINCT FROM c.network
+            AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+            AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+            AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+            AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+            AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+            AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+            AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+            AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+            AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+            AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+            AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+            AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    -- REFRESH osm_transportation_name_linestring_gen3
-    DELETE FROM osm_transportation_name_linestring_gen3 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type;
+    -- REFRESH osm_transportation_ref_linestring_gen3
+    DELETE FROM osm_transportation_ref_linestring_gen3 AS n
+    USING ref_changes_compact AS c
+    WHERE n.highway IS NOT DISTINCT FROM c.highway
+      AND n.subclass IS NOT DISTINCT FROM c.subclass
+      AND n.network IS NOT DISTINCT FROM c.network
+      AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+      AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+      AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+      AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+      AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+      AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+      AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+      AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+      AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+      AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+      AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+      AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    INSERT INTO osm_transportation_name_linestring_gen3
+    INSERT INTO osm_transportation_ref_linestring_gen3
     SELECT n.*
-    FROM osm_transportation_name_linestring_gen3_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
+    FROM osm_transportation_ref_linestring_gen3_view AS n
+        JOIN ref_changes_compact AS c ON
+            n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type;
+            AND n.network IS NOT DISTINCT FROM c.network
+            AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+            AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+            AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+            AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+            AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+            AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+            AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+            AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+            AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+            AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+            AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+            AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    -- REFRESH osm_transportation_name_linestring_gen4
-    DELETE FROM osm_transportation_name_linestring_gen4 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type;
+    -- REFRESH osm_transportation_ref_linestring_gen4
+    DELETE FROM osm_transportation_ref_linestring_gen4 AS n
+    USING ref_changes_compact AS c
+    WHERE n.highway IS NOT DISTINCT FROM c.highway
+      AND n.subclass IS NOT DISTINCT FROM c.subclass
+      AND n.network IS NOT DISTINCT FROM c.network
+      AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+      AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+      AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+      AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+      AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+      AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+      AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+      AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+      AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+      AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+      AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+      AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    INSERT INTO osm_transportation_name_linestring_gen4
+    INSERT INTO osm_transportation_ref_linestring_gen4
     SELECT n.*
-    FROM osm_transportation_name_linestring_gen4_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
+    FROM osm_transportation_ref_linestring_gen4_view AS n
+        JOIN ref_changes_compact AS c ON
+            n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type;
+            AND n.network IS NOT DISTINCT FROM c.network
+            AND coalesce(n.network_1, '') = coalesce(c.network_1, '')
+            AND coalesce(n.network_2, '') = coalesce(c.network_2, '')
+            AND coalesce(n.network_3, '') = coalesce(c.network_3, '')
+            AND coalesce(n.network_4, '') = coalesce(c.network_4, '')
+            AND coalesce(n.network_5, '') = coalesce(c.network_5, '')
+            AND coalesce(n.network_6, '') = coalesce(c.network_6, '')
+            AND coalesce(n.ref_1, '') = coalesce(c.ref_1, '')
+            AND coalesce(n.ref_2, '') = coalesce(c.ref_2, '')
+            AND coalesce(n.ref_3, '') = coalesce(c.ref_3, '')
+            AND coalesce(n.ref_4, '') = coalesce(c.ref_4, '')
+            AND coalesce(n.ref_5, '') = coalesce(c.ref_5, '')
+            AND coalesce(n.ref_6, '') = coalesce(c.ref_6, '');
 
-    DROP TABLE name_changes_compact;
-    DELETE FROM transportation_name.name_changes;
-    DELETE FROM transportation_name.updates_name;
+    DROP TABLE ref_changes_compact;
+    DELETE FROM transportation_ref.ref_changes;
+    DELETE FROM transportation_ref.updates_ref;
 
-    RAISE LOG 'Refresh transportation_name done in %', age(clock_timestamp(), t);
+    RAISE LOG 'Refresh transportation_ref done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $BODY$
     LANGUAGE plpgsql;
 
 
-CREATE TRIGGER trigger_store_transportation_name_network
+CREATE TRIGGER trigger_store_transportation_ref_network
     AFTER INSERT OR UPDATE OR DELETE
-    ON osm_transportation_name_network
+    ON osm_transportation_ref_network
     FOR EACH ROW
-EXECUTE PROCEDURE transportation_name.name_network_store();
+EXECUTE PROCEDURE transportation_ref.ref_network_store();
 
-CREATE TRIGGER trigger_flag_name
+CREATE TRIGGER trigger_flag_ref
     AFTER INSERT
-    ON transportation_name.name_changes
+    ON transportation_ref.ref_changes
     FOR EACH STATEMENT
-EXECUTE PROCEDURE transportation_name.flag_name();
+EXECUTE PROCEDURE transportation_ref.flag_ref();
 
-CREATE CONSTRAINT TRIGGER trigger_refresh_name
+CREATE CONSTRAINT TRIGGER trigger_refresh_ref
     AFTER INSERT
-    ON transportation_name.updates_name
+    ON transportation_ref.updates_ref
     INITIALLY DEFERRED
     FOR EACH ROW
-EXECUTE PROCEDURE transportation_name.refresh_name();
-*/
+EXECUTE PROCEDURE transportation_ref.refresh_ref();
