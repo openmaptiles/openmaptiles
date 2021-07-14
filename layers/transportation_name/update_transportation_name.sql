@@ -56,7 +56,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_t
 -- etldoc: osm_transportation_name_network ->  osm_transportation_name_linestring
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS
 SELECT (ST_Dump(geometry)).geom AS geometry,
-       NULL::bigint AS osm_id,
        name,
        name_en,
        name_de,
@@ -80,14 +79,17 @@ FROM (
                 ref,
                 highway,
                 subclass,
-                brunnel,
+                CASE WHEN COUNT(*) = COUNT(brunnel) AND MAX(brunnel) = MIN(brunnel)
+                     THEN MAX(brunnel)
+                     ELSE NULL::text END AS brunnel,
                 "level",
                 layer,
                 indoor,
                 network_type,
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
-         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, brunnel, "level", layer, indoor, network_type
+         WHERE name <> '' OR ref <> ''
+         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, "level", layer, indoor, network_type
      ) AS highway_union
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(name, ''), coalesce(ref, ''));
@@ -100,7 +102,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_id
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
 CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen1_view AS
 SELECT ST_Simplify(geometry, 50) AS geometry,
-       osm_id,
        name,
        name_en,
        name_de,
@@ -128,7 +129,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_parti
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
 CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen2_view AS
 SELECT ST_Simplify(geometry, 120) AS geometry,
-       osm_id,
        name,
        name_en,
        name_de,
@@ -156,7 +156,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_parti
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
 CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen3_view AS
 SELECT ST_Simplify(geometry, 200) AS geometry,
-       osm_id,
        name,
        name_en,
        name_de,
@@ -184,7 +183,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_parti
 -- etldoc: osm_transportation_name_linestring_gen3 -> osm_transportation_name_linestring_gen4
 CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen4_view AS
 SELECT ST_Simplify(geometry, 500) AS geometry,
-       osm_id,
        name,
        name_en,
        name_de,
