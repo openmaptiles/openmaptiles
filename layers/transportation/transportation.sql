@@ -11,7 +11,6 @@ $$ LANGUAGE SQL IMMUTABLE
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
     RETURNS TABLE
             (
-                osm_id    bigint,
                 geometry  geometry,
                 class     text,
                 subclass  text,
@@ -30,8 +29,7 @@ CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
             )
 AS
 $$
-SELECT osm_id,
-       geometry,
+SELECT geometry,
        CASE
            WHEN NULLIF(highway, '') IS NOT NULL OR NULLIF(public_transport, '') IS NOT NULL
                THEN highway_class(highway, public_transport, construction)
@@ -65,8 +63,7 @@ SELECT osm_id,
        NULLIF(surface, '') AS surface
 FROM (
          -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -94,8 +91,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z5 -> layer_transportation:z5
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -123,8 +119,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z6 -> layer_transportation:z6
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -152,8 +147,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z7  ->  layer_transportation:z7
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -181,8 +175,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z8  ->  layer_transportation:z8
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -210,8 +203,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z9  ->  layer_transportation:z9
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -239,8 +231,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z10  ->  layer_transportation:z10
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -268,8 +259,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z11  ->  layer_transportation:z11
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -299,8 +289,7 @@ FROM (
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z13
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 construction,
                 NULL AS railway,
@@ -347,8 +336,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -379,8 +367,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z9  ->  layer_transportation:z9
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -411,8 +398,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z10  ->  layer_transportation:z10
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -442,8 +428,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z11  ->  layer_transportation:z11
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -473,8 +458,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z12  ->  layer_transportation:z12
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -505,8 +489,7 @@ FROM (
 
          -- etldoc: osm_railway_linestring ->  layer_transportation:z13
          -- etldoc: osm_railway_linestring ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 railway,
@@ -537,8 +520,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_aerialway_linestring_gen_z12  ->  layer_transportation:z12
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 NULL AS railway,
@@ -567,8 +549,7 @@ FROM (
 
          -- etldoc: osm_aerialway_linestring ->  layer_transportation:z13
          -- etldoc: osm_aerialway_linestring ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 NULL AS railway,
@@ -596,8 +577,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_shipway_linestring_gen_z11  ->  layer_transportation:z11
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 NULL AS railway,
@@ -625,8 +605,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_shipway_linestring_gen_z12  ->  layer_transportation:z12
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 NULL AS railway,
@@ -655,8 +634,7 @@ FROM (
 
          -- etldoc: osm_shipway_linestring ->  layer_transportation:z13
          -- etldoc: osm_shipway_linestring ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 NULL AS highway,
                 NULL AS construction,
                 NULL AS railway,
@@ -689,8 +667,7 @@ FROM (
          -- highway linestrings and as polygon
          -- etldoc: osm_highway_polygon ->  layer_transportation:z13
          -- etldoc: osm_highway_polygon ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
+         SELECT geometry,
                 highway,
                 NULL AS construction,
                 NULL AS railway,
