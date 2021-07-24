@@ -85,3 +85,13 @@ INSERT INTO osm_route_member (id, concurrency_index)
     ROW_NUMBER() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
   FROM osm_route_member
   ON CONFLICT (id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
+
+UPDATE osm_highway_linestring hl
+  SET network = rm.network_type
+  FROM osm_route_member rm
+  WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
+
+UPDATE osm_highway_linestring_gen_z11 hl
+  SET network = rm.network_type
+  FROM osm_route_member rm
+  WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
