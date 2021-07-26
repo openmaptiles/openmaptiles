@@ -16,6 +16,10 @@ ALTER TABLE osm_park_polygon_gen_z7
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
 ALTER TABLE osm_park_polygon_gen_z6
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
+ALTER TABLE osm_park_polygon_gen_z5
+    ADD COLUMN IF NOT EXISTS geometry_point geometry;
+ALTER TABLE osm_park_polygon_gen_z4
+    ADD COLUMN IF NOT EXISTS geometry_point geometry;
 
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z13;
@@ -26,6 +30,8 @@ DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z9;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z8;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z7;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z6;
+DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z5;
+DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z4;
 
 -- etldoc:  osm_park_polygon ->  osm_park_polygon
 -- etldoc:  osm_park_polygon_gen_z13 ->  osm_park_polygon_gen_z13
@@ -36,6 +42,8 @@ DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z6;
 -- etldoc:  osm_park_polygon_gen_z8 ->  osm_park_polygon_gen_z8
 -- etldoc:  osm_park_polygon_gen_z7 ->  osm_park_polygon_gen_z7
 -- etldoc:  osm_park_polygon_gen_z6 ->  osm_park_polygon_gen_z6
+-- etldoc:  osm_park_polygon_gen_z5 ->  osm_park_polygon_gen_z5
+-- etldoc:  osm_park_polygon_gen_z4 ->  osm_park_polygon_gen_z4
 CREATE OR REPLACE FUNCTION update_osm_park_polygon() RETURNS void AS
 $$
 BEGIN
@@ -75,6 +83,14 @@ BEGIN
     SET tags           = update_tags(tags, geometry),
         geometry_point = st_centroid(geometry);
 
+    UPDATE osm_park_polygon_gen_z5
+    SET tags           = update_tags(tags, geometry),
+        geometry_point = st_centroid(geometry);
+
+    UPDATE osm_park_polygon_gen_z4
+    SET tags           = update_tags(tags, geometry),
+        geometry_point = st_centroid(geometry);
+
 END;
 $$ LANGUAGE plpgsql;
 
@@ -88,6 +104,8 @@ CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z9_point_geom_idx ON osm_park_po
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z8_point_geom_idx ON osm_park_polygon_gen_z8 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z7_point_geom_idx ON osm_park_polygon_gen_z7 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z6_point_geom_idx ON osm_park_polygon_gen_z6 USING gist (geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z5_point_geom_idx ON osm_park_polygon_gen_z5 USING gist (geometry_point);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z4_point_geom_idx ON osm_park_polygon_gen_z4 USING gist (geometry_point);
 
 
 CREATE OR REPLACE FUNCTION update_osm_park_polygon_row()
@@ -154,3 +172,16 @@ CREATE TRIGGER update_row
     ON osm_park_polygon_gen_z6
     FOR EACH ROW
 EXECUTE PROCEDURE update_osm_park_polygon_row();
+
+CREATE TRIGGER update_row
+    BEFORE INSERT OR UPDATE
+    ON osm_park_polygon_gen_z5
+    FOR EACH ROW
+EXECUTE PROCEDURE update_osm_park_polygon_row();
+
+CREATE TRIGGER update_row
+    BEFORE INSERT OR UPDATE
+    ON osm_park_polygon_gen_z4
+    FOR EACH ROW
+EXECUTE PROCEDURE update_osm_park_polygon_row();
+

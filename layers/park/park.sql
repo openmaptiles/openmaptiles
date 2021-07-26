@@ -37,6 +37,34 @@ FROM (
                 tags,
                 NULL::int AS rank
          FROM (
+                  -- etldoc: osm_park_polygon_gen_z4 -> layer_park:z4
+                  SELECT osm_id,
+                         geometry,
+                         name,
+                         name_en,
+                         name_de,
+                         tags,
+                         leisure,
+                         boundary,
+                         protection_title
+                  FROM osm_park_polygon_gen_z4
+                  WHERE zoom_level = 4
+                    AND geometry && bbox
+                  UNION ALL
+                  -- etldoc: osm_park_polygon_gen_z5 -> layer_park:z5
+                  SELECT osm_id,
+                         geometry,
+                         name,
+                         name_en,
+                         name_de,
+                         tags,
+                         leisure,
+                         boundary,
+                         protection_title
+                  FROM osm_park_polygon_gen_z5
+                  WHERE zoom_level = 5
+                    AND geometry && bbox
+                  UNION ALL
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,
                          geometry,
@@ -184,6 +212,40 @@ FROM (
                         area DESC
                     )::int AS "rank"
          FROM (
+                  -- etldoc: osm_park_polygon_gen_z4 -> layer_park:z4
+                  SELECT osm_id,
+                         geometry_point,
+                         name,
+                         name_en,
+                         name_de,
+                         tags,
+                         leisure,
+                         boundary,
+                         protection_title,
+                         area
+                  FROM osm_park_polygon_gen_z4
+                  WHERE zoom_level = 4
+                    AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
+                  UNION ALL
+
+                  -- etldoc: osm_park_polygon_gen_z5 -> layer_park:z5
+                  SELECT osm_id,
+                         geometry_point,
+                         name,
+                         name_en,
+                         name_de,
+                         tags,
+                         leisure,
+                         boundary,
+                         protection_title,
+                         area
+                  FROM osm_park_polygon_gen_z5
+                  WHERE zoom_level = 5
+                    AND geometry_point && bbox
+                    AND area > 70000*2^(20-zoom_level)
+                  UNION ALL
+
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,
                          geometry_point,
