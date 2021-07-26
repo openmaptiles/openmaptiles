@@ -93,10 +93,16 @@ layer:
           value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
       - 1
+    route_1: 1st route concurrency.
+    route_2: 2nd route concurrency.
+    route_3: 3rd route concurrency.
+    route_4: 4th route concurrency.
+    route_5: 5th route concurrency.
+    route_6: 6th route concurrency.
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./highway_classification.sql
