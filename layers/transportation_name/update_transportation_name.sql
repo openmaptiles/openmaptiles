@@ -317,7 +317,7 @@ BEGIN
                 ELSE NULLIF(hl.ref, '')
                 END AS ref,
             hl.highway,
-            NULLIF(hl.subclass, '') AS subclass,
+            NULLIF(hl.construction, '') AS subclass,
             brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
@@ -498,7 +498,6 @@ BEGIN
 
     INSERT INTO osm_transportation_name_linestring
     SELECT (ST_Dump(geometry)).geom AS geometry,
-           NULL::bigint AS osm_id,
            name,
            name_en,
            name_de,
