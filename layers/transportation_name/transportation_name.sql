@@ -28,7 +28,6 @@ SELECT geometry,
        tags,
        ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
-       --TODO: The road network of the road is not yet implemented
        CASE
            WHEN network IS NOT NULL
                THEN network::text
@@ -169,7 +168,6 @@ FROM (
                 NULL::boolean AS indoor
          FROM osm_highway_point p
          WHERE highway = 'motorway_junction' AND zoom_level >= 10
-
      ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
