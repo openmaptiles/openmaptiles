@@ -104,25 +104,25 @@ CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
 (
 SELECT (ST_Dump(geometry)).geom AS geometry,
        NULL::bigint AS osm_id,
-       highway,
-       construction,
+       highway_merge AS highway,
+       construction_merge AS construction,
        is_bridge,
        is_tunnel,
        is_ford,
        z_order
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
-                highway,
-                construction,
+                REPLACE(highway, '_link', '') AS highway_merge,
+                REPLACE(construction, '_link', '') AS construction_merge,
                 is_bridge,
                 is_tunnel,
                 is_ford,
                 min(z_order) AS z_order
          FROM osm_highway_linestring
-         WHERE (highway IN ('motorway', 'trunk', 'primary', 'motorway_link', 'trunk_link', 'primary_link') OR
-                highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'motorway_link', 'trunk_link', 'primary_link'))
+         WHERE (highway IN ('motorway', 'trunk', 'primary') OR
+                highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
            AND ST_IsValid(geometry)
-         GROUP BY highway, construction, is_bridge, is_tunnel, is_ford
+         GROUP BY highway_merge, construction_merge, is_bridge, is_tunnel, is_ford
      ) AS highway_union
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
