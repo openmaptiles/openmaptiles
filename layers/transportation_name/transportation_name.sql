@@ -12,6 +12,12 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
                 ref        text,
                 ref_length int,
                 network    text,
+                route_1    text,
+                route_2    text,
+                route_3    text,
+                route_4    text,
+                route_5    text,
+                route_6    text,
                 class      text,
                 subclass   text,
                 brunnel    text,
@@ -28,13 +34,13 @@ SELECT geometry,
        tags,
        ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
-       --TODO: The road network of the road is not yet implemented
        CASE
            WHEN network IS NOT NULL
                THEN network::text
            WHEN length(coalesce(ref, '')) > 0
                THEN 'road'
            END AS network,
+       route_1, route_2, route_3, route_4, route_5, route_6,
        highway_class(highway, '', subclass) AS class,
        CASE
            WHEN highway IS NOT NULL AND highway_class(highway, '', subclass) = 'path'
@@ -96,6 +102,7 @@ FROM (
                 subclass,
                 brunnel,
                 network,
+                route_1, route_2, route_3, route_4, route_5, route_6,
                 z_order,
                 layer,
                 "level",
@@ -118,6 +125,7 @@ FROM (
                 subclass,
                 brunnel,
                 network,
+                route_1, route_2, route_3, route_4, route_5, route_6,
                 z_order,
                 layer,
                 "level",
@@ -139,6 +147,7 @@ FROM (
                 subclass,
                 brunnel,
                 network,
+                route_1, route_2, route_3, route_4, route_5, route_6,
                 z_order,
                 layer,
                 "level",
@@ -163,6 +172,12 @@ FROM (
                 'junction'::text AS subclass,
                 NULL AS brunnel,
                 NULL AS network,
+                NULL::text AS route_1,
+                NULL::text AS route_2,
+                NULL::text AS route_3,
+                NULL::text AS route_4,
+                NULL::text AS route_5,
+                NULL::text AS route_6,
                 z_order,
                 layer,
                 NULL::int AS level,
