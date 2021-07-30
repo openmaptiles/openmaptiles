@@ -111,7 +111,7 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        is_ford,
        z_order
 FROM (
-         SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+         SELECT ST_LineMerge(ST_Union(geometry)) AS geometry,
                 REPLACE(highway, '_link', '') AS highway_merge,
                 REPLACE(construction, '_link', '') AS construction_merge,
                 is_bridge,
@@ -119,8 +119,8 @@ FROM (
                 is_ford,
                 min(z_order) AS z_order
          FROM osm_highway_linestring
-         WHERE (highway IN ('motorway', 'trunk', 'primary') OR
-                highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
+         WHERE highway SIMILAR TO '(motorway|trunk|primary)(_link)*' OR
+              (highway = 'construction' AND construction SIMILAR TO '(motorway|trunk|primary)(_link)*')
            AND ST_IsValid(geometry)
          GROUP BY highway_merge, construction_merge, is_bridge, is_tunnel, is_ford
      ) AS highway_union
