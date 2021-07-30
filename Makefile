@@ -14,7 +14,7 @@ TILESET_FILE ?= openmaptiles.yaml
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
-DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
+DC_OPTS ?= --rm 
 
 # If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
 USE_PRELOADED_IMAGE ?=
@@ -144,7 +144,8 @@ export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
 
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
 export MBTILES_FILE ?= $(area).mbtiles
-MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
+MBTILES_LOCAL_FILE = /data/$(MBTILES_FILE)
+MBTILES_EXPORT_FILE = /export/$(MBTILES_FILE)
 
 ifeq ($(strip $(DIFF_MODE)),true)
   # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
@@ -383,7 +384,7 @@ endif
 .PHONY: import-osm
 import-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
 .PHONY: update-osm
 update-osm: all start-db-nowait
@@ -416,10 +417,11 @@ generate-tiles: all start-db
 	@$(assert_area_is_given)
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) generate-vectortiles
+	$(DOCKER_COMPOSE) run generate-vectortiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
-			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
+			mbtiles-tools meta-generate "$(MBTILES_EXPORT_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
+	$(DOCKER_COMPOSE) run  $(DC_OPTS) openmaptiles-tools sh -c 'mv $(MBTILES_EXPORT_FILE) $(MBTILES_LOCAL_FILE)'
 
 .PHONY: generate-tiles-pg
 generate-tiles-pg: all start-db
@@ -429,7 +431,8 @@ generate-tiles-pg: all start-db
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
-			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
+			mbtiles-tools meta-generate "$(MBTILES_EXPORT_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'mv $(MBTILES_EXPORT_FILE) $(MBTILES_LOCAL_FILE)'
 
 .PHONY: start-tileserver
 start-tileserver: init-dirs

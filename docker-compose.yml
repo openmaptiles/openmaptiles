@@ -3,6 +3,8 @@ version: "3"
 
 volumes:
   pgdata:
+  cache:
+  export:
 
 networks:
   postgres:
@@ -53,7 +55,8 @@ services:
     volumes:
       - .:/tileset
       - ./data:/import
-      - ./data:/export
+      - ./data:/data
+      - export:/export
       - ./build/sql:/sql
       - ./build:/mapping
       - ./cache:/cache
@@ -62,7 +65,7 @@ services:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
     command: ./export-list.sh
     volumes:
-      - ./data:/export
+      - export:/export
       - ./build/openmaptiles.tm2source:/tm2source
     networks:
       - postgres
@@ -76,7 +79,7 @@ services:
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
     volumes:
-      - ./data:/export
+      - export:/export
       - ./build/openmaptiles.tm2source:/tm2source
     networks:
       - postgres
