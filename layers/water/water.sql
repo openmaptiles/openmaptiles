@@ -27,7 +27,8 @@ SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_10m_ocean
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_ocean_gen_z5_idx ON ne_10m_ocean_gen_z5 USING gist (geometry);
@@ -42,7 +43,8 @@ SELECT ogc_fid,
        'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_10m_lakes
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z5_idx ON ne_10m_lakes_gen_z5 USING gist (geometry);
@@ -56,7 +58,8 @@ SELECT ogc_fid,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_10m_lakes_gen_z5
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z4_idx ON ne_10m_lakes_gen_z4 USING gist (geometry);
@@ -70,7 +73,8 @@ SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_50m_ocean
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z4_idx ON ne_50m_ocean_gen_z4 USING gist (geometry);
@@ -83,7 +87,8 @@ SELECT ST_Simplify(geometry, ZRes(5)) AS geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_ocean_gen_z4
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z3_idx ON ne_50m_ocean_gen_z3 USING gist (geometry);
@@ -96,7 +101,8 @@ SELECT ST_Simplify(geometry, ZRes(4)) AS geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_ocean_gen_z3
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z2_idx ON ne_50m_ocean_gen_z2 USING gist (geometry);
@@ -111,7 +117,8 @@ SELECT ogc_fid,
        'lakes'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_50m_lakes
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z3_idx ON ne_50m_lakes_gen_z3 USING gist (geometry);
@@ -125,7 +132,8 @@ SELECT ogc_fid,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_lakes_gen_z3
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z2_idx ON ne_50m_lakes_gen_z2 USING gist (geometry);
@@ -139,7 +147,8 @@ SELECT ST_Simplify(geometry, ZRes(3)) AS geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_110m_ocean
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z1_idx ON ne_110m_ocean_gen_z1 USING gist (geometry);
@@ -152,7 +161,8 @@ SELECT ST_Simplify(geometry, ZRes(2)) AS geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_ocean_gen_z1
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z0_idx ON ne_110m_ocean_gen_z0 USING gist (geometry);
@@ -168,7 +178,8 @@ SELECT ogc_fid,
        'lakes'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM ne_110m_lakes
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z1_idx ON ne_110m_lakes_gen_z1 USING gist (geometry);
@@ -182,7 +193,8 @@ SELECT ogc_fid,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_lakes_gen_z1
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z0_idx ON ne_110m_lakes_gen_z0 USING gist (geometry);
@@ -195,7 +207,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_ocean_gen_z0
 UNION ALL
 -- etldoc:  ne_110m_lakes_gen_z0 ->  water_z0
@@ -203,7 +216,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_lakes_gen_z0
     );
 
@@ -214,7 +228,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_ocean_gen_z1
 UNION ALL
 -- etldoc:  ne_110m_lakes_gen_z1 ->  water_z1
@@ -222,7 +237,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_110m_lakes_gen_z1
     );
 
@@ -233,7 +249,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_ocean_gen_z2
 UNION ALL
 -- etldoc:  ne_50m_lakes_gen_z2 ->  water_z2
@@ -241,7 +258,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_lakes_gen_z2
     );
 
@@ -252,7 +270,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_ocean_gen_z3
 UNION ALL
 -- etldoc:  ne_50m_lakes_gen_z3 ->  water_z3
@@ -260,7 +279,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_lakes_gen_z3
     );
 
@@ -271,7 +291,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_50m_ocean_gen_z4
 UNION ALL
 -- etldoc:  ne_10m_lakes_gen_z4 ->  water_z4
@@ -279,7 +300,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_10m_lakes_gen_z4
     );
 
@@ -290,7 +312,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_10m_ocean_gen_z5
 UNION ALL
 -- etldoc:  ne_10m_lakes_gen_z5 ->  water_z5
@@ -298,7 +321,8 @@ SELECT geometry,
        class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM ne_10m_lakes_gen_z5
     );
 
@@ -309,7 +333,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_gen_z6
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z6 ->  water_z6
@@ -317,7 +342,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_water_polygon_gen_z6
 WHERE "natural" != 'bay'
     );
@@ -329,7 +355,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_gen_z7
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z7 ->  water_z7
@@ -337,7 +364,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_water_polygon_gen_z7
 WHERE "natural" != 'bay'
     );
@@ -349,7 +377,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_gen_z8
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z8 ->  water_z8
@@ -357,7 +386,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       area
 FROM osm_water_polygon_gen_z8
 WHERE "natural" != 'bay'
     );
@@ -369,7 +399,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       area
 FROM osm_ocean_polygon_gen_z9
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z9 ->  water_z9
@@ -377,7 +408,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_water_polygon_gen_z9
 WHERE "natural" != 'bay'
     );
@@ -389,7 +421,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_gen_z10
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z10 ->  water_z10
@@ -397,7 +430,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_water_polygon_gen_z10
 WHERE "natural" != 'bay'
     );
@@ -409,7 +443,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_gen_z11
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z11 ->  water_z11
@@ -417,7 +452,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_water_polygon_gen_z11
 WHERE "natural" != 'bay'
     );
@@ -429,7 +465,8 @@ SELECT geometry,
        'ocean'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
+       NULL::boolean AS is_tunnel,
+       NULL::real as area
 FROM osm_ocean_polygon_union
 UNION ALL
 -- etldoc:  osm_water_polygon ->  water_z12
@@ -437,7 +474,8 @@ SELECT geometry,
        water_class(waterway) AS class,
        is_intermittent,
        is_bridge,
-       is_tunnel
+       is_tunnel,
+       area
 FROM osm_water_polygon
 WHERE "natural" != 'bay'
     );
@@ -445,13 +483,14 @@ WHERE "natural" != 'bay'
 -- etldoc: layer_water [shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_water |<z0> z0|<z1>z1|<z2>z2|<z3>z3 |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12+" ] ;
 
-CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int, pixel_width numeric, pixel_height numeric)
     RETURNS TABLE
             (
                 geometry     geometry,
                 class        text,
                 brunnel      text,
-                intermittent int
+                intermittent int,
+                way_pixels bigint
             )
 AS
 $$
@@ -459,7 +498,8 @@ SELECT geometry,
        class::text,
        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
        is_intermittent::int AS intermittent
-FROM (
+       (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
+    FROM (
          -- etldoc: water_z0 ->  layer_water:z0
          SELECT *
          FROM water_z0
@@ -525,7 +565,9 @@ FROM (
          FROM water_z12
          WHERE zoom_level >= 12
      ) AS zoom_levels
-WHERE geometry && bbox;
+    WHERE geometry && bbox
+) AS global_zoom WHERE way_pixels > 0;
+
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;

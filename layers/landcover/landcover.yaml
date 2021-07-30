@@ -71,7 +71,7 @@ layer:
       - wood
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!), !pixel_width!, !pixel_height!)) AS t
 schema:
   - ./generalized.sql
   - ./landcover.sql

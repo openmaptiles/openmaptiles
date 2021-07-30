@@ -12,7 +12,8 @@ SELECT
        NULL::text AS tourism,
        NULL::text AS place,
        NULL::text AS waterway,
-       scalerank
+       scalerank,
+       NULL::real as area
 FROM ne_50m_urban_areas
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_urban_areas_gen_z5_idx ON ne_50m_urban_areas_gen_z5 USING gist (geometry);
@@ -29,7 +30,8 @@ SELECT
        leisure,
        tourism,
        place,
-       waterway
+       waterway,
+       area
 FROM ne_50m_urban_areas_gen_z5
 WHERE scalerank <= 2
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
@@ -38,7 +40,7 @@ CREATE INDEX IF NOT EXISTS ne_50m_urban_areas_gen_z4_idx ON ne_50m_urban_areas_g
 -- etldoc: layer_landuse[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_landuse |<z4> z4|<z5> z5|<z6> z6|<z7> z7|<z8> z8|<z9> z9|<z10> z10|<z11> z11|<z12> z12|<z13> z13|<z14> z14+" ] ;
 
-CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int)
+CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int, pixel_width numeric, pixel_height numeric)
     RETURNS TABLE
             (
                 osm_id   bigint,
@@ -47,6 +49,8 @@ CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int)
             )
 AS
 $$
+SELECT osm_id, geometry, name, class
+FROM (
 SELECT osm_id,
        geometry,
        COALESCE(
@@ -56,7 +60,9 @@ SELECT osm_id,
                NULLIF(tourism, ''),
                NULLIF(place, ''),
                NULLIF(waterway, '')
-           ) AS class
+           ) AS class,
+       (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
+           
 FROM (
          -- etldoc: ne_50m_urban_areas_gen_z4 -> layer_landuse:z4
          SELECT osm_id,
@@ -66,7 +72,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM ne_50m_urban_areas_gen_z4
          WHERE zoom_level = 4
          UNION ALL
@@ -78,7 +85,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM ne_50m_urban_areas_gen_z5
          WHERE zoom_level = 5
          UNION ALL
@@ -90,7 +98,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z6
          WHERE zoom_level = 6
          UNION ALL
@@ -102,7 +111,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z7
          WHERE zoom_level = 7
          UNION ALL
@@ -114,7 +124,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z8
          WHERE zoom_level = 8
          UNION ALL
@@ -126,7 +137,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z9
          WHERE zoom_level = 9
          UNION ALL
@@ -138,7 +150,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z10
          WHERE zoom_level = 10
          UNION ALL
@@ -150,7 +163,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z11
          WHERE zoom_level = 11
          UNION ALL
@@ -162,7 +176,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z12
          WHERE zoom_level = 12
          UNION ALL
@@ -174,7 +189,8 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon_gen_z13
          WHERE zoom_level = 13
          UNION ALL
@@ -186,11 +202,13 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                area
          FROM osm_landuse_polygon
          WHERE zoom_level >= 14
-     ) AS zoom_levels
-WHERE geometry && bbox;
+     ) AS zoom_levels 
+     WHERE geometry && bbox
+) AS global_zoom WHERE way_pixels > 0;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;

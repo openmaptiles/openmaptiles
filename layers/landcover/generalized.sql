@@ -20,7 +20,8 @@ CREATE TABLE simplify_vw_z13 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(13),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM osm_landcover_polygon
     WHERE ST_Area(geometry) > power(zres(10),2)
 );
@@ -31,29 +32,35 @@ CREATE TABLE osm_landcover_gen_z13 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z13
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass,ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry, area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z13
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z13
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
@@ -69,7 +76,8 @@ CREATE TABLE simplify_vw_z12 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(12),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM simplify_vw_z13
     WHERE ST_Area(geometry) > power(zres(9),2)
 );
@@ -80,29 +88,35 @@ CREATE TABLE osm_landcover_gen_z12 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z12
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry, area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z12
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z12
     WHERE (ST_NPoints(geometry) >= 300  AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
@@ -118,7 +132,8 @@ CREATE TABLE simplify_vw_z11 AS
             ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(11),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+             area
     FROM simplify_vw_z12
     WHERE ST_Area(geometry) > power(zres(8),2)
 );
@@ -129,29 +144,35 @@ CREATE TABLE osm_landcover_gen_z11 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z11
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry, area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z11
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
-             cid
+         cid, 
+         area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z11
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
@@ -167,7 +188,8 @@ CREATE TABLE simplify_vw_z10 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(10),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM simplify_vw_z11
     WHERE ST_Area(geometry) > power(zres(8),2)
 );
@@ -178,29 +200,35 @@ CREATE TABLE osm_landcover_gen_z10 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z10
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry, area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z10
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z10
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
@@ -216,7 +244,8 @@ CREATE TABLE simplify_vw_z9 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(9),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM simplify_vw_z10
     WHERE ST_Area(geometry) > power(zres(7),2)
 );
@@ -227,42 +256,51 @@ CREATE TABLE osm_landcover_gen_z9 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry, area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
            ST_MakeValid(
             (ST_Dump(
-             ST_Union(geometry))).geom) AS geometry
+             ST_Union(geometry))).geom) AS geometry,
+           area
     FROM (
         SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry,
+               area
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) >= 300
           AND subclass IN ('wood', 'forest')) union_geom_rest
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z9
     WHERE subclass NOT IN ('wood', 'forest')
     );
@@ -277,7 +315,8 @@ CREATE TABLE simplify_vw_z8 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(8),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM simplify_vw_z9
     WHERE ST_Area(geometry) > power(zres(6),2)
     );
@@ -288,19 +327,23 @@ CREATE TABLE osm_landcover_gen_z8 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM
         (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
-               geometry
+               geometry,
+               area
         FROM simplify_vw_z8
         ) union_geom
     GROUP BY subclass,
-             cid
+             cid, 
+             area
     UNION ALL
     SELECT subclass,
-           geometry
+           geometry,
+           area
     FROM simplify_vw_z8
     WHERE subclass NOT IN ('wood', 'forest')
     );
@@ -315,7 +358,8 @@ CREATE TABLE simplify_vw_z7 AS
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(7),2)),
-             0.001)) AS geometry
+             0.001)) AS geometry,
+           area
     FROM simplify_vw_z8
     WHERE ST_Area(geometry) > power(zres(5),2)
 );
@@ -326,16 +370,19 @@ CREATE TABLE osm_landcover_gen_z7 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry))).geom) AS geometry,
+       area
     FROM
         (
         SELECT  subclass,
                 ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
-                geometry
+                geometry,
+                area
         FROM simplify_vw_z7
         ) union_geom
 GROUP BY subclass,
-         cid
+         cid, 
+         area
     );
 
 CREATE INDEX ON osm_landcover_gen_z7 USING GIST (geometry);

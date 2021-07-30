@@ -11,7 +11,8 @@ CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int, pixel_width
                 name_en  text,
                 name_de  text,
                 tags     hstore,
-                rank     int
+                rank     int,
+                way_pixels bigint
             )
 AS
 $$
@@ -22,7 +23,8 @@ SELECT osm_id,
        name_en,
        name_de,
        tags,
-       rank
+       rank,
+       way_pixels
 FROM (
          SELECT osm_id,
                 geometry,
@@ -35,7 +37,8 @@ FROM (
                 name_en,
                 name_de,
                 tags,
-                NULL::int AS rank
+                NULL::int AS rank,
+              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
          FROM (
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,
@@ -46,7 +49,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z6
                   WHERE zoom_level = 6
                     AND geometry && bbox
@@ -60,7 +64,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z7
                   WHERE zoom_level = 7
                     AND geometry && bbox
@@ -74,7 +79,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z8
                   WHERE zoom_level = 8
                     AND geometry && bbox
@@ -88,7 +94,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z9
                   WHERE zoom_level = 9
                     AND geometry && bbox
@@ -102,7 +109,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z10
                   WHERE zoom_level = 10
                     AND geometry && bbox
@@ -116,7 +124,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z11
                   WHERE zoom_level = 11
                     AND geometry && bbox
@@ -130,7 +139,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z12
                   WHERE zoom_level = 12
                     AND geometry && bbox
@@ -144,7 +154,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon_gen_z13
                   WHERE zoom_level = 13
                     AND geometry && bbox
@@ -158,7 +169,8 @@ FROM (
                          tags,
                          leisure,
                          boundary,
-                         protection_title
+                         protection_title,
+                         area
                   FROM osm_park_polygon
                   WHERE zoom_level >= 14
                     AND geometry && bbox
@@ -182,7 +194,8 @@ FROM (
                         (CASE WHEN boundary = 'national_park' THEN TRUE ELSE FALSE END) DESC,
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                         area DESC
-                    )::int AS "rank"
+                     )::int AS "rank",
+              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
          FROM (
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,
@@ -335,7 +348,7 @@ FROM (
                   WHERE zoom_level >= 14
                     AND geometry_point && bbox
               ) AS park_point
-     ) AS park_all;
+     ) AS park_all WHERE way_pixels > 0;
 $$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
 -- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL

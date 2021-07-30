@@ -43,7 +43,7 @@ layer:
       - dam
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!), !pixel_width!, !pixel_height!)) AS t
 schema:
   - ./landuse.sql
 datasources:
