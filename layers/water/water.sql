@@ -343,7 +343,7 @@ SELECT geometry,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       NULL::real as area
+       area
 FROM osm_water_polygon_gen_z6
 WHERE "natural" != 'bay'
     );
@@ -365,7 +365,7 @@ SELECT geometry,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       NULL::real as area
+       area
 FROM osm_water_polygon_gen_z7
 WHERE "natural" != 'bay'
     );
@@ -409,7 +409,7 @@ SELECT geometry,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       NULL::real as area
+       area
 FROM osm_water_polygon_gen_z9
 WHERE "natural" != 'bay'
     );
