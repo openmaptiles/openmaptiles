@@ -184,7 +184,6 @@ FROM (
                 NULL::boolean AS indoor
          FROM osm_highway_point p
          WHERE highway = 'motorway_junction' AND zoom_level >= 10
-
      ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
