@@ -411,8 +411,6 @@ FROM (
          FROM osm_landcover_polygon
          WHERE zoom_level >= 14
            AND geometry && bbox
-         WHERE zoom_level >= 14
-           AND geometry && bbox
      ) AS zoom_levels
 ) AS global_zoom WHERE way_pixels > 0;
 $$ LANGUAGE SQL STABLE
