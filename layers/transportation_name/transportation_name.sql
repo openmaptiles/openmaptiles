@@ -110,7 +110,10 @@ FROM (
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 12
            AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND highway_class(highway, '', subclass) NOT IN ('minor', 'track', 'path')
+           AND (
+                    highway_class(highway, '', subclass) NOT IN ('minor', 'track', 'path')
+                 OR highway = 'path' AND network IN ('hike-international', 'hike-national')
+               )
            AND NOT highway_is_link(highway)
          UNION ALL
 
@@ -133,7 +136,10 @@ FROM (
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 13
            AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND highway_class(highway, '', subclass) NOT IN ('track', 'path')
+           AND (
+                    highway_class(highway, '', subclass) NOT IN ('track', 'path')
+                 OR highway = 'path' AND network IN ('hike-international', 'hike-national', 'hike-regional')
+               )
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z14_

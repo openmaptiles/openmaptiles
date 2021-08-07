@@ -413,3 +413,4 @@ tables:
     mapping:
       route:
       - road
+      - hiking
