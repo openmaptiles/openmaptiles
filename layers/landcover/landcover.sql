@@ -288,7 +288,6 @@ FROM (
 SELECT geometry,
        landcover_class(subclass) AS class,
         subclass,
-        case when (subclass not in ('park')) then nullif(name,'') end as name,
        (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
 
 FROM (

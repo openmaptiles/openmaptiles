@@ -32,7 +32,7 @@ layer:
         - tunnel
   buffer_size: 4
   datasource:
-    query: (SELECT geometry, class, intermittent, brunnel FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, brunnel, intermittent FROM layer_water(!bbox!, z(!scale_denominator!), !pixel_width!, !pixel_height!)) AS t
 schema:
   - ./update_water.sql
   - ./water.sql

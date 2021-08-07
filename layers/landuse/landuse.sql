@@ -49,7 +49,7 @@ CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int, pixel_wi
             )
 AS
 $$
-SELECT osm_id, geometry, name, class
+SELECT osm_id, geometry, class
 FROM (
 SELECT osm_id,
        geometry,

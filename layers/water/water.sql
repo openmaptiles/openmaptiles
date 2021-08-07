@@ -400,7 +400,7 @@ SELECT geometry,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       area
+       NULL::real AS area
 FROM osm_ocean_polygon_gen_z9
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z9 ->  water_z9
@@ -431,7 +431,7 @@ SELECT geometry,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       NULL::real as area
+       area
 FROM osm_water_polygon_gen_z10
 WHERE "natural" != 'bay'
     );
@@ -453,7 +453,7 @@ SELECT geometry,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
-       NULL::real as area
+       area
 FROM osm_water_polygon_gen_z11
 WHERE "natural" != 'bay'
     );
@@ -489,15 +489,15 @@ CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int, pixel_widt
                 geometry     geometry,
                 class        text,
                 brunnel      text,
-                intermittent int,
-                way_pixels bigint
+                intermittent int
             )
 AS
 $$
-SELECT geometry,
-       class::text,
+SELECT geometry, class, brunnel, intermittent  FROM (
+  SELECT geometry,
+       class::text AS class,
        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
-       is_intermittent::int AS intermittent
+       is_intermittent::int AS intermittent,
        (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
     FROM (
          -- etldoc: water_z0 ->  layer_water:z0
@@ -564,8 +564,7 @@ SELECT geometry,
          SELECT *
          FROM water_z12
          WHERE zoom_level >= 12
-     ) AS zoom_levels
-    WHERE geometry && bbox
+     ) AS zoom_levels WHERE geometry && bbox
 ) AS global_zoom WHERE way_pixels > 0;
 
 $$ LANGUAGE SQL STABLE
