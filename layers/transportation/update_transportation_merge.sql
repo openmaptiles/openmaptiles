@@ -148,6 +148,7 @@ SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
        is_ford,
        z_order
 FROM osm_transportation_merge_linestring
+     -- Current view: motorway/trunk/primary
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
@@ -166,6 +167,7 @@ SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
        is_ford,
        z_order
 FROM osm_transportation_merge_linestring_gen_z8
+     -- Current view: motorway/trunk/primary
 WHERE ST_Length(geometry) > 50
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_idx
@@ -206,6 +208,7 @@ SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
        z_order
 FROM osm_transportation_merge_linestring_gen_z6
 WHERE ST_Length(geometry) > 500
+     -- Current view: motorway/trunk
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_idx
     ON osm_transportation_merge_linestring_gen_z5 USING gist (geometry);
