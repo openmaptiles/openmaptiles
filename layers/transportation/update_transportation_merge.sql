@@ -239,7 +239,6 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6;
