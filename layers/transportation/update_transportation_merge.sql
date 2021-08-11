@@ -102,11 +102,11 @@ WHERE highway NOT IN ('tertiary', 'tertiary_link')
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_idx
     ON osm_transportation_merge_linestring_gen_z9 USING gist (geometry);
 
--- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring_gen_z8
+-- etldoc: osm_transportation_merge_linestring_gen_z9 ->  osm_transportation_merge_linestring_gen_z8
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
-SELECT ST_Simplify((ST_Dump(geometry)).geom, ZRes(10)) AS geometry,
+SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
        NULL::bigint AS osm_id,
        highway,
        network,
@@ -114,23 +114,14 @@ SELECT ST_Simplify((ST_Dump(geometry)).geom, ZRes(10)) AS geometry,
        is_bridge,
        is_tunnel,
        is_ford,
-       z_order
-FROM (
-         SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
-                highway,
-                network,
-                construction,
-                is_bridge,
-                is_tunnel,
-                is_ford,
-                min(z_order) AS z_order
-         FROM osm_highway_linestring
-         WHERE (highway IN ('motorway', 'trunk', 'primary') OR
-                highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
-           AND ST_IsValid(geometry)
-         GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
-     ) AS highway_union
+       min(z_order) as z_order
+FROM osm_transportation_merge_linestring_gen_z9
+WHERE (highway IN ('motorway', 'trunk', 'primary') OR
+       highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
+       AND ST_IsValid(geometry)
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
 
