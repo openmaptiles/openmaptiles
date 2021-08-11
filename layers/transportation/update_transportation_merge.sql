@@ -102,11 +102,11 @@ WHERE highway NOT IN ('tertiary', 'tertiary_link')
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_idx
     ON osm_transportation_merge_linestring_gen_z9 USING gist (geometry);
 
--- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring CASCADE;
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
+-- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring_gen_z8
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
-SELECT (ST_Dump(geometry)).geom AS geometry,
+SELECT ST_Simplify((ST_Dump(geometry)).geom, ZRes(10)) AS geometry,
        NULL::bigint AS osm_id,
        highway,
        network,
@@ -130,25 +130,6 @@ FROM (
            AND ST_IsValid(geometry)
          GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
      ) AS highway_union
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
-    ON osm_transportation_merge_linestring USING gist (geometry);
-
--- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen_z8
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
-(
-SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
-       osm_id,
-       highway,
-       network,
-       construction,
-       is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
-FROM osm_transportation_merge_linestring
-     -- Current view: motorway/trunk/primary
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
@@ -258,7 +239,6 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6;
