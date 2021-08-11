@@ -121,7 +121,6 @@ WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        AND ST_IsValid(geometry)
 GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
 
