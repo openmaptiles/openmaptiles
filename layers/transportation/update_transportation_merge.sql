@@ -38,7 +38,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z11 -> osm_transportation_merge_linestring_gen_z10
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z10 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10 AS
 (
 SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
@@ -63,7 +62,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_
     ON osm_transportation_merge_linestring_gen_z10 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z10 -> osm_transportation_merge_linestring_gen_z9
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z9 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z9 AS
 (
 SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
@@ -87,7 +85,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_i
     ON osm_transportation_merge_linestring_gen_z9 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z9 ->  osm_transportation_merge_linestring_gen_z8
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z8 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
 SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
@@ -109,7 +106,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_i
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z8 -> osm_transportation_merge_linestring_gen_z7
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z7 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7 AS
 (
 SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
@@ -129,7 +125,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_i
     ON osm_transportation_merge_linestring_gen_z7 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z7 -> osm_transportation_merge_linestring_gen_z6
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z6 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
 (
 SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
@@ -149,7 +144,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_i
     ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z5
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z5 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z5 AS
 (
 SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
@@ -169,7 +163,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_i
     ON osm_transportation_merge_linestring_gen_z5 USING gist (geometry);
 
 -- etldoc: osm_transportation_merge_linestring_gen_z5 -> osm_transportation_merge_linestring_gen_z4
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z4 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z4 AS
 (
 SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
