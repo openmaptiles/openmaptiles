@@ -77,6 +77,9 @@ CREATE INDEX IF NOT EXISTS osm_route_member_ref_idx ON osm_route_member ("ref");
 
 CREATE INDEX IF NOT EXISTS osm_route_member_network_type_idx ON osm_route_member ("network_type");
 
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
+
 ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int;
 
 INSERT INTO osm_route_member (id, concurrency_index)
