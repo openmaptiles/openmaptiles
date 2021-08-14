@@ -146,6 +146,13 @@ layer:
       - driveway
       - alley
       - parking_aisle
+    access:
+      description: |
+          Access restrictions on this road.  Supported values of the
+          [`access`](http://wiki.openstreetmap.org/wiki/Key:access) tag are `no` and `private`,
+          which resolve to `no`.
+      values:
+      - no
     layer:
       description: |
           Original value of the [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
@@ -180,7 +187,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
