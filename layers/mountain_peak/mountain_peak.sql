@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION layer_mountain_peak(bbox geometry,
                                                pixel_width numeric)
     RETURNS TABLE
             (
-                osm_id   bigint,
+                id       bigint,
                 geometry geometry,
                 name     text,
                 name_en  text,
@@ -21,7 +21,7 @@ AS
 $$
 SELECT
     -- etldoc: osm_peak_point -> layer_mountain_peak:z7_
-    osm_id,
+    osm_id AS id,
     geometry,
     name,
     name_en,
