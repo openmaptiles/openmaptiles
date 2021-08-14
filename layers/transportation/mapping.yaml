@@ -92,6 +92,10 @@ service_field: &service
   key: service
   name: service
   type: string
+access_field: &access
+  key: access
+  name: access
+  type: string
 usage_field: &usage
   key: usage
   name: usage
@@ -183,6 +187,7 @@ tables:
     - *oneway
     - *area
     - *service
+    - *access
     - *usage
     - *public_transport
     - *man_made
