@@ -96,6 +96,10 @@ access_field: &access
   key: access
   name: access
   type: string
+toll_field: &toll
+  key: toll
+  name: toll
+  type: bool
 usage_field: &usage
   key: usage
   name: usage
@@ -188,6 +192,7 @@ tables:
     - *area
     - *service
     - *access
+    - *toll
     - *usage
     - *public_transport
     - *man_made
