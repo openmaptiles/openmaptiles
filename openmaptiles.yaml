@@ -69,7 +69,8 @@ tileset:
     - kn # Kannada
     - ko # Korean
     - ko-Latn # romanization of Korean, Latin
-    - ku # Kurdish, Latin
+    - ku-latin # Kurdish, Latin
+    - ku-arami # Kurdish, Sorani
     - la # Latin, Latin
     - lb # Luxembourgish, Latin
     - lt # Lithuanian, Latin
