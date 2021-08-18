@@ -96,6 +96,7 @@ tables:
       natural:
       - water
       - bay
+      - spring
       waterway:
       - riverbank
       - dock
