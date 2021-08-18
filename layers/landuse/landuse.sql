@@ -35,16 +35,6 @@ WHERE scalerank <= 2
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_urban_areas_gen_z4_idx ON ne_50m_urban_areas_gen_z4 USING gist (geometry);
 
-CREATE OR REPLACE FUNCTION landuse_unify(class text) RETURNS text LANGUAGE plpgsql
-AS
-$$
-BEGIN
-  RETURN CASE
-    WHEN class='grave_yard' THEN 'cemetery'
-    ELSE class END;
-END;
-$$;
-
 -- etldoc: layer_landuse[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_landuse |<z4> z4|<z5> z5|<z6> z6|<z7> z7|<z8> z8|<z9> z9|<z10> z10|<z11> z11|<z12> z12|<z13> z13|<z14> z14+" ] ;
 
