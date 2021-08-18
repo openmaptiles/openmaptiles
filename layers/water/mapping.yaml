@@ -93,6 +93,7 @@ tables:
       natural:
       - water
       - bay
+      - spring
       waterway:
       - river
       - riverbank
