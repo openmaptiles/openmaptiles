@@ -1,8 +1,9 @@
-CREATE OR REPLACE FUNCTION water_class(waterway text) RETURNS text AS
+CREATE OR REPLACE FUNCTION water_class(waterway text, water text) RETURNS text AS
 $$
 SELECT CASE
+           WHEN waterway='riverbank' THEN 'river'
            %%FIELD_MAPPING: class %%
-           ELSE 'river'
+           ELSE 'lake'
            END;
 $$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
@@ -314,7 +315,7 @@ FROM osm_ocean_polygon_gen_z6
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z6 ->  water_z6
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -334,7 +335,7 @@ FROM osm_ocean_polygon_gen_z7
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z7 ->  water_z7
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -354,7 +355,7 @@ FROM osm_ocean_polygon_gen_z8
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z8 ->  water_z8
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -374,7 +375,7 @@ FROM osm_ocean_polygon_gen_z9
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z9 ->  water_z9
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -394,7 +395,7 @@ FROM osm_ocean_polygon_gen_z10
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z10 ->  water_z10
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -414,7 +415,7 @@ FROM osm_ocean_polygon_gen_z11
 UNION ALL
 -- etldoc:  osm_water_polygon_gen_z11 ->  water_z11
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -434,7 +435,7 @@ FROM osm_ocean_polygon_union
 UNION ALL
 -- etldoc:  osm_water_polygon ->  water_z12
 SELECT geometry,
-       water_class(waterway) AS class,
+       water_class(waterway, water) AS class,
        is_intermittent,
        is_bridge,
        is_tunnel

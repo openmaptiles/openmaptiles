@@ -16,10 +16,12 @@ layer:
           All other water bodies are classified as `lake`.
       values:
         lake:
-          waterway: ['', 'lake']
+          waterway: 'lake'
         dock:
           waterway: 'dock'
         river:
+          water: 'river'
+          waterway: 'riverbank'
         ocean:
     intermittent:
       description: |
