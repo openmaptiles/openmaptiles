@@ -1,11 +1,10 @@
 layer:
-  id: "aerodrome_label"
+  id: aerodrome_label
   description: |
       [Aerodrome labels](http://wiki.openstreetmap.org/wiki/Tag:aeroway%3Daerodrome)
   buffer_size: 64
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
-    id: Feature ID, which is the OSM node id
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the aerodrome.
     name_en: English name `name:en` if available, otherwise `name`.
     name_de: German name `name:de` if available, otherwise `name` or `name:en`.
@@ -42,7 +41,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT id, osm_id, geometry, name, name_en, name_de, {name_languages}, class, iata, icao, ele, ele_ft FROM layer_aerodrome_label(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, iata, icao, ele, ele_ft FROM layer_aerodrome_label(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_aerodrome_label_point.sql
   - ./aerodrome_label.sql

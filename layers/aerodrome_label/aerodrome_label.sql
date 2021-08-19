@@ -5,7 +5,6 @@ CREATE OR REPLACE FUNCTION layer_aerodrome_label(bbox geometry,
                                                  zoom_level integer)
     RETURNS TABLE
             (
-                id       bigint,
                 osm_id   bigint,
                 geometry geometry,
                 name     text,
@@ -22,7 +21,6 @@ AS
 $$
 SELECT
     -- etldoc: osm_aerodrome_label_point -> layer_aerodrome_label:z10_
-    osm_id AS id,
     osm_id,
     geometry,
     name,
