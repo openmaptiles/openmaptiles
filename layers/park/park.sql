@@ -348,7 +348,7 @@ FROM (
                   WHERE zoom_level >= 14
                     AND geometry_point && bbox
               ) AS park_point
-     ) AS park_all WHERE way_pixels > 0;
+) AS park_all WHERE way_pixels > 0 OR zoom_level >= 14;
 $$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
 -- TODO: Check if the above can be made STRICT -- i.e. if pixel_width could be NULL

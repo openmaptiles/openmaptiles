@@ -494,7 +494,7 @@ CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int, pixel_widt
 AS
 $$
 SELECT geometry, class, brunnel, intermittent  FROM (
-  SELECT geometry,
+SELECT geometry,
        class::text AS class,
        waterway_brunnel(is_bridge, is_tunnel) AS brunnel,
        is_intermittent::int AS intermittent,
@@ -565,7 +565,7 @@ SELECT geometry, class, brunnel, intermittent  FROM (
          FROM water_z12
          WHERE zoom_level >= 12
      ) AS zoom_levels WHERE geometry && bbox
-) AS global_zoom WHERE way_pixels > 0;
+) AS global_zoom WHERE way_pixels > 0 OR zoom_level >= 14;
 
 $$ LANGUAGE SQL STABLE
                 -- STRICT

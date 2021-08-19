@@ -411,7 +411,7 @@ FROM (
          WHERE zoom_level >= 14
            AND geometry && bbox
      ) AS zoom_levels
-) AS global_zoom WHERE way_pixels > 0;
+) AS global_zoom WHERE way_pixels > 0 OR zoom_level >= 14;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
