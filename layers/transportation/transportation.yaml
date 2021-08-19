@@ -153,6 +153,10 @@ layer:
           which resolve to `no`.
       values:
       - no
+    toll:
+      description: |
+          Whether this is a toll road, based on the [`toll`](http://wiki.openstreetmap.org/wiki/Key:toll) tag.
+      values: [0, 1]
     layer:
       description: |
           Original value of the [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
@@ -187,7 +191,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
