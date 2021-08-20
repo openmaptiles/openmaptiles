@@ -15,7 +15,7 @@ layer:
       - peak
       - volcano
     ele: Elevation (`ele`) in meters.
-    ele_ft: Elevation (`ele`) in feets.
+    ele_ft: Elevation (`ele`) in feet.
     rank: Rank of the peak within one tile (starting at 1 that is the most important peak).
   datasource:
     geometry_field: geometry
