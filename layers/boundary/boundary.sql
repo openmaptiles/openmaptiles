@@ -230,7 +230,7 @@ SELECT ST_Simplify(geometry, ZRes(6)) as geometry,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_1_states_provinces_lines
-WHERE min_zoom <= 7
+WHERE min_zoom <= 7.7
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_admin_1_states_provinces_lines_gen_z4_idx ON ne_10m_admin_1_states_provinces_lines_gen_z4 USING gist (geometry);
 
