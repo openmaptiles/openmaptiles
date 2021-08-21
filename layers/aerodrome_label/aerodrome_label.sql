@@ -27,17 +27,34 @@ SELECT
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    CASE
-        %%FIELD_MAPPING: class %%
-        ELSE 'other'
-        END AS class,
+    aerodrome_type AS class,
     NULLIF(iata, '') AS iata,
     NULLIF(icao, '') AS icao,
     substring(ele FROM E'^(-?\\d+)(\\D|$)')::int AS ele,
     round(substring(ele FROM E'^(-?\\d+)(\\D|$)')::int * 3.2808399)::int AS ele_ft
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
-  AND zoom_level >= 10;
+  AND zoom_level >= 10
+
+UNION ALL
+SELECT
+    -- etldoc: osm_aerodrome_label_point -> layer_aerodrome_label:z9
+    -- etldoc: osm_aerodrome_label_point -> layer_aerodrome_label:z8
+    ABS(osm_id) AS id, -- mvt feature IDs can't be negative
+    geometry,
+    name,
+    COALESCE(NULLIF(name_en, ''), name) AS name_en,
+    COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
+    tags,
+    aerodrome_type AS class,
+    NULLIF(iata, '') AS iata,
+    NULLIF(icao, '') AS icao,
+    substring(ele FROM E'^(-?\\d+)(\\D|$)')::int AS ele,
+    round(substring(ele FROM E'^(-?\\d+)(\\D|$)')::int * 3.2808399)::int AS ele_ft
+FROM osm_aerodrome_label_point
+WHERE aerodrome_type = 'international' AND iata <> '' AND geometry && bbox
+  AND zoom_level BETWEEN 8 AND 9
+
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
