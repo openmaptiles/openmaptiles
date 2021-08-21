@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION layer_aerodrome_label(bbox geometry,
                                                  zoom_level integer)
     RETURNS TABLE
             (
-                osm_id   bigint,
+                id       bigint,
                 geometry geometry,
                 name     text,
                 name_en  text,
@@ -21,7 +21,7 @@ AS
 $$
 SELECT
     -- etldoc: osm_aerodrome_label_point -> layer_aerodrome_label:z10_
-    osm_id,
+    ABS(osm_id) AS id, -- mvt feature IDs can't be negative
     geometry,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
