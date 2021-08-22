@@ -56,8 +56,7 @@ SELECT
     round(substring(ele FROM E'^(-?\\d+)(\\D|$)')::int * 3.2808399)::int AS ele_ft
 FROM osm_aerodrome_label_point
 WHERE geometry && bbox
-  AND zoom_level >= 10
-
+  AND zoom_level >= 10;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
