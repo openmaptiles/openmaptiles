@@ -113,6 +113,7 @@ FROM (
            AND (
                     highway_class(highway, '', subclass) NOT IN ('minor', 'track', 'path')
                  OR highway = 'path' AND network IN ('hike-international', 'hike-national')
+                 OR highway = 'shipway'
                )
            AND NOT highway_is_link(highway)
          UNION ALL
@@ -139,6 +140,7 @@ FROM (
            AND (
                     highway_class(highway, '', subclass) NOT IN ('track', 'path')
                  OR highway = 'path' AND network IN ('hike-international', 'hike-national', 'hike-regional')
+                 OR highway = 'shipway'
                )
          UNION ALL
 

@@ -2,6 +2,18 @@ DROP TRIGGER IF EXISTS trigger_flag ON osm_aerodrome_label_point;
 DROP TRIGGER IF EXISTS trigger_store ON osm_aerodrome_label_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON aerodrome_label.updates;
 
+-- Partial index for zoom 8/9 queries
+CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_type_partial_idx
+    ON osm_aerodrome_label_point USING gist (geometry)
+    WHERE aerodrome_type = 'international'
+      AND iata <> '';
+
+UPDATE osm_aerodrome_label_point SET aerodrome_type=(
+   CASE
+        %%FIELD_MAPPING: class %%
+        ELSE 'other' END
+);
+
 CREATE SCHEMA IF NOT EXISTS aerodrome_label;
 
 CREATE TABLE IF NOT EXISTS aerodrome_label.osm_ids
