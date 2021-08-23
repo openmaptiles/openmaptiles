@@ -228,9 +228,10 @@ SELECT ST_Simplify(geometry, ZRes(6)) as geometry,
        FALSE AS disputed,
        NULL::text AS disputed_name,
        NULL::text AS claimed_by,
-       FALSE AS maritime
+       FALSE AS maritime,
+       min_zoom
 FROM ne_10m_admin_1_states_provinces_lines
-WHERE min_zoom <= 7
+WHERE min_zoom <= 7.7
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_admin_1_states_provinces_lines_gen_z4_idx ON ne_10m_admin_1_states_provinces_lines_gen_z4 USING gist (geometry);
 
@@ -246,6 +247,7 @@ SELECT ST_Simplify(geometry, ZRes(5)) as geometry,
        claimed_by,
        maritime
 FROM ne_10m_admin_1_states_provinces_lines_gen_z4
+WHERE min_zoom <= 7
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_admin_1_states_provinces_lines_gen_z3_idx ON ne_10m_admin_1_states_provinces_lines_gen_z3 USING gist (geometry);
 
