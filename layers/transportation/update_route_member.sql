@@ -32,6 +32,10 @@ SELECT CASE
            WHEN network LIKE 'CA:transcanada%' THEN 'ca-transcanada'::route_network_type
            WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
            WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
+           WHEN network = 'iwn' THEN 'hike-international'::route_network_type
+           WHEN network = 'nwn' THEN 'hike-national'::route_network_type
+           WHEN network = 'rwn' THEN 'hike-regional'::route_network_type
+           WHEN network = 'lwn' THEN 'hike-local'::route_network_type
            END;
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;

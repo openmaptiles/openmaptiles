@@ -29,6 +29,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        foot,
        horse,
        mtb_scale,
+       sac_scale,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
@@ -38,7 +39,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        layer
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
@@ -59,6 +60,7 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        foot,
        horse,
        mtb_scale,
+       sac_scale,
        access,
        toll,
        layer
@@ -85,6 +87,7 @@ SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
        foot,
        horse,
        mtb_scale,
+       sac_scale,
        access,
        toll,
        layer
