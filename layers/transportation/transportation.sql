@@ -362,7 +362,7 @@ FROM (
                      zoom_level = 12 AND (
                              highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor')
                          OR highway IN ('unclassified', 'residential')
-                         OR highway = 'path' AND network IN ('hike-international', 'hike-national')
+                         OR highway = 'path' AND network IN ('hike-international', 'hike-national', 'hike-regional')
                      ) AND man_made <> 'pier'
                  OR zoom_level = 13
                          AND (
@@ -371,7 +371,8 @@ FROM (
                             OR
                                     man_made = 'pier' AND NOT ST_IsClosed(geometry)
                             OR
-                                    highway = 'path' AND network IN ('hike-international', 'hike-national', 'hike-regional')
+                                    highway = 'path' AND network IN
+                                       ('hike-international', 'hike-national', 'hike-regional', 'hike-local')
                         )
                  OR zoom_level >= 14
                          AND (
