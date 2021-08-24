@@ -22,7 +22,7 @@ INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
 
-CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text) RETURNS route_network_type AS
+CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, osmc_symbol text, colour text) RETURNS route_network_type AS
 $$
 SELECT CASE
            WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
@@ -36,6 +36,7 @@ SELECT CASE
            WHEN network = 'nwn' THEN 'hike-national'::route_network_type
            WHEN network = 'rwn' THEN 'hike-regional'::route_network_type
            WHEN network = 'lwn' THEN 'hike-local'::route_network_type
+           WHEN COALESCE(osmc_symbol, colour) <> '' THEN 'hike-local'::route_network_type
            END;
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
@@ -43,9 +44,9 @@ $$ LANGUAGE sql IMMUTABLE
 -- etldoc:  osm_route_member ->  osm_route_member
 -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
 UPDATE osm_route_member
-SET network_type = osm_route_member_network_type(network)
+SET network_type = osm_route_member_network_type(network, osmc_symbol, colour)
 WHERE network != ''
-  AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
+  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, osmc_symbol, colour)
 ;
 
 CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
@@ -66,10 +67,10 @@ BEGIN
 
     UPDATE
         osm_route_member AS r
-    SET network_type = osm_route_member_network_type(network)
+    SET network_type = osm_route_member_network_type(network, osmc_symbol, colour)
     FROM transportation_name.network_changes AS c
     WHERE network != ''
-      AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
+      AND network_type IS DISTINCT FROM osm_route_member_network_type(network, osmc_symbol, colour)
       AND r.member = c.osm_id;
 END;
 $$ LANGUAGE plpgsql;

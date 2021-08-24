@@ -428,6 +428,9 @@ tables:
     - name: osmc_symbol
       key: osmc:symbol
       type: string
+    - name: colour
+      key: colour
+      type: string
     mapping:
       route:
       - road
