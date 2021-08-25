@@ -181,7 +181,7 @@ Hints for developers:
   make generate-bbox-file              # compute bounding box of a data file and store it in a file
   make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
   make generate-qa                     # statistics for a given layer's field
-  make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS
+  make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
   make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
