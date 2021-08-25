@@ -426,7 +426,7 @@ generate-tiles: all start-db
 .PHONY: generate-tiles-pg
 generate-tiles-pg: all start-db
 	@$(assert_area_is_given)
-	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS..."
+	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
