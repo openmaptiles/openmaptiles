@@ -85,10 +85,12 @@ BEGIN
 
     UPDATE osm_park_polygon_gen_z5
     SET tags           = update_tags(tags, geometry),
+        geometry       = ST_SimplifyPreserveTopology(geometry, ZRes(5.5)),
         geometry_point = st_centroid(geometry);
 
     UPDATE osm_park_polygon_gen_z4
     SET tags           = update_tags(tags, geometry),
+        geometry       = ST_SimplifyPreserveTopology(geometry, ZRes(4.5)),
         geometry_point = st_centroid(geometry);
 
 END;
