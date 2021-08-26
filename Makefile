@@ -181,7 +181,8 @@ Hints for developers:
   make generate-bbox-file              # compute bounding box of a data file and store it in a file
   make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
   make generate-qa                     # statistics for a given layer's field
-  make generate-tiles                  # generate vector tiles based on .env settings
+  make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
+  make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
   make help                            # help about available commands
@@ -414,6 +415,7 @@ import-sql: all start-db-nowait
 .PHONY: generate-tiles
 generate-tiles: all start-db
 	@$(assert_area_is_given)
+	@echo "WARNING: This Mapnik-based method of tile generation is obsolete. Use generate-tiles-pg instead."
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) generate-vectortiles
@@ -424,7 +426,7 @@ generate-tiles: all start-db
 .PHONY: generate-tiles-pg
 generate-tiles-pg: all start-db
 	@$(assert_area_is_given)
-	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
+	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
