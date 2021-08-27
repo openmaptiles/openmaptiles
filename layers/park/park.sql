@@ -24,7 +24,7 @@ SELECT osm_id,
        name_de,
        tags,
        rank,
-       way_pixels
+       way_pixels::bigint as way_pixels
 FROM (
          SELECT osm_id,
                 geometry,
