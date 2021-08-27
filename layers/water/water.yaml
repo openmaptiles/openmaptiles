@@ -12,7 +12,8 @@ layer:
     class:
       description: |
           All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
-          Water bodies are classified as `lake` or `river` for water bodies with the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
+          Water bodies with the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag are classified as `lake`, `dock`, or `river`.
+          All other water bodies are classified as `lake`.
       values:
         lake:
           waterway: ['', 'lake']

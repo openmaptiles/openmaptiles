@@ -181,6 +181,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - kiosk
   - lamps
   - laundry
+  - locksmith
   - mall
   - massage
   - mobile_phone

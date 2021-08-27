@@ -53,16 +53,16 @@ SELECT osm_id, geometry, class
 FROM (
 SELECT osm_id,
        geometry,
-        COALESCE(
-            NULLIF(landuse, ''),
-            NULLIF(amenity, ''),
-            NULLIF(leisure, ''),
-            NULLIF(tourism, ''),
-            NULLIF(place, ''),
+       landuse_unify(
+         COALESCE(
+               NULLIF(landuse, ''),
+               NULLIF(amenity, ''),
+               NULLIF(leisure, ''),
+               NULLIF(tourism, ''),
+               NULLIF(place, ''),
                NULLIF(waterway, '')
-           ) AS class,
+           )) AS class,
        (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::real AS way_pixels
-           
 FROM (
          -- etldoc: ne_50m_urban_areas_gen_z4 -> layer_landuse:z4
          SELECT osm_id,
