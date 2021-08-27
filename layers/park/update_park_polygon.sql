@@ -21,6 +21,16 @@ ALTER TABLE osm_park_polygon_gen_z5
 ALTER TABLE osm_park_polygon_gen_z4
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
 
+-- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
+DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
+CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
+(
+  SELECT
+         (ST_Dump(
+            ST_Union(geometry))).geom AS geometry
+  FROM osm_park_polygon_gen_z4
+);
+
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z13;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z12;
@@ -91,18 +101,9 @@ BEGIN
     SET tags           = update_tags(tags, geometry),
         geometry_point = st_centroid(geometry);
 
+    REFRESH MATERIALIZED VIEW osm_park_polygon_dissolve_z4;
 END;
 $$ LANGUAGE plpgsql;
-
--- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
-DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
-CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
-(
-  SELECT
-         (ST_Dump(
-            ST_Union(geometry))).geom AS geometry
-  FROM osm_park_polygon_gen_z4
-);
 
 SELECT update_osm_park_polygon();
 CREATE INDEX IF NOT EXISTS osm_park_polygon_point_geom_idx ON osm_park_polygon USING gist (geometry_point);
