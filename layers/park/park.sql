@@ -38,7 +38,7 @@ FROM (
                 name_de,
                 tags,
                 NULL::int AS rank,
-              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
+              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::real AS way_pixels
          FROM (
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,
@@ -195,7 +195,7 @@ FROM (
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                         area DESC
                      )::int AS "rank",
-              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
+              (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::real AS way_pixels
          FROM (
                   -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
                   SELECT osm_id,

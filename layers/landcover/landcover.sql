@@ -288,7 +288,7 @@ FROM (
 SELECT geometry,
        landcover_class(subclass) AS class,
         subclass,
-       (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::bigint AS way_pixels
+       (CASE WHEN area IS NOT NULL THEN (area/NULLIF(zoom_level::real*pixel_width::real*pixel_height::real,0)) ELSE 1 END)::real AS way_pixels
 
 FROM (
          -- etldoc:  landcover_z0 -> layer_landcover:z0
