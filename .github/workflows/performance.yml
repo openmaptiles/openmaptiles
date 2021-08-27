@@ -1,6 +1,6 @@
-# Workflow to validate OMT`s new Pull Requests and commits pushed into OMT repo
+# Workflow to run performance tests OMT`s new Pull Requests and commits pushed into OMT repo
 
-name: OpenMapTiles CI
+name: OpenMapTiles Performance CI
 
 on:
   push:
@@ -8,35 +8,6 @@ on:
   pull_request:
 
 jobs:
-
-  integrity_test:
-    name: Run integrity test
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout the changes
-        uses: actions/checkout@v2
-
-      - name: Run quickstart for a small area
-        env:
-          area: monaco
-          MIN_ZOOM: 0
-          MAX_ZOOM: 14
-          QUIET: 1
-        run: |
-          ./quickstart.sh $area
-
-      - name: Save quickstart.log
-        uses: actions/upload-artifact@v2
-        with:
-          name: quickstart.log
-          path: quickstart.log
-
-      - name: Test etldoc images
-        run: |
-          export TEST_MODE=yes
-          make generate-devdoc
-
   performance:
     name: Evaluate performance
     runs-on: self-hosted
