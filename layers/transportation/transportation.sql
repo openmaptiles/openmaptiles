@@ -369,45 +369,28 @@ FROM (
                 z_order
          FROM osm_highway_linestring
          WHERE NOT is_area
-           AND (
-                     zoom_level = 12
-                         AND (
-                                    highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor')
-                            OR
-                                    highway IN ('unclassified', 'residential')
-                            OR
-                                    highway IN ('track', 'path') AND (
-                                                                      network IN ('hike-international',
-                                                                                  'hike-national',
-                                                                                  'hike-regional')
-                            OR
-                                    highway = 'track' AND (
-                                                              name <> ''
-                                                           OR network <> ''
-                                                           OR sac_scale <> ''
-                                    )
-                         )
-                     ) AND man_made <> 'pier'
-                 OR zoom_level = 13
-                         AND (
-                                    highway_class(highway, public_transport, construction) <> 'path' AND
-                                    man_made <> 'pier'
-                            OR
-                                    man_made = 'pier' AND NOT ST_IsClosed(geometry)
-                            OR
-                                    highway = 'path' AND (
-                                                             name <> ''
-                                                          OR network <> ''
-                                                          OR sac_scale <> ''
-                                    )
-                        )
-                 OR zoom_level >= 14
-                         AND (
-                            man_made <> 'pier'
-                            OR
-                            NOT ST_IsClosed(geometry)
-                        )
-             )
+           AND man_made <> 'pier'
+           AND NOT ST_IsClosed(geometry)
+           AND
+               CASE WHEN zoom_level = 12 THEN
+                    CASE WHEN highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor') THEN TRUE
+                         WHEN highway IN ('unclassified', 'residential') THEN TRUE
+                         WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE
+                         WHEN highway = 'track' AND (
+                                                        name <> ''
+                                                     OR network <> ''
+                                                     OR sac_scale <> '') THEN TRUE
+                         ELSE FALSE END
+
+                    WHEN zoom_level = 13 THEN
+                    CASE WHEN highway_class(highway, public_transport, construction) <> 'path' THEN TRUE
+                         WHEN highway = 'track' AND (
+                                                        name <> ''
+                                                     OR network <> ''
+                                                     OR sac_scale <> '') THEN TRUE END
+
+                    WHEN zoom_level = 14 THEN TRUE END
+
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
