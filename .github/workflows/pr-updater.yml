@@ -14,7 +14,7 @@ jobs:
       - name: main
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          WORKFLOW_NAME: "OpenMapTiles CI"
+          WORKFLOW_NAME: "OpenMapTiles Performance CI"
           # the name of the artifact whose content comment published by PR. Must have a single markdown file inside.
           MSG_ARTIFACT_NAME: "pr_message"
           # How far back to look for finished runs, in minutes.
