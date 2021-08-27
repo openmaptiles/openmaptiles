@@ -89,11 +89,20 @@ BEGIN
 
     UPDATE osm_park_polygon_gen_z4
     SET tags           = update_tags(tags, geometry),
-        geometry       = ST_SimplifyPreserveTopology(geometry, ZRes(4.5)),
         geometry_point = st_centroid(geometry);
 
 END;
 $$ LANGUAGE plpgsql;
+
+-- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
+DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
+CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
+(
+  SELECT
+         (ST_Dump(
+            ST_Union(geometry))).geom AS geometry
+  FROM osm_park_polygon_gen_z4
+);
 
 SELECT update_osm_park_polygon();
 CREATE INDEX IF NOT EXISTS osm_park_polygon_point_geom_idx ON osm_park_polygon USING gist (geometry_point);
@@ -107,7 +116,8 @@ CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z7_point_geom_idx ON osm_park_po
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z6_point_geom_idx ON osm_park_polygon_gen_z6 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z5_point_geom_idx ON osm_park_polygon_gen_z5 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z4_point_geom_idx ON osm_park_polygon_gen_z4 USING gist (geometry_point);
-
+CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z4_polygon_geom_idx ON osm_park_polygon_gen_z4 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_park_polygon_dissolve_z4_polygon_geom_idx ON osm_park_polygon_dissolve_z4 USING gist (geometry);
 
 CREATE OR REPLACE FUNCTION update_osm_park_polygon_row()
     RETURNS trigger
