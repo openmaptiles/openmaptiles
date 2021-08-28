@@ -382,7 +382,7 @@ FROM (
                     CASE WHEN highway_class(highway, public_transport, construction) <> 'path' THEN TRUE
                          WHEN highway = 'path' AND (
                                                         NULLIF(name, '') IS NOT NULL
-                                                     OR network IS NOT NULL
+                                                     OR NULLIF(network, '') IS NOT NULL
                                                      OR NULLIF(sac_scale, '') IS NOT NULL
                                                    ) THEN TRUE
                     END
