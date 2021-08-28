@@ -130,9 +130,15 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
       echo "ERR: Sorry this is working only on x86_64!"
       exit 1
     fi
+
     echo "      : --- Memory, CPU info ---- "
-    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
-    echo "System memory (GB): ${mem}"
+    if [ -n "$(command -v bc)" ]; then
+        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
+        echo "System memory (GB): ${mem}"
+    else
+        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}')
+        echo "System memory (KB): ${mem}"
+    fi
     grep SwapTotal /proc/meminfo
     echo "CPU number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
     grep Free /proc/meminfo
