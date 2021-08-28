@@ -373,21 +373,19 @@ FROM (
            AND NOT ST_IsClosed(geometry)
            AND
                CASE WHEN zoom_level = 12 THEN
-                    CASE WHEN highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor') THEN TRUE
+                    CASE WHEN highway_class(highway, public_transport, construction) NOT IN ('path', 'minor') THEN TRUE
                          WHEN highway IN ('unclassified', 'residential') THEN TRUE
                          WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE
-                         WHEN highway = 'track' AND (
-                                                        name <> ''
-                                                     OR network <> ''
-                                                     OR sac_scale <> '') THEN TRUE
-                         ELSE FALSE END
+                    END
 
                     WHEN zoom_level = 13 THEN
                     CASE WHEN highway_class(highway, public_transport, construction) <> 'path' THEN TRUE
-                         WHEN highway = 'track' AND (
-                                                        name <> ''
-                                                     OR network <> ''
-                                                     OR sac_scale <> '') THEN TRUE END
+                         WHEN highway = 'path' AND (
+                                                        NULLIF(name, '') IS NOT NULL
+                                                     OR network IS NOT NULL
+                                                     OR NULLIF(sac_scale, '') IS NOT NULL
+                                                   ) THEN TRUE
+                    END
 
                     WHEN zoom_level = 14 THEN TRUE END
 

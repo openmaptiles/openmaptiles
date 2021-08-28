@@ -19,6 +19,7 @@ SELECT
     subclass,
     brunnel,
     "level",
+    sac_scale,
     layer,
     indoor,
     network_type,
@@ -40,6 +41,7 @@ FROM (
         hl.highway,
         NULLIF(hl.construction, '') AS subclass,
         brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
+        sac_scale,
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
         CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
@@ -77,6 +79,7 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        highway,
        subclass,
        brunnel,
+       sac_scale,
        "level",
        layer,
        indoor,
@@ -96,6 +99,7 @@ FROM (
                 CASE WHEN COUNT(*) = COUNT(brunnel) AND MAX(brunnel) = MIN(brunnel)
                      THEN MAX(brunnel)
                      ELSE NULL::text END AS brunnel,
+                sac_scale,
                 "level",
                 layer,
                 indoor,
@@ -104,7 +108,7 @@ FROM (
                 min(z_order) AS z_order
          FROM osm_transportation_name_network
          WHERE name <> '' OR ref <> ''
-         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, "level", layer, indoor, network_type,
+         GROUP BY name, name_en, name_de, tags, ref, highway, subclass, sac_scale, "level", layer, indoor, network_type,
                   route_1, route_2, route_3, route_4, route_5, route_6
          UNION ALL
 
@@ -117,6 +121,7 @@ FROM (
                 'shipway' AS highway,
                 shipway AS subclass,
                 NULL AS brunnel,
+                NULL AS sac_scale,
                 NULL::int AS level,
                 layer,
                 NULL AS indoor,
