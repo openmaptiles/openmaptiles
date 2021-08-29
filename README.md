@@ -150,7 +150,7 @@ Now you are ready to **generate the vector tiles**. By default, `./.env` specifi
 
 ```
 make generate-bbox-file  # compute data bbox -- not needed for the whole planet
-make generate-tiles      # generate tiles
+make generate-tiles-pg   # generate tiles
 ```
 
 ## License
