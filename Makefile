@@ -403,13 +403,13 @@ import-data: start-db
 .PHONY: import-borders
 import-borders: start-db-nowait
 ifeq (,$(wildcard $(BORDERS_CSV_FILE)))
-        @$(assert_area_is_given)
-        @echo "Generating borders out of $(PBF_FILE)"
+	@$(assert_area_is_given)
+	@echo "Generating borders out of $(PBF_FILE)"
 else
-        @echo "Borders already exists. Useing $(BORDERS_CSV_FILE) to import borders"
+	@echo "Borders already exists. Useing $(BORDERS_CSV_FILE) to import borders"
 endif
-        $(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-                'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
 
 .PHONY: import-sql
 import-sql: all start-db-nowait
