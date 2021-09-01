@@ -12,14 +12,18 @@ layer:
     class:
       description: |
           All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
-          Water bodies with the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag are classified as `lake`, `dock`, or `river`.
+          Water bodies with the [`waterway=riverbank`](http://wiki.openstreetmap.org/wiki/Tag:waterway=riverbank) 
+          or [`water=river`](http://wiki.openstreetmap.org/wiki/Tag:water=river) tag are classified as river.  Wet and dry docks
+          tagged [`waterway=dock`](http://wiki.openstreetmap.org/wiki/Tag:waterway=dock) are classified as a `dock`.
           All other water bodies are classified as `lake`.
       values:
-        lake:
-          waterway: ['', 'lake']
         dock:
           waterway: 'dock'
         river:
+          water: 'river'
+          waterway: 'riverbank'
+        lake:
+          waterway: ''
         ocean:
     intermittent:
       description: |
