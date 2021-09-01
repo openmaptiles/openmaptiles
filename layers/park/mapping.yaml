@@ -1,33 +1,45 @@
 generalized_tables:
+  # etldoc: osm_park_polygon_gen_z5 -> osm_park_polygon_gen_z4
+  park_polygon_gen_z4:
+    source: park_polygon_gen_z5
+    sql_filter: area>power(ZRES3,2)
+    tolerance: ZRES4
+
+  # etldoc: osm_park_polygon_gen_z6 -> osm_park_polygon_gen_z5
+  park_polygon_gen_z5:
+    source: park_polygon_gen_z6
+    sql_filter: area>power(ZRES4,2)
+    tolerance: ZRES5
+
   # etldoc: osm_park_polygon_gen_z7 -> osm_park_polygon_gen_z6
   park_polygon_gen_z6:
     source: park_polygon_gen_z7
     sql_filter: area>power(ZRES5,2)
-    tolerance: ZRES8
+    tolerance: ZRES6
 
   # etldoc: osm_park_polygon_gen_z8 -> osm_park_polygon_gen_z7
   park_polygon_gen_z7:
     source: park_polygon_gen_z8
     sql_filter: area>power(ZRES6,2)
-    tolerance: ZRES8
+    tolerance: ZRES7
 
   # etldoc: osm_park_polygon_gen_z9 -> osm_park_polygon_gen_z8
   park_polygon_gen_z8:
     source: park_polygon_gen_z9
     sql_filter: area>power(ZRES7,2)
-    tolerance: ZRES9
+    tolerance: ZRES8
 
   # etldoc: osm_park_polygon_gen_z10 -> osm_park_polygon_gen_z9
   park_polygon_gen_z9:
     source: park_polygon_gen_z10
     sql_filter: area>power(ZRES8,2)
-    tolerance: ZRES10
+    tolerance: ZRES9
 
   # etldoc: osm_park_polygon_gen_z11 -> osm_park_polygon_gen_z10
   park_polygon_gen_z10:
     source: park_polygon_gen_z11
     sql_filter: area>power(ZRES9,2)
-    tolerance: ZRES11
+    tolerance: ZRES10
 
   # etldoc: osm_park_polygon_gen_z12 -> osm_park_polygon_gen_z11
   park_polygon_gen_z11:
