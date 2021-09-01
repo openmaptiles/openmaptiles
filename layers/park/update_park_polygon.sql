@@ -18,8 +18,6 @@ ALTER TABLE osm_park_polygon_gen_z6
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
 ALTER TABLE osm_park_polygon_gen_z5
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
-ALTER TABLE osm_park_polygon_gen_z4
-    ADD COLUMN IF NOT EXISTS geometry_point geometry;
 
 -- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
 DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
@@ -97,10 +95,6 @@ BEGIN
     SET tags           = update_tags(tags, geometry),
         geometry_point = st_centroid(geometry);
 
-    UPDATE osm_park_polygon_gen_z4
-    SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
-
     REFRESH MATERIALIZED VIEW osm_park_polygon_dissolve_z4;
 END;
 $$ LANGUAGE plpgsql;
@@ -116,7 +110,6 @@ CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z8_point_geom_idx ON osm_park_po
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z7_point_geom_idx ON osm_park_polygon_gen_z7 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z6_point_geom_idx ON osm_park_polygon_gen_z6 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z5_point_geom_idx ON osm_park_polygon_gen_z5 USING gist (geometry_point);
-CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z4_point_geom_idx ON osm_park_polygon_gen_z4 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_gen_z4_polygon_geom_idx ON osm_park_polygon_gen_z4 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_park_polygon_dissolve_z4_polygon_geom_idx ON osm_park_polygon_dissolve_z4 USING gist (geometry);
 
