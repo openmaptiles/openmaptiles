@@ -92,6 +92,14 @@ service_field: &service
   key: service
   name: service
   type: string
+access_field: &access
+  key: access
+  name: access
+  type: string
+toll_field: &toll
+  key: toll
+  name: toll
+  type: bool
 usage_field: &usage
   key: usage
   name: usage
@@ -183,6 +191,8 @@ tables:
     - *oneway
     - *area
     - *service
+    - *access
+    - *toll
     - *usage
     - *public_transport
     - *man_made
@@ -222,6 +232,9 @@ tables:
       - platform
       man_made:
       - pier
+      service:
+      - driveway
+      - parking_aisle
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -352,6 +365,7 @@ tables:
       type: bool
     - *public_transport
     - *man_made
+    - *service
     mapping:
       highway:
       - path

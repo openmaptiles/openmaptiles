@@ -22,7 +22,7 @@ INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
 
-CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, name text, ref text) RETURNS route_network_type AS
+CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text) RETURNS route_network_type AS
 $$
 SELECT CASE
            WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
@@ -39,9 +39,9 @@ $$ LANGUAGE sql IMMUTABLE
 -- etldoc:  osm_route_member ->  osm_route_member
 -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
 UPDATE osm_route_member
-SET network_type = osm_route_member_network_type(network, name, ref)
+SET network_type = osm_route_member_network_type(network)
 WHERE network != ''
-  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, name, ref)
+  AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
 ;
 
 CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
@@ -62,10 +62,10 @@ BEGIN
 
     UPDATE
         osm_route_member AS r
-    SET network_type = osm_route_member_network_type(network, name, ref)
+    SET network_type = osm_route_member_network_type(network)
     FROM transportation_name.network_changes AS c
     WHERE network != ''
-      AND network_type IS DISTINCT FROM osm_route_member_network_type(network, name, ref)
+      AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
       AND r.member = c.osm_id;
 END;
 $$ LANGUAGE plpgsql;
@@ -77,6 +77,9 @@ CREATE INDEX IF NOT EXISTS osm_route_member_ref_idx ON osm_route_member ("ref");
 
 CREATE INDEX IF NOT EXISTS osm_route_member_network_type_idx ON osm_route_member ("network_type");
 
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
+
 ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int;
 
 INSERT INTO osm_route_member (id, concurrency_index)
@@ -85,3 +88,13 @@ INSERT INTO osm_route_member (id, concurrency_index)
     ROW_NUMBER() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
   FROM osm_route_member
   ON CONFLICT (id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
+
+UPDATE osm_highway_linestring hl
+  SET network = rm.network_type
+  FROM osm_route_member rm
+  WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
+
+UPDATE osm_highway_linestring_gen_z11 hl
+  SET network = rm.network_type
+  FROM osm_route_member rm
+  WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
