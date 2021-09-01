@@ -232,6 +232,9 @@ tables:
       - platform
       man_made:
       - pier
+      service:
+      - driveway
+      - parking_aisle
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -362,6 +365,7 @@ tables:
       type: bool
     - *public_transport
     - *man_made
+    - *service
     mapping:
       highway:
       - path
