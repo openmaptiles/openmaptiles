@@ -55,6 +55,39 @@ FROM (
      ) AS ranked_peaks
 WHERE zoom_level >= 7
   AND (rank <= 5 OR zoom_level >= 14)
+
+UNION ALL
+
+SELECT
+    -- etldoc: osm_mountain_linestring -> layer_mountain_peak:z13_
+    osm_id,
+    geometry,
+    name,
+    name_en,
+    name_de,
+    tags->'natural' AS class,
+    tags,
+    NULL AS ele,
+    NULL AS ele_ft,
+    rank::int
+FROM (
+         SELECT osm_id,
+                geometry,
+                name,
+                COALESCE(NULLIF(name_en, ''), name) AS name_en,
+                COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
+                tags,
+                row_number() OVER (
+                    PARTITION BY LabelGrid(geometry, 100 * pixel_width)
+                    ORDER BY (
+                            (CASE WHEN NULLIF(wikipedia, '') IS NOT NULL THEN 10000 ELSE 0 END) +
+                            (CASE WHEN NULLIF(name, '') IS NOT NULL THEN 10000 ELSE 0 END)
+                        ) DESC
+                    )::int AS "rank"
+         FROM osm_mountain_linestring
+         WHERE geometry && bbox
+     ) AS ranked_mountain_linestring
+WHERE zoom_level >= 13
 ORDER BY "rank" ASC;
 
 $$ LANGUAGE SQL STABLE
