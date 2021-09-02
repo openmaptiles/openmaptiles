@@ -430,7 +430,8 @@ generate-tiles: all start-db
 generate-tiles-pg: all start-db
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
+# For some reason Ctrl+C doesn't work here without the -T. Must be pressed twice to stop.
+	$(DOCKER_COMPOSE) run -T $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
 			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
