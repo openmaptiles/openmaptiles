@@ -29,7 +29,6 @@ CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
                 foot      text,
                 horse     text,
                 mtb_scale text,
-                sac_scale text,
                 surface   text
             )
 AS
@@ -69,7 +68,6 @@ SELECT osm_id,
        NULLIF(foot, '') AS foot,
        NULLIF(horse, '') AS horse,
        NULLIF(mtb_scale, '') AS mtb_scale,
-       NULLIF(sac_scale, '') AS sac_scale,
        NULLIF(surface, '') AS surface
 FROM (
          -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
@@ -98,7 +96,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z4
@@ -131,7 +128,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z5
@@ -164,7 +160,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z6
@@ -197,7 +192,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z7
@@ -230,7 +224,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z8
@@ -263,7 +256,6 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z9
@@ -296,7 +288,6 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z10
@@ -329,7 +320,6 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z11
@@ -364,7 +354,6 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                sac_scale,
                 surface_value(surface) AS "surface",
                 z_order
          FROM osm_highway_linestring
@@ -418,7 +407,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z8
@@ -454,7 +442,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z9
@@ -490,7 +477,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z10
@@ -525,7 +511,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z11
@@ -560,7 +545,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z12
@@ -596,7 +580,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring
@@ -632,7 +615,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring_gen_z12
@@ -666,7 +648,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring
@@ -699,7 +680,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z11
@@ -732,7 +712,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z12
@@ -766,7 +745,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring
@@ -807,7 +785,6 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
-                NULL AS sac_scale,
                 NULL AS surface,
                 z_order
          FROM osm_highway_polygon
