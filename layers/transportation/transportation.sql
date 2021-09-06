@@ -36,12 +36,12 @@ $$
 SELECT osm_id,
        geometry,
        CASE
-           WHEN NULLIF(highway, '') IS NOT NULL OR NULLIF(public_transport, '') IS NOT NULL
+           WHEN highway <> '' OR public_transport <> ''
                THEN highway_class(highway, public_transport, construction)
-           WHEN NULLIF(railway, '') IS NOT NULL THEN railway_class(railway)
-           WHEN NULLIF(aerialway, '') IS NOT NULL THEN 'aerialway'
-           WHEN NULLIF(shipway, '') IS NOT NULL THEN shipway
-           WHEN NULLIF(man_made, '') IS NOT NULL THEN man_made
+           WHEN railway <> '' THEN railway_class(railway)
+           WHEN aerialway <> '' THEN 'aerialway'
+           WHEN shipway <> '' THEN shipway
+           WHEN man_made <> '' THEN man_made
            END AS class,
        CASE
            WHEN railway IS NOT NULL THEN railway
