@@ -146,7 +146,7 @@ make
 make import-sql
 ```
 
-More about layers and their creation: [Doc LAYERS](https://github.com/openmaptiles/openmaptiles/docs/LAYERS.md)
+More about layers and their creation: [Doc LAYERS](https://github.com/openmaptiles/openmaptiles-tools/docs/LAYERS.md)
 
 Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
