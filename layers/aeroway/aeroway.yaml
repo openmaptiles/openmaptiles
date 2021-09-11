@@ -1,5 +1,4 @@
 layer:
-  id: "aeroway"
   description: |
       Aeroway polygons based of OpenStreetMap [aeroways](http://wiki.openstreetmap.org/wiki/Aeroways).
       Airport buildings are contained in the **building** layer but all

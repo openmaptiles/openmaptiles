@@ -1,21 +1,21 @@
 tileset:
   layers:
-    - layers/water/water.yaml
-    - layers/waterway/waterway.yaml
-    - layers/landcover/landcover.yaml
-    - layers/landuse/landuse.yaml
-    - layers/mountain_peak/mountain_peak.yaml
-    - layers/park/park.yaml
-    - layers/boundary/boundary.yaml
-    - layers/aeroway/aeroway.yaml
-    - layers/transportation/transportation.yaml
-    - layers/building/building.yaml
-    - layers/water_name/water_name.yaml
-    - layers/transportation_name/transportation_name.yaml
-    - layers/place/place.yaml
-    - layers/housenumber/housenumber.yaml
-    - layers/poi/poi.yaml
-    - layers/aerodrome_label/aerodrome_label.yaml
+    water: layers/water/water.yaml
+    waterway: layers/waterway/waterway.yaml
+    landcover: layers/landcover/landcover.yaml
+    landuse: layers/landuse/landuse.yaml
+    mountain_peak: layers/mountain_peak/mountain_peak.yaml
+    park: layers/park/park.yaml
+    boundary: layers/boundary/boundary.yaml
+    aeroway: layers/aeroway/aeroway.yaml
+    transportation: layers/transportation/transportation.yaml
+    building: layers/building/building.yaml
+    water_name: layers/water_name/water_name.yaml
+    transportation_name: layers/transportation_name/transportation_name.yaml
+    place: layers/place/place.yaml
+    housenumber: layers/housenumber/housenumber.yaml
+    poi: layers/poi/poi.yaml
+    aerodrome_label: layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
   version: 3.12.1
   id: openmaptiles

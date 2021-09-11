@@ -1,5 +1,4 @@
 layer:
-  id: "park"
   description: |
       The park layer contains parks from OpenStreetMap tagged with
       [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
@@ -15,7 +14,7 @@ layer:
           value with blanks replaced by `_`.
           `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
           `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
-          The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
+          The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
           values is similarly assigned.
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the park (point features only).
     name_en: English name `name:en` if available, otherwise `name` (point features only).

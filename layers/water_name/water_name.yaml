@@ -1,5 +1,4 @@
 layer:
-  id: "water_name"
   description: |
       Lake center lines for labelling lake bodies.
       This is based of the [osm-lakelines](https://github.com/lukasmartinelli/osm-lakelines) project

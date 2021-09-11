@@ -1,5 +1,4 @@
 layer:
-  id: "waterway"
   # waterway relies on the function waterway_brunnel() defined in water layer
   requires: "water"
   description: |

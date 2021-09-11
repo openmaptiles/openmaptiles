@@ -1,5 +1,4 @@
 layer:
-  id: "boundary"
   description: |
       Contains administrative boundaries as linestrings.
       Until z4 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which
@@ -51,6 +50,8 @@ layer:
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, admin_level, adm0_l, adm0_r, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    required_tables: []
+    required_function: []
 schema:
   - ./boundary_name.sql
   - ./boundary.sql

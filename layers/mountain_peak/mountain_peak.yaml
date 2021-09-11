@@ -1,5 +1,4 @@
 layer:
-  id: "mountain_peak"
   description: |
       [Natural peaks](http://wiki.openstreetmap.org/wiki/Tag:natural%3Dpeak)
   buffer_size: 64

@@ -1,5 +1,4 @@
 layer:
-  id: aerodrome_label
   description: |
       [Aerodrome labels](http://wiki.openstreetmap.org/wiki/Tag:aeroway%3Daerodrome)
   buffer_size: 64

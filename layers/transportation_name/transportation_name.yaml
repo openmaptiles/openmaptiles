@@ -1,5 +1,4 @@
 layer:
-  id: "transportation_name"
   # transportation_name relies on the function highway_class() defined in transportation layer
   requires: "transportation"
   description: |
