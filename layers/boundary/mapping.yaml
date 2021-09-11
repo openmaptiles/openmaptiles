@@ -29,9 +29,6 @@ tables:
       type: string
       # Used for disputed boundary, e.g. "Line of actual control"
       from_member: true
-    - key: boundary
-      name: boundary
-      type: string
     - key: admin_level
       name: admin_level
       type: integer
@@ -41,7 +38,6 @@ tables:
     - key: disputed_by
       name: disputed_by
       type: string
-      from_member: true
       from_member: true
     - key: dispute 
       name: dispute 
