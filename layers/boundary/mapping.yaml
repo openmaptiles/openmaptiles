@@ -73,7 +73,5 @@ tables:
       - administrative
       border_status:
       - dispute
-      natural:
-      - coastline
       boundary_type:
       - maritime
