@@ -1,5 +1,5 @@
 -- etldoc: layer_mountain_peak[shape=record fillcolor=lightpink,
--- etldoc:     style="rounded,filled", label="layer_mountain_peak | <z7_> z7+" ] ;
+-- etldoc:     style="rounded,filled", label="layer_mountain_peak | <z7_> z7+ | <z13_> z13+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_mountain_peak(bbox geometry,
                                                zoom_level integer,
