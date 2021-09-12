@@ -64,6 +64,12 @@ define newline
 
 endef
 
+# use the old postgres connection values if they are existing
+PGHOST := $(or $(POSTGRES_HOST),$(PGHOST))
+PGPORT := $(or $(POSTGRES_PORT),$(PGPORT))
+PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE))
+PGUSER := $(or $(POSTGRES_USER),$(PGUSER))
+PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
 
 #
 # Determine area to work on
