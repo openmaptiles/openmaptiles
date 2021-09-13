@@ -236,6 +236,11 @@ make import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Removing old border files"
+rm -f ./data/borders/*
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing border ${area} data into PostgreSQL using osmborder"
 echo "      : Source code: https://github.com/pnorman/osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
