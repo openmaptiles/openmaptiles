@@ -48,7 +48,7 @@ FROM (
         NULLIF(rm3.network, '') || '=' || COALESCE(rm3.ref, '') AS route_3,
         NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
         NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
-        NULLIF(rm6.network, '') || '=' || NULLIF(rm6.ref, '') AS route_6,
+        NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
         hl.z_order
     FROM osm_highway_linestring hl
             LEFT OUTER JOIN osm_route_member rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
@@ -353,7 +353,7 @@ BEGIN
 	    NULLIF(rm3.network, '') || '=' || COALESCE(rm3.ref, '') AS route_3,
 	    NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
 	    NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
-	    NULLIF(rm6.network, '') || '=' || NULLIF(rm6.ref, '') AS route_6,
+	    NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
             hl.z_order
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
