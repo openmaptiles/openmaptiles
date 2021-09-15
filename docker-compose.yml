@@ -22,7 +22,8 @@ services:
     env_file: .env-postgres
 
   import-data:
-    image: "openmaptiles/import-data:${TOOLS_VERSION}"
+    #image: "openmaptiles/import-data:${TOOLS_VERSION}"
+    image: "alanc/import-data"
     env_file: .env
     networks:
       - postgres
@@ -103,3 +104,26 @@ services:
       - "${PPORT:-8090}:${PPORT:-8090}"
     volumes:
       - .:/tileset
+
+# export-shapefile and calculate-centerlines are for lake lines for labelling
+  export-shapefile:
+    build: src/export-shapefile
+    env_file: .env
+    networks:
+      - postgres
+    volumes:
+     - ./data:/data
+
+  calculate-centerlines:
+    build: src/calculate-centerlines
+    networks:
+      - postgres
+    volumes:
+     - ./data:/data
+     
+  calculate-centerlines-new:
+    build: src/calculate-centerlines-new
+    networks:
+      - postgres
+    volumes:
+     - ./data:/data
