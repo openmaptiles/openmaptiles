@@ -1,7 +1,6 @@
 tileset:
   layers:
     - layers/power/power.yaml
-    - layers/skiing/skiing.yaml
     - layers/water/water.yaml
     - layers/waterway/waterway.yaml
     - layers/landcover/landcover.yaml
