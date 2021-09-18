@@ -28,12 +28,9 @@ layer:
 
   datasource:
     geometry_field: geometry
-    #query: (SELECT geometry, class, source, method, name FROM layer_power(!bbox!, z(!scale_denominator!))) AS t
     query: (SELECT geometry, class, name FROM layer_power(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./power.sql
-#  - ./power_point.sql
-#  - ./power_polygon.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml
