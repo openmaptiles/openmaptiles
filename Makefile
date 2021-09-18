@@ -64,6 +64,12 @@ define newline
 
 endef
 
+# use the old postgres connection values if they are existing
+PGHOST := $(or $(POSTGRES_HOST),$(PGHOST))
+PGPORT := $(or $(POSTGRES_PORT),$(PGPORT))
+PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE))
+PGUSER := $(or $(POSTGRES_USER),$(PGUSER))
+PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
 
 #
 # Determine area to work on
@@ -254,7 +260,7 @@ init-dirs:
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@
 endif
 
 build/mapping.yaml: init-dirs
