@@ -311,15 +311,6 @@ BEGIN
             transportation_name.network_changes AS c
     WHERE n.osm_id = c.osm_id;
 
-    INSERT INTO osm_route_member (id, concurrency_index)
-    SELECT
-      id,
-      DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
-    FROM osm_route_member rm
-    WHERE rm.member IN
-      (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
-    ON CONFLICT (id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
-
     UPDATE osm_highway_linestring hl
     SET network = rm.network_type
     FROM transportation_name.network_changes c,
