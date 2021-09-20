@@ -364,7 +364,7 @@ FROM (
                               WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE
                          END
                     WHEN zoom_level = 13 THEN
-                         CASE WHEN man_made = 'pier' THEN NOT ST_IsClosed(geometry)
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
                               WHEN highway = 'path' THEN (
                                                         name <> ''
                                                      OR network <> ''
