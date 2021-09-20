@@ -36,12 +36,12 @@ $$
 SELECT osm_id,
        geometry,
        CASE
-           WHEN NULLIF(highway, '') IS NOT NULL OR NULLIF(public_transport, '') IS NOT NULL
+           WHEN highway <> '' OR public_transport <> ''
                THEN highway_class(highway, public_transport, construction)
-           WHEN NULLIF(railway, '') IS NOT NULL THEN railway_class(railway)
-           WHEN NULLIF(aerialway, '') IS NOT NULL THEN 'aerialway'
-           WHEN NULLIF(shipway, '') IS NOT NULL THEN shipway
-           WHEN NULLIF(man_made, '') IS NOT NULL THEN man_made
+           WHEN railway <> '' THEN railway_class(railway)
+           WHEN aerialway <> '' THEN 'aerialway'
+           WHEN shipway <> '' THEN shipway
+           WHEN man_made <> '' THEN man_made
            END AS class,
        CASE
            WHEN railway IS NOT NULL THEN railway
@@ -358,27 +358,25 @@ FROM (
                 z_order
          FROM osm_highway_linestring
          WHERE NOT is_area
-           AND man_made <> 'pier'
-           AND NOT ST_IsClosed(geometry)
            AND
                CASE WHEN zoom_level = 12 THEN
-                    CASE WHEN highway_class(highway, public_transport, construction) NOT IN ('path', 'minor', 'service') THEN TRUE
-                         WHEN highway IN ('unclassified', 'residential') THEN TRUE
-                         WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE
-                    END
-
+                         CASE WHEN transportation_filter_z12(highway, construction) THEN TRUE
+                              WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE
+                         END
                     WHEN zoom_level = 13 THEN
-                    CASE WHEN highway_class(highway, public_transport, construction) <> 'path' AND
-                              service NOT IN ('driveway', 'parking_aisle') THEN TRUE
-                         WHEN highway = 'path' AND (
-                                                        NULLIF(name, '') IS NOT NULL
-                                                     OR NULLIF(network, '') IS NOT NULL
-                                                     OR NULLIF(sac_scale, '') IS NOT NULL
-                                                   ) THEN TRUE
-                    END
-
-                    WHEN zoom_level = 14 THEN TRUE END
-
+                         CASE WHEN man_made = 'pier' THEN NOT ST_IsClosed(geometry)
+                              WHEN highway = 'path' THEN (
+                                                        name <> ''
+                                                     OR network <> ''
+                                                     OR sac_scale <> ''
+                                                   )
+                              ELSE transportation_filter_z13(highway, public_transport, construction, service)
+                         END
+                    WHEN zoom_level >= 14 THEN
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
+                              ELSE TRUE
+                         END
+               END
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
