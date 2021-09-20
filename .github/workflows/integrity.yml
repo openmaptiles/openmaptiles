@@ -20,10 +20,10 @@ jobs:
       - name: Run quickstart for a small area
         env:
           area: monaco
-          MIN_ZOOM: 0
-          MAX_ZOOM: 14
           QUIET: 1
         run: |
+          echo MIN_ZOOM=0 >> .env
+          echo MAX_ZOOM=14 >> .env
           ./quickstart.sh $area
 
       - name: Save quickstart.log
