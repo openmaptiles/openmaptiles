@@ -141,7 +141,7 @@ FROM (
                CASE WHEN highway <> 'path' THEN TRUE
                     WHEN highway = 'path' AND (
                                                    name <> ''
-                                                OR network <> ''
+                                                OR network IS NOT NULL
                                                 OR sac_scale <> ''
                                               ) THEN TRUE
                END
