@@ -22,7 +22,7 @@ layer:
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
           shipping ways), or
-          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:route).
+          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:man_made).
       values:
         motorway:
           highway: ['motorway', 'motorway_link']

@@ -358,26 +358,17 @@ FROM (
                 z_order
          FROM osm_highway_linestring
          WHERE NOT is_area
-           AND (
-                     zoom_level = 12 AND (
-                             highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor', 'service')
-                         OR highway IN ('unclassified', 'residential')
-                     ) AND man_made <> 'pier'
-                 OR zoom_level = 13
-                         AND (
-                                    highway_class(highway, public_transport, construction) NOT IN ('track', 'path') AND
-                                    man_made <> 'pier'
-                            OR
-                                    man_made = 'pier' AND NOT ST_IsClosed(geometry)
-                        )
-                        AND service NOT IN ('driveway', 'parking_aisle')
-                 OR zoom_level >= 14
-                         AND (
-                            man_made <> 'pier'
-                            OR
-                            NOT ST_IsClosed(geometry)
-                        )
-             )
+           AND
+               CASE WHEN zoom_level = 12 THEN transportation_filter_z12(highway, construction)
+                    WHEN zoom_level = 13 THEN
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
+                              ELSE transportation_filter_z13(highway, public_transport, construction, service)
+                         END
+                    WHEN zoom_level >= 14 THEN
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
+                              ELSE TRUE
+                         END
+               END
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
