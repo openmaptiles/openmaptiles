@@ -25,7 +25,8 @@ SELECT
     route_1, route_2, route_3, route_4, route_5, route_6,
     z_order
 FROM (
-    SELECT hl.geometry,
+    SELECT DISTINCT ON (hl.osm_id)
+        hl.geometry,
         hl.osm_id,
         CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
         CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
@@ -48,7 +49,7 @@ FROM (
         NULLIF(rm3.network, '') || '=' || COALESCE(rm3.ref, '') AS route_3,
         NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
         NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
-        NULLIF(rm6.network, '') || '=' || NULLIF(rm6.ref, '') AS route_6,
+        NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
         hl.z_order
     FROM osm_highway_linestring hl
             LEFT OUTER JOIN osm_route_member rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
