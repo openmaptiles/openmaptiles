@@ -44,8 +44,8 @@ FROM (
                     PARTITION BY LabelGrid(geometry, 100 * pixel_width)
                     ORDER BY (
                             substring(ele FROM E'^(-?\\d+)(\\D|$)')::int +
-                            (CASE WHEN NULLIF(wikipedia, '') IS NOT NULL THEN 10000 ELSE 0 END) +
-                            (CASE WHEN NULLIF(name, '') IS NOT NULL THEN 10000 ELSE 0 END)
+                            (CASE WHEN wikipedia <> '' THEN 10000 ELSE 0 END) +
+                            (CASE WHEN name <> '' THEN 10000 ELSE 0 END)
                         ) DESC
                     )::int AS "rank"
          FROM osm_peak_point
@@ -80,8 +80,8 @@ FROM (
                 row_number() OVER (
                     PARTITION BY LabelGrid(geometry, 100 * pixel_width)
                     ORDER BY (
-                            (CASE WHEN NULLIF(wikipedia, '') IS NOT NULL THEN 10000 ELSE 0 END) +
-                            (CASE WHEN NULLIF(name, '') IS NOT NULL THEN 10000 ELSE 0 END)
+                            (CASE WHEN wikipedia <> '' THEN 10000 ELSE 0 END) +
+                            (CASE WHEN name <> '' THEN 10000 ELSE 0 END)
                         ) DESC
                     )::int AS "rank"
          FROM osm_mountain_linestring
