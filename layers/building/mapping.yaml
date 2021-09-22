@@ -60,8 +60,8 @@ tables:
       aeroway:
       - terminal
       - hangar
-#      location:
-#      - underground
+      location:
+      - underground
     filters:
       reject:
         building: ["no","none","No"]
