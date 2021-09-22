@@ -162,10 +162,4 @@ tables:
       type: [building]
       location:
       - underground
-    filters:
-      reject:
-        building: ["no","none","No"]
-        building:part: ["no","none","No"]
-        man_made: ["bridge"]
-        location: ["underground"]
     type: relation_member
