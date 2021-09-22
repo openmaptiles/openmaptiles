@@ -312,6 +312,22 @@ BEGIN
             transportation_name.network_changes AS c
     WHERE n.osm_id = c.osm_id;
 
+    UPDATE osm_highway_linestring hl
+    SET network = rm.network_type
+    FROM transportation_name.network_changes c,
+         osm_route_member rm
+    WHERE hl.osm_id=c.osm_id
+      AND hl.osm_id=rm.member
+      AND rm.concurrency_index=1;
+
+    UPDATE osm_highway_linestring_gen_z11 hl
+    SET network = rm.network_type
+    FROM transportation_name.network_changes c,
+         osm_route_member rm
+    WHERE hl.osm_id=c.osm_id
+      AND hl.osm_id=rm.member
+      AND rm.concurrency_index=1;
+
     INSERT INTO osm_transportation_name_network
     SELECT
         geometry,
@@ -337,7 +353,7 @@ BEGIN
             CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS name_en,
             CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS name_de,
             slice_language_tags(hl.tags) AS tags,
-            rm.network_type,
+            rm1.network_type,
             CASE
                 WHEN rm1.network_type IS NOT NULL AND rm1.ref::text <> ''
                     THEN rm1.ref::text
@@ -349,13 +365,23 @@ BEGIN
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
             CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-            route_1, route_2, route_3, route_4, route_5, route_6,
+	    NULLIF(rm1.network, '') || '=' || COALESCE(rm1.ref, '') AS route_1,
+	    NULLIF(rm2.network, '') || '=' || COALESCE(rm2.ref, '') AS route_2,
+	    NULLIF(rm3.network, '') || '=' || COALESCE(rm3.ref, '') AS route_3,
+	    NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
+	    NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
+	    NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
             hl.z_order
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
             hl.osm_id = c.osm_id
-                LEFT OUTER JOIN osm_route_member rm ON rm.member = hl.osm_id AND rm.concurrency_index=1
-        WHERE (hl.name <> '' OR hl.ref <> '')
+		LEFT OUTER JOIN osm_route_member rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
+		LEFT OUTER JOIN osm_route_member rm2 ON rm2.member = hl.osm_id AND rm2.concurrency_index=2
+		LEFT OUTER JOIN osm_route_member rm3 ON rm3.member = hl.osm_id AND rm3.concurrency_index=3
+		LEFT OUTER JOIN osm_route_member rm4 ON rm4.member = hl.osm_id AND rm4.concurrency_index=4
+		LEFT OUTER JOIN osm_route_member rm5 ON rm5.member = hl.osm_id AND rm5.concurrency_index=5
+		LEFT OUTER JOIN osm_route_member rm6 ON rm6.member = hl.osm_id AND rm6.concurrency_index=6
+	WHERE (hl.name <> '' OR hl.ref <> '' OR rm1.ref <> '' OR rm1.network <> '')
           AND hl.highway <> ''
     ) AS t;
 
@@ -515,7 +541,7 @@ BEGIN
       AND n.level IS NOT DISTINCT FROM c.level
       AND n.layer IS NOT DISTINCT FROM c.layer
       AND n.indoor IS NOT DISTINCT FROM c.indoor
-      AND n.network_type IS NOT DISTINCT FROM c.network_type
+      AND n.network IS NOT DISTINCT FROM c.network_type
       AND n.route_1 IS NOT DISTINCT FROM c.route_1
       AND n.route_2 IS NOT DISTINCT FROM c.route_2
       AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -592,7 +618,7 @@ BEGIN
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network_type IS NOT DISTINCT FROM c.network_type
+        AND n.network IS NOT DISTINCT FROM c.network_type
         AND n.route_1 IS NOT DISTINCT FROM c.route_1
         AND n.route_2 IS NOT DISTINCT FROM c.route_2
         AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -612,7 +638,7 @@ BEGIN
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network_type IS NOT DISTINCT FROM c.network_type
+            AND n.network IS NOT DISTINCT FROM c.network_type
             AND n.route_1 IS NOT DISTINCT FROM c.route_1
             AND n.route_2 IS NOT DISTINCT FROM c.route_2
             AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -632,7 +658,7 @@ BEGIN
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network_type IS NOT DISTINCT FROM c.network_type
+        AND n.network IS NOT DISTINCT FROM c.network_type
         AND n.route_1 IS NOT DISTINCT FROM c.route_1
         AND n.route_2 IS NOT DISTINCT FROM c.route_2
         AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -652,7 +678,7 @@ BEGIN
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network_type IS NOT DISTINCT FROM c.network_type
+            AND n.network IS NOT DISTINCT FROM c.network_type
             AND n.route_1 IS NOT DISTINCT FROM c.route_1
             AND n.route_2 IS NOT DISTINCT FROM c.route_2
             AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -672,7 +698,7 @@ BEGIN
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network_type IS NOT DISTINCT FROM c.network_type
+        AND n.network IS NOT DISTINCT FROM c.network_type
         AND n.route_1 IS NOT DISTINCT FROM c.route_1
         AND n.route_2 IS NOT DISTINCT FROM c.route_2
         AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -692,7 +718,7 @@ BEGIN
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network_type IS NOT DISTINCT FROM c.network_type
+            AND n.network IS NOT DISTINCT FROM c.network_type
             AND n.route_1 IS NOT DISTINCT FROM c.route_1
             AND n.route_2 IS NOT DISTINCT FROM c.route_2
             AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -712,7 +738,7 @@ BEGIN
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
         AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network_type IS NOT DISTINCT FROM c.network_type
+        AND n.network IS NOT DISTINCT FROM c.network_type
         AND n.route_1 IS NOT DISTINCT FROM c.route_1
         AND n.route_2 IS NOT DISTINCT FROM c.route_2
         AND n.route_3 IS NOT DISTINCT FROM c.route_3
@@ -732,7 +758,7 @@ BEGIN
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
             AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network_type IS NOT DISTINCT FROM c.network_type
+            AND n.network IS NOT DISTINCT FROM c.network_type
             AND n.route_1 IS NOT DISTINCT FROM c.route_1
             AND n.route_2 IS NOT DISTINCT FROM c.route_2
             AND n.route_3 IS NOT DISTINCT FROM c.route_3
