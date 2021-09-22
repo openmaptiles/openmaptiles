@@ -160,6 +160,4 @@ tables:
       type: member_type
     mapping:
       type: [building]
-      location:
-      - underground
     type: relation_member
