@@ -1,34 +1,40 @@
 generalized_tables:
-  # etldoc: imposm3 -> osm_aeroway_linestring_gen3
-  aeroway_linestring_gen3:
-    source: aeroway_linestring_gen2
+  # etldoc: osm_aeroway_linestring_gen_z11 -> osm_aeroway_linestring_gen_z10
+  aeroway_linestring_gen_z10:
+    source: aeroway_linestring_gen_z11
     tolerance: ZRES11
 
-  # etldoc: imposm3 -> osm_aeroway_linestring_gen2
-  aeroway_linestring_gen2:
-    source: aeroway_linestring_gen1
+  # etldoc: osm_aeroway_linestring_gen_z12 -> osm_aeroway_linestring_gen_z11
+  aeroway_linestring_gen_z11:
+    source: aeroway_linestring_gen_z12
     tolerance: ZRES12
 
-  # etldoc: imposm3 -> osm_aeroway_linestring_gen1
-  aeroway_linestring_gen1:
+  # etldoc: osm_aeroway_linestring -> osm_aeroway_linestring_gen_z12
+  aeroway_linestring_gen_z12:
     source: aeroway_linestring
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
-  # etldoc: imposm3 -> osm_aeroway_polygon_gen3
-  aeroway_polygon_gen3:
-    source: aeroway_polygon_gen2
+  # etldoc: osm_aeroway_polygon_gen_z11 -> osm_aeroway_polygon_gen_z10
+  aeroway_polygon_gen_z10:
+    source: aeroway_polygon_gen_z11
+    sql_filter: area>power(ZRES9,2)
+    tolerance: ZRES10
+
+  # etldoc: osm_aeroway_polygon_gen_z12 -> osm_aeroway_polygon_gen_z11
+  aeroway_polygon_gen_z11:
+    source: aeroway_polygon_gen_z12
     sql_filter: area>power(ZRES10,2)
     tolerance: ZRES11
 
-  # etldoc: imposm3 -> osm_aeroway_polygon_gen2
-  aeroway_polygon_gen2:
-    source: aeroway_polygon_gen1
+  # etldoc: osm_aeroway_polygon_gen_z13 -> osm_aeroway_polygon_gen_z12
+  aeroway_polygon_gen_z12:
+    source: aeroway_polygon_gen_z13
     sql_filter: area>power(ZRES11,2)
     tolerance: ZRES12
 
-  # etldoc: imposm3 -> osm_aeroway_polygon_gen1
-  aeroway_polygon_gen1:
+  # etldoc: osm_aeroway_polygon -> osm_aeroway_polygon_gen_z13
+  aeroway_polygon_gen_z13:
     source: aeroway_polygon
     sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
     tolerance: ZRES13
@@ -80,3 +86,19 @@ tables:
       aeroway:
       - runway
       - taxiway
+      
+  # etldoc: imposm3 -> osm_aeroway_point
+  aeroway_point:
+    type: point
+    columns:
+    - *ref
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      key: aeroway
+      type: string
+    mapping:
+      aeroway:
+      - gate

@@ -7,12 +7,10 @@ DROP TRIGGER IF EXISTS trigger_refresh ON waterway_important.updates;
 -- and also makes it possible to filter out too short rivers
 
 CREATE INDEX IF NOT EXISTS osm_waterway_linestring_waterway_partial_idx
-    ON osm_waterway_linestring (waterway)
-    WHERE waterway = 'river';
-
-CREATE INDEX IF NOT EXISTS osm_waterway_linestring_name_partial_idx
-    ON osm_waterway_linestring (name)
-    WHERE name <> '';
+    ON osm_waterway_linestring ((true))
+    WHERE name <> ''
+      AND waterway = 'river'
+      AND ST_IsValid(geometry);
 
 -- etldoc: osm_waterway_linestring ->  osm_important_waterway_linestring
 CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring AS
@@ -33,44 +31,49 @@ FROM (
            AND ST_IsValid(geometry)
          GROUP BY name, name_en, name_de, slice_language_tags(tags)
      ) AS waterway_union;
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_names ON osm_important_waterway_linestring (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_geometry_idx ON osm_important_waterway_linestring USING gist (geometry);
 
--- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen1
-CREATE OR REPLACE VIEW osm_important_waterway_linestring_gen1_view AS
-SELECT ST_Simplify(geometry, 60) AS geometry, name, name_en, name_de, tags
+-- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen_z11
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen_z11 CASCADE;
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen_z11 AS
+(
+SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
+       name,
+       name_en,
+       name_de,
+       tags
 FROM osm_important_waterway_linestring
-WHERE ST_Length(geometry) > 1000;
+WHERE ST_Length(geometry) > 1000
+    );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z11_geometry_idx ON osm_important_waterway_linestring_gen_z11 USING gist (geometry);
 
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen1 AS
-SELECT *
-FROM osm_important_waterway_linestring_gen1_view;
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen1_name_idx ON osm_important_waterway_linestring_gen1 (name);
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen1_geometry_idx ON osm_important_waterway_linestring_gen1 USING gist (geometry);
+-- etldoc: osm_important_waterway_linestring_gen_z11 -> osm_important_waterway_linestring_gen_z10
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen_z10 CASCADE;
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen_z10 AS
+(
+SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
+       name,
+       name_en,
+       name_de,
+       tags
+FROM osm_important_waterway_linestring_gen_z11
+WHERE ST_Length(geometry) > 4000
+    );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z10_geometry_idx ON osm_important_waterway_linestring_gen_z10 USING gist (geometry);
 
--- etldoc: osm_important_waterway_linestring_gen1 -> osm_important_waterway_linestring_gen2
-CREATE OR REPLACE VIEW osm_important_waterway_linestring_gen2_view AS
-SELECT ST_Simplify(geometry, 100) AS geometry, name, name_en, name_de, tags
-FROM osm_important_waterway_linestring_gen1
-WHERE ST_Length(geometry) > 4000;
-
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen2 AS
-SELECT *
-FROM osm_important_waterway_linestring_gen2_view;
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen2_name_idx ON osm_important_waterway_linestring_gen2 (name);
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen2_geometry_idx ON osm_important_waterway_linestring_gen2 USING gist (geometry);
-
--- etldoc: osm_important_waterway_linestring_gen2 -> osm_important_waterway_linestring_gen3
-CREATE OR REPLACE VIEW osm_important_waterway_linestring_gen3_view AS
-SELECT ST_Simplify(geometry, 200) AS geometry, name, name_en, name_de, tags
-FROM osm_important_waterway_linestring_gen2
-WHERE ST_Length(geometry) > 8000;
-
-CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen3 AS
-SELECT *
-FROM osm_important_waterway_linestring_gen3_view;
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_name_idx ON osm_important_waterway_linestring_gen3 (name);
-CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen3_geometry_idx ON osm_important_waterway_linestring_gen3 USING gist (geometry);
+-- etldoc: osm_important_waterway_linestring_gen_z10 -> osm_important_waterway_linestring_gen_z9
+DROP MATERIALIZED VIEW IF EXISTS osm_important_waterway_linestring_gen_z9 CASCADE;
+CREATE MATERIALIZED VIEW osm_important_waterway_linestring_gen_z9 AS
+(
+SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
+       name,
+       name_en,
+       name_de,
+       tags
+FROM osm_important_waterway_linestring_gen_z10
+WHERE ST_Length(geometry) > 8000
+    );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z9_geometry_idx ON osm_important_waterway_linestring_gen_z9 USING gist (geometry);
 
 -- Handle updates
 
@@ -117,6 +120,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION waterway_important.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh waterway';
 
@@ -176,47 +181,14 @@ BEGIN
              GROUP BY w.name, w.name_en, w.name_de, slice_language_tags(w.tags)
          ) AS waterway_union;
 
-    -- REFRESH sm_important_waterway_linestring_gen1
-    DELETE
-    FROM osm_important_waterway_linestring_gen1 AS w
-        USING changes_compact AS c
-    WHERE w.name = c.name
-      AND w.name_en IS NOT DISTINCT FROM c.name_en
-      AND w.name_de IS NOT DISTINCT FROM c.name_de
-      AND w.tags IS NOT DISTINCT FROM c.tags;
+    -- REFRESH osm_important_waterway_linestring_gen_z11
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen_z11;
 
-    INSERT INTO osm_important_waterway_linestring_gen1
-    SELECT w.*
-    FROM osm_important_waterway_linestring_gen1_view AS w
-             NATURAL JOIN changes_compact AS c;
+    -- REFRESH osm_important_waterway_linestring_gen_z10
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen_z10;
 
-    -- REFRESH osm_important_waterway_linestring_gen2
-    DELETE
-    FROM osm_important_waterway_linestring_gen2 AS w
-        USING changes_compact AS c
-    WHERE w.name = c.name
-      AND w.name_en IS NOT DISTINCT FROM c.name_en
-      AND w.name_de IS NOT DISTINCT FROM c.name_de
-      AND w.tags IS NOT DISTINCT FROM c.tags;
-
-    INSERT INTO osm_important_waterway_linestring_gen2
-    SELECT w.*
-    FROM osm_important_waterway_linestring_gen2_view AS w
-             NATURAL JOIN changes_compact AS c;
-
-    -- REFRESH osm_important_waterway_linestring_gen3
-    DELETE
-    FROM osm_important_waterway_linestring_gen3 AS w
-        USING changes_compact AS c
-    WHERE w.name = c.name
-      AND w.name_en IS NOT DISTINCT FROM c.name_en
-      AND w.name_de IS NOT DISTINCT FROM c.name_de
-      AND w.tags IS NOT DISTINCT FROM c.tags;
-
-    INSERT INTO osm_important_waterway_linestring_gen3
-    SELECT w.*
-    FROM osm_important_waterway_linestring_gen3_view AS w
-             NATURAL JOIN changes_compact AS c;
+    -- REFRESH osm_important_waterway_linestring_gen_z9
+    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen_z9;
 
     DROP TABLE changes_compact;
     -- noinspection SqlWithoutWhere
@@ -224,6 +196,7 @@ BEGIN
     -- noinspection SqlWithoutWhere
     DELETE FROM waterway_important.updates;
 
+    RAISE LOG 'Refresh waterway done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

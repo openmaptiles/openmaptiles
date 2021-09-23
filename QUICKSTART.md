@@ -363,13 +363,13 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh yukon                        # Yukon, Canada
 ```
 ### Using your own OSM data
-Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *-latest.osm.pbf inside. Inside of folder have to be `docker-compose-config.yml` file too, otherwize whole folder `data/` will be deleted and `download-osm` will try to download osm.pbf file from `geofabric`, `osmfr` or `bbbike`.
+Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *.osm.pbf (e.g. `mydata.osm.pbf`) inside.
 
 ```
 mkdir -p data
-mv my-latest.osm.pbf data/
-make generate-dc-config
-./quickstart.sh my
+mv mydata.osm.pbf data/
+make generate-bbox-file area=mydata
+./quickstart.sh mydata
 ```
 
 ### Check postserve
@@ -391,11 +391,20 @@ modify the settings in the `.env` file, the defaults:
 * `MIN_ZOOM=0`
 * `MAX_ZOOM=7`
 
-Delete the `./data/<area>.dc-config.yml` file, and re-start `./quickstart.sh <area>`
-
 Hints:
 * Small increments! Never starts with the `MAX_ZOOM = 14`
 * The suggested  `MAX_ZOOM = 14`  - use only with small extracts
+
+### Set the bounding box to generate
+
+By default, tile generation is done for the full extent of the area.
+If you want to generate a tiles for a smaller extent, modify the settings in the `.env` file, the default:
+* `BBOX=-180.0,-85.0511,180.0,85.0511`
+
+Delete the `./data/<area>.bbox` file, and re-start `./quickstart.sh <area>`
+
+Hint:
+* The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
 
 ### Check other commands
 
@@ -422,7 +431,7 @@ Hints for developers:
   make psql-list-tables                # list all PostgreSQL tables
   make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
   make psql-analyze                    # PostgreSQL: ANALYZE
-  make generate-qareports              # generate reports [./build/qareports]
+  make generate-qa                     # statistics for a given layer's field
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
   make tools-dev                       # start import-sql  /bin/bash terminal
   make db-destroy                      # remove docker containers, PG data volume

@@ -1,6 +1,6 @@
 ## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OMT_CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
 
-OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
+OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [maptiler.com/data/](https://www.maptiler.com/data/).
 
 We encourage you to collaborate, reuse and adapt existing layers, or add your own layers. You may use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
@@ -8,7 +8,7 @@ Please keep in mind that OpenMapTiles schema should display general topographic 
 
 - :link: Schema https://openmaptiles.org/schema
 - :link: Docs https://openmaptiles.org/docs
-- :link: Production package: https://openmaptiles.com/production-package/
+- :link: Data for download: https://www.maptiler.com/data/
 - :link: Hosting https://www.maptiler.com/cloud/
 - :link: Create own layer https://github.com/openmaptiles/openmaptiles-skiing
 - :link: Discuss at the #openmaptiles channel at [OSM Slack](https://osmus-slack.herokuapp.com/)
@@ -71,6 +71,10 @@ To work on OpenMapTiles you need Docker.
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
 
+### Microsoft Windows Subsystem for Linux (WSL)
+
+Please use Linux `/home/user/` directory, not Windows e.g. `/mnt/c` directory.
+
 ### Build
 
 Build the tileset.
@@ -126,6 +130,13 @@ make import-wikidata
 ```
 
 ### Work on Layers
+Each time you modify a layer's `mapping.yaml` file or add new OSM tags, run `make` and `make import-osm` to recreate tables (potentially with additional data) in PostgreSQL. With the new data, there can be new Wikidata records also.
+```
+make clean
+make
+make import-osm
+make import-wikidata
+```
 
 Each time you modify layer SQL code run `make` and `make import-sql`.
 
@@ -135,12 +146,30 @@ make
 make import-sql
 ```
 
-Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-dc-config` will analyze the data file and set the `BBOX` param to limit tile generation. It will also modify `MIN_ZOOM` and `MAX_ZOOM` values based on the .env, but can be changed.
+Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
 ```
-make generate-dc-config  # compute data bbox -- not needed for the whole planet
-make generate-tiles      # generate tiles
+make generate-bbox-file  # compute data bbox -- not needed for the whole planet
+make generate-tiles-pg   # generate tiles
 ```
+
+### Workflow to generate tiles
+If you go from top to bottom you can be sure that it will generate a .mbtiles file out of a .osm.pbf file
+```
+make clean                  # clean / remove existing build files
+make                        # generate build files
+make start-db               # start up the database container.
+make import-data            # Import external data from OpenStreetMapData, Natural Earth and OpenStreetMap Lake Labels.
+make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
+make import-osm             # import data into postgres
+make import-borders         # create borders table
+make import-wikidata        # import Wikidata
+make import-sql             # create / import sql funtions 
+make generate-bbox-file     # compute data bbox -- not needed for the whole planet
+make generate-tiles-pg      # generate tiles
+```
+Instead of calling `make download area=albania` you can add a .osm.pbf file in the `data` folder `openmaptiles/data/your_area_file.osm.pbf`
+
 
 ## License
 

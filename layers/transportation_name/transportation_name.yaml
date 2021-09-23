@@ -55,11 +55,13 @@ layer:
       - raceway_construction
       - rail
       - transit
+      - motorway_junction
     subclass:
       description: |
           Distinguish more specific classes of path:
           Subclass is value of the
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths).
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths),
+          and "junction" for [`motorway junctions`](http://wiki.openstreetmap.org/wiki/Tag:highway=motorway_junction).
       values:
       - pedestrian
       - path
@@ -69,6 +71,14 @@ layer:
       - bridleway
       - corridor
       - platform
+      - junction
+    brunnel:
+      description: |
+          Mark whether way is a bridge, a tunnel or a ford.
+      values:
+      - bridge
+      - tunnel
+      - ford
     level:
       description: |
           Experimental feature! Filled only for steps and footways. Original
@@ -83,15 +93,20 @@ layer:
           value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
       - 1
+    route_1: 1st route concurrency.
+    route_2: 2nd route concurrency.
+    route_3: 3rd route concurrency.
+    route_4: 4th route concurrency.
+    route_5: 5th route concurrency.
+    route_6: 6th route concurrency.
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, layer, level, indoor FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
-  - ./network_type.sql
-  - ./update_route_member.sql
+  - ./highway_classification.sql
   - ./update_transportation_name.sql
-  - ./layer.sql
+  - ./transportation_name.sql
 datasources:
   - type: imposm3
     mapping_file: ../transportation/mapping.yaml

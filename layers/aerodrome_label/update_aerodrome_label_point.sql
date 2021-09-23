@@ -2,6 +2,18 @@ DROP TRIGGER IF EXISTS trigger_flag ON osm_aerodrome_label_point;
 DROP TRIGGER IF EXISTS trigger_store ON osm_aerodrome_label_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON aerodrome_label.updates;
 
+-- Partial index for zoom 8/9 queries
+CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_type_partial_idx
+    ON osm_aerodrome_label_point USING gist (geometry)
+    WHERE aerodrome_type = 'international'
+      AND iata <> '';
+
+UPDATE osm_aerodrome_label_point SET aerodrome_type=(
+   CASE
+        %%FIELD_MAPPING: class %%
+        ELSE 'other' END
+);
+
 CREATE SCHEMA IF NOT EXISTS aerodrome_label;
 
 CREATE TABLE IF NOT EXISTS aerodrome_label.osm_ids
@@ -21,7 +33,7 @@ $$
     SET tags = update_tags(tags, geometry)
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM aerodrome_label.osm_ids))
         AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
-        AND tags = update_tags(tags, geometry);
+        AND tags != update_tags(tags, geometry);
 $$ LANGUAGE SQL;
 
 SELECT update_aerodrome_label_point(true);
@@ -56,6 +68,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION aerodrome_label.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh aerodrome_label';
     PERFORM update_aerodrome_label_point(false);
@@ -63,6 +77,8 @@ BEGIN
     DELETE FROM aerodrome_label.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM aerodrome_label.updates;
+
+    RAISE LOG 'Refresh aerodrome_label done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

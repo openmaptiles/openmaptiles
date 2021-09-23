@@ -21,7 +21,8 @@ $$
                 ELSE ST_PointOnSurface(geometry)
                 END
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_polygon.osm_ids))
-      AND ST_GeometryType(geometry) <> 'ST_Point';
+      AND ST_GeometryType(geometry) <> 'ST_Point'
+      AND ST_IsValid(geometry);
 
     UPDATE osm_poi_polygon
     SET subclass = 'subway'
@@ -75,6 +76,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION poi_polygon.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh poi_polygon';
     PERFORM update_poi_polygon(false);
@@ -82,6 +85,8 @@ BEGIN
     DELETE FROM poi_polygon.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM poi_polygon.updates;
+
+    RAISE LOG 'Refresh poi_polygon done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

@@ -1,11 +1,3 @@
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen3 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen4 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen5 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen6 CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen7 CASCADE;
-
-
 DROP TRIGGER IF EXISTS trigger_flag_transportation ON osm_highway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
@@ -15,108 +7,190 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 -- Because this works well for roads that do not have relations as well
 
 
--- Improve performance of the sql in transportation_name/network_type.sql
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_idx
-    ON osm_highway_linestring (highway);
-
--- Improve performance of the sql below
+-- Improve performance of the sql in transportation/update_route_member.sql
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
+    WHERE highway IN ('motorway', 'trunk');
 
--- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
+-- etldoc: osm_highway_linestring_gen_z11 ->  osm_transportation_merge_linestring_gen_z11
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z11 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11 AS
 (
-SELECT (ST_Dump(geometry)).geom AS geometry,
+SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        NULL::bigint AS osm_id,
        highway,
+       network,
        construction,
-       z_order
-FROM (
-         SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
-                highway,
-                construction,
-                min(z_order) AS z_order
-         FROM osm_highway_linestring
-         WHERE (highway IN ('motorway', 'trunk', 'primary') OR
-                highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
-           AND ST_IsValid(geometry)
-         GROUP BY highway, construction
-     ) AS highway_union
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       min(z_order) as z_order,
+       bicycle,
+       foot,
+       horse,
+       mtb_scale,
+       CASE
+           WHEN access IN ('private', 'no') THEN 'no'
+           ELSE NULL::text END AS access,
+       CASE
+           WHEN toll = 'yes' THEN true
+           ELSE false END AS toll,
+       layer
+FROM osm_highway_linestring_gen_z11
+-- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
-    ON osm_transportation_merge_linestring USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_highway_partial_idx
-    ON osm_transportation_merge_linestring (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
 
--- etldoc: osm_transportation_merge_linestring -> osm_transportation_merge_linestring_gen3
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen3 AS
+-- etldoc: osm_transportation_merge_linestring_gen_z11 -> osm_transportation_merge_linestring_gen_z10
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10 AS
 (
-SELECT ST_Simplify(geometry, 120) AS geometry, osm_id, highway, construction, z_order
-FROM osm_transportation_merge_linestring
-WHERE highway IN ('motorway', 'trunk', 'primary')
-   OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary')
+SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order,
+       bicycle,
+       foot,
+       horse,
+       mtb_scale,
+       access,
+       toll,
+       layer
+FROM osm_transportation_merge_linestring_gen_z11
+WHERE highway NOT IN ('tertiary', 'tertiary_link')
+      OR construction NOT IN ('tertiary', 'tertiary_link')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen3_geometry_idx
-    ON osm_transportation_merge_linestring_gen3 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen3_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen3 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z10 USING gist (geometry);
 
--- etldoc: osm_transportation_merge_linestring_gen3 -> osm_transportation_merge_linestring_gen4
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen4 AS
+-- etldoc: osm_transportation_merge_linestring_gen_z10 -> osm_transportation_merge_linestring_gen_z9
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z9 AS
 (
-SELECT ST_Simplify(geometry, 200) AS geometry, osm_id, highway, construction, z_order
-FROM osm_transportation_merge_linestring_gen3
+SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order,
+       bicycle,
+       foot,
+       horse,
+       mtb_scale,
+       access,
+       toll,
+       layer
+FROM osm_transportation_merge_linestring_gen_z10
+     -- Current view: motorway/primary/secondary, with _link variants and construction 
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z9 USING gist (geometry);
+
+-- etldoc: osm_transportation_merge_linestring_gen_z9 ->  osm_transportation_merge_linestring_gen_z8
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
+(
+SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
+       NULL::bigint AS osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       min(z_order) as z_order
+FROM osm_transportation_merge_linestring_gen_z9
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
-       highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary'))
-  AND ST_Length(geometry) > 50
+       construction IN ('motorway', 'trunk', 'primary'))
+       AND ST_IsValid(geometry)
+       AND access IS NULL
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen4_geometry_idx
-    ON osm_transportation_merge_linestring_gen4 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen4_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen4 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'primary', 'construction');
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
 
--- etldoc: osm_transportation_merge_linestring_gen4 -> osm_transportation_merge_linestring_gen5
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen5 AS
+-- etldoc: osm_transportation_merge_linestring_gen_z8 -> osm_transportation_merge_linestring_gen_z7
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7 AS
 (
-SELECT ST_Simplify(geometry, 500) AS geometry, osm_id, highway, construction, z_order
-FROM osm_transportation_merge_linestring_gen4
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
+SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order
+FROM osm_transportation_merge_linestring_gen_z8
+     -- Current view: motorway/trunk/primary
+WHERE ST_Length(geometry) > 50
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z7 USING gist (geometry);
+
+-- etldoc: osm_transportation_merge_linestring_gen_z7 -> osm_transportation_merge_linestring_gen_z6
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
+(
+SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order
+FROM osm_transportation_merge_linestring_gen_z7
+WHERE (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 100
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_geometry_idx
-    ON osm_transportation_merge_linestring_gen5 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen5_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen5 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'construction');
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
 
--- etldoc: osm_transportation_merge_linestring_gen5 -> osm_transportation_merge_linestring_gen6
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen6 AS
+-- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z5
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z5 AS
 (
-SELECT ST_Simplify(geometry, 1000) AS geometry, osm_id, highway, construction, z_order
-FROM osm_transportation_merge_linestring_gen5
-WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND construction IN ('motorway', 'trunk'))
-  AND ST_Length(geometry) > 500
+SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order
+FROM osm_transportation_merge_linestring_gen_z6
+WHERE ST_Length(geometry) > 500
+     -- Current view: motorway/trunk
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen6_geometry_idx
-    ON osm_transportation_merge_linestring_gen6 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen6_highway_partial_idx
-    ON osm_transportation_merge_linestring_gen6 (highway, construction)
-    WHERE highway IN ('motorway', 'trunk', 'construction');
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z5 USING gist (geometry);
 
--- etldoc: osm_transportation_merge_linestring_gen6 -> osm_transportation_merge_linestring_gen7
-CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen7 AS
+-- etldoc: osm_transportation_merge_linestring_gen_z5 -> osm_transportation_merge_linestring_gen_z4
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z4 AS
 (
-SELECT ST_Simplify(geometry, 2000) AS geometry, osm_id, highway, construction, z_order
-FROM osm_transportation_merge_linestring_gen6
-WHERE (highway = 'motorway' OR highway = 'construction' AND construction = 'motorway')
+SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
+       osm_id,
+       highway,
+       network,
+       construction,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       z_order
+FROM osm_transportation_merge_linestring_gen_z5
+WHERE (highway = 'motorway' OR construction = 'motorway')
   AND ST_Length(geometry) > 1000
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen7_geometry_idx
-    ON osm_transportation_merge_linestring_gen7 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z4_geometry_idx
+    ON osm_transportation_merge_linestring_gen_z4 USING gist (geometry);
 
 
 -- Handle updates
@@ -139,16 +213,22 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
-    RAISE NOTICE 'Refresh transportation';
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen3;
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen4;
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen5;
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen6;
-    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen7;
+    RAISE LOG 'Refresh transportation';
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z9;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z5;
+    REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z4;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.updates;
+
+    RAISE LOG 'Refresh transportation done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

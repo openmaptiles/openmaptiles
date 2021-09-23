@@ -83,7 +83,7 @@ function version { echo "$@" | tr -cs '0-9.' '.' | awk -F. '{ printf("%03d%03d%0
 
 COMPOSE_VER=$(docker-compose version --short)
 if [ "$(version "$COMPOSE_VER")" -lt "$(version "$MIN_COMPOSE_VER")" ]; then
-  echo "ERR: Your Docker-compose version is Known to have bugs , Please Update docker-compose!"
+  echo "ERR: Your Docker-compose version is known to have bugs, please update docker-compose!"
   exit 1
 fi
 
@@ -109,8 +109,8 @@ echo "--------------------------------------------------------------------------
 echo "====> : OpenMapTiles quickstart! [ https://github.com/openmaptiles/openmaptiles ]    "
 echo "      : This will be logged to the $log_file file (for debugging) and to the screen"
 echo "      : Area             : $area "
-echo "      : Download Server  : ${osm_server:-unset (automatic)} "
-echo "      : Preloaded Image  : $USE_PRELOADED_IMAGE "
+echo "      : Download server  : ${osm_server:-unset (automatic)} "
+echo "      : Preloaded image  : $USE_PRELOADED_IMAGE "
 echo "      : Git version      : $(git rev-parse HEAD) "
 echo "      : Started          : $STARTDATE "
 echo "      : Your bash version: $BASH_VERSION"
@@ -130,11 +130,17 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
       echo "ERR: Sorry this is working only on x86_64!"
       exit 1
     fi
+
     echo "      : --- Memory, CPU info ---- "
-    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
-    echo "system memory (GB): ${mem}"
+    if [ -n "$(command -v bc)" ]; then
+        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
+        echo "System memory (GB): ${mem}"
+    else
+        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}')
+        echo "System memory (KB): ${mem}"
+    fi
     grep SwapTotal /proc/meminfo
-    echo "cpu number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
+    echo "CPU number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
     grep Free /proc/meminfo
 else
     echo " "
@@ -200,7 +206,7 @@ if [[ "$USE_PRELOADED_IMAGE" == true ]]; then
   echo "      :   make import-data"
   echo "      :"
   echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/postgis-preloaded"
-  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  echo "      : Thank you https://www.postgresql.org !  Thank you http://postgis.org !"
   make start-db-preloaded
 else
   echo "====> : Start PostgreSQL service using empty database and importing all the data:"
@@ -213,7 +219,7 @@ else
   echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-data"
   echo "      :   includes all data from the import-data image"
   echo "      :"
-  echo "      : Thank you: https://www.postgresql.org !  Thank you http://postgis.org !"
+  echo "      : Thank you https://www.postgresql.org !  Thank you http://postgis.org !"
   make start-db
   make import-data
 fi
@@ -233,7 +239,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Start importing border ${area} data into PostgreSQL using osmborder"
 echo "      : Source code: https://github.com/pnorman/osmborder"
 echo "      : Data license: http://www.openstreetmap.org/copyright"
-echo "      : Thank you: Paul Norman"
+echo "      : Thank you Paul Norman"
 make import-borders
 
 echo " "
@@ -263,26 +269,25 @@ make test-perf-null
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-if [[ "$area" != "planet" ]]; then
-  echo "====> : Compute bounding box for tile generation"
-  make generate-dc-config ${MIN_ZOOM:+MIN_ZOOM="${MIN_ZOOM}"} ${MAX_ZOOM:+MAX_ZOOM="${MAX_ZOOM}"}
+
+if [[ "$(source .env ; echo "$BBOX")" = "-180.0,-85.0511,180.0,85.0511" ]]; then
+  if [[ "$area" != "planet" ]]; then
+    echo "====> : Compute bounding box for tile generation"
+    make generate-bbox-file ${MIN_ZOOM:+MIN_ZOOM="${MIN_ZOOM}"} ${MAX_ZOOM:+MAX_ZOOM="${MAX_ZOOM}"}
+  else
+    echo "====> : Skipping bbox calculation when generating the entire planet"
+  fi
+
 else
-  echo "====> : Skipping bbox calculation when generating the entire planet"
+  echo "====> : Bounding box is set in .env file"
 fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
-echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
+echo "====> : Start generating MBTiles (containing gzipped MVT PBF) using PostGIS. "
 echo "      : Output MBTiles: ./data/${area}.mbtiles  "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/generate-vectortiles "
-echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
-echo "      : Thank you https://www.mapbox.com !"
-echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-tiles "
-echo "      :  "
-echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
-echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
-make generate-tiles
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
+make generate-tiles-pg
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -322,10 +327,10 @@ ls -la ./data
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "The ./quickstart.sh $area  is finished! "
-echo "It takes $((ENDTIME - STARTTIME)) seconds to complete"
-echo "We saved the log file to $log_file  ( for debugging ) You can compare with the travis log !"
+echo "It took $((ENDTIME - STARTTIME)) seconds to complete"
+echo "We saved the log file to $log_file  (for debugging) You can compare with the travis log !"
 echo " "
-echo "Start experimenting! And check the QUICKSTART.MD file!"
+echo "Start experimenting and check the QUICKSTART.MD file!"
 echo " "
 echo "*  Use   make start-maputnik     to explore tile generation on request"
 echo "*  Use   make start-tileserver   to view pre-generated tiles"

@@ -1,55 +1,49 @@
 generalized_tables:
-# etldoc: imposm3 -> osm_railway_linestring_gen5
-  railway_linestring_gen5:
-    source: railway_linestring_gen4
+# etldoc: osm_railway_linestring_gen_z9 -> osm_railway_linestring_gen_z8
+  railway_linestring_gen_z8:
+    source: railway_linestring_gen_z9
     tolerance: ZRES9
 
-# etldoc: imposm3 -> osm_railway_linestring_gen4
-  railway_linestring_gen4:
-    source: railway_linestring_gen3
+# etldoc: osm_railway_linestring_gen_z10 -> osm_railway_linestring_gen_z9
+  railway_linestring_gen_z9:
+    source: railway_linestring_gen_z10
     tolerance: ZRES10
 
-# etldoc: imposm3 -> osm_railway_linestring_gen3
-  railway_linestring_gen3:
-    source: railway_linestring_gen2
+# etldoc: osm_railway_linestring_gen_z11 -> osm_railway_linestring_gen_z10
+  railway_linestring_gen_z10:
+    source: railway_linestring_gen_z11
     tolerance: ZRES11
 
-# etldoc: imposm3 -> osm_railway_linestring_gen2
-  railway_linestring_gen2:
-    source: railway_linestring_gen1
+# etldoc: osm_railway_linestring_gen_z12 -> osm_railway_linestring_gen_z11
+  railway_linestring_gen_z11:
+    source: railway_linestring_gen_z12
     tolerance: ZRES12
 
-# etldoc: imposm3 -> osm_railway_linestring_gen1
-  railway_linestring_gen1:
+# etldoc: osm_railway_linestring -> osm_railway_linestring_gen_z12
+  railway_linestring_gen_z12:
     source: railway_linestring
     sql_filter: railway IN ('rail', 'narrow_gauge', 'light_rail') AND service='' AND ST_IsValid(geometry)
     tolerance: ZRES13
 
-# etldoc: imposm3 -> osm_aerialway_linestring_gen1
-  aerialway_linestring_gen1:
+# etldoc: osm_aerialway_linestring -> osm_aerialway_linestring_gen_z12
+  aerialway_linestring_gen_z12:
     source: aerialway_linestring
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
-# etldoc: imposm3 -> osm_shipway_linestring_gen2
-  shipway_linestring_gen2:
-    source: shipway_linestring_gen1
+# etldoc: osm_shipway_linestring_gen_z12 -> osm_shipway_linestring_gen_z11
+  shipway_linestring_gen_z11:
+    source: shipway_linestring_gen_z12
     tolerance: ZRES12
 
-# etldoc: imposm3 -> osm_shipway_linestring_gen1
-  shipway_linestring_gen1:
+# etldoc: osm_shipway_linestring -> osm_shipway_linestring_gen_z12
+  shipway_linestring_gen_z12:
     source: shipway_linestring
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
-# etldoc: imposm3 -> osm_highway_linestring_gen2
-  highway_linestring_gen2:
-    source: highway_linestring_gen1
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
-    tolerance: ZRES11
-
-# etldoc: imposm3 -> osm_highway_linestring_gen1
-  highway_linestring_gen1:
+# etldoc: osm_highway_linestring -> osm_highway_linestring_gen_z11
+  highway_linestring_gen_z11:
     source: highway_linestring
     sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link')) AND NOT is_area AND ST_IsValid(geometry)
     tolerance: ZRES12
@@ -98,6 +92,14 @@ service_field: &service
   key: service
   name: service
   type: string
+access_field: &access
+  key: access
+  name: access
+  type: string
+toll_field: &toll
+  key: toll
+  name: toll
+  type: bool
 usage_field: &usage
   key: usage
   name: usage
@@ -189,6 +191,8 @@ tables:
     - *oneway
     - *area
     - *service
+    - *access
+    - *toll
     - *usage
     - *public_transport
     - *man_made
@@ -228,6 +232,9 @@ tables:
       - platform
       man_made:
       - pier
+      service:
+      - driveway
+      - parking_aisle
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -358,6 +365,7 @@ tables:
       type: bool
     - *public_transport
     - *man_made
+    - *service
     mapping:
       highway:
       - path
@@ -372,6 +380,33 @@ tables:
       man_made:
       - bridge
       - pier
+
+  # etldoc: imposm3 -> highway_point
+  highway_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - *layer
+    - *level
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: ref
+      key: ref
+      type: string
+    mapping:
+      highway:
+      - motorway_junction
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member

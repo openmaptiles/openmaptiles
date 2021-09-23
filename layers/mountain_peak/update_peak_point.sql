@@ -51,6 +51,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION mountain_peak_point.refresh() RETURNS trigger AS
 $$
+DECLARE
+    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh mountain_peak_point';
     PERFORM update_osm_peak_point(false);
@@ -58,6 +60,8 @@ BEGIN
     DELETE FROM mountain_peak_point.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM mountain_peak_point.updates;
+
+    RAISE LOG 'Refresh mountain_peak_point done in %', age(clock_timestamp(), t);
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;

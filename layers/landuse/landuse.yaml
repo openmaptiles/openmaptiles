@@ -22,6 +22,7 @@ layer:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
       - bus_station
       - school
@@ -37,12 +38,14 @@ layer:
       - theme_park
       - zoo
       - suburb
+      - quarter
       - neighbourhood
       - dam
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./class.sql
   - ./landuse.sql
 datasources:
   - type: imposm3
