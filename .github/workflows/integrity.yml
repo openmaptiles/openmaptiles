@@ -50,12 +50,19 @@ jobs:
           # Create data/$area.repl.json
           make download-geofabrik area=$area
           # Download 2+ month old data
-          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$(date --date="$(date +%Y-%m-15) -2 month" +'%y%m01').osm.pbf"
+          export old_date=$(date --date="$(date +%Y-%m-15) -2 month" +'%y%m01')
+          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$old_date.osm.pbf"
           # Initial import and tile generation
           ./quickstart.sh $area
           # Download updates
           # Loop to recover from potential "ERROR 429: Too Many Requests"
-          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "while ! osmupdate --keep-tempfiles --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz ; do echo Sleeping...; sleep 630 ; done; echo Done."
+          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "
+            while ! osmupdate --keep-tempfiles --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz ; do 
+              sleep 2;
+              echo Sleeping...;
+              sleep 630;
+            done;
+            echo Done."
           # Import updates
           make import-diff
           # Generage new tiles
