@@ -455,7 +455,7 @@ BEGIN
         INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
                                                      brunnel, level, layer, indoor, network_type,
                                                      route_1, route_2, route_3, route_4, route_5, route_6)
-        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.tags, old.highway, old.subclass,
+        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.subclass,
                 old.brunnel, old.level, old.layer, old.indoor, old.network_type,
                 old.route_1, old.route_2, old.route_3, old.route_4, old.route_5, old.route_6);
     END IF;
