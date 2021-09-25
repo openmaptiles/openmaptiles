@@ -591,6 +591,12 @@ clean-unnecessary-docker:
 test-perf-null: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf $(TILESET_FILE) --test null --no-color
 
+.PHONY: test-schema-import
+test-schema-import: init-dirs
+	osmium cat unit-tests/import/*.osm -o build/import-tests.osm.pbf
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
+	cat unit-tests/test-post-import.sql >> build/sql/run_last.sql
+
 .PHONY: build-test-pbf
 build-test-pbf: init-dirs
 	docker-compose run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
