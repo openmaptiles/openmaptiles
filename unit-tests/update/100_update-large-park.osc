@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual">
+  <!--
+      Test 100: Change position by 0.1 degrees
+  -->
+  <modify>
+    <node id="100001" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="44.6" lon="-103.1"/>
+    <node id="100002" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="40.6" lon="-103.1"/>
+    <node id="100003" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="40.6" lon="-97.1"/>
+    <node id="100004" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="44.6" lon="-97.1"/>
+  </modify>
+</osmChange>
