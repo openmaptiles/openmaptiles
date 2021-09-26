@@ -20,7 +20,7 @@ make test-schema-import
 make import-sql
 
 # Load unit tests and sample data into SQL
-echo DIFF_MODE=true >> .env
+#echo DIFF_MODE=true >> .env
 #make test-schema-update
 
 # Import canned diff file
