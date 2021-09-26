@@ -39,4 +39,8 @@ $$
 LANGUAGE plpgsql;
 
 -- Run all tests
-SELECT test_import();
+DO $$
+BEGIN
+  PERFORM test_import();
+END;
+$$;

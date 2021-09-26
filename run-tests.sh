@@ -16,4 +16,8 @@ make test-schema-import
 # Import data with unit tests to follow
 make import-sql
 
-# TODO: update
+# Load unit tests and sample data into SQL
+#make test-schema-update
+
+# Import canned diff file
+#make import-diff area=changes
