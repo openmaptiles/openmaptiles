@@ -67,5 +67,5 @@ jobs:
           echo Downloading updates completed
           echo Importing updates
           make import-diff
-          echo Generaing new tiles
+          echo Generating new tiles
           make generate-tiles-pg
