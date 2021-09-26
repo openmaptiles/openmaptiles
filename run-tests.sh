@@ -8,6 +8,9 @@ make clean
 make all
 make start-db
 make import-data
+
+#Temp hack
+make download-geofabrik area=andorra
 make import-borders area=andorra
 
 # Load unit tests and sample data into SQL
