@@ -602,6 +602,7 @@ test-schema-update: init-dirs
 	osmium merge-changes unit-tests/update/*.osc --overwrite -o data/changes.osc.gz
 	cp -f unit-tests/changes.state.txt data/
 	cp -f unit-tests/last.state.txt data/
+	cp -f unit-tests/changes.repl.json data/
 	#cat unit-tests/test-post-update.sql >> build/sql/run_last.sql
 
 .PHONY: build-test-pbf

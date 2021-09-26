@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="400001" visible="true" version="1" lat="33.0" lon="-80.0" />
+  <node id="400002" visible="true" version="1" lat="33.1" lon="-80.0" />
+  <node id="400003" visible="true" version="1" lat="33.1" lon="-80.1" />
+  <node id="400004" visible="true" version="1" lat="33.0" lon="-80.1" />
+  <way id="4000" version="1" visible="true">
+    <nd ref="400001" />
+    <nd ref="400002" />
+    <nd ref="400003" />
+    <nd ref="400004" />
+    <nd ref="400001" />
+  </way>
+  <relation id="400" visible="true" version="1" changeset="1" timestamp="2021-09-21T02:44:48Z" user="u" uid="1">
+    <member type="way" ref="4000" role="outer"/>
+    <tag k="admin_level" v="8"/>
+    <tag k="boundary" v="administrative"/>
+    <tag k="name" v="OpenMapTiles City"/>
+    <tag k="place" v="city"/>
+    <tag k="type" v="boundary"/>
+  </relation>
+</osm>

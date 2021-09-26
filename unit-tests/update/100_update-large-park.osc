@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<osmChange version="0.6" generator="Manual">
+<osmChange version="0.6" generator="Manual" timestamp="2021-09-25T20:21:13Z">
   <!--
       Test 100: Park polygons
         Move geometry
@@ -7,13 +7,13 @@
   -->
   <modify>
     <!-- Move polygon positions -->
-    <node id="100001" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="44.6" lon="-103.1"/>
-    <node id="100002" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="40.6" lon="-103.1"/>
-    <node id="100003" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="40.6" lon="-97.1"/>
-    <node id="100004" version="2" timestamp="2021-09-25T16:10:06Z" uid="1" user="u" changeset="1" lat="44.6" lon="-97.1"/>
+    <node id="100001" version="2" timestamp="2021-09-25T20:21:13Z" uid="1" user="u" changeset="1" lat="44.6" lon="-103.1"/>
+    <node id="100002" version="2" timestamp="2021-09-25T20:21:13Z" uid="1" user="u" changeset="1" lat="40.6" lon="-103.1"/>
+    <node id="100003" version="2" timestamp="2021-09-25T20:21:13Z" uid="1" user="u" changeset="1" lat="40.6" lon="-97.1"/>
+    <node id="100004" version="2" timestamp="2021-09-25T20:21:13Z" uid="1" user="u" changeset="1" lat="44.6" lon="-97.1"/>
 
     <!-- Change polygon tags -->
-    <way id="1000" version="2" timestamp="2021-09-25T16:10:45Z" uid="1" user="u" changeset="1">
+    <way id="1000" version="2" timestamp="2021-09-25T20:21:13Z" uid="1" user="u" changeset="1">
       <nd ref="100001" />
       <nd ref="100002" />
       <nd ref="100003" />

@@ -8,7 +8,7 @@ make clean
 make all
 make start-db
 make import-data
-make import-borders
+make import-borders area=andorra
 
 # Load unit tests and sample data into SQL
 make test-schema-import
@@ -17,6 +17,7 @@ make test-schema-import
 make import-sql
 
 # Load unit tests and sample data into SQL
+echo DIFF_MODE=true >> .env
 #make test-schema-update
 
 # Import canned diff file
