@@ -599,10 +599,11 @@ test-schema-import: init-dirs
 
 .PHONY: test-schema-update
 test-schema-update: init-dirs
-	osmconvert unit-tests/update/*.osc  -merge-versions -o=data/changes.osc.gz
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/update/*.osc --merge-versions -o=data/changes.osc && gzip data/changes.osc'
 	cp -f unit-tests/changes.state.txt data/
 	cp -f unit-tests/last.state.txt data/
 	cp -f unit-tests/changes.repl.json data/
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
 	#cat unit-tests/test-post-update.sql >> build/sql/run_last.sql
 
 .PHONY: build-test-pbf
