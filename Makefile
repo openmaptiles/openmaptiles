@@ -593,13 +593,13 @@ test-perf-null: init-dirs
 
 .PHONY: test-schema-import
 test-schema-import: init-dirs
-	osmium cat unit-tests/import/*.osm --overwrite -o build/import-tests.osm.pbf
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/import/*.osm -o=build/import-tests.osm.pbf'
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
 	cat unit-tests/test-post-import.sql >> build/sql/run_last.sql
 
 .PHONY: test-schema-update
 test-schema-update: init-dirs
-	osmium merge-changes unit-tests/update/*.osc --overwrite -o data/changes.osc.gz
+	osmconvert unit-tests/update/*.osc  -merge-versions -o=data/changes.osc.gz
 	cp -f unit-tests/changes.state.txt data/
 	cp -f unit-tests/last.state.txt data/
 	cp -f unit-tests/changes.repl.json data/
