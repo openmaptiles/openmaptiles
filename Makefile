@@ -593,18 +593,22 @@ test-perf-null: init-dirs
 
 .PHONY: test-schema-import
 test-schema-import: init-dirs
+	@echo "Preparing IMPORT unit tests..."
+	sed -ir "s/^[#]*\s*MAX_ZOOM=.*/MAX_ZOOM=14/" .env
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/import/*.osm -o=build/import-tests.osm.pbf'
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
 	cat unit-tests/test-post-import.sql >> build/sql/run_last.sql
+	@echo "Run make import-sql to run IMPORT unit tests..."
 
 .PHONY: test-schema-update
 test-schema-update: init-dirs
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/update/*.osc --merge-versions -o=data/changes.osc && gzip data/changes.osc'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
 	cp -f unit-tests/changes.state.txt data/
 	cp -f unit-tests/last.state.txt data/
 	cp -f unit-tests/changes.repl.json data/
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
-	#cat unit-tests/test-post-update.sql >> build/sql/run_last.sql
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh < unit-tests/test-post-update.sql'
 
 .PHONY: build-test-pbf
 build-test-pbf: init-dirs
