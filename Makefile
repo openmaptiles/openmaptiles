@@ -250,7 +250,7 @@ init-dirs:
 	@mkdir -p build/openmaptiles.tm2source
 	@mkdir -p data
 	@mkdir -p cache
-	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
