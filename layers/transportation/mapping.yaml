@@ -1,3 +1,11 @@
+# Optional user-defind tags, such as
+#
+#tags:
+#  include:
+#    - maxspeed
+#    - maxheight
+#    - tracktype
+
 generalized_tables:
 # etldoc: osm_railway_linestring_gen_z9 -> osm_railway_linestring_gen_z8
   railway_linestring_gen_z8:
@@ -60,6 +68,9 @@ name_de_field: &name_de
   name: name_de
   key: name:de
   type: string
+tags_field: &tags
+  name: tags
+  type: hstore_tags
 short_name_field: &short_name
   key: short_name
   name: short_name
@@ -181,8 +192,7 @@ tables:
     - *name
     - *name_en
     - *name_de
-    - name: tags
-      type: hstore_tags
+    - *tags
     - *short_name
     - *tunnel
     - *bridge
@@ -257,8 +267,7 @@ tables:
     - *name
     - *name_en
     - *name_de
-    - name: tags
-      type: hstore_tags
+    - *tags
     - *short_name
     - *tunnel
     - *bridge
@@ -296,8 +305,7 @@ tables:
     - *name
     - *name_en
     - *name_de
-    - name: tags
-      type: hstore_tags
+    - *tags
     - *short_name
     - *tunnel
     - *bridge
@@ -329,8 +337,7 @@ tables:
     - *name
     - *name_en
     - *name_de
-    - name: tags
-      type: hstore_tags
+    - *tags
     - *short_name
     - *tunnel
     - *bridge
@@ -352,6 +359,7 @@ tables:
       type: id
     - name: geometry
       type: geometry
+    - *tags
     - name: highway
       key: highway
       type: string
@@ -360,9 +368,7 @@ tables:
     - *layer
     - *level
     - *indoor
-    - name: is_area
-      key: area
-      type: bool
+    - *area
     - *public_transport
     - *man_made
     - *service
@@ -399,8 +405,7 @@ tables:
     - *name
     - *name_en
     - *name_de
-    - name: tags
-      type: hstore_tags
+    - *tags
     - name: ref
       key: ref
       type: string

@@ -188,10 +188,29 @@ layer:
       values:
       - paved
       - unpaved
+    # Optional user-defind tags, such as
+    #
+    #maxspeed:
+    #  description: |
+    #      Original value of [`maxspeed`](http://wiki.openstreetmap.org/wiki/Key:maxspeed) tag, if exists.
+    #maxheight:
+    #  description: |
+    #      Original value of [`maxheight`](http://wiki.openstreetmap.org/wiki/Key:maxheight) tag, if exists.
+    #tracktype:
+    #  description: |
+    #      Original value of [`tracktype`](http://wiki.openstreetmap.org/wiki/Key:tracktype) tag, if exists.
+    #
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: |
+      (SELECT geometry,
+      -- Optional user-defind tags, such as
+      -- NULLIF(tags->'maxspeed', '') AS "maxspeed",
+      -- NULLIF(tags->'maxheight', '') AS "maxheight",
+      -- NULLIF(tags->'tracktype', '') AS "tracktype",
+      -- 
+      class, subclass, network, oneway, ramp, brunnel, service, access, toll, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
