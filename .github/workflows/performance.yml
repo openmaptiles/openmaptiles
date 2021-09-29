@@ -153,13 +153,12 @@ jobs:
             make start-db
             profile 1_data     make import-data
             profile 2_osm      make import-osm
-            profile 3_borders  make import-borders
 
             if [ -f ../ci_cache/wikidata-cache.json ]; then
               cp ../ci_cache/wikidata-cache.json cache/wikidata-cache.json
             fi
-            profile 4_wikidata make import-wikidata
-            profile 5_sql      make import-sql
+            profile 3_wikidata make import-wikidata
+            profile 4_sql      make import-sql
 
             # Get database total size, in MB
             # Once Makefile has a few more improvements, we can use this approach instead:

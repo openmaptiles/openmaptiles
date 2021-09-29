@@ -1,23 +1,25 @@
 DROP TABLE IF EXISTS osm_border_linestring_adm CASCADE;
 
 -- etldoc: osm_border_linestring -> osm_border_linestring_adm
+-- etldoc: osm_border_disp_linestring -> osm_border_linestring_adm
+-- etldoc: ne_10m_admin_0_countries -> osm_border_linestring_adm
 CREATE TABLE IF NOT EXISTS osm_border_linestring_adm AS ( 
   WITH 
     -- Prepare lines from osm to be merged
 	multiline AS (
-    	SELECT ST_Node(ST_Collect(geometry)) AS geometry, 
-			   maritime,
-			   disputed
+        SELECT osm_id,
+               ST_Node(ST_Collect(geometry)) AS geometry,
+               BOOL_OR(maritime) AS maritime,
+               FALSE AS disputed
     	FROM osm_border_linestring
-    	WHERE admin_level = 2
+    	WHERE admin_level = 2 AND ST_Dimension(geometry) = 1
 		    AND osm_id NOT IN (SELECT DISTINCT osm_id FROM osm_border_disp_linestring)
-		GROUP BY maritime,
-				 disputed
+              GROUP BY osm_id
 		),
 
 	mergedline AS (
-		SELECT (ST_Dump(
-      		     ST_LineMerge(geometry))).geom AS geometry,
+		SELECT osm_id,
+      		     (ST_Dump(ST_LineMerge(geometry))).geom AS geometry,
 			maritime,
 			disputed
   		FROM multiline
@@ -32,7 +34,7 @@ CREATE TABLE IF NOT EXISTS osm_border_linestring_adm AS (
   			FROM (SELECT ST_Node(
                           ST_Collect(geometry)) AS geometry
     			FROM osm_border_linestring
-    			WHERE admin_level = 2
+    			WHERE admin_level = 2 AND ST_Dimension(geometry) = 1
                 ) nodes
 			) linemerge
   		), 
@@ -55,12 +57,14 @@ CREATE TABLE IF NOT EXISTS osm_border_linestring_adm AS (
 	),
 
 	rights AS (
-    	SELECT adm0_r,
+        SELECT osm_id,
+			   adm0_r,
 			   geometry,
 			   maritime,
 			   disputed
 		FROM (
-			SELECT b.adm0_a3 AS adm0_r,
+			SELECT a.osm_id AS osm_id,
+                   b.adm0_a3 AS adm0_r,
                    a.geometry,
                    a.maritime,
                    a.disputed
@@ -73,14 +77,16 @@ CREATE TABLE IF NOT EXISTS osm_border_linestring_adm AS (
             ) line_rights
 		)
 
-  SELECT adm0_l,
+  SELECT osm_id,
+		 adm0_l,
 		 adm0_r,
 		 geometry,
 		 maritime,
 		 2::integer AS admin_level,
 		 disputed
   FROM (
-    SELECT b.adm0_a3 AS adm0_l,
+    SELECT r.osm_id AS osm_id,
+           b.adm0_a3 AS adm0_l,
            r.adm0_r AS adm0_r,
            r.geometry,
            r.maritime,

@@ -42,10 +42,6 @@ services:
       BBOX: ${BBOX}
       # Imposm configuration file describes how to load updates when enabled
       IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
-      # Which files to use during import-borders processing
-      BORDERS_CLEANUP_FILE: ${BORDERS_CLEANUP_FILE}
-      BORDERS_PBF_FILE: ${BORDERS_PBF_FILE}
-      BORDERS_CSV_FILE: ${BORDERS_CSV_FILE}
       # Control import-sql processes
       MAX_PARALLEL_PSQL: ${MAX_PARALLEL_PSQL}
     networks:
