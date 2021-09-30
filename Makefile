@@ -598,8 +598,7 @@ test-schema-import: init-dirs
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/import/*.osm -o=build/import-tests.osm.pbf'
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
-	cat unit-tests/test-post-import.sql >> build/sql/run_last.sql
-	@echo "Run make import-sql to run IMPORT unit tests..."
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < unit-tests/test-post-update.sql'
 
 .PHONY: test-schema-update
 test-schema-update: init-dirs

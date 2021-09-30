@@ -13,11 +13,10 @@ make import-data
 make download-geofabrik area=andorra
 make import-borders area=andorra
 
-# Load unit tests and sample data into SQL
-make test-schema-import
-
-# Import data with unit tests to follow
 make import-sql
+
+# Load unit tests and sample data into SQL and run tests
+make test-schema-import
 
 # Load unit tests and sample data into SQL
 make test-schema-update
