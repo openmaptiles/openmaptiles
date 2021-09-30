@@ -124,6 +124,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION update_osm_park_dissolved_polygon_row()
+    RETURNS trigger
+AS
+$$
+BEGIN
+    NEW.tags = update_tags(NEW.tags, NEW.geometry);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TRIGGER update_row
     BEFORE INSERT OR UPDATE
     ON osm_park_polygon
@@ -188,5 +198,5 @@ CREATE TRIGGER update_row
     BEFORE INSERT OR UPDATE
     ON osm_park_polygon_gen_z4
     FOR EACH ROW
-EXECUTE PROCEDURE update_osm_park_polygon_row();
+EXECUTE PROCEDURE update_osm_park_dissolved_polygon_row();
 
