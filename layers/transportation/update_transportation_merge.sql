@@ -30,16 +30,37 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        foot,
        horse,
        mtb_scale,
-       CASE
-           WHEN access IN ('private', 'no') THEN 'no'
-           ELSE NULL::text END AS access,
-       CASE
-           WHEN toll = 'yes' THEN true
-           ELSE false END AS toll,
+       access,
+       toll,
        layer
-FROM osm_highway_linestring_gen_z11
+FROM (
+        SELECT
+               geometry,
+               NULLIF((tags - slice_language_tags(tags)) - ARRAY[
+                    'highway', 'network', 'construction', 'bridge', 'tunnel', 'bicycle', 'foot', 'horse', 'mtb:scale', 'access', 'toll', 'layer', 
+                    'short_name', 'ramp', 'ford', 'oneway', 'area', 'service', 'usage', 'public_transport', 'ref', 'level', 'indoor', 'man_made', 'surface'
+                    ], ''::hstore) AS tags,
+               highway,
+               network,
+               construction,
+               is_bridge,
+               is_tunnel,
+               is_ford,
+               z_order,
+               bicycle,
+               foot,
+               horse,
+               mtb_scale,
+               CASE
+                   WHEN access IN ('private', 'no') THEN 'no'
+                   ELSE NULL::text END AS access,
+               CASE
+                   WHEN toll = 'yes' THEN true
+                   ELSE false END AS toll,
+               layer
+        FROM osm_highway_linestring_gen_z11 ) AS t
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY tags, highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer, tags
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
