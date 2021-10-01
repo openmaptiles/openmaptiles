@@ -1,3 +1,9 @@
+tags:
+  include:
+  - landuse
+  - leisure
+  - boundary
+
 generalized_tables:
   # etldoc: osm_park_polygon_gen_z5 -> osm_park_polygon_gen_z4
   park_polygon_gen_z4:
@@ -70,29 +76,8 @@ tables:
       type: id
     - name: geometry
       type: validated_geometry
-    - name: name
-      key: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
     - name: tags
       type: hstore_tags
-    - name: landuse
-      key: landuse
-      type: string
-    - name: leisure
-      key: leisure
-      type: string
-    - name: boundary
-      key: boundary
-      type: string
-    - name: protection_title
-      key: protection_title
-      type: string
     - name: area
       type: area
     mapping:
