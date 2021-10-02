@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit on error
+set -e
+
 # Clean initial state with data import
 make refresh-docker-images
 make destroy-db
@@ -9,17 +12,16 @@ make all
 make start-db
 make import-data
 
-#Temp hack
-make download-geofabrik area=andorra
-make import-borders area=andorra
+# Load test case data into SQL
+make import-test-data
 
 make import-sql
 
-# Load unit tests and sample data into SQL and run tests
+# Run unit tests
 make test-schema-import
 
 # Load unit tests and sample data into SQL
-make test-schema-update
+#make test-schema-update
 
 # Import canned diff file
-make import-diff area=changes
+#make import-diff area=changes
