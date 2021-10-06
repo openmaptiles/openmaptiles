@@ -42,3 +42,30 @@ tables:
       - canal
       - drain
       - ditch
+
+  # etldoc: imposm3 -> osm_waterway_relation
+  waterway_relation:
+    type: relation_member
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+      #- key: route
+      #  name: route
+      #  type: string
+      #- key: type
+      #  name: type
+      #  type: string
+    - key: waterway
+      name: waterway
+      type: string
+    - key: name
+      name: name
+      type: string
+    - name: tags
+      type: hstore_tags
+    mapping:
+        #route: [waterway]
+        #type: [waterway]
+      waterway: [river]
