@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS simplify_vw_z11 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z12 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z13 CASCADE;
 
--- etldoc: osm_landcover_polygon ->  osm_landcover_gen_z13
+-- etldoc: osm_landcover_polygon ->  simplify_vw_z13
 CREATE TABLE simplify_vw_z13 AS
 (
     SELECT subclass,
@@ -26,6 +26,7 @@ CREATE TABLE simplify_vw_z13 AS
 );
 CREATE INDEX ON simplify_vw_z13 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z13 ->  osm_landcover_gen_z13
 CREATE TABLE osm_landcover_gen_z13 AS
 (
 SELECT subclass,
@@ -62,7 +63,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z13 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z13 ->  osm_landcover_gen_z12
+-- etldoc: simplify_vw_z13 ->  simplify_vw_z12
 CREATE TABLE simplify_vw_z12 AS
 (
     SELECT subclass,
@@ -75,6 +76,7 @@ CREATE TABLE simplify_vw_z12 AS
 );
 CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z12 ->  osm_landcover_gen_z12
 CREATE TABLE osm_landcover_gen_z12 AS
 (
 SELECT subclass,
@@ -111,7 +113,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z12 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z12 ->  osm_landcover_gen_z11
+-- etldoc: simplify_vw_z12 ->  simplify_vw_z11
 CREATE TABLE simplify_vw_z11 AS
 (
     SELECT subclass,
@@ -124,6 +126,7 @@ CREATE TABLE simplify_vw_z11 AS
 );
 CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z11 ->  osm_landcover_gen_z11
 CREATE TABLE osm_landcover_gen_z11 AS
 (
 SELECT subclass,
@@ -160,7 +163,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z11 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z11 ->  osm_landcover_gen_z10
+-- etldoc: simplify_vw_z11 ->  simplify_vw_z10
 CREATE TABLE simplify_vw_z10 AS
 (
     SELECT subclass,
@@ -173,6 +176,7 @@ CREATE TABLE simplify_vw_z10 AS
 );
 CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z10 ->  osm_landcover_gen_z10
 CREATE TABLE osm_landcover_gen_z10 AS
 (
 SELECT subclass,
@@ -209,7 +213,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z10 ->  osm_landcover_gen_z9
+-- etldoc: simplify_vw_z10 ->  simplify_vw_z9
 CREATE TABLE simplify_vw_z9 AS
 (
     SELECT subclass,
@@ -222,6 +226,7 @@ CREATE TABLE simplify_vw_z9 AS
 );
 CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z9 ->  osm_landcover_gen_z9
 CREATE TABLE osm_landcover_gen_z9 AS
 (
 SELECT subclass,
@@ -270,7 +275,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z9 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z9 ->  osm_landcover_gen_z8
+-- etldoc: simplify_vw_z9 ->  simplify_vw_z8
 CREATE TABLE simplify_vw_z8 AS
 (
     SELECT subclass,
@@ -283,6 +288,7 @@ CREATE TABLE simplify_vw_z8 AS
     );
 CREATE INDEX ON simplify_vw_z8 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z8 ->  osm_landcover_gen_z8
 CREATE TABLE osm_landcover_gen_z8 AS
 (
 SELECT subclass,
@@ -308,7 +314,7 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z8 USING GIST (geometry);
 
 
--- etldoc: osm_landcover_gen_z8 ->  osm_landcover_gen_z7
+-- etldoc: simplify_vw_z8 ->  simplify_vw_z7
 CREATE TABLE simplify_vw_z7 AS
 (
     SELECT subclass,
@@ -321,6 +327,7 @@ CREATE TABLE simplify_vw_z7 AS
 );
 CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
 
+-- etldoc: simplify_vw_z7 ->  osm_landcover_gen_z7
 CREATE TABLE osm_landcover_gen_z7 AS
 (
 SELECT subclass,
