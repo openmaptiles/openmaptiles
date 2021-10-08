@@ -29,26 +29,12 @@ CREATE INDEX ON simplify_vw_z13 USING GIST (geometry);
 -- etldoc: simplify_vw_z13 ->  osm_landcover_gen_z13
 CREATE TABLE osm_landcover_gen_z13 AS
 (
-SELECT subclass,
-       ST_MakeValid(
-        (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z13
-        WHERE ST_NPoints(geometry) < 50
-          AND subclass IN ('wood', 'forest')) union_geom50
-    GROUP BY subclass,
-             cid
-    UNION ALL
     SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z13
-        WHERE ST_NPoints(geometry) >= 50
-          AND ST_NPoints(geometry) < 300
+        WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
              cid
@@ -79,26 +65,12 @@ CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 -- etldoc: simplify_vw_z12 ->  osm_landcover_gen_z12
 CREATE TABLE osm_landcover_gen_z12 AS
 (
-SELECT subclass,
-       ST_MakeValid(
-        (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z12
-        WHERE ST_NPoints(geometry) < 50
-          AND subclass IN ('wood', 'forest')) union_geom50
-    GROUP BY subclass,
-             cid
-    UNION ALL
     SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z12
-        WHERE ST_NPoints(geometry) >= 50
-          AND ST_NPoints(geometry) < 300
+        WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
              cid
@@ -129,26 +101,12 @@ CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 -- etldoc: simplify_vw_z11 ->  osm_landcover_gen_z11
 CREATE TABLE osm_landcover_gen_z11 AS
 (
-SELECT subclass,
-       ST_MakeValid(
-        (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z11
-        WHERE ST_NPoints(geometry) < 50
-          AND subclass IN ('wood', 'forest')) union_geom50
-    GROUP BY subclass,
-             cid
-    UNION ALL
     SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z11
-        WHERE ST_NPoints(geometry) >= 50
-          AND ST_NPoints(geometry) < 300
+        WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
              cid
@@ -179,26 +137,12 @@ CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 -- etldoc: simplify_vw_z10 ->  osm_landcover_gen_z10
 CREATE TABLE osm_landcover_gen_z10 AS
 (
-SELECT subclass,
-       ST_MakeValid(
-        (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z10
-        WHERE ST_NPoints(geometry) < 50
-          AND subclass IN ('wood', 'forest')) union_geom50
-    GROUP BY subclass,
-             cid
-    UNION ALL
     SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z10
-        WHERE ST_NPoints(geometry) >= 50
-          AND ST_NPoints(geometry) < 300
+        WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
              cid
@@ -229,26 +173,12 @@ CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 -- etldoc: simplify_vw_z9 ->  osm_landcover_gen_z9
 CREATE TABLE osm_landcover_gen_z9 AS
 (
-SELECT subclass,
-       ST_MakeValid(
-        (ST_dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z9
-        WHERE ST_NPoints(geometry) < 50
-          AND subclass IN ('wood', 'forest')) union_geom50
-    GROUP BY subclass,
-             cid
-    UNION ALL
     SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z9
-        WHERE ST_NPoints(geometry) >= 50
-          AND ST_NPoints(geometry) < 300
+        WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
              cid
