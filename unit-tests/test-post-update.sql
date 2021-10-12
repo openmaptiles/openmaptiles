@@ -1,6 +1,7 @@
 -- Checks to ensure that test data was imported correctly
-
-CREATE OR REPLACE FUNCTION test_update() RETURNS VOID AS $$
+CREATE OR REPLACE PROCEDURE test_update()
+LANGUAGE plpgsql
+AS $$
 
 DECLARE
   cnt integer;
@@ -15,17 +16,16 @@ BEGIN
 
   SELECT COUNT(*) INTO cnt FROM omt_test_failures;
   IF cnt > 0 THEN
-    RAISE '% unit test(s) Failed.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
+    RAISE '% unit test(s) failed on updates.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
   END IF;
 
 END;
 
-$$
-LANGUAGE plpgsql;
+$$;
 
--- Run all tests
 DO $$
 BEGIN
+-- Run all tests
   PERFORM test_update();
 END;
 $$;

@@ -4,6 +4,7 @@
 set -e
 
 # Clean initial state with data import
+export area=changes
 make refresh-docker-images
 make destroy-db
 make init-dirs
@@ -20,8 +21,9 @@ make import-sql
 # Run unit tests
 make test-schema-import
 
-# Load unit tests and sample data into SQL
-#make test-schema-update
-
 # Import canned diff file
-#make import-diff area=changes
+make import-diff area=changes
+
+# Load unit tests and sample data into SQL
+make test-schema-update
+
