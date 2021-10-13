@@ -9,10 +9,15 @@ BEGIN
   -- Clear prior results
   DELETE FROM omt_test_failures WHERE test_type='update';
 
-  -- Test 100
+  -- Test 100: Verify re-tag of national_park to protected_area worked
   SELECT COUNT(*) INTO cnt FROM osm_park_polygon_gen_z5 WHERE boundary='national_park';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(100, 'update', 'osm_park_polygon_gen_z5 national_park expected 1, got ' || cnt);
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(100, 'update', 'osm_park_polygon_gen_z5 national_park expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_park_polygon_gen_z5 WHERE boundary='protected_area';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(100, 'update', 'osm_park_polygon_gen_z5 protected_area expected 2, got ' || cnt);
   END IF;
 
 END;
