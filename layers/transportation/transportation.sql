@@ -55,19 +55,23 @@ SELECT osm_id,
        CASE
            WHEN highway_is_link(highway) OR highway = 'steps'
                THEN 1
-           ELSE is_ramp::int END AS ramp,
-       is_oneway::int AS oneway,
-       brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
+           ELSE (tags->'ramp')::int END AS ramp,
+       CASE
+           WHEN NOT tags?'oneway' OR tags->'oneway'='no' THEN NULL::int
+           WHEN tags->'oneway' = 'yes' THEN 1
+           WHEN tags->'oneway' = '-1' THEN -1
+           ELSE NULL::int END AS oneway,
+       brunnel(is_bridge, clean_bool(tags->'tunnel'), clean_bool(tags->'ford')) AS brunnel,
        NULLIF(service, '') AS service,
        access,
-       CASE WHEN toll = TRUE THEN 1 END AS toll,
-       NULLIF(layer, 0) AS layer,
+       CASE WHEN clean_bool(tags->'toll') = TRUE THEN 1 END AS toll,
+       NULLIF((tags->'layer')::int, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
-       NULLIF(bicycle, '') AS bicycle,
-       NULLIF(foot, '') AS foot,
-       NULLIF(horse, '') AS horse,
-       NULLIF(mtb_scale, '') AS mtb_scale,
+       NULLIF(tags->'bicycle', '') AS bicycle,
+       NULLIF(tags->'foot', '') AS foot,
+       NULLIF(tags->'horse', '') AS horse,
+       NULLIF(tags->'mtb_scale', '') AS mtb_scale,
        NULLIF(surface, '') AS surface
 FROM (
          -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
@@ -82,22 +86,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 NULL AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z4
          WHERE zoom_level = 4
          UNION ALL
@@ -114,22 +109,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 NULL AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z5
          WHERE zoom_level = 5
          UNION ALL
@@ -146,22 +132,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 NULL AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z6
          WHERE zoom_level = 6
          UNION ALL
@@ -178,22 +155,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 NULL AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z7
          WHERE zoom_level = 7
          UNION ALL
@@ -210,22 +178,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 NULL AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z8
          WHERE zoom_level = 8
          UNION ALL
@@ -242,22 +201,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 access,
-                toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                bicycle,
-                foot,
-                horse,
-                mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z9
          WHERE zoom_level = 9
          UNION ALL
@@ -274,22 +224,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 access,
-                toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                bicycle,
-                foot,
-                horse,
-                mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z10
          WHERE zoom_level = 10
          UNION ALL
@@ -306,22 +247,13 @@ FROM (
                 NULL AS public_transport,
                 NULL AS service,
                 access,
-                toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                bicycle,
-                foot,
-                horse,
-                mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_transportation_merge_linestring_gen_z11
          WHERE zoom_level = 11
          UNION ALL
@@ -340,22 +272,13 @@ FROM (
                 public_transport,
                 service_value(service) AS service,
                 CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
-                toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 man_made,
-                layer,
                 CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
                 CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-                bicycle,
-                foot,
-                horse,
-                mtb_scale,
                 surface_value(surface) AS "surface",
-                z_order
+                z_order,
+                tags
          FROM osm_highway_linestring
          WHERE NOT is_area
            AND
@@ -383,22 +306,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 NULL::boolean AS is_bridge,
-                NULL::boolean AS is_tunnel,
-                NULL::boolean AS is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring_gen_z8
          WHERE zoom_level = 8
            AND railway = 'rail'
@@ -418,22 +332,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 NULL::boolean AS is_bridge,
-                NULL::boolean AS is_tunnel,
-                NULL::boolean AS is_ford,
-                NULL::boolean AS is_ramp,
-                NULL::int AS is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
            AND railway = 'rail'
@@ -453,22 +358,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
            AND railway IN ('rail', 'narrow_gauge')
@@ -487,22 +383,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -521,22 +408,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring_gen_z12
          WHERE zoom_level = 12
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -556,22 +434,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_railway_linestring
          WHERE zoom_level = 13
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -591,22 +460,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_aerialway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
@@ -624,22 +484,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_aerialway_linestring
          WHERE zoom_level >= 13
          UNION ALL
@@ -656,22 +507,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_shipway_linestring_gen_z11
          WHERE zoom_level = 11
          UNION ALL
@@ -688,22 +530,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_shipway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
@@ -721,22 +554,13 @@ FROM (
                 NULL AS public_transport,
                 service_value(service) AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 is_bridge,
-                is_tunnel,
-                is_ford,
-                is_ramp,
-                is_oneway,
                 NULL AS man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_shipway_linestring
          WHERE zoom_level >= 13
          UNION ALL
@@ -758,25 +582,16 @@ FROM (
                 public_transport,
                 NULL AS service,
                 NULL::text AS access,
-                NULL::boolean AS toll,
                 CASE
                     WHEN man_made IN ('bridge') THEN TRUE
                     ELSE FALSE
                     END AS is_bridge,
-                FALSE AS is_tunnel,
-                FALSE AS is_ford,
-                FALSE AS is_ramp,
-                FALSE::int AS is_oneway,
                 man_made,
-                layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor,
-                NULL AS bicycle,
-                NULL AS foot,
-                NULL AS horse,
-                NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
+                z_order,
+                tags
          FROM osm_highway_polygon
               -- We do not want underground pedestrian areas for now
          WHERE zoom_level >= 13

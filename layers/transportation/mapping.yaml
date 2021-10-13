@@ -357,6 +357,8 @@ tables:
       type: string
     - name: z_order
       type: wayzorder
+    - name: tags
+      type: hstore_tags
     - *layer
     - *level
     - *indoor

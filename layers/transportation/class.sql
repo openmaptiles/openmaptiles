@@ -90,3 +90,18 @@ SELECT CASE
 $$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION clean_bool(inval text)
+   RETURNS boolean
+AS
+$$
+BEGIN
+  BEGIN
+    RETURN $1::boolean;
+  EXCEPTION
+    WHEN OTHERS THEN
+       RETURN NULL::boolean;
+  END;
+END;
+$$
+language plpgsql;

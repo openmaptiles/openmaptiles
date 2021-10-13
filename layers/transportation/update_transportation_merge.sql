@@ -6,6 +6,9 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
+-- Remove tag values duplicated in column mappings
+UPDATE osm_highway_linestring SET tags = highway_linestring_strip_tags(tags);
+UPDATE osm_highway_polygon SET tags = highway_polygon_strip_tags(tags);
 
 -- Improve performance of the sql in transportation/update_route_member.sql
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
@@ -22,21 +25,14 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
        min(z_order) as z_order,
-       bicycle,
-       foot,
-       horse,
-       mtb_scale,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
-       toll,
-       layer
+       tags
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+GROUP BY highway, network, construction, is_bridge, access, tags
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
@@ -50,16 +46,9 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
        z_order,
-       bicycle,
-       foot,
-       horse,
-       mtb_scale,
        access,
-       toll,
-       layer
+       tags
 FROM osm_transportation_merge_linestring_gen_z11
 WHERE highway NOT IN ('tertiary', 'tertiary_link')
       OR construction NOT IN ('tertiary', 'tertiary_link')
@@ -76,16 +65,9 @@ SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
        z_order,
-       bicycle,
-       foot,
-       horse,
-       mtb_scale,
        access,
-       toll,
-       layer
+       tags
 FROM osm_transportation_merge_linestring_gen_z10
      -- Current view: motorway/primary/secondary, with _link variants and construction 
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
@@ -101,15 +83,14 @@ SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
-       min(z_order) as z_order
+       min(z_order) as z_order,
+       tags
 FROM osm_transportation_merge_linestring_gen_z9
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        construction IN ('motorway', 'trunk', 'primary'))
        AND ST_IsValid(geometry)
        AND access IS NULL
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
+GROUP BY highway, network, construction, is_bridge, tags
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
@@ -123,9 +104,8 @@ SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
+       z_order,
+       tags
 FROM osm_transportation_merge_linestring_gen_z8
      -- Current view: motorway/trunk/primary
 WHERE ST_Length(geometry) > 50
@@ -142,9 +122,8 @@ SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
+       z_order,
+       tags
 FROM osm_transportation_merge_linestring_gen_z7
 WHERE (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 100
@@ -161,9 +140,8 @@ SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
+       z_order,
+       tags
 FROM osm_transportation_merge_linestring_gen_z6
 WHERE ST_Length(geometry) > 500
      -- Current view: motorway/trunk
@@ -180,9 +158,8 @@ SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
        network,
        construction,
        is_bridge,
-       is_tunnel,
-       is_ford,
-       z_order
+       z_order,
+       tags
 FROM osm_transportation_merge_linestring_gen_z5
 WHERE (highway = 'motorway' OR construction = 'motorway')
   AND ST_Length(geometry) > 1000
@@ -215,6 +192,9 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
+    UPDATE osm_highway_linestring SET tags = transportation_strip_tags(tags)
+        WHERE osm_id IN (SELECT id FROM transportation.updates);
+
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z9;
