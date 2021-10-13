@@ -12,7 +12,6 @@ layer:
           Class is derived from the value of the
           [`power`](http://wiki.openstreetmap.org/wiki/Key:power) tag.
       values:
-      - cable
       - line
       - minor_line
       - tower
@@ -25,10 +24,49 @@ layer:
       - transformer
       - switch
       - insulator
+    source:
+      description: |
+          Class is derived from the value of the
+          [`plant:source`](http://wiki.openstreetmap.org/wiki/Key:plant:source) tag.
+      values:
+      - battery
+      - biogas
+      - biomass
+      - coal
+      - combustion
+      - diesel
+      - gas
+      - geothermal
+      - hydro
+      - nuclear
+      - oil
+      - solar
+      - solar_thermal
+      - waste
+      - wind
+      - wind_turbine
+      - wood
+    method:
+      description: |
+          Class is derived from the value of the
+          [`plant:method`](http://wiki.openstreetmap.org/wiki/Key:plant:method) tag.
+      values:
+      - anaerobic_digestion
+      - combustion
+      - dam
+      - fission
+      - gasification
+      - photovoltaic
+      - run-of-the-river
+      - thermal
+      - water-pumpted-storage
+      - water-storage
+      - wind_turbine    
 
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, name FROM layer_power(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, source, method, name FROM layer_power(!bbox!, z(!scale_denominator!))) AS t
+
 schema:
   - ./power.sql
 datasources:
