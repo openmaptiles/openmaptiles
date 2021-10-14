@@ -204,7 +204,7 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
-    UPDATE osm_highway_linestring SET tags = transportation_strip_tags(tags)
+    UPDATE osm_highway_linestring SET tags = highway_linestring_strip_tags(tags)
         WHERE osm_id IN (SELECT id FROM transportation.updates);
 
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11;
