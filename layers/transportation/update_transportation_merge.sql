@@ -30,6 +30,9 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
        tags
+         - 'ramp'::text
+         - 'oneway'::text
+         AS tags
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
 GROUP BY highway, network, construction, is_bridge, access, tags
@@ -49,6 +52,8 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        z_order,
        access,
        tags
+         - 'ramp'::text
+         AS tags
 FROM osm_transportation_merge_linestring_gen_z11
 WHERE highway NOT IN ('tertiary', 'tertiary_link')
       OR construction NOT IN ('tertiary', 'tertiary_link')
@@ -85,6 +90,13 @@ SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
        is_bridge,
        min(z_order) as z_order,
        tags
+         - 'bicycle'::text
+         - 'foot'::text
+         - 'horse'::text
+         - 'layer'::text
+         - 'mtb_scale'::text
+         - 'toll'::text
+         AS tags
 FROM osm_transportation_merge_linestring_gen_z9
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        construction IN ('motorway', 'trunk', 'primary'))
