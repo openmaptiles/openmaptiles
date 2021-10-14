@@ -6,10 +6,6 @@ DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
--- Remove tag values duplicated in column mappings
-UPDATE osm_highway_linestring SET tags = highway_linestring_strip_tags(tags);
-UPDATE osm_highway_polygon SET tags = highway_polygon_strip_tags(tags);
-
 -- Improve performance of the sql in transportation/update_route_member.sql
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
@@ -204,8 +200,22 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
-    UPDATE osm_highway_linestring SET tags = highway_linestring_strip_tags(tags)
-        WHERE osm_id IN (SELECT id FROM transportation.updates);
+    UPDATE osm_highway_linestring
+      SET tags =
+      (
+        highway_linestring_tag_base(tags)
+        || hstore(ARRAY[
+            ['tunnel', is_tunnel::text],
+            ['ramp',   is_ramp::text],
+            ['ford',   is_ford::text],
+            ['oneway', is_oneway::text],
+            ['toll',   toll::text],
+            ['layer',  layer::text]
+        ])
+      )
+      -- Remove null/default values
+      - highway_linestring_tag_discardable()
+      WHERE osm_id IN (SELECT id FROM transportation.updates);
 
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10;

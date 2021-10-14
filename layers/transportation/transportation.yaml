@@ -195,7 +195,7 @@ layer:
 schema:
   - ./network_type.sql
   - ./class.sql
-  - ./tags.sql
+  - ./update_tags.sql
   - ./update_route_member.sql
   - ./update_transportation_merge.sql
   - ./transportation.sql
