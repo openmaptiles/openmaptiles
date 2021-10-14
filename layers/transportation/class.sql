@@ -105,3 +105,18 @@ BEGIN
 END;
 $$
 language plpgsql;
+
+CREATE OR REPLACE FUNCTION clean_int(inval text)
+   RETURNS int
+AS
+$$
+BEGIN
+  BEGIN
+    RETURN $1::int;
+  EXCEPTION
+    WHEN OTHERS THEN
+       RETURN NULL::int;
+  END;
+END;
+$$
+language plpgsql;

@@ -55,7 +55,7 @@ SELECT osm_id,
        CASE
            WHEN highway_is_link(highway) OR highway = 'steps'
                THEN 1
-           ELSE (tags->'ramp')::int END AS ramp,
+           ELSE clean_int(tags->'ramp') END AS ramp,
        CASE
            WHEN NOT tags?'oneway' OR tags->'oneway'='no' THEN NULL::int
            WHEN tags->'oneway' = 'yes' THEN 1
@@ -65,7 +65,7 @@ SELECT osm_id,
        NULLIF(service, '') AS service,
        access,
        CASE WHEN clean_bool(tags->'toll') = TRUE THEN 1 END AS toll,
-       NULLIF((tags->'layer')::int, 0) AS layer,
+       clean_int(tags->'layer') AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
        NULLIF(tags->'bicycle', '') AS bicycle,
