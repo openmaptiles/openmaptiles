@@ -287,6 +287,7 @@ destroy-db:
 	$(DOCKER_COMPOSE) rm -fv
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
+	mkdir cache
 
 .PHONY: start-db-nowait
 start-db-nowait: init-dirs
