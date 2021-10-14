@@ -340,7 +340,7 @@ FROM (
                 public_transport,
                 service_value(service) AS service,
                 CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
-                CASE WHEN toll='yes' THEN true ELSE NULL::boolean END AS toll,
+                toll,
                 is_bridge,
                 is_tunnel,
                 is_ford,
