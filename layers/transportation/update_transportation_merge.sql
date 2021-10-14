@@ -32,9 +32,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
-       CASE
-           WHEN toll = 'yes' THEN true
-           ELSE false END AS toll,
+       toll,
        layer
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
