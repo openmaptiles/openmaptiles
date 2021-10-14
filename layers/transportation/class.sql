@@ -90,33 +90,3 @@ SELECT CASE
 $$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
-
-CREATE OR REPLACE FUNCTION clean_bool(inval text)
-   RETURNS boolean
-AS
-$$
-BEGIN
-  BEGIN
-    RETURN $1::boolean;
-  EXCEPTION
-    WHEN OTHERS THEN
-       RETURN NULL::boolean;
-  END;
-END;
-$$
-language plpgsql;
-
-CREATE OR REPLACE FUNCTION clean_int(inval text)
-   RETURNS int
-AS
-$$
-BEGIN
-  BEGIN
-    RETURN $1::int;
-  EXCEPTION
-    WHEN OTHERS THEN
-       RETURN NULL::int;
-  END;
-END;
-$$
-language plpgsql;

@@ -55,17 +55,13 @@ SELECT osm_id,
        CASE
            WHEN highway_is_link(highway) OR highway = 'steps'
                THEN 1
-           ELSE clean_int(tags->'ramp') END AS ramp,
-       CASE
-           WHEN NOT tags?'oneway' OR tags->'oneway'='no' THEN NULL::int
-           WHEN tags->'oneway' = 'yes' THEN 1
-           WHEN tags->'oneway' = '-1' THEN -1
-           ELSE NULL::int END AS oneway,
-       brunnel(is_bridge, clean_bool(tags->'tunnel'), clean_bool(tags->'ford')) AS brunnel,
+           ELSE tags->'ramp'::int END AS ramp,
+       tags->'oneway'::int AS oneway,
+       brunnel(is_bridge, tags->'tunnel'::boolean, tags->'ford'::boolean) AS brunnel,
        NULLIF(service, '') AS service,
        access,
-       CASE WHEN clean_bool(tags->'toll') = TRUE THEN 1 END AS toll,
-       clean_int(tags->'layer') AS layer,
+       CASE WHEN tags->'toll'::boolean = TRUE THEN 1 END AS toll,
+       tags->'layer'::int AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
        NULLIF(tags->'bicycle', '') AS bicycle,

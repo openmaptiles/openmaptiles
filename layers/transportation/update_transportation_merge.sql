@@ -48,8 +48,6 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        z_order,
        access,
        tags
-         - 'ramp'::text
-         AS tags
 FROM osm_transportation_merge_linestring_gen_z11
 WHERE highway NOT IN ('tertiary', 'tertiary_link')
       OR construction NOT IN ('tertiary', 'tertiary_link')
