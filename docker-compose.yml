@@ -11,7 +11,7 @@ networks:
 services:
 
   postgres:
-    image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:5.3"
+    image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
     # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -22,7 +22,7 @@ services:
     env_file: .env-postgres
 
   import-data:
-    image: "openmaptiles/import-data:5.3"
+    image: "openmaptiles/import-data:${TOOLS_VERSION}"
     env_file: .env
     networks:
       - postgres
