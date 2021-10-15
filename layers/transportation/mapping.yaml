@@ -1,30 +1,4 @@
 generalized_tables:
-# etldoc: osm_railway_linestring_gen_z9 -> osm_railway_linestring_gen_z8
-  railway_linestring_gen_z8:
-    source: railway_linestring_gen_z9
-    tolerance: ZRES9
-
-# etldoc: osm_railway_linestring_gen_z10 -> osm_railway_linestring_gen_z9
-  railway_linestring_gen_z9:
-    source: railway_linestring_gen_z10
-    tolerance: ZRES10
-
-# etldoc: osm_railway_linestring_gen_z11 -> osm_railway_linestring_gen_z10
-  railway_linestring_gen_z10:
-    source: railway_linestring_gen_z11
-    tolerance: ZRES11
-
-# etldoc: osm_railway_linestring_gen_z12 -> osm_railway_linestring_gen_z11
-  railway_linestring_gen_z11:
-    source: railway_linestring_gen_z12
-    tolerance: ZRES12
-
-# etldoc: osm_railway_linestring -> osm_railway_linestring_gen_z12
-  railway_linestring_gen_z12:
-    source: railway_linestring
-    sql_filter: railway IN ('rail', 'narrow_gauge', 'light_rail') AND service='' AND ST_IsValid(geometry)
-    tolerance: ZRES13
-
 # etldoc: osm_aerialway_linestring -> osm_aerialway_linestring_gen_z12
   aerialway_linestring_gen_z12:
     source: aerialway_linestring

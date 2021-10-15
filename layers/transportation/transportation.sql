@@ -308,7 +308,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-              ''::hstore --  tags
+                tags
          FROM osm_railway_linestring_gen_z8
          WHERE zoom_level = 8
            AND railway = 'rail'
@@ -334,12 +334,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                hstore(ARRAY[
-                    ['layer',  layer::text]
-                ])
-                - hstore(ARRAY[
-                    ['layer',  '0']
-                ]) AS tags
+                tags
          FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
            AND railway = 'rail'
@@ -365,7 +360,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore AS tags
+                tags
          FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
            AND railway IN ('rail', 'narrow_gauge')
@@ -390,7 +385,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore AS tags
+                tags
          FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -407,7 +402,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service_value(service) AS service,
+                service,
                 NULL::text AS access,
                 is_bridge,
                 NULL AS man_made,
@@ -415,11 +410,9 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore AS tags
+                tags
          FROM osm_railway_linestring_gen_z12
          WHERE zoom_level = 12
-           AND railway IN ('rail', 'narrow_gauge', 'light_rail')
-           AND service = ''
          UNION ALL
 
          -- etldoc: osm_railway_linestring ->  layer_transportation:z13
@@ -441,7 +434,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore AS tags
+                transportation_tags AS tags
          FROM osm_railway_linestring
          WHERE zoom_level = 13
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')

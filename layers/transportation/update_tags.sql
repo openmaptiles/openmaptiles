@@ -12,6 +12,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION railway_linestring_tag_discardable() RETURNS hstore AS $$
+BEGIN
+    RETURN hstore(ARRAY[
+        ['tunnel', 'false'],
+        ['ramp',   'false'],
+        ['ford',   'false'],
+        ['oneway', '0'],
+        ['layer',   NULL]
+    ]);
+END;
+$$ LANGUAGE plpgsql;
+
 -- Keys that should be preserved in the tags hstore
 CREATE FUNCTION highway_linestring_tag_base(tags hstore) RETURNS hstore AS $$
 BEGIN
@@ -22,6 +34,16 @@ BEGIN
                   'ford',
                   'horse',
                   'mtb_scale'
+              ]
+           );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION railway_linestring_tag_base(tags hstore) RETURNS hstore AS $$
+BEGIN
+    RETURN slice(tags,
+              ARRAY[
+                  'ford'
               ]
            );
 END;
@@ -45,3 +67,19 @@ UPDATE osm_highway_linestring SET transportation_tags =
     )
     -- Remove null/default values
     - highway_linestring_tag_discardable();
+
+ALTER TABLE osm_railway_linestring ADD COLUMN IF NOT EXISTS transportation_tags hstore;
+UPDATE osm_railway_linestring SET transportation_tags =
+    (
+        railway_linestring_tag_base(tags)
+        -- Keys to import from imposm-generated columns
+        || hstore(ARRAY[
+            ['tunnel', is_tunnel::text],
+            ['ramp',   is_ramp::text],
+            ['ford',   is_ford::text],
+            ['oneway', is_oneway::text],
+            ['layer',  layer::text]
+        ])
+    )
+    -- Remove null/default values
+    - railway_linestring_tag_discardable();
