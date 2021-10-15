@@ -334,7 +334,12 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                hstore(ARRAY[
+                    ['layer',  layer::text]
+                ])
+                - hstore(ARRAY[
+                    ['layer',  '0']
+                ]) AS tags
          FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
            AND railway = 'rail'
@@ -360,7 +365,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
            AND railway IN ('rail', 'narrow_gauge')
@@ -385,7 +390,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -410,7 +415,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_railway_linestring_gen_z12
          WHERE zoom_level = 12
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -436,7 +441,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_railway_linestring
          WHERE zoom_level = 13
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
@@ -462,7 +467,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_aerialway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
@@ -486,7 +491,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_aerialway_linestring
          WHERE zoom_level >= 13
          UNION ALL
@@ -509,7 +514,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_shipway_linestring_gen_z11
          WHERE zoom_level = 11
          UNION ALL
@@ -532,7 +537,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_shipway_linestring_gen_z12
          WHERE zoom_level = 12
          UNION ALL
@@ -556,7 +561,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_shipway_linestring
          WHERE zoom_level >= 13
          UNION ALL
@@ -587,7 +592,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS surface,
                 z_order,
-                ''::hstore --tags
+                ''::hstore AS tags
          FROM osm_highway_polygon
               -- We do not want underground pedestrian areas for now
          WHERE zoom_level >= 13
