@@ -55,7 +55,7 @@ SELECT osm_id,
        CASE
            WHEN highway_is_link(highway) OR highway = 'steps'
                THEN 1
-           ELSE (tags->'ramp')::int END AS ramp,
+           ELSE (tags->'ramp')::boolean::int END AS ramp,
        (tags->'oneway')::int AS oneway,
        brunnel(is_bridge, (tags->'tunnel')::boolean, (tags->'ford')::boolean) AS brunnel,
        NULLIF(service, '') AS service,
