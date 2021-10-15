@@ -56,7 +56,7 @@ SELECT osm_id,
            WHEN highway_is_link(highway) OR highway = 'steps'
                THEN 1
            ELSE is_ramp::int END AS ramp,
-       is_oneway::int AS oneway,
+       CASE WHEN is_oneway <> 0 THEN is_oneway::int END AS oneway,
        brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
        NULLIF(service, '') AS service,
        access,
