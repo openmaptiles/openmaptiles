@@ -27,8 +27,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 -- Clean the tags hstore to remove unneeded values
-UPDATE osm_highway_linestring SET tags =
+ALTER TABLE osm_highway_linestring ADD COLUMN IF NOT EXISTS transportation_tags hstore;
+UPDATE osm_highway_linestring SET transportation_tags =
     (
         highway_linestring_tag_base(tags)
         -- Keys to import from imposm-generated columns

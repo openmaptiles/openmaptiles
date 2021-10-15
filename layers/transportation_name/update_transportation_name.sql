@@ -320,14 +320,6 @@ BEGIN
       AND hl.osm_id=rm.member
       AND rm.concurrency_index=1;
 
-    UPDATE osm_highway_linestring_gen_z11 hl
-    SET network = rm.network_type
-    FROM transportation_name.network_changes c,
-         osm_route_member rm
-    WHERE hl.osm_id=c.osm_id
-      AND hl.osm_id=rm.member
-      AND rm.concurrency_index=1;
-
     INSERT INTO osm_transportation_name_network
     SELECT
         geometry,

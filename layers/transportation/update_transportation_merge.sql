@@ -11,11 +11,11 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
     WHERE highway IN ('motorway', 'trunk');
 
--- etldoc: osm_highway_linestring_gen_z11 ->  osm_transportation_merge_linestring_gen_z11
+-- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring_gen_z11
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z11 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11 AS
 (
-SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
+SELECT (ST_Dump(ST_LineMerge(ST_Collect(ST_Simplify(geometry, ZRes(12)))))).geom AS geometry,
        NULL::bigint AS osm_id,
        highway,
        network,
@@ -25,13 +25,16 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
-       tags
+       transportation_tags
          - 'ramp'::text
          - 'oneway'::text
          AS tags
-FROM osm_highway_linestring_gen_z11
--- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, access, tags
+FROM osm_highway_linestring
+WHERE (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link')
+   OR construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link'))
+AND NOT is_area
+AND ST_IsValid(geometry)
+GROUP BY highway, network, construction, is_bridge, access, transportation_tags
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
@@ -199,7 +202,7 @@ DECLARE
 BEGIN
     RAISE LOG 'Refresh transportation';
     UPDATE osm_highway_linestring
-      SET tags =
+      SET transportation_tags =
       (
         highway_linestring_tag_base(tags)
         || hstore(ARRAY[
