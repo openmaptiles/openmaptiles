@@ -22,6 +22,7 @@ make import-sql
 make test-schema-import
 
 # Import canned diff file
+make import-update-data
 make import-diff area=changes
 
 # Load unit tests and sample data into SQL

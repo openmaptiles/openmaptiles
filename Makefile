@@ -590,12 +590,17 @@ test-schema-import: init-dirs
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < unit-tests/test-post-import.sql'
 
-.PHONY: test-schema-update
-test-schema-update: init-dirs
+.PHONY: import-update-data
+import-test-data: init-dirs
+	@echo " UPDATE unit test data..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
 	cp -f unit-tests/changes.state.txt data/
 	cp -f unit-tests/last.state.txt data/
 	cp -f unit-tests/changes.repl.json data/
+
+.PHONY: test-schema-update
+test-schema-update: init-dirs
+	@echo "Running UPDATE unit tests..."
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < unit-tests/test-post-update.sql'
 
