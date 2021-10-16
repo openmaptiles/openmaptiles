@@ -8,8 +8,7 @@ CREATE TABLE omt_test_failures(
 );
 
 -- Checks to ensure that test data was imported correctly
-
-CREATE OR REPLACE FUNCTION test_import() RETURNS VOID AS $$
+DO $$
 
 DECLARE
   cnt integer;
@@ -52,9 +51,15 @@ END;
 $$
 LANGUAGE plpgsql;
 
--- Run all tests
 DO $$
+
+DECLARE
+  cnt integer;
 BEGIN
-  PERFORM test_import();
+  SELECT COUNT(*) INTO cnt FROM omt_test_failures;
+  IF cnt > 0 THEN
+    RAISE '% unit test(s) failed on updates.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
+  END IF;
 END;
+
 $$;
