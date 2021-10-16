@@ -403,12 +403,12 @@ FROM (
                 z_order,
                 tags
          FROM osm_railway_linestring_gen_z12
-         WHERE zoom_level = 12
+         WHERE zoom_level >= 12
          UNION ALL
 
          -- etldoc: osm_railway_linestring ->  layer_transportation:z13
          -- etldoc: osm_railway_linestring ->  layer_transportation:z14_
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -427,10 +427,12 @@ FROM (
                 z_order,
                 transportation_tags AS tags
          FROM osm_railway_linestring
-         WHERE zoom_level = 13
-           AND railway IN ('rail', 'narrow_gauge', 'light_rail')
-           AND service = ''
-           OR zoom_level >= 14
+         WHERE CASE
+               WHEN zoom_level = 13
+                    THEN railway IN ('rail', 'narrow_gauge', 'light_rail')
+                     AND service = ''
+               WHEN zoom_level >= 14
+                    THEN TRUE END
          UNION ALL
 
          -- etldoc: osm_aerialway_linestring_gen_z12  ->  layer_transportation:z12
