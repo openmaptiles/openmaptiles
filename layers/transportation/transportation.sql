@@ -429,7 +429,7 @@ FROM (
          FROM osm_railway_linestring
          WHERE zoom_level = 13
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
-           AND service IS NULL
+           AND service = ''
            OR zoom_level >= 14
          UNION ALL
 
