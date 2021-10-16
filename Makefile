@@ -591,7 +591,7 @@ test-schema-import: init-dirs
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < unit-tests/test-post-import.sql'
 
 .PHONY: import-update-data
-import-test-data: init-dirs
+import-update-data: init-dirs
 	@echo " UPDATE unit test data..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert unit-tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
 	cp -f unit-tests/changes.state.txt data/
