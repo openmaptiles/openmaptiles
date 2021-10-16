@@ -292,7 +292,7 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -301,7 +301,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service_value(service) AS service,
+                NULL AS service,
                 NULL::text AS access,
                 NULL::boolean AS is_bridge,
                 NULL AS man_made,
@@ -312,13 +312,10 @@ FROM (
                 tags
          FROM osm_railway_linestring_gen_z8
          WHERE zoom_level = 8
-           AND railway = 'rail'
-           AND service = ''
-           AND usage = 'main'
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z9  ->  layer_transportation:z9
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -327,7 +324,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service_value(service) AS service,
+                NULL AS service,
                 NULL::text AS access,
                 NULL::boolean AS is_bridge,
                 NULL AS man_made,
@@ -338,13 +335,10 @@ FROM (
                 tags
          FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
-           AND railway = 'rail'
-           AND service = ''
-           AND usage = 'main'
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z10  ->  layer_transportation:z10
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -353,7 +347,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service_value(service) AS service,
+                NULL AS service,
                 NULL::text AS access,
                 is_bridge,
                 NULL AS man_made,
@@ -364,12 +358,10 @@ FROM (
                 tags
          FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
-           AND railway IN ('rail', 'narrow_gauge')
-           AND service = ''
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z11  ->  layer_transportation:z11
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -378,7 +370,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service_value(service) AS service,
+                NULL AS service,
                 NULL::text AS access,
                 is_bridge,
                 NULL AS man_made,
@@ -389,12 +381,10 @@ FROM (
                 tags
          FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
-           AND railway IN ('rail', 'narrow_gauge', 'light_rail')
-           AND service = ''
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z12  ->  layer_transportation:z12
-         SELECT osm_id,
+         SELECT NULL AS osm_id,
                 geometry,
                 NULL AS highway,
                 NULL AS construction,
@@ -403,7 +393,7 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 NULL AS public_transport,
-                service,
+                NULL AS service,
                 NULL::text AS access,
                 is_bridge,
                 NULL AS man_made,
@@ -439,7 +429,7 @@ FROM (
          FROM osm_railway_linestring
          WHERE zoom_level = 13
            AND railway IN ('rail', 'narrow_gauge', 'light_rail')
-           AND service = ''
+           AND service IS NULL
            OR zoom_level >= 14
          UNION ALL
 

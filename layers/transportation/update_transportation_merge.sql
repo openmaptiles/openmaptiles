@@ -179,10 +179,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z4_geometry_i
 -- etldoc: osm_railway_linestring -> osm_railway_linestring_gen_z12
 CREATE MATERIALIZED VIEW osm_railway_linestring_gen_z12 AS
 (
-SELECT ST_Simplify(geometry, ZRes(13)) AS geometry,
-       osm_id,
+SELECT (ST_Dump(ST_LineMerge(ST_Collect(ST_Simplify(geometry, ZRes(13)))))).geom AS geometry,
        railway,
-       service_value(service) AS service,
        usage,
        is_bridge,
        z_order,
@@ -191,6 +189,7 @@ FROM osm_railway_linestring
 WHERE railway IN ('rail', 'narrow_gauge', 'light_rail')
   AND service=''
   AND ST_IsValid(geometry)
+GROUP BY railway, usage, is_bridge, z_order, transportation_tags
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z12_geometry_idx
     ON osm_railway_linestring_gen_z12 USING gist (geometry);
@@ -199,14 +198,13 @@ CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z12_geometry_idx
 CREATE MATERIALIZED VIEW osm_railway_linestring_gen_z11 AS
 (
 SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
-       osm_id,
        railway,
-       service_value(service) AS service,
        usage,
        is_bridge,
        z_order,
        tags
 FROM osm_railway_linestring_gen_z12
+-- Inherited: railway IN ('rail', 'narrow_gauge', 'light_rail')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z11_geometry_idx
     ON osm_railway_linestring_gen_z11 USING gist (geometry);
@@ -215,14 +213,13 @@ CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z11_geometry_idx
 CREATE MATERIALIZED VIEW osm_railway_linestring_gen_z10 AS
 (
 SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
-       osm_id,
        railway,
-       service_value(service) AS service,
        usage,
        is_bridge,
        z_order,
        tags
 FROM osm_railway_linestring_gen_z11
+WHERE railway IN ('rail', 'narrow_gauge')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z10_geometry_idx
     ON osm_railway_linestring_gen_z10 USING gist (geometry);
@@ -231,9 +228,7 @@ CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z10_geometry_idx
 CREATE MATERIALIZED VIEW osm_railway_linestring_gen_z9 AS
 (
 SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
-       osm_id,
        railway,
-       service_value(service) AS service,
        usage,
        is_bridge,
        z_order,
@@ -244,6 +239,8 @@ SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
          - 'oneway'::text
          AS tags
 FROM osm_railway_linestring_gen_z10
+WHERE railway = 'rail'
+  AND usage = 'main'
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z9_geometry_idx
     ON osm_railway_linestring_gen_z9 USING gist (geometry);
@@ -252,9 +249,7 @@ CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z9_geometry_idx
 CREATE MATERIALIZED VIEW osm_railway_linestring_gen_z8 AS
 (
 SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
-       osm_id,
        railway,
-       service_value(service) AS service,
        usage,
        is_bridge,
        z_order,
@@ -262,6 +257,7 @@ SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
          - 'layer'::text
          AS tags
 FROM osm_railway_linestring_gen_z9
+-- Inherited: WHERE railway = 'rail' AND usage = 'main'
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_railway_linestring_gen_z8_geometry_idx
     ON osm_railway_linestring_gen_z8 USING gist (geometry);
