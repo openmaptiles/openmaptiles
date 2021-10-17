@@ -31,6 +31,17 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(200, 'update', 'osm_aerodrome_label_point failed to update attributes');
   END IF;
 
+ -- Test 300: Verify landuse modified
+  SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='natural' AND subclass='scrub';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'import', 'osm_landcover_polygon natural=scrub expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='natural' AND subclass='wood';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'import', 'osm_landcover_polygon natural=wood expected 0, got ' || cnt);
+  END IF;
+
   -- Test 400: Verify new city added
   SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
   IF cnt <> 2 THEN

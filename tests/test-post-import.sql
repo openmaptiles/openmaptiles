@@ -52,6 +52,12 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label ele=123 expected 1, got ' || cnt);
   END IF;
 
+  -- Test 300
+  SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='natural' AND subclass='wood';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'import', 'osm_landcover_polygon natural=wood expected 1, got ' || cnt);
+  END IF;
+
   -- Test 400
   SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
   IF cnt <> 1 THEN
