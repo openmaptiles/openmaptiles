@@ -1,6 +1,6 @@
 # Workflow to run unit tests on OMT`s new Pull Requests and commits pushed into OMT repo
 
-name: OpenMapTiles Unit Test CI
+name: OpenMapTiles SQL Test CI
 
 on:
   push:
@@ -19,15 +19,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          ./run-tests.sh
-
-#      - name: Save quickstart.log
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: quickstart.log
-#          path: quickstart.log
-
-#      - name: Test etldoc images
-#        run: |
-#          export TEST_MODE=yes
-#          make generate-devdoc
+          make clean && make test-sql
