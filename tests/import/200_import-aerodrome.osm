@@ -10,6 +10,12 @@
     <tag k="faa" v="90F"/>
     <tag k="name" v="OpenMapTiles Airport"/>
   </node>
+  <node id="200101" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.2" lon="-80.3">
+    <tag k="aeroway" v="aerodrome"/>
+    <tag k="ele" v="456"/>
+    <tag k="faa" v="90G"/>
+    <tag k="name" v="OpenMapTiles Airport #2"/>
+  </node>
   <way id="2000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="200001" />
     <nd ref="200002" />

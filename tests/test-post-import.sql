@@ -41,9 +41,15 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(100, 'import', 'osm_park_polygon_gen_z5 national_park expected 1, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM omt_test_failures;
-  IF cnt > 0 THEN
-    RAISE '% unit test(s) failed on import.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
+  -- Test 200
+  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point;
+  IF cnt <> 3 THEN
+    INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label expected 3, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE ele=123;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label ele=123 expected 1, got ' || cnt);
   END IF;
 
   -- Test 400
@@ -69,7 +75,7 @@ DECLARE
 BEGIN
   SELECT COUNT(*) INTO cnt FROM omt_test_failures;
   IF cnt > 0 THEN
-    RAISE '% unit test(s) failed on updates.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
+    RAISE '% unit test(s) failed on imports.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
   END IF;
 END;
 
