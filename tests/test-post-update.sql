@@ -26,7 +26,7 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(200, 'update', 'osm_aerodrome_label_point expected 2, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE icao='KOMT' AND ele=124 AND name='OpenMapTiles International Airport';
+  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE icao='KOMT' AND ele='124' AND name='OpenMapTiles International Airport';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(200, 'update', 'osm_aerodrome_label_point failed to update attributes');
   END IF;
