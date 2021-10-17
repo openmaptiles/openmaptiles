@@ -46,6 +46,17 @@ BEGIN
     RAISE '% unit test(s) failed on import.  Details can be found in table omt_test_failures.', cnt USING ERRCODE = '0Z000';
   END IF;
 
+  -- Test 400
+  SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring city count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=2;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring country count expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$

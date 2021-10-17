@@ -20,6 +20,12 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(100, 'update', 'osm_park_polygon_gen_z5 protected_area expected 2, got ' || cnt);
   END IF;
 
+  -- Test 400: Verify new city added
+  SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring city count expected 2, got ' || cnt);
+  END IF;
+
 END;
 
 $$;
