@@ -101,8 +101,8 @@ Now start up the database container.
 make start-db
 ```
 
-Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
-The boundaries of the countries are used from Natural Earth until zoom level 4.
+Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines). Natural Earth country boundaries are used in the few lowest zoom levels.
+
 ```bash
 make import-data
 ```
