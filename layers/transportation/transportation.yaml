@@ -45,6 +45,8 @@ layer:
           highway: track
         raceway:
           highway: raceway
+        busway:
+          highway: busway
         motorway_construction:
           __AND__:
             highway: construction

@@ -227,6 +227,7 @@ tables:
       - service
       - track
       - raceway
+      - busway
       - construction
       public_transport:
       - platform
