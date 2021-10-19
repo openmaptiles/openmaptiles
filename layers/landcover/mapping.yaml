@@ -26,8 +26,6 @@ tables:
       - forest
       - village_green
       - recreation_ground
-      # There are 600 parks tagged with landuse=park instead of leisure=park
-      - park
       natural:
       - wood
       - wetland

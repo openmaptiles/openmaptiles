@@ -64,6 +64,12 @@ define newline
 
 endef
 
+# use the old postgres connection values if they are existing
+PGHOST := $(or $(POSTGRES_HOST),$(PGHOST))
+PGPORT := $(or $(POSTGRES_PORT),$(PGPORT))
+PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE))
+PGUSER := $(or $(POSTGRES_USER),$(PGUSER))
+PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
 
 #
 # Determine area to work on
@@ -137,11 +143,6 @@ else
   DOWNLOAD_AREA := $(area)
 endif
 
-# import-borders uses these temp files during border parsing/import
-export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
-export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
-export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
-
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
@@ -196,7 +197,6 @@ Hints for downloading & importing data:
   make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
   make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
   make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
-  make import-borders                  # Create borders table using extra processing with osmborder tool
   make import-wikidata                 # Import labels from Wikidata
   make import-sql                      # Import layers (run this after modifying layer SQL)
 
@@ -248,18 +248,20 @@ endef
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
-	@mkdir -p data/borders
+	@mkdir -p data
 	@mkdir -p cache
-	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@'
 endif
 
 build/mapping.yaml: init-dirs
 ifeq (,$(wildcard build/mapping.yaml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_FILE) > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'generate-imposm3 $(TILESET_FILE) > $@'
 endif
 
 .PHONY: build-sql
@@ -285,6 +287,7 @@ destroy-db:
 	$(DOCKER_COMPOSE) rm -fv
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
+	mkdir cache
 
 .PHONY: start-db-nowait
 start-db-nowait: init-dirs
@@ -400,21 +403,11 @@ import-diff: all start-db-nowait
 import-data: start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
-.PHONY: import-borders
-import-borders: start-db-nowait
-ifeq (,$(wildcard $(BORDERS_CSV_FILE)))
-	@$(assert_area_is_given)
-	@echo "Generating borders out of $(PBF_FILE)"
-else
-	@echo "Borders already exists. Useing $(BORDERS_CSV_FILE) to import borders"
-endif
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
-
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
+    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
+    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
 
 .PHONY: generate-tiles
 generate-tiles: all start-db

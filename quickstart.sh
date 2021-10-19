@@ -236,14 +236,6 @@ make import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start importing border ${area} data into PostgreSQL using osmborder"
-echo "      : Source code: https://github.com/pnorman/osmborder"
-echo "      : Data license: http://www.openstreetmap.org/copyright"
-echo "      : Thank you Paul Norman"
-make import-borders
-
-echo " "
-echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing Wikidata: Wikidata Query Service -> PostgreSQL"
 echo "      : The Wikidata license: CC0 - https://www.wikidata.org/wiki/Wikidata:Main_Page "
 echo "      : Thank you Wikidata Contributors ! "

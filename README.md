@@ -114,11 +114,10 @@ make download area=albania
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
-`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.  Also create borders table using extra processing with [osmborder](https://github.com/pnorman/osmborder) tool.
+`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.
 
 ```bash
 make import-osm
-make import-borders
 ```
 
 Import labels from Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
@@ -152,6 +151,23 @@ Now you are ready to **generate the vector tiles**. By default, `./.env` specifi
 make generate-bbox-file  # compute data bbox -- not needed for the whole planet
 make generate-tiles-pg   # generate tiles
 ```
+
+### Workflow to generate tiles
+If you go from top to bottom you can be sure that it will generate a .mbtiles file out of a .osm.pbf file
+```
+make clean                  # clean / remove existing build files
+make                        # generate build files
+make start-db               # start up the database container.
+make import-data            # Import external data from OpenStreetMapData, Natural Earth and OpenStreetMap Lake Labels.
+make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
+make import-osm             # import data into postgres
+make import-wikidata        # import Wikidata
+make import-sql             # create / import sql funtions 
+make generate-bbox-file     # compute data bbox -- not needed for the whole planet
+make generate-tiles-pg      # generate tiles
+```
+Instead of calling `make download area=albania` you can add a .osm.pbf file in the `data` folder `openmaptiles/data/your_area_file.osm.pbf`
+
 
 ## License
 
