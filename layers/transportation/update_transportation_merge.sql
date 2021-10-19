@@ -62,7 +62,7 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        layer
 FROM osm_transportation_merge_linestring_gen_z11
 WHERE highway NOT IN ('tertiary', 'tertiary_link')
-      OR construction NOT IN ('tertiary', 'tertiary_link')
+      AND construction NOT IN ('tertiary', 'tertiary_link')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_idx
     ON osm_transportation_merge_linestring_gen_z10 USING gist (geometry);
