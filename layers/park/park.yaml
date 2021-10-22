@@ -21,13 +21,13 @@ layer:
 #    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the park (point features only).
 #    name_en: English name `name:en` if available, otherwise `name` (point features only).
 #    name_de: German name `name:de` if available, otherwise `name` or `name:en` (point features only).
-    rank: Rank of the park within one tile, starting at 1 that is the most important park (point features only).
+#    rank: Rank of the park within one tile, starting at 1 that is the most important park (point features only).
   datasource:
     geometry_field: geometry
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, attr, rank FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, attr FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./park_proc_tags.sql
   - ./park_proc.sql

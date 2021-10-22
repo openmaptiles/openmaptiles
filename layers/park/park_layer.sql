@@ -1,20 +1,17 @@
 -- etldoc: layer_park[shape=record fillcolor=lightpink, style="rounded,filled",
--- etldoc:     label="layer_park |<z4> z4 |<z5> z5 |<z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14> z14+" ] ;
-
+-- etldoc:     label="layer_park |<z4> z4 |<z5_> z5+" ] ;
 CREATE OR REPLACE FUNCTION layer_park(bbox geometry, zoom_level int, pixel_width numeric)
     RETURNS TABLE
             (
                 osm_id   bigint,
                 geometry geometry,
-                attr     jsonb,
-                rank     int
+                attr     jsonb
             )
 AS
 $$
 SELECT ABS(osm_id),
        geometry,
-       attr,
-       rank
+       attr
 FROM (
          -- etldoc: osm_park_polygon_geometry -> layer_park:z5_
          SELECT osm_id,
@@ -30,8 +27,7 @@ FROM (
                   WHEN zoom_level = 13 THEN geom_z13
                   WHEN zoom_level >= 14 THEN geometry
                END AS geometry,
-               attr,
-               NULL::int AS rank
+               attr
          FROM osm_park_polygon_geometry
          WHERE
            CASE
@@ -53,8 +49,7 @@ FROM (
          -- etldoc: osm_park_polygon_geometry -> layer_park:z4
          SELECT NULL::int AS osm_id,
                 geometry,
-                '{}'::jsonb AS attr,
-                NULL::int AS rank
+                '{}'::jsonb AS attr
          FROM osm_park_polygon_dissolve_z4
          WHERE zoom_level = 4
            AND geometry && bbox
@@ -62,16 +57,17 @@ FROM (
          UNION ALL
          SELECT osm_id,
                 centroid AS geometry,
-                attr,
-                row_number() OVER (
+                attr ||
+                jsonb_build_object('rank',
+                  row_number() OVER (
                     PARTITION BY LabelGrid(centroid, 100 * pixel_width)
                     ORDER BY
-                       (CASE WHEN attr->>'class' = 'national_park' THEN TRUE ELSE FALSE END) DESC,
-                        (COALESCE(NULLIF(wikipedia, ''), NULLIF(wikidata, '')) IS NOT NULL) DESC,
-                        area DESC
-                    )::int AS rank
+                      (CASE WHEN attr->>'class' = 'national_park' THEN TRUE ELSE FALSE END) DESC,
+                      (COALESCE(NULLIF(wikipedia, ''), NULLIF(wikidata, '')) IS NOT NULL) DESC,
+                      area DESC
+                  )::int
+                ) AS attr
          FROM (
-                  -- etldoc: osm_park_polygon_gen_z5 -> layer_park:z5
                   SELECT osm_id,
                          centroid,
                          wikipedia,
