@@ -6,7 +6,9 @@ DECLARE
   k text;
   v text;
 BEGIN
-  attr := tags - 'id';
+  attr := tags
+        - 'id'
+        - 'osm_id';
 
   FOR k, v IN
     SELECT * FROM jsonb_each_text(tags)
