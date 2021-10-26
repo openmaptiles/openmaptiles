@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION park_attr_builder(tags hstore)
 RETURNS jsonb AS $$
-  SELECT jsonb_strip_nulls(
-    (
-      hstore_to_jsonb(tags) ||
+  SELECT (
+    hstore_to_jsonb(tags) ||
+    jsonb_strip_nulls(
       jsonb_build_object(
         'class',
         COALESCE(
@@ -17,11 +17,11 @@ RETURNS jsonb AS $$
         COALESCE(NULLIF(tags->'name:de', ''), tags->'name', tags->'name:en')
       )
     )
-    - 'protection_title'
-    - 'boundary'
-    - 'leisure'
-    - 'type'
-    - 'wikipedia'
-    - 'wikidata'
   )
+  - 'protection_title'
+  - 'boundary'
+  - 'leisure'
+  - 'type'
+  - 'wikipedia'
+  - 'wikidata'
 $$ LANGUAGE SQL;
