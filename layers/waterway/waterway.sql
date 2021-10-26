@@ -72,6 +72,7 @@ CREATE TABLE waterway_relation AS (
     FROM osm_waterway_relation
     WHERE name <> ''
       AND ST_GeometryType(geometry) = 'ST_LineString'
+      AND ST_IsClosed(geometry) = FALSE
     GROUP BY name, slice_language_tags(tags)
 );
 CREATE INDEX IF NOT EXISTS waterway_relation_geometry_idx ON waterway_relation USING gist (geometry);
@@ -89,7 +90,7 @@ CREATE MATERIALIZED VIEW waterway_relation_gen_z8 AS (
        NULL::boolean AS is_tunnel,
        NULL::boolean AS is_intermittent
     FROM waterway_relation
-    WHERE ST_Length(geometry) > 512000
+    WHERE ST_Length(geometry) > 300000
 );
 CREATE INDEX IF NOT EXISTS waterway_relation_gen_z8_geometry_idx ON waterway_relation_gen_z8 USING gist (geometry);
 
@@ -106,7 +107,7 @@ CREATE MATERIALIZED VIEW waterway_relation_gen_z7 AS (
        is_tunnel,
        is_intermittent
     FROM waterway_relation_gen_z8
-    WHERE ST_Length(geometry) > 768000
+    WHERE ST_Length(geometry) > 400000
 );
 CREATE INDEX IF NOT EXISTS waterway_relation_gen_z7_geometry_idx ON waterway_relation_gen_z7 USING gist (geometry);
 
@@ -123,7 +124,7 @@ CREATE MATERIALIZED VIEW waterway_relation_gen_z6 AS (
        is_tunnel,
        is_intermittent
     FROM waterway_relation_gen_z7
-    WHERE ST_Length(geometry) > 1024000
+    WHERE ST_Length(geometry) > 590000
 );
 CREATE INDEX IF NOT EXISTS waterway_relation_gen_z6_geometry_idx ON waterway_relation_gen_z6 USING gist (geometry);
 
