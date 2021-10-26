@@ -73,12 +73,6 @@ tables:
     - name: name
       key: name
       type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
     - name: tags
       type: hstore_tags
     - name: landuse
@@ -95,6 +89,7 @@ tables:
       type: string
     - name: area
       type: area
+    # Add extra fields here
     mapping:
       leisure:
       - nature_reserve
