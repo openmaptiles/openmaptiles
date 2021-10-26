@@ -102,11 +102,11 @@ AND geometry && bbox
 UNION ALL
 
 SELECT osm_id,
-       geometry,
+       geometry_point AS geometry,
        park_attr_builder(tags) ||
            jsonb_build_object('rank',
                row_number() OVER (
-                   PARTITION BY LabelGrid(geometry, 100 * pixel_width)
+                   PARTITION BY LabelGrid(geometry_point, 100 * pixel_width)
                    ORDER BY
                        (CASE WHEN tags->'boundary' = 'national_park' THEN TRUE ELSE FALSE END) DESC,
                        (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
@@ -117,7 +117,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z5 -> layer_park:z5
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z5
@@ -128,7 +128,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z6 -> layer_park:z6
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z6
@@ -139,7 +139,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z7 -> layer_park:z7
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z7
@@ -150,7 +150,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z8 -> layer_park:z8
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z8
@@ -161,7 +161,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z9 -> layer_park:z9
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z9
@@ -172,7 +172,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z10 -> layer_park:z10
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z10
@@ -183,7 +183,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z11 -> layer_park:z11
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z11
@@ -194,7 +194,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z12 -> layer_park:z12
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z12
@@ -205,7 +205,7 @@ FROM (
 
        -- etldoc: osm_park_polygon_gen_z13 -> layer_park:z13
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon_gen_z13
@@ -216,7 +216,7 @@ FROM (
 
        -- etldoc: osm_park_polygon -> layer_park:z14
        SELECT osm_id,
-              geometry,
+              geometry_point,
               tags,
               area
        FROM osm_park_polygon
