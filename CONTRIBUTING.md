@@ -41,3 +41,7 @@ When you modify import data rules in `mapping.yaml` or `*.sql`, please update:
 5. check if OMT styles are affected by the PR and if there is a need for style updates
 
 When you are making PR that adds new spatial features to OpenMapTiles schema, please make also PR for at least one of our GL styles to show it on the map. Visual check is crucial.
+
+# Testing
+
+It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer.  This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.

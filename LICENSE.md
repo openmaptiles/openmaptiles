@@ -1,4 +1,4 @@
-Copyright (c) 2016, KlokanTech.com & OpenMapTiles contributors.  
+Copyright (c) 2021, MapTiler.com & OpenMapTiles contributors.  
 All rights reserved.  
 
 The vector tile schema has been developed by Klokan Technologies GmbH and
@@ -55,6 +55,6 @@ For printed and static maps a similar attribution should be made in a textual
 description near the image, in the same fashion as if you cite a photograph.
 
 Exceptions to OpenMapTiles attribution requirement can be in a written form granted
-by Klokan Technologies GmbH (info@klokantech.com).  
-The project contributors grant Klokan Technologies GmbH the license to give such
+by MapTiler (info@maptiler.com).  
+The project contributors grant MapTiler AG the license to give such
 exceptions on a commercial basis.

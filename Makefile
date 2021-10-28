@@ -184,6 +184,7 @@ Hints for developers:
   make generate-qa                     # statistics for a given layer's field
   make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
   make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
+  make test-sql                        # run unit tests on the OpenMapTiles SQL schema
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
   make help                            # help about available commands
@@ -276,8 +277,13 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 endif
 
 .PHONY: clean
-clean:
+clean: clean-test-data
 	rm -rf build
+
+clean-test-data:
+	rm -rf data/changes.state.txt
+	rm -rf data/last.state.txt
+	rm -rf data/changes.repl.json
 
 .PHONY: destroy-db
 # TODO:  Use https://stackoverflow.com/a/27852388/177275
@@ -589,3 +595,42 @@ debug:  ## Use this target when developing Makefile itself to verify loaded envi
 	@echo BBOX = $(BBOX) , $$BBOX
 	@echo MIN_ZOOM = $(MIN_ZOOM) , $$MIN_ZOOM
 	@echo MAX_ZOOM = $(MAX_ZOOM) , $$MAX_ZOOM
+
+build/import-tests.osm.pbf: init-dirs
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/import/*.osm -o=build/import-tests.osm.pbf'
+
+data/changes.state.txt:
+	cp -f tests/changes.state.txt data/
+
+data/last.state.txt:
+	cp -f tests/last.state.txt data/
+
+data/changes.repl.json:
+	cp -f tests/changes.repl.json data/
+
+data/changes.osc.gz: init-dirs
+	@echo " UPDATE unit test data..."
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
+
+test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-tests.osm.pbf data/changes.state.txt data/last.state.txt data/changes.repl.json build/mapping.yaml data/changes.osc.gz
+	$(eval area := changes)
+
+	@echo "Load IMPORT test data"
+	sed -ir "s/^[#]*\s*MAX_ZOOM=.*/MAX_ZOOM=14/" .env
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
+
+	@echo "Apply OpenMapTiles SQL schema to test data @ Zoom 14..."
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
+    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
+    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
+
+	@echo "Test SQL output for Import Test Data"
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql'
+
+	@echo "Run UPDATE process on test data..."
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
+
+	@echo "Test SQL output for Update Test Data"
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql'
