@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="100001" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="44.5" lon="-103.0" />
+  <node id="100002" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="40.5" lon="-103.0" />
+  <node id="100003" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="40.5" lon="-97.0" />
+  <node id="100004" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="44.5" lon="-97.0" />
+  <node id="100101" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="39.5" lon="-103.0" />
+  <node id="100102" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="35.5" lon="-103.0" />
+  <node id="100103" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="35.5" lon="-97.0" />
+  <node id="100104" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="39.5" lon="-97.0" />
+  <node id="100201" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="44.5" lon="-95.0" />
+  <node id="100202" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="40.5" lon="-95.0" />
+  <node id="100203" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="40.5" lon="-89.0" />
+  <node id="100204" timestamp="2019-01-01T00:00:00Z" visible="true" version="1" lat="44.5" lon="-89.0" />
+  <way id="1000" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="100001" />
+    <nd ref="100002" />
+    <nd ref="100003" />
+    <nd ref="100004" />
+    <nd ref="100001" />
+    <tag k="boundary" v="national_park" />
+    <tag k="name" v="test-national-park" />
+  </way>
+  <way id="1001" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="100101" />
+    <nd ref="100102" />
+    <nd ref="100103" />
+    <nd ref="100104" />
+    <nd ref="100101" />
+    <tag k="leisure" v="nature_reserve" />
+    <tag k="name" v="test-nature-reserve" />
+  </way>
+  <way id="1002" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="100201" />
+    <nd ref="100202" />
+    <nd ref="100203" />
+    <nd ref="100204" />
+    <nd ref="100201" />
+    <tag k="boundary" v="protected_area" />
+    <tag k="name" v="test-protected-area" />
+    <tag k="protect_class" v="5" />
+  </way>
+</osm>
