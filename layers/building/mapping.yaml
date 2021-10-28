@@ -60,11 +60,14 @@ tables:
       aeroway:
       - terminal
       - hangar
+      location:
+      - underground
     filters:
       reject:
         building: ["no","none","No"]
         building:part: ["no","none","No"]
         man_made: ["bridge"]
+        location: ["underground"]
     type: polygon
 
   # etldoc: imposm3 -> osm_building_relation
