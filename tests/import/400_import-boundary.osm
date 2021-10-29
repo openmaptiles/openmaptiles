@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="400001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-80.0" />
+  <node id="400002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.1" lon="-80.0" />
+  <node id="400003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.1" lon="-80.1" />
+  <node id="400004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-80.1" />
+
+  <node id="400005" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="32.0" lon="-79.0" />
+  <node id="400006" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-79.0" />
+  <node id="400007" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-81.0" />
+  <node id="400008" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="32.0" lon="-81.0" />
+  <way id="4000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="400001" />
+    <nd ref="400002" />
+    <nd ref="400003" />
+    <nd ref="400004" />
+    <nd ref="400001" />
+  </way>
+  <way id="4001" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="400005" />
+    <nd ref="400006" />
+    <nd ref="400007" />
+    <nd ref="400008" />
+  </way>
+  <way id="4002" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="400005" />
+    <nd ref="400008" />
+    <tag k="boundary" v="maritime"/>
+  </way>
+  <relation id="400" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="4000" role="outer"/>
+    <tag k="admin_level" v="8"/>
+    <tag k="boundary" v="administrative"/>
+    <tag k="name" v="OpenMapTiles City"/>
+    <tag k="place" v="city"/>
+    <tag k="type" v="boundary"/>
+  </relation>
+  <relation id="401" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="4000" role="inner"/>
+    <member type="way" ref="4001" role="outer"/>
+    <member type="way" ref="4002" role="outer"/>
+    <tag k="admin_level" v="2"/>
+    <tag k="boundary" v="administrative"/>
+    <tag k="name" v="OpenMapTiles Nation"/>
+    <tag k="type" v="boundary"/>
+  </relation>
+</osm>

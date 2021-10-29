@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 200: Airports
+        Delete airport
+        Change elevation
+        Add ICAO tag
+        Change name
+  -->
+  <modify>
+    <node id="200100" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.2" lon="-80.2">
+      <tag k="aeroway" v="aerodrome"/>
+      <tag k="ele" v="124"/>
+      <tag k="icao" v="KOMT"/>
+      <tag k="name" v="OpenMapTiles International Airport"/>
+    </node>
+  </modify>
+  <delete>
+    <node id="200101" timestamp="2020-01-02T00:00:00Z" uid="1" user="u" changeset="2" />
+  </delete>
+</osmChange>
