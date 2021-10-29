@@ -58,7 +58,10 @@ SELECT osm_id,
              OR (tags->'ramp')::boolean = TRUE
            THEN 1 END AS ramp,
        CASE WHEN (tags->'oneway')::int <> 0 THEN (tags->'oneway')::int END AS oneway,
-       brunnel(is_bridge, (tags->'tunnel')::boolean, (tags->'ford')::boolean) AS brunnel,
+       brunnel(is_bridge,
+               CASE WHEN tags->'tunnel' IS NOT NULL AND tags->'tunnel' <> 'no' THEN TRUE ELSE FALSE END,
+               CASE WHEN tags->'ford' IS NOT NULL AND tags->'ford' <> 'no' THEN TRUE ELSE FALSE END
+              ) AS brunnel,
        NULLIF(service, '') AS service,
        access,
        CASE WHEN (tags->'toll')::boolean = TRUE THEN 1 END AS toll,
