@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="200001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.0" />
+  <node id="200002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.1" lon="-80.0" />
+  <node id="200003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.1" lon="-80.1" />
+  <node id="200004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.1" />
+  <node id="200100" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.2" lon="-80.2">
+    <tag k="aeroway" v="aerodrome"/>
+    <tag k="ele" v="123"/>
+    <tag k="faa" v="90F"/>
+    <tag k="name" v="OpenMapTiles Airport"/>
+  </node>
+  <node id="200101" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.2" lon="-80.3">
+    <tag k="aeroway" v="aerodrome"/>
+    <tag k="ele" v="456"/>
+    <tag k="faa" v="90G"/>
+    <tag k="name" v="OpenMapTiles Airport #2"/>
+  </node>
+  <way id="2000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="200001" />
+    <nd ref="200002" />
+    <nd ref="200003" />
+    <nd ref="200004" />
+    <nd ref="200001" />
+    <tag k="aerodrome" v="international"/>
+    <tag k="aeroway" v="aerodrome"/>
+    <tag k="name" v="test-airport"/>
+  </way>
+</osm>

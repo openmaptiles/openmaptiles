@@ -53,10 +53,10 @@ SELECT osm_id,
        NULLIF(network, '') AS network,
        -- All links are considered as ramps as well
        CASE
-           WHEN highway_is_link(highway) OR highway = 'steps'
-               THEN 1
-           ELSE is_ramp::int END AS ramp,
-       is_oneway::int AS oneway,
+           WHEN highway_is_link(highway)
+             OR is_ramp
+               THEN 1 END AS ramp,
+       CASE WHEN is_oneway <> 0 THEN is_oneway::int END AS oneway,
        brunnel(is_bridge, is_tunnel, is_ford) AS brunnel,
        NULLIF(service, '') AS service,
        access,

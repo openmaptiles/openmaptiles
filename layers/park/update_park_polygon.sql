@@ -19,7 +19,7 @@ ALTER TABLE osm_park_polygon_gen_z6
 ALTER TABLE osm_park_polygon_gen_z5
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
 
--- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
+-- etldoc:  osm_park_polygon_gen_z4 -> osm_park_polygon_dissolve_z4
 DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
 CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
 (
