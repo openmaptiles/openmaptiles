@@ -415,33 +415,59 @@ the current output:
 
 ```
 ==============================================================================
- OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+
 Hints for testing areas
-  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>>
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>>
   ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
 
 Hints for designers:
-  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ]
-  make start-tileserver                # start maptiler/tileserver-gl [ see localhost:8080 ]
+  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see http://localhost:8088 ]
+  make start-postserve                 # start dynamic tile server                   [ see http://localhost:8090 ]
+  make stop-postserve                  # stop dynamic tile server
+  make start-tileserver                # start maptiler/tileserver-gl                [ see http://localhost:8080 ]
 
 Hints for developers:
   make                                 # build source code
-  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file
+  make bash                            # start openmaptiles-tools /bin/bash terminal
+  make generate-bbox-file              # compute bounding box of a data file and store it in a file
+  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
+  make generate-qa                     # statistics for a given layer's field
+  make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
+  make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
+  make test-sql                        # run unit tests on the OpenMapTiles SQL schema
+  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
+  cat  quickstart.log                  # transcript of the last ./quickstart.sh run
+  make help                            # help about available commands
+
+Hints for downloading & importing data:
+  make list-geofabrik                  # list actual geofabrik OSM extracts for download
+  make list-bbbike                     # list actual BBBike OSM extracts for download
+  make download area=albania           # download OSM data from any source       and create config file
+  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file
+  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file
+  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
+  make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
+  make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
+  make import-wikidata                 # Import labels from Wikidata
+  make import-sql                      # Import layers (run this after modifying layer SQL)
+
+Hints for database management:
   make psql                            # start PostgreSQL console
   make psql-list-tables                # list all PostgreSQL tables
-  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
-  make psql-analyze                    # PostgreSQL: ANALYZE
-  make generate-qa                     # statistics for a given layer's field
-  make generate-devdoc                 # generate devdoc  [./build/devdoc]
-  make tools-dev                       # start import-sql  /bin/bash terminal
-  make db-destroy                      # remove docker containers, PG data volume
-  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)
-  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
-  make remove-docker-images            # remove openmaptiles docker images
   make list-views                      # list PostgreSQL public schema views
   make list-tables                     # list PostgreSQL public schema tables
-  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
-  cat ./quickstart.log                 # backup  of the last ./quickstart.sh
-  make help                            # help about available commands
+  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE
+  make analyze-db                      # PostgreSQL: ANALYZE
+  make destroy-db                      # remove docker containers and PostgreSQL data volume
+  make start-db                        # start PostgreSQL, creating it if it doesn't exist
+  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist
+  make stop-db                         # stop PostgreSQL database without destroying the data
+
+Hints for Docker management:
+  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)
+  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
+  make remove-docker-images            # remove openmaptiles docker images
+  make list-docker-images              # show a list of available docker images
 ==============================================================================
 ```
