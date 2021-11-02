@@ -42,6 +42,32 @@ When you modify import data rules in `mapping.yaml` or `*.sql`, please update:
 
 When you are making PR that adds new spatial features to OpenMapTiles schema, please make also PR for at least one of our GL styles to show it on the map. Visual check is crucial.
 
-# Testing
+# SQL unit testing
 
 It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer.  This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.
+
+# Verifying that updates still work
+
+When testing a PR, you shoud also verify that the update process completes without error.  The following procedure will run the update process.
+
+1. Change .env to set `DIFF_MODE=true`.  In addition, if you're testing changes that impact zooms higher than the default zoom of 7, you should also change `MAX_ZOOM` to be up to 14.
+2. Set the test area to the appropriate geofabrik extract, for example:
+
+```
+export area=north-america/us/indiana
+```
+
+3. Build 1-month-old tiles:
+
+```
+rm -fr data build cache
+make download-geofabrik area=$area
+docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$(date --date="$(date +%Y-%m-15) -1 month" +'%y%m01').osm.pbf"
+./quickstart.sh $area
+```
+4. Update with the changes since then:
+```
+docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "osmupdate --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz"
+make import-diff
+make generate-tiles-pg
+```
