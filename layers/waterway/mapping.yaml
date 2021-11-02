@@ -51,12 +51,6 @@ tables:
       type: id
     - name: geometry
       type: geometry
-      #- key: route
-      #  name: route
-      #  type: string
-      #- key: type
-      #  name: type
-      #  type: string
     - key: waterway
       name: waterway
       type: string
@@ -66,6 +60,4 @@ tables:
     - name: tags
       type: hstore_tags
     mapping:
-        #route: [waterway]
-        #type: [waterway]
       waterway: [river]
