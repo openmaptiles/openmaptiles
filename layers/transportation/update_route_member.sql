@@ -60,15 +60,16 @@ BEGIN
              JOIN transportation_name.network_changes AS c ON
         r.osm_id = c.osm_id;
 
-    INSERT INTO osm_route_member (id, network_type, concurrency_index)
+    INSERT INTO osm_route_member (id, osm_id, network_type, concurrency_index)
     SELECT
       id,
+      osm_id,
       osm_route_member_network_type(network) AS network_type,
       DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
     FROM osm_route_member rm
     WHERE rm.member IN
       (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
-    ON CONFLICT (id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
+    ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
 
 END;
 $$ LANGUAGE plpgsql;
@@ -86,12 +87,13 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_high
 ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int;
 
 -- One-time load of concurrency indexes; updates occur via trigger
-INSERT INTO osm_route_member (id, concurrency_index)
+INSERT INTO osm_route_member (id, osm_id, concurrency_index)
   SELECT
     id,
+    osm_id,
     DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
   FROM osm_route_member
-  ON CONFLICT (id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
+  ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
 
 UPDATE osm_highway_linestring hl
   SET network = rm.network_type
