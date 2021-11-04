@@ -48,26 +48,34 @@ It is recommended that you create a [unit test](TESTING.md) when modifying the b
 
 # Verifying that updates still work
 
-When testing a PR, you shoud also verify that the update process completes without error.  The following procedure will run the update process.
+When testing a PR, you should also verify that the update process completes without an error. Please modify, if necessary, and run the script below.
 
-1. Change .env to set `DIFF_MODE=true`.  In addition, if you're testing changes that impact zooms higher than the default zoom of 7, you should also change `MAX_ZOOM` to be up to 14.
-2. Set the test area to the appropriate geofabrik extract, for example:
+**Note:**
+
+The verification requires the script to append temporary changes to the `.env` file. Please restore the original version from git using `git checkout .env` or remove these changes before submitting a PR.
 
 ```
+(
+set -e
+echo '# Temporarily changes for Verifying that updates still work' >> .env 
+# Ensure DIFF_MODE is active
+echo DIFF_MODE=true >> .env
+# Ensure all zoom levels are tested
+echo MAX_ZOOM=14 >> .env
+
+#  Set the test area to the appropriate geofabrik extract
 export area=north-america/us/indiana
-```
 
-3. Build 1-month-old tiles:
-
-```
+# Build 1-month-old tiles
 rm -fr data build cache
+make destroy-db
 make download-geofabrik area=$area
-docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$(date --date="$(date +%Y-%m-15) -1 month" +'%y%m01').osm.pbf"
+docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -nv -O data/$area.osm.pbf http://download.geofabrik.de/$area-$(date --date="$(date +%Y-%m-15) -1 month" +'%y%m01').osm.pbf"
 ./quickstart.sh $area
-```
-4. Update with the changes since then:
-```
+
+# Update with the changes since then
 docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "osmupdate --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz"
 make import-diff
 make generate-tiles-pg
+) < /dev/null
 ```
