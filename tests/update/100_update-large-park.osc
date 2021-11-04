@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 100: Park polygons
+        Move geometry
+        Change name
+  -->
+  <modify>
+    <!-- Move polygon positions -->
+    <node id="100001" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="44.6" lon="-103.1"/>
+    <node id="100002" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="40.6" lon="-103.1"/>
+    <node id="100003" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="40.6" lon="-97.1"/>
+    <node id="100004" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="44.6" lon="-97.1"/>
+
+    <!-- Change polygon tags -->
+    <way id="1000" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2">
+      <nd ref="100001" />
+      <nd ref="100002" />
+      <nd ref="100003" />
+      <nd ref="100004" />
+      <nd ref="100001" />
+      <tag k="boundary" v="protected_area" /> <!-- Change from national_park -->
+      <tag k="name" v="update-protected-area" /> <!-- Change from test-national-park -->
+    </way>
+  </modify>
+</osmChange>
