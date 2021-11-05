@@ -1,0 +1,22 @@
+# Workflow to run unit tests on OMT`s new Pull Requests and commits pushed into OMT repo
+
+name: OpenMapTiles SQL Test CI
+
+on:
+  push:
+    branches: [ master, master-tools ]
+  pull_request:
+
+jobs:
+
+  unit_tests:
+    name: Run unit test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout the changes
+        uses: actions/checkout@v2
+
+      - name: Run unit tests
+        run: |
+          make clean && make test-sql

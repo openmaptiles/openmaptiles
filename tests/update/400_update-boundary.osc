@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 400: Boundaries
+        Add new boundary
+  -->
+  <create>
+    <!-- Add new adjacent rectangular boundary -->
+    <node id="400009" version="1" timestamp="2019-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="32.0" lon="-82.0" />
+    <node id="400010" version="1" timestamp="2019-01-01T00:00:00Z" uid="1" user="u" changeset="2" lat="34.0" lon="-82.0" />
+
+    <way id="4003" version="2" timestamp="2020-01-01T00:00:00Z" uid="1" user="u" changeset="2">
+      <nd ref="400007" />
+      <nd ref="400008" />
+      <nd ref="400009" />
+      <nd ref="400010" />
+      <nd ref="400007" />
+    </way>
+
+    <relation id="402" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+      <member type="way" ref="4003" role="outer"/>
+      <tag k="admin_level" v="8"/>
+      <tag k="boundary" v="administrative"/>
+      <tag k="name" v="OpenMapTiles Suburb"/>
+      <tag k="place" v="suburb"/>
+      <tag k="type" v="boundary"/>
+    </relation>
+  </create>
+</osmChange>

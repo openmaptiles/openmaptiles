@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="300001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.0" />
+  <node id="300002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.0" />
+  <node id="300003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.1" />
+  <node id="300004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.1" />
+  <way id="3000" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="300001" />
+    <nd ref="300002" />
+    <nd ref="300003" />
+    <nd ref="300004" />
+    <nd ref="300001" />
+    <tag k="natural" v="wood"/>
+  </way>
+</osm>

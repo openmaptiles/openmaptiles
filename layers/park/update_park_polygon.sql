@@ -19,7 +19,7 @@ ALTER TABLE osm_park_polygon_gen_z6
 ALTER TABLE osm_park_polygon_gen_z5
     ADD COLUMN IF NOT EXISTS geometry_point geometry;
 
--- etldoc:  osm_park_polygon_dissolve_z4 ->  osm_park_polygon_gen_z4
+-- etldoc:  osm_park_polygon_gen_z4 -> osm_park_polygon_dissolve_z4
 DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
 CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
 (
@@ -124,6 +124,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION update_osm_park_dissolved_polygon_row()
+    RETURNS trigger
+AS
+$$
+BEGIN
+    NEW.tags = update_tags(NEW.tags, NEW.geometry);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TRIGGER update_row
     BEFORE INSERT OR UPDATE
     ON osm_park_polygon
@@ -188,5 +198,5 @@ CREATE TRIGGER update_row
     BEFORE INSERT OR UPDATE
     ON osm_park_polygon_gen_z4
     FOR EACH ROW
-EXECUTE PROCEDURE update_osm_park_polygon_row();
+EXECUTE PROCEDURE update_osm_park_dissolved_polygon_row();
 

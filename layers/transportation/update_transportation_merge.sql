@@ -32,9 +32,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
-       CASE
-           WHEN toll = 'yes' THEN true
-           ELSE false END AS toll,
+       toll,
        layer
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
@@ -63,8 +61,8 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        toll,
        layer
 FROM osm_transportation_merge_linestring_gen_z11
-WHERE highway NOT IN ('tertiary', 'tertiary_link')
-      OR construction NOT IN ('tertiary', 'tertiary_link')
+WHERE highway NOT IN ('tertiary', 'tertiary_link', 'busway')
+      AND construction NOT IN ('tertiary', 'tertiary_link', 'busway')
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_idx
     ON osm_transportation_merge_linestring_gen_z10 USING gist (geometry);

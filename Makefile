@@ -143,11 +143,6 @@ else
   DOWNLOAD_AREA := $(area)
 endif
 
-# import-borders uses these temp files during border parsing/import
-export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
-export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
-export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
-
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
@@ -189,6 +184,7 @@ Hints for developers:
   make generate-qa                     # statistics for a given layer's field
   make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
   make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
+  make test-sql                        # run unit tests on the OpenMapTiles SQL schema
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
   make help                            # help about available commands
@@ -202,7 +198,6 @@ Hints for downloading & importing data:
   make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
   make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
   make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
-  make import-borders                  # Create borders table using extra processing with osmborder tool
   make import-wikidata                 # Import labels from Wikidata
   make import-sql                      # Import layers (run this after modifying layer SQL)
 
@@ -254,18 +249,20 @@ endef
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
-	@mkdir -p data/borders
+	@mkdir -p data
 	@mkdir -p cache
-	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) || ($(win_fs_error))
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@'
 endif
 
 build/mapping.yaml: init-dirs
 ifeq (,$(wildcard build/mapping.yaml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_FILE) > $@
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'generate-imposm3 $(TILESET_FILE) > $@'
 endif
 
 .PHONY: build-sql
@@ -280,8 +277,13 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 endif
 
 .PHONY: clean
-clean:
+clean: clean-test-data
 	rm -rf build
+
+clean-test-data:
+	rm -rf data/changes.state.txt
+	rm -rf data/last.state.txt
+	rm -rf data/changes.repl.json
 
 .PHONY: destroy-db
 # TODO:  Use https://stackoverflow.com/a/27852388/177275
@@ -291,6 +293,7 @@ destroy-db:
 	$(DOCKER_COMPOSE) rm -fv
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
+	mkdir cache
 
 .PHONY: start-db-nowait
 start-db-nowait: init-dirs
@@ -406,21 +409,11 @@ import-diff: all start-db-nowait
 import-data: start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
-.PHONY: import-borders
-import-borders: start-db-nowait
-ifeq (,$(wildcard $(BORDERS_CSV_FILE)))
-	@$(assert_area_is_given)
-	@echo "Generating borders out of $(PBF_FILE)"
-else
-	@echo "Borders already exists. Useing $(BORDERS_CSV_FILE) to import borders"
-endif
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
-		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
-
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
+    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
+    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
 
 .PHONY: generate-tiles
 generate-tiles: all start-db
@@ -602,3 +595,42 @@ debug:  ## Use this target when developing Makefile itself to verify loaded envi
 	@echo BBOX = $(BBOX) , $$BBOX
 	@echo MIN_ZOOM = $(MIN_ZOOM) , $$MIN_ZOOM
 	@echo MAX_ZOOM = $(MAX_ZOOM) , $$MAX_ZOOM
+
+build/import-tests.osm.pbf: init-dirs
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/import/*.osm -o=build/import-tests.osm.pbf'
+
+data/changes.state.txt:
+	cp -f tests/changes.state.txt data/
+
+data/last.state.txt:
+	cp -f tests/last.state.txt data/
+
+data/changes.repl.json:
+	cp -f tests/changes.repl.json data/
+
+data/changes.osc.gz: init-dirs
+	@echo " UPDATE unit test data..."
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
+
+test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-tests.osm.pbf data/changes.state.txt data/last.state.txt data/changes.repl.json build/mapping.yaml data/changes.osc.gz
+	$(eval area := changes)
+
+	@echo "Load IMPORT test data"
+	sed -ir "s/^[#]*\s*MAX_ZOOM=.*/MAX_ZOOM=14/" .env
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
+
+	@echo "Apply OpenMapTiles SQL schema to test data @ Zoom 14..."
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
+    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
+    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
+
+	@echo "Test SQL output for Import Test Data"
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql'
+
+	@echo "Run UPDATE process on test data..."
+	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
+
+	@echo "Test SQL output for Update Test Data"
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql'

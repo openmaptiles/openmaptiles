@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 300: Landcover
+        Change type of land cover from wood to scrub
+  -->
+  <modify>
+    <way id="3000" timestamp="2020-01-02T00:00:00Z" version="2">
+      <nd ref="300001" />
+      <nd ref="300002" />
+      <nd ref="300003" />
+      <nd ref="300004" />
+      <nd ref="300001" />
+      <tag k="natural" v="scrub"/>
+    </way>
+  </modify>
+</osmChange>
