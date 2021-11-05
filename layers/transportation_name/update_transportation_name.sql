@@ -438,6 +438,7 @@ CREATE TABLE IF NOT EXISTS transportation_name.name_changes
     name character varying,
     name_en character varying,
     name_de character varying,
+    tags hstore,
     ref character varying,
     highway character varying,
     subclass character varying,
@@ -459,19 +460,19 @@ $$
 BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, tags, ref, highway, subclass,
                                                      brunnel, level, layer, indoor, network_type,
                                                      route_1, route_2, route_3, route_4, route_5, route_6)
-        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.ref, old.highway, old.subclass,
+        VALUES (TRUE, old.osm_id, old.name, old.name_en, old.name_de, old.tags, old.ref, old.highway, old.subclass,
                 old.brunnel, old.level, old.layer, old.indoor, old.network_type,
                 old.route_1, old.route_2, old.route_3, old.route_4, old.route_5, old.route_6);
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT'))
     THEN
-        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, ref, highway, subclass,
+        INSERT INTO transportation_name.name_changes(is_old, osm_id, name, name_en, name_de, tags, ref, highway, subclass,
                                                      brunnel, level, layer, indoor, network_type,
                                                      route_1, route_2, route_3, route_4, route_5, route_6)
-        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.ref, new.highway, new.subclass,
+        VALUES (FALSE, new.osm_id, new.name, new.name_en, new.name_de, new.tags, new.ref, new.highway, new.subclass,
                 new.brunnel, new.level, new.layer, new.indoor, new.network_type,
                 new.route_1, new.route_2, new.route_3, new.route_4, new.route_5, new.route_6);
     END IF;
@@ -504,11 +505,12 @@ BEGIN
 
     -- Compact the change history to keep only the first and last version, and then uniq version of row
     CREATE TEMP TABLE name_changes_compact AS
-    SELECT DISTINCT ON (name, name_en, name_de, ref, highway, subclass, brunnel, level, layer, indoor, network_type,
+    SELECT DISTINCT ON (name, name_en, name_de, tags, ref, highway, subclass, brunnel, level, layer, indoor, network_type,
                         route_1, route_2, route_3, route_4, route_5, route_6)
         name,
         name_en,
         name_de,
+        tags,
         ref,
         highway,
         subclass,
@@ -542,6 +544,7 @@ BEGIN
       AND coalesce(n.ref, '') = coalesce(c.ref, '')
       AND n.name_en IS NOT DISTINCT FROM c.name_en
       AND n.name_de IS NOT DISTINCT FROM c.name_de
+      AND n.tags IS NOT DISTINCT FROM c.tags
       AND n.highway IS NOT DISTINCT FROM c.highway
       AND n.subclass IS NOT DISTINCT FROM c.subclass
       AND n.brunnel IS NOT DISTINCT FROM c.brunnel
@@ -577,7 +580,7 @@ BEGIN
             n.name,
             n.name_en,
             n.name_de,
-            hstore(string_agg(nullif(slice_language_tags(tags ||
+            hstore(string_agg(nullif(slice_language_tags(n.tags ||
                                                          hstore(ARRAY ['name', n.name, 'name:en', n.name_en, 'name:de', n.name_de]))::text,
                                      ''), ',')) AS tags,
             n.ref,
@@ -596,6 +599,7 @@ BEGIN
              AND coalesce(n.ref, '') = coalesce(c.ref, '')
              AND n.name_en IS NOT DISTINCT FROM c.name_en
              AND n.name_de IS NOT DISTINCT FROM c.name_de
+             AND n.tags IS NOT DISTINCT FROM c.tags
              AND n.highway IS NOT DISTINCT FROM c.highway
              AND n.subclass IS NOT DISTINCT FROM c.subclass
              AND n.brunnel IS NOT DISTINCT FROM c.brunnel
@@ -609,7 +613,7 @@ BEGIN
              AND n.route_4 IS NOT DISTINCT FROM c.route_4
              AND n.route_5 IS NOT DISTINCT FROM c.route_5
              AND n.route_6 IS NOT DISTINCT FROM c.route_6
-        GROUP BY n.name, n.name_en, n.name_de, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type,
+        GROUP BY n.name, n.name_en, n.name_de, n.tags, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type,
                  n.route_1, n.route_2, n.route_3, n.route_4, n.route_5, n.route_6
     ) AS highway_union;
 
@@ -621,6 +625,7 @@ BEGIN
         AND n.name IS NOT DISTINCT FROM c.name
         AND n.name_en IS NOT DISTINCT FROM c.name_en
         AND n.name_de IS NOT DISTINCT FROM c.name_de
+        AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -641,6 +646,7 @@ BEGIN
             AND n.name IS NOT DISTINCT FROM c.name
             AND n.name_en IS NOT DISTINCT FROM c.name_en
             AND n.name_de IS NOT DISTINCT FROM c.name_de
+            AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -661,6 +667,7 @@ BEGIN
         AND n.name IS NOT DISTINCT FROM c.name
         AND n.name_en IS NOT DISTINCT FROM c.name_en
         AND n.name_de IS NOT DISTINCT FROM c.name_de
+        AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -681,6 +688,7 @@ BEGIN
             AND n.name IS NOT DISTINCT FROM c.name
             AND n.name_en IS NOT DISTINCT FROM c.name_en
             AND n.name_de IS NOT DISTINCT FROM c.name_de
+            AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -701,6 +709,7 @@ BEGIN
         AND n.name IS NOT DISTINCT FROM c.name
         AND n.name_en IS NOT DISTINCT FROM c.name_en
         AND n.name_de IS NOT DISTINCT FROM c.name_de
+        AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -721,6 +730,7 @@ BEGIN
             AND n.name IS NOT DISTINCT FROM c.name
             AND n.name_en IS NOT DISTINCT FROM c.name_en
             AND n.name_de IS NOT DISTINCT FROM c.name_de
+            AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -741,6 +751,7 @@ BEGIN
         AND n.name IS NOT DISTINCT FROM c.name
         AND n.name_en IS NOT DISTINCT FROM c.name_en
         AND n.name_de IS NOT DISTINCT FROM c.name_de
+        AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -761,6 +772,7 @@ BEGIN
             AND n.name IS NOT DISTINCT FROM c.name
             AND n.name_en IS NOT DISTINCT FROM c.name_en
             AND n.name_de IS NOT DISTINCT FROM c.name_de
+            AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
