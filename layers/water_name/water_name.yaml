@@ -1,5 +1,9 @@
 layer:
   id: "water_name"
+  requires:
+    tables:
+      - ne_10m_geography_marine_polys
+      - lake_centerline
   description: |
       Lake center lines for labelling lake bodies.
       This is based of the [osm-lakelines](https://github.com/lukasmartinelli/osm-lakelines) project
