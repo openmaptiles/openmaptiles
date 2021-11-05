@@ -1,7 +1,9 @@
 layer:
   id: "waterway"
   # waterway relies on the function waterway_brunnel() defined in water layer
-  requires: "water"
+  requires:
+    layers:
+      - water
   description: |
       OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels (z9 and more)
       and Natural Earth rivers and lake centerlines for low zoom levels (z3 - z8).
