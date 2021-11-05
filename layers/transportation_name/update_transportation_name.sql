@@ -142,7 +142,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_id
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
-CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen1_view AS
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen1 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen1 AS
 SELECT ST_Simplify(geometry, 50) AS geometry,
        name,
        name_en,
@@ -159,9 +160,6 @@ FROM osm_transportation_name_linestring
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 8000
 ;
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS
-SELECT *
-FROM osm_transportation_name_linestring_gen1_view;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx ON osm_transportation_name_linestring_gen1((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist (geometry);
 
@@ -170,7 +168,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_parti
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen1 -> osm_transportation_name_linestring_gen2
-CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen2_view AS
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen2 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen2 AS
 SELECT ST_Simplify(geometry, 120) AS geometry,
        name,
        name_en,
@@ -187,9 +186,6 @@ FROM osm_transportation_name_linestring_gen1
 WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass IN ('motorway', 'trunk'))
   AND ST_Length(geometry) > 14000
 ;
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS
-SELECT *
-FROM osm_transportation_name_linestring_gen2_view;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx ON osm_transportation_name_linestring_gen2((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist (geometry);
 
@@ -198,7 +194,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_parti
     WHERE highway IN ('motorway', 'trunk', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen2 -> osm_transportation_name_linestring_gen3
-CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen3_view AS
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen3 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen3 AS
 SELECT ST_Simplify(geometry, 200) AS geometry,
        name,
        name_en,
@@ -215,9 +212,6 @@ FROM osm_transportation_name_linestring_gen2
 WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
   AND ST_Length(geometry) > 20000
 ;
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS
-SELECT *
-FROM osm_transportation_name_linestring_gen3_view;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx ON osm_transportation_name_linestring_gen3((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist (geometry);
 
@@ -226,7 +220,8 @@ CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_parti
     WHERE highway IN ('motorway', 'construction');
 
 -- etldoc: osm_transportation_name_linestring_gen3 -> osm_transportation_name_linestring_gen4
-CREATE OR REPLACE VIEW osm_transportation_name_linestring_gen4_view AS
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_name_linestring_gen4 CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_name_linestring_gen4 AS
 SELECT ST_Simplify(geometry, 500) AS geometry,
        name,
        name_en,
@@ -243,9 +238,6 @@ FROM osm_transportation_name_linestring_gen3
 WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
   AND ST_Length(geometry) > 20000
 ;
-CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen4 AS
-SELECT *
-FROM osm_transportation_name_linestring_gen4_view;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_name_ref_idx ON osm_transportation_name_linestring_gen4((coalesce(name, ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_geometry_idx ON osm_transportation_name_linestring_gen4 USING gist (geometry);
 
@@ -610,174 +602,13 @@ BEGIN
                  n.route_1, n.route_2, n.route_3, n.route_4, n.route_5, n.route_6
     ) AS highway_union;
 
-    -- REFRESH osm_transportation_name_linestring_gen1
-    DELETE FROM osm_transportation_name_linestring_gen1 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.tags IS NOT DISTINCT FROM c.tags
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type
-        AND n.route_1 IS NOT DISTINCT FROM c.route_1
-        AND n.route_2 IS NOT DISTINCT FROM c.route_2
-        AND n.route_3 IS NOT DISTINCT FROM c.route_3
-        AND n.route_4 IS NOT DISTINCT FROM c.route_4
-        AND n.route_5 IS NOT DISTINCT FROM c.route_5
-        AND n.route_6 IS NOT DISTINCT FROM c.route_6;
+    -- REFRESH generalized tables
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
+    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen4;
 
-    INSERT INTO osm_transportation_name_linestring_gen1
-    SELECT n.*
-    FROM osm_transportation_name_linestring_gen1_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.tags IS NOT DISTINCT FROM c.tags
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type
-            AND n.route_1 IS NOT DISTINCT FROM c.route_1
-            AND n.route_2 IS NOT DISTINCT FROM c.route_2
-            AND n.route_3 IS NOT DISTINCT FROM c.route_3
-            AND n.route_4 IS NOT DISTINCT FROM c.route_4
-            AND n.route_5 IS NOT DISTINCT FROM c.route_5
-            AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    -- REFRESH osm_transportation_name_linestring_gen2
-    DELETE FROM osm_transportation_name_linestring_gen2 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.tags IS NOT DISTINCT FROM c.tags
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type
-        AND n.route_1 IS NOT DISTINCT FROM c.route_1
-        AND n.route_2 IS NOT DISTINCT FROM c.route_2
-        AND n.route_3 IS NOT DISTINCT FROM c.route_3
-        AND n.route_4 IS NOT DISTINCT FROM c.route_4
-        AND n.route_5 IS NOT DISTINCT FROM c.route_5
-        AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    INSERT INTO osm_transportation_name_linestring_gen2
-    SELECT n.*
-    FROM osm_transportation_name_linestring_gen2_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.tags IS NOT DISTINCT FROM c.tags
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type
-            AND n.route_1 IS NOT DISTINCT FROM c.route_1
-            AND n.route_2 IS NOT DISTINCT FROM c.route_2
-            AND n.route_3 IS NOT DISTINCT FROM c.route_3
-            AND n.route_4 IS NOT DISTINCT FROM c.route_4
-            AND n.route_5 IS NOT DISTINCT FROM c.route_5
-            AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    -- REFRESH osm_transportation_name_linestring_gen3
-    DELETE FROM osm_transportation_name_linestring_gen3 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.tags IS NOT DISTINCT FROM c.tags
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type
-        AND n.route_1 IS NOT DISTINCT FROM c.route_1
-        AND n.route_2 IS NOT DISTINCT FROM c.route_2
-        AND n.route_3 IS NOT DISTINCT FROM c.route_3
-        AND n.route_4 IS NOT DISTINCT FROM c.route_4
-        AND n.route_5 IS NOT DISTINCT FROM c.route_5
-        AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    INSERT INTO osm_transportation_name_linestring_gen3
-    SELECT n.*
-    FROM osm_transportation_name_linestring_gen3_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.tags IS NOT DISTINCT FROM c.tags
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type
-            AND n.route_1 IS NOT DISTINCT FROM c.route_1
-            AND n.route_2 IS NOT DISTINCT FROM c.route_2
-            AND n.route_3 IS NOT DISTINCT FROM c.route_3
-            AND n.route_4 IS NOT DISTINCT FROM c.route_4
-            AND n.route_5 IS NOT DISTINCT FROM c.route_5
-            AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    -- REFRESH osm_transportation_name_linestring_gen4
-    DELETE FROM osm_transportation_name_linestring_gen4 AS n
-    USING name_changes_compact AS c
-    WHERE
-        coalesce(n.name, n.ref) = c.name_ref
-        AND n.name IS NOT DISTINCT FROM c.name
-        AND n.name_en IS NOT DISTINCT FROM c.name_en
-        AND n.name_de IS NOT DISTINCT FROM c.name_de
-        AND n.tags IS NOT DISTINCT FROM c.tags
-        AND n.ref IS NOT DISTINCT FROM c.ref
-        AND n.highway IS NOT DISTINCT FROM c.highway
-        AND n.subclass IS NOT DISTINCT FROM c.subclass
-        AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-        AND n.network IS NOT DISTINCT FROM c.network_type
-        AND n.route_1 IS NOT DISTINCT FROM c.route_1
-        AND n.route_2 IS NOT DISTINCT FROM c.route_2
-        AND n.route_3 IS NOT DISTINCT FROM c.route_3
-        AND n.route_4 IS NOT DISTINCT FROM c.route_4
-        AND n.route_5 IS NOT DISTINCT FROM c.route_5
-        AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
-    INSERT INTO osm_transportation_name_linestring_gen4
-    SELECT n.*
-    FROM osm_transportation_name_linestring_gen4_view AS n
-        JOIN name_changes_compact AS c ON
-            coalesce(n.name, n.ref) = c.name_ref
-            AND n.name IS NOT DISTINCT FROM c.name
-            AND n.name_en IS NOT DISTINCT FROM c.name_en
-            AND n.name_de IS NOT DISTINCT FROM c.name_de
-            AND n.tags IS NOT DISTINCT FROM c.tags
-            AND n.ref IS NOT DISTINCT FROM c.ref
-            AND n.highway IS NOT DISTINCT FROM c.highway
-            AND n.subclass IS NOT DISTINCT FROM c.subclass
-            AND n.brunnel IS NOT DISTINCT FROM c.brunnel
-            AND n.network IS NOT DISTINCT FROM c.network_type
-            AND n.route_1 IS NOT DISTINCT FROM c.route_1
-            AND n.route_2 IS NOT DISTINCT FROM c.route_2
-            AND n.route_3 IS NOT DISTINCT FROM c.route_3
-            AND n.route_4 IS NOT DISTINCT FROM c.route_4
-            AND n.route_5 IS NOT DISTINCT FROM c.route_5
-            AND n.route_6 IS NOT DISTINCT FROM c.route_6;
-
+    -- Cleanup temporary tables
     DROP TABLE name_changes_compact;
     DELETE FROM transportation_name.name_changes;
     DELETE FROM transportation_name.updates_name;
