@@ -1,5 +1,8 @@
 layer:
   id: "transportation"
+  requires:
+    tables:
+      - ne_10m_admin_0_countries
   description: |
       **transportation** contains roads, railways, aerial ways, and shipping
        lines.

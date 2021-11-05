@@ -1,5 +1,10 @@
 layer:
   id: "place"
+  requires:
+    tables:
+      - ne_10m_admin_1_states_provinces
+      - ne_10m_admin_0_countries
+      - ne_10m_admin_1_states_provinces
   description: |
       The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
       [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate) and [cities](http://wiki.openstreetmap.org/wiki/Key:place).
