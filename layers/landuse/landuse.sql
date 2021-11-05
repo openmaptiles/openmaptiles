@@ -49,15 +49,14 @@ AS
 $$
 SELECT osm_id,
        geometry,
-       landuse_unify(
-         COALESCE(
+       COALESCE(
                NULLIF(landuse, ''),
                NULLIF(amenity, ''),
                NULLIF(leisure, ''),
                NULLIF(tourism, ''),
                NULLIF(place, ''),
                NULLIF(waterway, '')
-           )) AS class
+           ) AS class
 FROM (
          -- etldoc: ne_50m_urban_areas_gen_z4 -> layer_landuse:z4
          SELECT osm_id,

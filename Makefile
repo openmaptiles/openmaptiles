@@ -64,12 +64,6 @@ define newline
 
 endef
 
-# use the old postgres connection values if they are existing
-PGHOST := $(or $(POSTGRES_HOST),$(PGHOST))
-PGPORT := $(or $(POSTGRES_PORT),$(PGPORT))
-PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE))
-PGUSER := $(or $(POSTGRES_USER),$(PGUSER))
-PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
 
 #
 # Determine area to work on
@@ -143,6 +137,11 @@ else
   DOWNLOAD_AREA := $(area)
 endif
 
+# import-borders uses these temp files during border parsing/import
+export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
+export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
+export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
+
 # The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
 export MBTILES_FILE ?= $(area).mbtiles
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
@@ -162,65 +161,24 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   export BBOX
 endif
 
-define HELP_MESSAGE
-==============================================================================
- OpenMapTiles  https://github.com/openmaptiles/openmaptiles
-
-Hints for testing areas
-  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>>
-  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
-
-Hints for designers:
-  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]
-  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]
-  make stop-postserve                  # stop dynamic tile server
-  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]
-
-Hints for developers:
-  make                                 # build source code
-  make bash                            # start openmaptiles-tools /bin/bash terminal
-  make generate-bbox-file              # compute bounding box of a data file and store it in a file
-  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
-  make generate-qa                     # statistics for a given layer's field
-  make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
-  make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
-  make test-sql                        # run unit tests on the OpenMapTiles SQL schema
-  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
-  cat  quickstart.log                  # transcript of the last ./quickstart.sh run
-  make help                            # help about available commands
-
-Hints for downloading & importing data:
-  make list-geofabrik                  # list actual geofabrik OSM extracts for download
-  make list-bbbike                     # list actual BBBike OSM extracts for download
-  make download area=albania           # download OSM data from any source       and create config file
-  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file
-  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file
-  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
-  make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
-  make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
-  make import-wikidata                 # Import labels from Wikidata
-  make import-sql                      # Import layers (run this after modifying layer SQL)
-
-Hints for database management:
-  make psql                            # start PostgreSQL console
-  make psql-list-tables                # list all PostgreSQL tables
-  make list-views                      # list PostgreSQL public schema views
-  make list-tables                     # list PostgreSQL public schema tables
-  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE
-  make analyze-db                      # PostgreSQL: ANALYZE
-  make destroy-db                      # remove docker containers and PostgreSQL data volume
-  make start-db                        # start PostgreSQL, creating it if it doesn't exist
-  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist
-  make stop-db                         # stop PostgreSQL database without destroying the data
-
-Hints for Docker management:
-  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)
-  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
-  make remove-docker-images            # remove openmaptiles docker images
-  make list-docker-images              # show a list of available docker images
-==============================================================================
-endef
-export HELP_MESSAGE
+ifeq ($(strip $(area)),)
+  define assert_area_is_given
+	@echo ""
+	@echo "ERROR: $(AREA_ERROR)"
+	@echo ""
+	@echo "  make $@ area=<area-id>"
+	@echo ""
+	@echo "To download an area, use   make download <area-id>"
+	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+	@exit 1
+  endef
+else
+  ifneq ($(strip $(AREA_INFO)),)
+    define assert_area_is_given
+	@echo "$(AREA_INFO)"
+    endef
+  endif
+endif
 
 #
 #  TARGETS
@@ -231,38 +189,62 @@ all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sq
 
 .PHONY: help
 help:
-	@echo "$$HELP_MESSAGE" | less
-
-define win_fs_error
-	( \
-	echo "" ;\
-	echo "ERROR: Windows native filesystem" ;\
-	echo "" ;\
-	echo "Please avoid running OpenMapTiles in a Windows filesystem." ;\
-	echo "See https://github.com/openmaptiles/openmaptiles/issues/1095#issuecomment-817095465" ;\
-	echo "" ;\
-	exit 1 ;\
-	)
-endef
+	@echo "=============================================================================="
+	@echo " OpenMapTiles  https://github.com/openmaptiles/openmaptiles "
+	@echo "Hints for testing areas                "
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>> "
+	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
+	@echo " "
+	@echo "Hints for designers:"
+	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
+	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]"
+	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]"
+	@echo " "
+	@echo "Hints for developers:"
+	@echo "  make                                 # build source code"
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
+	@echo "  make list-bbbike                     # list actual BBBike OSM extracts for download"
+	@echo "  make download area=albania           # download OSM data from any source       and create config file"
+	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
+	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
+	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
+	@echo "  make generate-bbox-file              # compute bounding box of a data file and store it in a file"
+	@echo "  make psql                            # start PostgreSQL console"
+	@echo "  make psql-list-tables                # list all PostgreSQL tables"
+	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
+	@echo "  make analyze-db                      # PostgreSQL: ANALYZE"
+	@echo "  make generate-qa                     # statistics for a given layer's field"
+	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
+	@echo "  make bash                            # start openmaptiles-tools /bin/bash terminal"
+	@echo "  make destroy-db                      # remove docker containers and PostgreSQL data volume"
+	@echo "  make start-db                        # start PostgreSQL, creating it if it doesn't exist"
+	@echo "  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
+	@echo "  make stop-db                         # stop PostgreSQL database without destroying the data"
+	@echo "  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)"
+	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
+	@echo "  make remove-docker-images            # remove openmaptiles docker images"
+	@echo "  make list-views                      # list PostgreSQL public schema views"
+	@echo "  make list-tables                     # list PostgreSQL public schema tables"
+	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
+	@echo "  cat  quickstart.log                  # transcript of the last ./quickstart.sh run"
+	@echo "  make help                            # help about available commands"
+	@echo "=============================================================================="
 
 .PHONY: init-dirs
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
-	@mkdir -p data
+	@mkdir -p data/borders
 	@mkdir -p cache
-	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
 endif
 
 build/mapping.yaml: init-dirs
 ifeq (,$(wildcard build/mapping.yaml))
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'generate-imposm3 $(TILESET_FILE) > $@'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_FILE) > $@
 endif
 
 .PHONY: build-sql
@@ -277,13 +259,8 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 endif
 
 .PHONY: clean
-clean: clean-test-data
+clean:
 	rm -rf build
-
-clean-test-data:
-	rm -rf data/changes.state.txt
-	rm -rf data/last.state.txt
-	rm -rf data/changes.repl.json
 
 .PHONY: destroy-db
 # TODO:  Use https://stackoverflow.com/a/27852388/177275
@@ -293,7 +270,6 @@ destroy-db:
 	$(DOCKER_COMPOSE) rm -fv
 	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
-	mkdir cache
 
 .PHONY: start-db-nowait
 start-db-nowait: init-dirs
@@ -375,7 +351,7 @@ generate-bbox-file:
 ifeq (,$(wildcard $(AREA_BBOX_FILE)))
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm bbox "$(PBF_FILE)" "$(AREA_BBOX_FILE)"
 else
-	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate.  BBOX=$(BBOX)"
+	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate."
 endif
 
 .PHONY: psql
@@ -409,15 +385,21 @@ import-diff: all start-db-nowait
 import-data: start-db
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
+.PHONY: import-borders
+import-borders: start-db-nowait
+	@$(assert_area_is_given)
+	# If CSV borders file already exists, use it without re-parsing
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
+
 .PHONY: import-sql
 import-sql: all start-db-nowait
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
-    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
+	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
 
 .PHONY: generate-tiles
 generate-tiles: all start-db
-	@echo "WARNING: This Mapnik-based method of tile generation is obsolete. Use generate-tiles-pg instead."
+	@$(assert_area_is_given)
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 	$(DOCKER_COMPOSE) run $(DC_OPTS) generate-vectortiles
@@ -427,10 +409,10 @@ generate-tiles: all start-db
 
 .PHONY: generate-tiles-pg
 generate-tiles-pg: all start-db
-	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
+	@$(assert_area_is_given)
+	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
-# For some reason Ctrl+C doesn't work here without the -T. Must be pressed twice to stop.
-	$(DOCKER_COMPOSE) run -T $(DC_OPTS) openmaptiles-tools generate-tiles
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
 			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
@@ -577,7 +559,7 @@ clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
 	@docker ps -a -q --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | awk -F" " '/<none>/{print $$3}' | $(XARGS) docker rmi
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
 
 .PHONY: test-perf-null
 test-perf-null: init-dirs
@@ -595,42 +577,3 @@ debug:  ## Use this target when developing Makefile itself to verify loaded envi
 	@echo BBOX = $(BBOX) , $$BBOX
 	@echo MIN_ZOOM = $(MIN_ZOOM) , $$MIN_ZOOM
 	@echo MAX_ZOOM = $(MAX_ZOOM) , $$MAX_ZOOM
-
-build/import-tests.osm.pbf: init-dirs
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/import/*.osm -o=build/import-tests.osm.pbf'
-
-data/changes.state.txt:
-	cp -f tests/changes.state.txt data/
-
-data/last.state.txt:
-	cp -f tests/last.state.txt data/
-
-data/changes.repl.json:
-	cp -f tests/changes.repl.json data/
-
-data/changes.osc.gz: init-dirs
-	@echo " UPDATE unit test data..."
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
-
-test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-tests.osm.pbf data/changes.state.txt data/last.state.txt data/changes.repl.json build/mapping.yaml data/changes.osc.gz
-	$(eval area := changes)
-
-	@echo "Load IMPORT test data"
-	sed -ir "s/^[#]*\s*MAX_ZOOM=.*/MAX_ZOOM=14/" .env
-	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
-
-	@echo "Apply OpenMapTiles SQL schema to test data @ Zoom 14..."
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
-    	awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}' | \
-    	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
-
-	@echo "Test SQL output for Import Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql'
-
-	@echo "Run UPDATE process on test data..."
-	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
-
-	@echo "Test SQL output for Update Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql'

@@ -75,9 +75,6 @@ tables:
     - name: waterway
       key: waterway
       type: string
-    - name: water
-      key: water
-      type: string
     - name: is_intermittent
       key: intermittent
       type: bool
@@ -96,10 +93,12 @@ tables:
       natural:
       - water
       - bay
-      - spring
       waterway:
-      - riverbank
-      - dock
-      water:
       - river
+      - riverbank
+      - stream
+      - canal
+      - drain
+      - ditch
+      - dock
     type: polygon

@@ -71,10 +71,6 @@ To work on OpenMapTiles you need Docker.
 - Install [Docker](https://docs.docker.com/engine/installation/). Minimum version is 1.12.3+.
 - Install [Docker Compose](https://docs.docker.com/compose/install/). Minimum version is 1.7.1+.
 
-### Microsoft Windows Subsystem for Linux (WSL)
-
-Please use Linux `/home/user/` directory, not Windows e.g. `/mnt/c` directory.
-
 ### Build
 
 Build the tileset.
@@ -101,7 +97,7 @@ Now start up the database container.
 make start-db
 ```
 
-Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines). Natural Earth country boundaries are used in the few lowest zoom levels.
+Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
 
 ```bash
 make import-data
@@ -114,10 +110,11 @@ make download area=albania
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
-`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.
+`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.  Also create borders table using extra processing with [osmborder](https://github.com/pnorman/osmborder) tool.
 
 ```bash
 make import-osm
+make import-borders
 ```
 
 Import labels from Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
@@ -129,13 +126,6 @@ make import-wikidata
 ```
 
 ### Work on Layers
-Each time you modify a layer's `mapping.yaml` file or add new OSM tags, run `make` and `make import-osm` to recreate tables (potentially with additional data) in PostgreSQL. With the new data, there can be new Wikidata records also.
-```
-make clean
-make
-make import-osm
-make import-wikidata
-```
 
 Each time you modify layer SQL code run `make` and `make import-sql`.
 
@@ -149,25 +139,8 @@ Now you are ready to **generate the vector tiles**. By default, `./.env` specifi
 
 ```
 make generate-bbox-file  # compute data bbox -- not needed for the whole planet
-make generate-tiles-pg   # generate tiles
+make generate-tiles      # generate tiles
 ```
-
-### Workflow to generate tiles
-If you go from top to bottom you can be sure that it will generate a .mbtiles file out of a .osm.pbf file
-```
-make clean                  # clean / remove existing build files
-make                        # generate build files
-make start-db               # start up the database container.
-make import-data            # Import external data from OpenStreetMapData, Natural Earth and OpenStreetMap Lake Labels.
-make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
-make import-osm             # import data into postgres
-make import-wikidata        # import Wikidata
-make import-sql             # create / import sql funtions 
-make generate-bbox-file     # compute data bbox -- not needed for the whole planet
-make generate-tiles-pg      # generate tiles
-```
-Instead of calling `make download area=albania` you can add a .osm.pbf file in the `data` folder `openmaptiles/data/your_area_file.osm.pbf`
-
 
 ## License
 

@@ -7,10 +7,12 @@ DROP TRIGGER IF EXISTS trigger_refresh ON waterway_important.updates;
 -- and also makes it possible to filter out too short rivers
 
 CREATE INDEX IF NOT EXISTS osm_waterway_linestring_waterway_partial_idx
-    ON osm_waterway_linestring ((true))
-    WHERE name <> ''
-      AND waterway = 'river'
-      AND ST_IsValid(geometry);
+    ON osm_waterway_linestring (waterway)
+    WHERE waterway = 'river';
+
+CREATE INDEX IF NOT EXISTS osm_waterway_linestring_name_partial_idx
+    ON osm_waterway_linestring (name)
+    WHERE name <> '';
 
 -- etldoc: osm_waterway_linestring ->  osm_important_waterway_linestring
 CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring AS
@@ -31,6 +33,7 @@ FROM (
            AND ST_IsValid(geometry)
          GROUP BY name, name_en, name_de, slice_language_tags(tags)
      ) AS waterway_union;
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_names ON osm_important_waterway_linestring (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_geometry_idx ON osm_important_waterway_linestring USING gist (geometry);
 
 -- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen_z11
@@ -45,6 +48,7 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
 FROM osm_important_waterway_linestring
 WHERE ST_Length(geometry) > 1000
     );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z11_name_idx ON osm_important_waterway_linestring_gen_z11 (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z11_geometry_idx ON osm_important_waterway_linestring_gen_z11 USING gist (geometry);
 
 -- etldoc: osm_important_waterway_linestring_gen_z11 -> osm_important_waterway_linestring_gen_z10
@@ -59,6 +63,7 @@ SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
 FROM osm_important_waterway_linestring_gen_z11
 WHERE ST_Length(geometry) > 4000
     );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z10_name_idx ON osm_important_waterway_linestring_gen_z10 (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z10_geometry_idx ON osm_important_waterway_linestring_gen_z10 USING gist (geometry);
 
 -- etldoc: osm_important_waterway_linestring_gen_z10 -> osm_important_waterway_linestring_gen_z9
@@ -73,6 +78,7 @@ SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
 FROM osm_important_waterway_linestring_gen_z10
 WHERE ST_Length(geometry) > 8000
     );
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z9_name_idx ON osm_important_waterway_linestring_gen_z9 (name);
 CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_gen_z9_geometry_idx ON osm_important_waterway_linestring_gen_z9 USING gist (geometry);
 
 -- Handle updates

@@ -88,7 +88,6 @@ tables:
       - college
       - library
       - hospital
-      - grave_yard
       leisure:
       - stadium
       - pitch

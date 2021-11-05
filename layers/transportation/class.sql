@@ -56,38 +56,3 @@ SELECT CASE
 $$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
-
--- Determine which transportation features are shown at zoom 12
-CREATE OR REPLACE FUNCTION transportation_filter_z12(highway text, construction text) RETURNS boolean AS
-$$
-SELECT CASE
-           WHEN highway IN ('unclassified', 'residential') THEN TRUE
-           WHEN highway_class(highway, '', construction) IN
-               (
-                'motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'raceway',
-                'motorway_construction', 'trunk_construction', 'primary_construction',
-                'secondary_construction', 'tertiary_construction', 'raceway_construction',
-                'busway'
-               ) THEN TRUE --includes ramps
-           ELSE FALSE
-       END
-$$ LANGUAGE SQL IMMUTABLE
-                STRICT
-                PARALLEL SAFE;
-
--- Determine which transportation features are shown at zoom 13
--- Assumes that piers have already been excluded
-CREATE OR REPLACE FUNCTION transportation_filter_z13(highway text,
-                                                     public_transport text,
-                                                     construction text,
-                                                     service text) RETURNS boolean AS
-$$
-SELECT CASE
-           WHEN transportation_filter_z12(highway, construction) THEN TRUE
-           WHEN highway = 'service' OR construction = 'service' THEN service NOT IN ('driveway', 'parking_aisle')
-           WHEN highway_class(highway, public_transport, construction) IN ('minor', 'minor_construction') THEN TRUE
-           ELSE FALSE
-       END
-$$ LANGUAGE SQL IMMUTABLE
-                STRICT
-                PARALLEL SAFE;

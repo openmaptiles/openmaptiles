@@ -130,15 +130,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
       echo "ERR: Sorry this is working only on x86_64!"
       exit 1
     fi
-
     echo "      : --- Memory, CPU info ---- "
-    if [ -n "$(command -v bc)" ]; then
-        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
-        echo "System memory (GB): ${mem}"
-    else
-        mem=$( grep MemTotal /proc/meminfo | awk '{print $2}')
-        echo "System memory (KB): ${mem}"
-    fi
+    mem=$( grep MemTotal /proc/meminfo | awk '{print $2}' | xargs -I {} echo "scale=4; {}/1024^2" | bc )
+    echo "System memory (GB): ${mem}"
     grep SwapTotal /proc/meminfo
     echo "CPU number: $(grep -c processor /proc/cpuinfo) x $(grep "bogomips" /proc/cpuinfo | head -1)"
     grep Free /proc/meminfo
@@ -236,6 +230,14 @@ make import-osm
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
+echo "====> : Start importing border ${area} data into PostgreSQL using osmborder"
+echo "      : Source code: https://github.com/pnorman/osmborder"
+echo "      : Data license: http://www.openstreetmap.org/copyright"
+echo "      : Thank you Paul Norman"
+make import-borders
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
 echo "====> : Start importing Wikidata: Wikidata Query Service -> PostgreSQL"
 echo "      : The Wikidata license: CC0 - https://www.wikidata.org/wiki/Wikidata:Main_Page "
 echo "      : Thank you Wikidata Contributors ! "
@@ -276,10 +278,17 @@ fi
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Start generating MBTiles (containing gzipped MVT PBF) using PostGIS. "
+echo "====> : Start generating MBTiles (containing gzipped MVT PBF) from a TM2Source project. "
+echo "      : TM2Source project definitions : ./build/openmaptiles.tm2source/data.yml "
 echo "      : Output MBTiles: ./data/${area}.mbtiles  "
-echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
-make generate-tiles-pg
+echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/generate-vectortiles "
+echo "      : We are using a lot of Mapbox Open Source tools! : https://github.com/mapbox "
+echo "      : Thank you https://www.mapbox.com !"
+echo "      : See other MVT tools : https://github.com/mapbox/awesome-vector-tiles "
+echo "      :  "
+echo "      : You will see a lot of deprecated warning in the log! This is normal!  "
+echo "      :    like :  Mapnik LOG>  ... is deprecated and will be removed in Mapnik 4.x ... "
+make generate-tiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
