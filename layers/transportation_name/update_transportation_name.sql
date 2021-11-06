@@ -89,8 +89,10 @@ FROM (
                 name,
                 name_en,
                 name_de,
-                tags || hstore( -- store results of osml10n_street_abbrev_* above
-                               ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]) AS tags,
+                -- store results of osml10n_street_abbrev_* above
+                hstore(string_agg(nullif(slice_language_tags(tags ||
+                     hstore(ARRAY ['name', name, 'name:en', name_en, 'name:de', name_de]))::text,
+                     ''), ',')) AS tags,
                 ref,
                 highway,
                 subclass,
