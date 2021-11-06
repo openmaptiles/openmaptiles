@@ -117,7 +117,7 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 tertiary count expected 1, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway IN ('service', 'tertiary');
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway IN ('service', 'track');
   IF cnt <> 0 THEN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 minor road count expected 0, got ' || cnt);
   END IF;
