@@ -1,5 +1,8 @@
 layer:
   id: "landuse"
+  requires:
+    tables:
+      - ne_50m_urban_areas
   description: |
       Landuse is used to describe use of land by humans. At lower zoom levels this is
       from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
