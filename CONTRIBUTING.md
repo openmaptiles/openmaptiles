@@ -57,7 +57,7 @@ The verification requires the script to append temporary changes to the `.env` f
 ```
 (
 set -e
-echo '# Temporarily changes for Verifying that updates still work' >> .env 
+echo '# temporary changes for Verifying that updates still work' >> .env 
 # Ensure DIFF_MODE is active
 echo DIFF_MODE=true >> .env
 # Ensure all zoom levels are tested
