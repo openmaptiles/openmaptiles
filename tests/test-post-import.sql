@@ -122,6 +122,17 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 minor road count expected 0, got ' || cnt);
   END IF;
 
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
+    WHERE is_bridge = TRUE
+      AND toll = TRUE
+      AND layer = 1
+      AND bicycle = 'no'
+      AND foot = 'no'
+      AND horse = 'no';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import tags expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$
