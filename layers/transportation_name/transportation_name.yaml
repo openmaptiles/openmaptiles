@@ -107,6 +107,7 @@ layer:
     query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./highway_classification.sql
+  - ./highway_name.sql
   - ./update_transportation_name.sql
   - ./transportation_name.sql
 datasources:
