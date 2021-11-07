@@ -94,19 +94,22 @@
     <tag k="name" v="OpenMapTiles Secondary 2"/>
   </way>
 
-  <!-- Test disrputed way stitching -->
+  <!-- Test disrupted way stitching -->
   <way id="5010" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="500101" />
     <nd ref="500102" />
     <tag k="highway" v="secondary"/>
+    <tag k="bicycle" v="yes"/>
     <tag k="name" v="OpenMapTiles Secondary 3"/>
   </way>
   <way id="5011" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="500102" />
     <nd ref="500111" />
     <tag k="highway" v="secondary"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="layer" v="1"/>
     <tag k="toll" v="yes"/>
-    <tag k="name" v="OpenMapTiles Secondary 3"/>
+    <tag k="name" v="OpenMapTiles Secondary 3 (Toll)"/>
   </way>
   <way id="5012" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="500111" />
