@@ -47,7 +47,7 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label expected 3, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE ele=123;
+  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE ele='123';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label ele=123 expected 1, got ' || cnt);
   END IF;
