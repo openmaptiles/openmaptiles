@@ -71,6 +71,7 @@ CREATE TABLE waterway_relation AS (
            slice_language_tags(tags) AS tags
     FROM osm_waterway_relation
     WHERE name <> ''
+      AND (role = 'main_stream' OR role = '')
       AND ST_GeometryType(geometry) = 'ST_LineString'
       AND ST_IsClosed(geometry) = FALSE
     GROUP BY name, slice_language_tags(tags)
@@ -124,7 +125,7 @@ CREATE MATERIALIZED VIEW waterway_relation_gen_z6 AS (
        is_tunnel,
        is_intermittent
     FROM waterway_relation_gen_z7
-    WHERE ST_Length(geometry) > 590000
+    WHERE ST_Length(geometry) > 500000
 ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS waterway_relation_gen_z6_geometry_idx ON waterway_relation_gen_z6 USING gist (geometry);
 

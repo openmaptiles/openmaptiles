@@ -49,6 +49,10 @@ tables:
     columns:
     - name: osm_id
       type: id
+    - name: member
+      type: member_id
+    - name: role
+      type: member_role 
     - name: geometry
       type: geometry
     - key: waterway
