@@ -1,3 +1,4 @@
+-- etldoc:  osm_poi_point ->  osm_poi_stop_centroid
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_centroid CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS
 (
@@ -11,6 +12,8 @@ GROUP BY uic_ref
 HAVING count(*) > 1
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 
+-- etldoc:  osm_poi_stop_centroid ->  osm_poi_stop_rank
+-- etldoc:  osm_poi_point ->  osm_poi_stop_rank
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_rank CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_rank AS
 (
