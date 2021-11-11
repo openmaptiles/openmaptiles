@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="500001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.00" />
+  <node id="500002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.00" />
+  <node id="500011" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.01" />
+  <node id="500012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.01" />
+  <node id="500021" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.02" />
+  <node id="500022" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.02" />
+  <node id="500031" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.03" />
+  <node id="500032" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.03" />
+  <node id="500041" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.04" />
+  <node id="500042" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.04" />
+  <node id="500051" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.05" />
+  <node id="500052" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.05" />
+  <node id="500061" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.06" />
+  <node id="500062" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.06" />
+
+  <way id="5000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500001" />
+    <nd ref="500002" />
+    <tag k="highway" v="motorway"/>
+    <tag k="name" v="OpenMapTiles Motorway"/>
+  </way>
+  <way id="5001" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500011" />
+    <nd ref="500012" />
+    <tag k="highway" v="trunk"/>
+    <tag k="name" v="OpenMapTiles Trunk"/>
+  </way>
+  <way id="5002" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500021" />
+    <nd ref="500022" />
+    <tag k="highway" v="primary"/>
+    <tag k="name" v="OpenMapTiles Primary"/>
+  </way>
+  <way id="5003" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500031" />
+    <nd ref="500032" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="toll" v="yes"/>
+    <tag k="layer" v="1"/>
+    <tag k="bicycle" v="no"/>
+    <tag k="horse" v="no"/>
+    <tag k="foot" v="no"/>
+  </way>
+  <way id="5004" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500041" />
+    <nd ref="500042" />
+    <tag k="highway" v="tertiary"/>
+    <tag k="name" v="OpenMapTiles Tertiary"/>
+  </way>
+  <way id="5005" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500051" />
+    <nd ref="500052" />
+    <tag k="highway" v="service"/>
+    <tag k="service" v="driveway"/>
+    <tag k="name" v="OpenMapTiles Service"/>
+  </way>
+  <way id="5006" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500061" />
+    <nd ref="500062" />
+    <tag k="highway" v="track"/>
+    <tag k="name" v="OpenMapTiles Track"/>
+  </way>
+</osm>
