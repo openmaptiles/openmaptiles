@@ -33,6 +33,5 @@
       <tag k="highway" v="secondary"/>
       <tag k="name" v="OpenMapTiles Secondary 3"/>
     </way>
-
   </modify>
 </osmChange>

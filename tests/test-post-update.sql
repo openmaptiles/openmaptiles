@@ -34,12 +34,12 @@ BEGIN
  -- Test 300: Verify landuse modified
   SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='natural' AND subclass='scrub';
   IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(300, 'import', 'osm_landcover_polygon natural=scrub expected 1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(300, 'update', 'osm_landcover_polygon natural=scrub expected 1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='natural' AND subclass='wood';
   IF cnt <> 0 THEN
-    INSERT INTO omt_test_failures VALUES(300, 'import', 'osm_landcover_polygon natural=wood expected 0, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(300, 'update', 'osm_landcover_polygon natural=wood expected 0, got ' || cnt);
   END IF;
 
   -- Test 400: Verify new city added
@@ -53,6 +53,19 @@ BEGIN
   SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring WHERE tags->'name' = 'OpenMapTiles Secondary 3';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(500, 'update', 'osm_transportation_linestring unsplit road count expected 1, got ' || cnt);
+  END IF;
+
+  -- Verify tags changed
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
+    WHERE is_tunnel = TRUE
+      AND is_bridge = FALSE
+      AND toll = FALSE
+      AND layer = -1
+      AND bicycle = 'yes'
+      AND foot = 'yes'
+      AND horse = 'yes';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'update', 'osm_transportation_linestring z9 update tags expected 1, got ' || cnt);
   END IF;
 
 END;

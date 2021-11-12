@@ -46,6 +46,8 @@ When you are making PR that adds new spatial features to OpenMapTiles schema, pl
 
 It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer.  This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.
 
+To run the unit tests, run `make clean destroy-db && make test-sql`
+
 # Verifying that updates still work
 
 When testing a PR, you shoud also verify that the update process completes without error.  The following procedure will run the update process.
