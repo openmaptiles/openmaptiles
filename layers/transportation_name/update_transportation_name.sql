@@ -443,6 +443,7 @@ CREATE TABLE IF NOT EXISTS transportation_name.name_changes
     highway character varying,
     subclass character varying,
     brunnel character varying,
+    sac_scale character varying,
     level integer,
     layer integer,
     indoor boolean,
@@ -505,7 +506,7 @@ BEGIN
 
     -- Compact the change history to keep only the first and last version, and then uniq version of row
     CREATE TEMP TABLE name_changes_compact AS
-    SELECT DISTINCT ON (name, name_en, name_de, tags, ref, highway, subclass, brunnel, level, layer, indoor, network_type,
+    SELECT DISTINCT ON (name, name_en, name_de, tags, ref, highway, subclass, brunnel, sac_scale, level, layer, indoor, network_type,
                         route_1, route_2, route_3, route_4, route_5, route_6)
         name,
         name_en,
@@ -515,6 +516,7 @@ BEGIN
         highway,
         subclass,
         brunnel,
+        sac_scale,
         level,
         layer,
         indoor,
@@ -548,6 +550,7 @@ BEGIN
       AND n.highway IS NOT DISTINCT FROM c.highway
       AND n.subclass IS NOT DISTINCT FROM c.subclass
       AND n.brunnel IS NOT DISTINCT FROM c.brunnel
+      AND n.sac_scale IS NOT DISTINCT FROM c.sac_scale
       AND n.level IS NOT DISTINCT FROM c.level
       AND n.layer IS NOT DISTINCT FROM c.layer
       AND n.indoor IS NOT DISTINCT FROM c.indoor
@@ -569,6 +572,7 @@ BEGIN
            highway,
            subclass,
            brunnel,
+           sac_scale,
            level,
            layer,
            indoor,
@@ -587,6 +591,7 @@ BEGIN
             n.highway,
             n.subclass,
             n.brunnel,
+            n.sac_scale,
             n.level,
             n.layer,
             n.indoor,
@@ -603,6 +608,7 @@ BEGIN
              AND n.highway IS NOT DISTINCT FROM c.highway
              AND n.subclass IS NOT DISTINCT FROM c.subclass
              AND n.brunnel IS NOT DISTINCT FROM c.brunnel
+             AND n.sac_scale IS NOT DISTINCT FROM c.sac_scale
              AND n.level IS NOT DISTINCT FROM c.level
              AND n.layer IS NOT DISTINCT FROM c.layer
              AND n.indoor IS NOT DISTINCT FROM c.indoor
@@ -613,7 +619,7 @@ BEGIN
              AND n.route_4 IS NOT DISTINCT FROM c.route_4
              AND n.route_5 IS NOT DISTINCT FROM c.route_5
              AND n.route_6 IS NOT DISTINCT FROM c.route_6
-        GROUP BY n.name, n.name_en, n.name_de, n.tags, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type,
+        GROUP BY n.name, n.name_en, n.name_de, n.tags, n.ref, n.highway, n.subclass, n.brunnel, n.sac_scale, n.level, n.layer, n.indoor, n.network_type,
                  n.route_1, n.route_2, n.route_3, n.route_4, n.route_5, n.route_6
     ) AS highway_union;
 
