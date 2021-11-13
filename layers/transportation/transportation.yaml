@@ -195,8 +195,10 @@ layer:
       - unpaved
   datasource:
     geometry_field: geometry
+    key_field: id
+    key_field_as_attribute: no
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT id, geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql

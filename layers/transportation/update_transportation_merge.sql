@@ -17,7 +17,7 @@ DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z11 CAS
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11 AS
 (
 SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
-       NULL::bigint AS osm_id,
+       min(osm_id) AS id,
        highway,
        network,
        construction,
@@ -45,7 +45,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z10 AS
 (
 SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
@@ -71,7 +71,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z9 AS
 (
 SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
@@ -96,7 +96,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_i
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
 SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
-       NULL::bigint AS osm_id,
+       min(id) AS id,
        highway,
        network,
        construction,
@@ -118,7 +118,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_i
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z7 AS
 (
 SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
@@ -137,7 +137,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_i
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6 AS
 (
 SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
@@ -156,7 +156,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_i
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z5 AS
 (
 SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
@@ -175,7 +175,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_i
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z4 AS
 (
 SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
-       osm_id,
+       id,
        highway,
        network,
        construction,
