@@ -326,10 +326,10 @@ FROM (
          WHERE zoom_level = 11
          UNION ALL
 
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z13
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z14_
-         SELECT osm_id AS id,
+         -- etldoc: osm_transportation_merge_linestring  ->  layer_transportation:z12
+         -- etldoc: osm_transportation_merge_linestring  ->  layer_transportation:z13
+         -- etldoc: osm_transportation_merge_linestring  ->  layer_transportation:z14_
+         SELECT id,
                 geometry,
                 highway,
                 construction,
@@ -338,8 +338,8 @@ FROM (
                 NULL AS aerialway,
                 NULL AS shipway,
                 public_transport,
-                service_value(service) AS service,
-                CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
+                service,
+                access,
                 toll,
                 is_bridge,
                 is_tunnel,
@@ -348,15 +348,15 @@ FROM (
                 is_oneway,
                 man_made,
                 layer,
-                CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
-                CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+                level,
+                indoor,
                 bicycle,
                 foot,
                 horse,
                 mtb_scale,
-                surface_value(surface) AS "surface",
+                surface,
                 z_order
-         FROM osm_highway_linestring
+         FROM osm_transportation_merge_linestring
          WHERE NOT is_area
            AND
                CASE WHEN zoom_level = 12 THEN transportation_filter_z12(highway, construction)

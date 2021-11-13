@@ -12,6 +12,43 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
     ON osm_highway_linestring (highway)
     WHERE highway IN ('motorway', 'trunk');
 
+-- etldoc: osm_highway_linestring ->  osm_transportation_merge_linestring
+DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring CASCADE;
+CREATE MATERIALIZED VIEW osm_transportation_merge_linestring AS
+(
+SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+       min(osm_id) AS id,
+       highway,
+       construction,
+       network,
+       CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
+       public_transport,
+       service,
+       toll,
+       is_bridge,
+       is_tunnel,
+       is_ford,
+       is_ramp,
+       is_oneway,
+       man_made,
+       layer,
+       CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+       CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+       bicycle,
+       foot,
+       horse,
+       mtb_scale,
+       surface_value(surface) AS surface,
+       is_area,
+       z_order
+FROM osm_highway_linestring
+GROUP BY highway, service, is_ramp, is_bridge, is_tunnel, level, is_oneway, public_transport, network, construction, is_ford, bicycle, foot, horse, surface, indoor, access, toll, mtb_scale, layer, man_made, is_area, z_order
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_geometry_idx
+    ON osm_transportation_merge_linestring USING gist (geometry);
+CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_id_idx
+    ON osm_transportation_merge_linestring (id);
+
 -- etldoc: osm_highway_linestring_gen_z11 ->  osm_transportation_merge_linestring_gen_z11
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z11 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11 AS
@@ -230,6 +267,7 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation';
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_merge_linestring;
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_merge_linestring_gen_z11;
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_merge_linestring_gen_z10;
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_merge_linestring_gen_z9;
