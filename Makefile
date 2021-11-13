@@ -612,13 +612,14 @@ data/changes.osc.gz: init-dirs
 	@echo " UPDATE unit test data..."
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'osmconvert tests/update/*.osc --merge-versions -o=data/changes.osc && gzip -f data/changes.osc'
 
-test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-tests.osm.pbf data/changes.state.txt data/last.state.txt data/changes.repl.json build/mapping.yaml data/changes.osc.gz
+test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-tests.osm.pbf data/changes.state.txt data/last.state.txt data/changes.repl.json build/mapping.yaml data/changes.osc.gz build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
 	$(eval area := changes)
 
 	@echo "Load IMPORT test data"
 	sed -ir "s/^[#]*\s*MAX_ZOOM=.*/MAX_ZOOM=14/" .env
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=false/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm build/import-tests.osm.pbf'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
 
 	@echo "Apply OpenMapTiles SQL schema to test data @ Zoom 14..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
