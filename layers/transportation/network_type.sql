@@ -14,8 +14,7 @@ $$
             CREATE TYPE route_network_type AS enum (
                 'us-interstate', 'us-highway', 'us-state',
                 'ca-transcanada',
-                'gb-motorway', 'gb-trunk',
-                'hike-international', 'hike-national', 'hike-regional', 'hike-local'
+                'gb-motorway', 'gb-trunk'
                 );
         END IF;
     END

@@ -24,7 +24,8 @@ SELECT
     indoor,
     network_type,
     route_1, route_2, route_3, route_4, route_5, route_6,
-    z_order
+    z_order,
+    route_rank
 FROM (
     SELECT DISTINCT ON (hl.osm_id)
         hl.geometry,
@@ -52,7 +53,8 @@ FROM (
         NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
         NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
         NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
-        hl.z_order
+        hl.z_order,
+        LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
     FROM osm_highway_linestring hl
             LEFT OUTER JOIN osm_route_member rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
             LEFT OUTER JOIN osm_route_member rm2 ON rm2.member = hl.osm_id AND rm2.concurrency_index=2
@@ -86,7 +88,8 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        indoor,
        network_type AS network,
        route_1, route_2, route_3, route_4, route_5, route_6,
-       z_order
+       z_order,
+       route_rank
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
                 name,
@@ -106,7 +109,8 @@ FROM (
                 indoor,
                 network_type,
                 route_1, route_2, route_3, route_4, route_5, route_6,
-                min(z_order) AS z_order
+                min(z_order) AS z_order,
+                min(route_rank) AS route_rank
          FROM osm_transportation_name_network
          WHERE name <> '' OR ref <> ''
          GROUP BY name, name_en, name_de, tags, ref, highway, subclass, sac_scale, "level", layer, indoor, network_type,
@@ -133,7 +137,8 @@ FROM (
                 NULL AS route_4,
                 NULL AS route_5,
                 NULL AS route_6,
-                min(z_order) AS z_order
+                min(z_order) AS z_order,
+                NULL::int AS route_rank
          FROM osm_shipway_linestring
          WHERE name <> ''
          GROUP BY name, name_en, name_de, tags, subclass, "level", layer
@@ -351,7 +356,8 @@ BEGIN
         indoor,
         network_type,
         route_1, route_2, route_3, route_4, route_5, route_6,
-        z_order
+        z_order,
+        route_rank
     FROM (
         SELECT hl.geometry,
             hl.osm_id,
@@ -378,7 +384,8 @@ BEGIN
 	    NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
 	    NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
 	    NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
-            hl.z_order
+            hl.z_order,
+            LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
             hl.osm_id = c.osm_id

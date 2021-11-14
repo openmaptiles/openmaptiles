@@ -22,7 +22,7 @@ INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
 
-CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, osmc_symbol text, colour text) RETURNS route_network_type AS
+CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text) RETURNS route_network_type AS
 $$
 SELECT CASE
            WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
@@ -32,11 +32,6 @@ SELECT CASE
            WHEN network LIKE 'CA:transcanada%' THEN 'ca-transcanada'::route_network_type
            WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
            WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
-           WHEN network = 'iwn' THEN 'hike-international'::route_network_type
-           WHEN network = 'nwn' THEN 'hike-national'::route_network_type
-           WHEN network = 'rwn' THEN 'hike-regional'::route_network_type
-           WHEN network = 'lwn' THEN 'hike-local'::route_network_type
-           WHEN COALESCE(osmc_symbol, colour) <> '' THEN 'hike-local'::route_network_type
            END;
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
@@ -44,9 +39,9 @@ $$ LANGUAGE sql IMMUTABLE
 -- etldoc:  osm_route_member ->  osm_route_member
 -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
 UPDATE osm_route_member
-SET network_type = osm_route_member_network_type(network, osmc_symbol, colour)
+SET network_type = osm_route_member_network_type(network)
 WHERE network != ''
-  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, osmc_symbol, colour)
+  AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
 ;
 
 CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
@@ -70,7 +65,12 @@ BEGIN
       id,
       osm_id,
       osm_route_member_network_type(network, osmc_symbol, colour) AS network_type,
-      DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
+      DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
+      CASE
+           WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
+           WHEN network = 'lwn' THEN 2
+           WHEN COALESCE(osmc_symbol, colour) <> '' THEN 2
+      END AS rank
     FROM osm_route_member rm
     WHERE rm.member IN
       (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
@@ -89,14 +89,16 @@ CREATE INDEX IF NOT EXISTS osm_route_member_network_type_idx ON osm_route_member
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
 
-ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int;
+ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int,
+                             ADD COLUMN IF NOT EXISTS rank int;
 
 -- One-time load of concurrency indexes; updates occur via trigger
-INSERT INTO osm_route_member (id, osm_id, concurrency_index)
+INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
   SELECT
     id,
     osm_id,
-    DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index
+    DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
+    NULL::int AS rank
   FROM osm_route_member
   ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
 

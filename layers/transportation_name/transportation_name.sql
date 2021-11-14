@@ -114,7 +114,7 @@ FROM (
            AND
                CASE WHEN highway_class(highway, NULL::text, NULL::text) NOT IN ('path', 'minor') THEN TRUE
                     WHEN highway IN ('unclassified', 'residential', 'shipway') THEN TRUE
-                    WHEN network IN ('hike-international', 'hike-national', 'hike-regional') THEN TRUE END
+                    WHEN route_rank = 1 THEN TRUE END
 
          UNION ALL
 
@@ -143,6 +143,7 @@ FROM (
                                                    name <> ''
                                                 OR network IS NOT NULL
                                                 OR sac_scale <> ''
+                                                OR route_rank <= 2
                                               ) THEN TRUE
                END
 
