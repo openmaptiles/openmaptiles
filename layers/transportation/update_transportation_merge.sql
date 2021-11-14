@@ -16,7 +16,7 @@ CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
 DROP MATERIALIZED VIEW IF EXISTS osm_transportation_merge_linestring_gen_z11 CASCADE;
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z11 AS
 (
-SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
+SELECT ST_Collect(geometry) AS geometry,
        min(osm_id) AS id,
        highway,
        network,
@@ -29,14 +29,36 @@ SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
        foot,
        horse,
        mtb_scale,
-       CASE
-           WHEN access IN ('private', 'no') THEN 'no'
-           ELSE NULL::text END AS access,
+       access,
        toll,
        layer
-FROM osm_highway_linestring_gen_z11
+FROM
+       (
+       SELECT ST_ClusterDBSCAN(geometry, 0, 1) OVER(
+                PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+              ) AS cluster,
+              geometry,
+              osm_id,
+              highway,
+              network,
+              construction,
+              is_bridge,
+              is_tunnel,
+              is_ford,
+              z_order,
+              bicycle,
+              foot,
+              horse,
+              mtb_scale,
+              CASE
+                  WHEN access IN ('private', 'no') THEN 'no'
+                  ELSE NULL::text END AS access,
+              toll,
+              layer
+       FROM osm_highway_linestring_gen_z11
+       ) cluster_query
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer, cluster
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
@@ -101,7 +123,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_id_
 -- etldoc: osm_transportation_merge_linestring_gen_z9 ->  osm_transportation_merge_linestring_gen_z8
 CREATE MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z8 AS
 (
-SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
+SELECT ST_Simplify(ST_Collect(geometry), ZRes(10)) AS geometry,
        min(id) AS id,
        highway,
        network,
