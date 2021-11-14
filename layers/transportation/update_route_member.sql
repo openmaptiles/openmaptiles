@@ -60,11 +60,11 @@ BEGIN
              JOIN transportation_name.network_changes AS c ON
         r.osm_id = c.osm_id;
 
-    INSERT INTO osm_route_member (id, osm_id, network_type, concurrency_index)
+    INSERT INTO osm_route_member (id, osm_id, network_type, concurrency_index, rank)
     SELECT
       id,
       osm_id,
-      osm_route_member_network_type(network, osmc_symbol, colour) AS network_type,
+      osm_route_member_network_type(network) AS network_type,
       DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
       CASE
            WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
@@ -98,7 +98,11 @@ INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
     id,
     osm_id,
     DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
-    NULL::int AS rank
+    CASE
+         WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
+         WHEN network = 'lwn' THEN 2
+         WHEN COALESCE(osmc_symbol, colour) <> '' THEN 2
+    END AS rank
   FROM osm_route_member
   ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
 
