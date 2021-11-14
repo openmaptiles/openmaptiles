@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS btree_gist;
 DROP TRIGGER IF EXISTS trigger_flag_transportation ON osm_highway_linestring;
 DROP TRIGGER IF EXISTS trigger_refresh ON transportation.updates;
 
@@ -35,7 +36,7 @@ SELECT ST_Collect(geometry) AS geometry,
 FROM
        (
        SELECT ST_ClusterDBSCAN(geometry, 0, 1) OVER(
-                PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
+                PARTITION BY highway, is_bridge, is_tunnel
               ) AS cluster,
               geometry,
               osm_id,
@@ -58,10 +59,12 @@ FROM
        FROM osm_highway_linestring_gen_z11
        ) cluster_query
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer, cluster
+GROUP BY highway, is_bridge, is_tunnel, cluster, network, construction, is_ford, bicycle, foot, horse, mtb_scale, access, toll, layer
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_cluster_idx
+    ON osm_transportation_merge_linestring_gen_z11 USING gist (highway, int4(is_bridge), int4(is_tunnel), geometry);
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_id_idx
     ON osm_transportation_merge_linestring_gen_z11 (id);
 
