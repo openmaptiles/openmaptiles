@@ -28,7 +28,7 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
 AS
 $$
 SELECT geometry,
-       tags->'name',
+       tags->'name' AS name,
        COALESCE(tags->'name_en', tags->'name') AS name_en,
        COALESCE(tags->'name_de', tags->'name', tags->'name_en') AS name_de,
        tags,
