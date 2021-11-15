@@ -46,8 +46,6 @@ When you are making PR that adds new spatial features to OpenMapTiles schema, pl
 
 It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer.  This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.
 
-To run the unit tests, run `make clean destroy-db && make test-sql`
-
 # Verifying that updates still work
 
 When testing a PR, you should also verify that the update process completes without an error. Please modify, if necessary, and run the script below.
@@ -59,13 +57,17 @@ The verification requires the script to append temporary changes to the `.env` f
 ```
 (
 set -e
-echo '# temporary changes for verifying that updates still work' >> .env 
-# Ensure DIFF_MODE is active
-echo DIFF_MODE=true >> .env
-# Ensure all zoom levels are tested
-echo MAX_ZOOM=14 >> .env
 
-#  Set the test area to the appropriate geofabrik extract
+cat >> .env << EOM
+
+# temporary changes for verifying that updates still work
+# Ensure DIFF_MODE is active
+DIFF_MODE=true
+# Ensure all zoom levels are tested
+MAX_ZOOM=14
+EOM
+
+# Set the test area to the appropriate geofabrik extract
 export area=north-america/us/indiana
 
 # Build 1-month-old tiles
@@ -74,8 +76,11 @@ make destroy-db
 make download-geofabrik area=$area
 docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -nv -O data/$area.osm.pbf http://download.geofabrik.de/$area-$(date --date="$(date +%Y-%m-15) -1 month" +'%y%m01').osm.pbf"
 ./quickstart.sh $area
+cat << EOM
 
-# Update with the changes since then
+# Update with the changes since a month+ ago
+
+EOM
 docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "osmupdate --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz"
 make import-diff
 make generate-tiles-pg
