@@ -47,7 +47,7 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label expected 3, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE ele=123;
+  SELECT COUNT(*) INTO cnt FROM osm_aerodrome_label_point WHERE ele='123';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(200, 'import', 'osm_aerodrome_label ele=123 expected 1, got ' || cnt);
   END IF;
@@ -61,12 +61,76 @@ BEGIN
   -- Test 400
   SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
   IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring city count expected 1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(400, 'import', 'osm_border_linestring city count expected 1, got ' || cnt);
   END IF;
 
   SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=2;
   IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring country count expected 1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(400, 'import', 'osm_border_linestring country count expected 1, got ' || cnt);
+  END IF;
+
+  -- Test 500
+
+  -- Verify that road classifications show up at the right zoom level
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='motorway';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 motorway count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='trunk';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 trunk count expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z6 WHERE highway='primary';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z6 primary count expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z7 WHERE highway='primary';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z7 primary count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z8 WHERE highway='secondary';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z8 secondary count expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9 WHERE highway='secondary';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 secondary count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z10 WHERE highway='tertiary';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z10 tertiary count expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway='tertiary';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 tertiary count expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway IN ('service', 'track');
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 minor road count expected 0, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
+    WHERE is_bridge = TRUE
+      AND toll = TRUE
+      AND layer = 1
+      AND bicycle = 'no'
+      AND foot = 'no'
+      AND horse = 'no';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import tags expected 1, got ' || cnt);
   END IF;
 
 END;

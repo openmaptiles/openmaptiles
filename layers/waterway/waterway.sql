@@ -62,30 +62,43 @@ FROM ne_50m_rivers_lake_centerlines_gen_z5
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_rivers_lake_centerlines_gen_z4_idx ON ne_50m_rivers_lake_centerlines_gen_z4 USING gist (geometry);
 
--- ne_10m_rivers_lake_centerlines
--- etldoc: ne_10m_rivers_lake_centerlines ->  ne_10m_rivers_lake_centerlines_gen_z8
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_rivers_lake_centerlines_gen_z8 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_rivers_lake_centerlines_gen_z8 AS
-(
-SELECT ST_Simplify(geometry, ZRes(10)) as geometry,
+-- osm_waterway_relation
+-- etldoc: osm_waterway_relation -> waterway_relation
+DROP TABLE IF EXISTS waterway_relation CASCADE;
+CREATE TABLE waterway_relation AS (
+    SELECT ST_Union(geometry) AS geometry,
+           name,
+           slice_language_tags(tags) AS tags
+    FROM osm_waterway_relation
+    WHERE name <> ''
+      AND (role = 'main_stream' OR role = '')
+      AND ST_GeometryType(geometry) = 'ST_LineString'
+      AND ST_IsClosed(geometry) = FALSE
+    GROUP BY name, slice_language_tags(tags)
+);
+CREATE INDEX IF NOT EXISTS waterway_relation_geometry_idx ON waterway_relation USING gist (geometry);
+
+-- etldoc: waterway_relation -> waterway_relation_gen_z8
+DROP MATERIALIZED VIEW IF EXISTS waterway_relation_gen_z8 CASCADE;
+CREATE MATERIALIZED VIEW waterway_relation_gen_z8 AS (
+    SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
        'river'::text AS class,
-       NULL::text AS name,
+       name,
        NULL::text AS name_en,
        NULL::text AS name_de,
-       NULL::hstore AS tags,
+       tags,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel,
        NULL::boolean AS is_intermittent
-FROM ne_10m_rivers_lake_centerlines
-WHERE featurecla = 'River'
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_rivers_lake_centerlines_gen_z8_idx ON ne_10m_rivers_lake_centerlines_gen_z8 USING gist (geometry);
+    FROM waterway_relation
+    WHERE ST_Length(geometry) > 300000
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS waterway_relation_gen_z8_geometry_idx ON waterway_relation_gen_z8 USING gist (geometry);
 
--- etldoc: ne_10m_rivers_lake_centerlines_gen_z8 ->  ne_10m_rivers_lake_centerlines_gen_z7
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_rivers_lake_centerlines_gen_z7 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_rivers_lake_centerlines_gen_z7 AS
-(
-SELECT ST_Simplify(geometry, ZRes(9)) as geometry,
+-- etldoc: waterway_relation_gen_z8 -> waterway_relation_gen_z7
+DROP MATERIALIZED VIEW IF EXISTS waterway_relation_gen_z7 CASCADE;
+CREATE MATERIALIZED VIEW waterway_relation_gen_z7 AS (
+    SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
        class,
        name,
        name_en,
@@ -94,15 +107,15 @@ SELECT ST_Simplify(geometry, ZRes(9)) as geometry,
        is_bridge,
        is_tunnel,
        is_intermittent
-FROM ne_10m_rivers_lake_centerlines_gen_z8
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_rivers_lake_centerlines_gen_z7_idx ON ne_10m_rivers_lake_centerlines_gen_z7 USING gist (geometry);
+    FROM waterway_relation_gen_z8
+    WHERE ST_Length(geometry) > 400000
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS waterway_relation_gen_z7_geometry_idx ON waterway_relation_gen_z7 USING gist (geometry);
 
--- etldoc: ne_10m_rivers_lake_centerlines_gen_z7 ->  ne_10m_rivers_lake_centerlines_gen_z6
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_rivers_lake_centerlines_gen_z6 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_rivers_lake_centerlines_gen_z6 AS
-(
-SELECT ST_Simplify(geometry, ZRes(8)) as geometry,
+-- etldoc: waterway_relation_gen_z7 -> waterway_relation_gen_z6
+DROP MATERIALIZED VIEW IF EXISTS waterway_relation_gen_z6 CASCADE;
+CREATE MATERIALIZED VIEW waterway_relation_gen_z6 AS (
+    SELECT ST_Simplify(geometry, ZRes(8)) AS geometry,
        class,
        name,
        name_en,
@@ -111,9 +124,10 @@ SELECT ST_Simplify(geometry, ZRes(8)) as geometry,
        is_bridge,
        is_tunnel,
        is_intermittent
-FROM ne_10m_rivers_lake_centerlines_gen_z7
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_rivers_lake_centerlines_gen_z6_idx ON ne_10m_rivers_lake_centerlines_gen_z6 USING gist (geometry);
+    FROM waterway_relation_gen_z7
+    WHERE ST_Length(geometry) > 500000
+) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS waterway_relation_gen_z6_geometry_idx ON waterway_relation_gen_z6 USING gist (geometry);
 
 
 -- etldoc: ne_110m_rivers_lake_centerlines_gen_z3 ->  waterway_z3
@@ -161,7 +175,7 @@ SELECT geometry,
 FROM ne_50m_rivers_lake_centerlines_gen_z5
     );
 
--- etldoc: ne_10m_rivers_lake_centerlines_gen_z6 ->  waterway_z6
+-- etldoc: waterway_relation_gen_z6 ->  waterway_z6
 CREATE OR REPLACE VIEW waterway_z6 AS
 (
 SELECT geometry,
@@ -173,10 +187,10 @@ SELECT geometry,
        is_bridge,
        is_tunnel,
        is_intermittent
-FROM ne_10m_rivers_lake_centerlines_gen_z6
+FROM waterway_relation_gen_z6
     );
 
--- etldoc: ne_10m_rivers_lake_centerlines_gen_z7 ->  waterway_z7
+-- etldoc: waterway_relation_gen_z7 ->  waterway_z7
 CREATE OR REPLACE VIEW waterway_z7 AS
 (
 SELECT geometry,
@@ -188,10 +202,10 @@ SELECT geometry,
        is_bridge,
        is_tunnel,
        is_intermittent
-FROM ne_10m_rivers_lake_centerlines_gen_z7
+FROM waterway_relation_gen_z7
     );
 
-    -- etldoc: ne_10m_rivers_lake_centerlines_gen_z8 ->  waterway_z8
+-- etldoc: waterway_relation_gen_z8 ->  waterway_z8
 CREATE OR REPLACE VIEW waterway_z8 AS
 (
 SELECT geometry,
@@ -203,7 +217,7 @@ SELECT geometry,
        is_bridge,
        is_tunnel,
        is_intermittent
-FROM ne_10m_rivers_lake_centerlines_gen_z8
+FROM waterway_relation_gen_z8
     );
 
 -- etldoc: osm_important_waterway_linestring_gen_z9 ->  waterway_z9

@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 500: Highways
+        Change tags
+  -->
+  <modify>
+    <!-- Change tags -->
+    <way id="5003" version="2" timestamp="2019-01-01T00:00:00Z" visible="true">
+      <nd ref="500031" />
+      <nd ref="500032" />
+      <tag k="highway" v="secondary"/>
+      <tag k="name" v="OpenMapTiles Secondary Updated"/>
+      <tag k="tunnel" v="yes"/>
+      <tag k="oneway" v="no"/>
+      <tag k="toll" v="no"/>
+      <tag k="layer" v="-1"/>
+      <tag k="bicycle" v="yes"/>
+      <tag k="horse" v="yes"/>
+      <tag k="foot" v="yes"/>
+    </way>
+  </modify>
+</osmChange>
