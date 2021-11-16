@@ -73,7 +73,6 @@
     <tag k="highway" v="track"/>
     <tag k="name" v="OpenMapTiles Track"/>
   </way>
-<<<<<<< HEAD
 
   <!-- Test way stitching -->
   <way id="5007" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
