@@ -104,7 +104,7 @@ INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
          WHEN COALESCE(osmc_symbol, colour) <> '' THEN 2
     END AS rank
   FROM osm_route_member
-  ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
+  ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index, rank = EXCLUDED.rank;
 
 UPDATE osm_highway_linestring hl
   SET network = rm.network_type
