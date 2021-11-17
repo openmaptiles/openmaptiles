@@ -29,8 +29,8 @@ AS
 $$
 SELECT geometry,
        tags->'name' AS name,
-       COALESCE(tags->'name_en', tags->'name') AS name_en,
-       COALESCE(tags->'name_de', tags->'name', tags->'name_en') AS name_de,
+       COALESCE(tags->'name:en', tags->'name') AS name_en,
+       COALESCE(tags->'name:de', tags->'name', tags->'name:en') AS name_de,
        tags,
        ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
