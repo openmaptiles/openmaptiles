@@ -74,8 +74,8 @@ BEGIN
     FROM osm_route_member rm
     WHERE rm.member IN
       (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
-    ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index;
-
+    ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index,
+                                           rank = EXCLUDED.rank;
 END;
 $$ LANGUAGE plpgsql;
 
