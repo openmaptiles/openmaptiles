@@ -19,13 +19,19 @@ layer:
       - arete
     ele: Elevation (`ele`) in meters.
     ele_ft: Elevation (`ele`) in feet.
+    customary_ft:
+      description: |
+        Value 1 for peaks in location where feet is used as customary unit (USA).
+      values:
+      - 1
+      - NULL
     rank: Rank of the peak within one tile (starting at 1 that is the most important peak).
   datasource:
     geometry_field: geometry
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, ele, ele_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, ele, ele_ft, customary_ft, rank FROM layer_mountain_peak(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./update_peak_point.sql
   - ./update_mountain_linestring.sql
