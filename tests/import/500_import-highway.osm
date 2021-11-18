@@ -73,7 +73,6 @@
     <nd ref="500071" />
     <nd ref="500072" />
     <tag k="highway" v="path"/>
-    <tag k="colour" v="red"/>
     <tag k="name" v="OpenMapTiles Path z13"/>
   </way>
   <way id="5008" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
@@ -83,6 +82,12 @@
     <tag k="name" v="OpenMapTiles Track z12"/>
   </way>
 
+  <relation id="507" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5007" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="colour" v="red"/>
+  </relation>
   <relation id="508" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
     <member type="way" ref="5008" role=""/>
     <tag k="type" v="route"/>
