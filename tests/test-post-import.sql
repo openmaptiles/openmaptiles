@@ -133,6 +133,20 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import tags expected 1, got ' || cnt);
   END IF;
 
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring
+    WHERE tags->'name' = 'OpenMapTiles Path z13'
+      AND route_rank = 2;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_name_linestring z13 route_rank expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring
+    WHERE tags->'name' = 'OpenMapTiles Track z12'
+      AND route_rank = 1;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_name_linestring z12 route_rank expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$

@@ -14,6 +14,10 @@
   <node id="500052" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.05" />
   <node id="500061" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.06" />
   <node id="500062" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.06" />
+  <node id="500071" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.07" />
+  <node id="500072" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.07" />
+  <node id="500081" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.07" />
+  <node id="500082" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.07" />
 
   <way id="5000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="500001" />
@@ -65,4 +69,29 @@
     <tag k="highway" v="track"/>
     <tag k="name" v="OpenMapTiles Track"/>
   </way>
+  <way id="5007" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500071" />
+    <nd ref="500072" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Path z13"/>
+  </way>
+  <way id="5008" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500081" />
+    <nd ref="500082" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Track z12"/>
+  </way>
+
+  <relation id="507" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5007" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="colour" v="red"/>
+  </relation>
+  <relation id="508" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5008" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="network" v="nwn"/>
+  </relation>
 </osm>

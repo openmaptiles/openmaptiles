@@ -110,8 +110,12 @@ FROM (
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 12
            AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND (highway_class(highway, '', subclass) NOT IN ('minor', 'track', 'path') OR highway='shipway')
            AND NOT highway_is_link(highway)
+           AND
+               CASE WHEN highway_class(highway, NULL::text, NULL::text) NOT IN ('path', 'minor') THEN TRUE
+                    WHEN highway IN ('unclassified', 'residential', 'shipway') THEN TRUE
+                    WHEN route_rank = 1 THEN TRUE END
+
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z13
@@ -133,7 +137,16 @@ FROM (
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 13
            AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND (highway_class(highway, '', subclass) NOT IN ('track', 'path') OR highway='shipway')
+           AND
+               CASE WHEN highway <> 'path' THEN TRUE
+                    WHEN highway = 'path' AND (
+                                                   name <> ''
+                                                OR network IS NOT NULL
+                                                OR sac_scale <> ''
+                                                OR route_rank <= 2
+                                              ) THEN TRUE
+               END
+
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z14_
