@@ -70,7 +70,7 @@ FROM (
              COALESCE(NULLIF(name_en, ''), name) AS name_en,
              COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
              tags,
-             'state' AS class,
+             place::text AS class,
              "rank",
              NULL::int AS capital,
              NULL::text AS iso_a2
