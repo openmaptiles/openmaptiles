@@ -69,7 +69,7 @@ BEGIN
       CASE
            WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
            WHEN network = 'lwn' THEN 2
-           WHEN COALESCE(osmc_symbol, colour) <> '' THEN 2
+           WHEN osmc_symbol || colour <> '' THEN 2
       END AS rank
     FROM osm_route_member rm
     WHERE rm.member IN
