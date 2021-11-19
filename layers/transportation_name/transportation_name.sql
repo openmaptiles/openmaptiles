@@ -110,7 +110,7 @@ FROM (
            AND NOT highway_is_link(highway)
            AND
                CASE WHEN highway_class(highway, NULL::text, NULL::text) NOT IN ('path', 'minor') THEN TRUE
-                    WHEN highway IN ('unclassified', 'residential', 'shipway') THEN TRUE
+                    WHEN highway IN ('aerialway', 'unclassified', 'residential', 'shipway') THEN TRUE
                     WHEN route_rank = 1 THEN TRUE END
 
          UNION ALL
