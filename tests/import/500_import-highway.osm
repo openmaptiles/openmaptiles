@@ -22,6 +22,10 @@
   <node id="500102" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.08" />
   <node id="500111" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-90.08" />
   <node id="500121" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.5" lon="-90.08" />
+  <node id="500131" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.09" />
+  <node id="500132" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.09" />
+  <node id="500141" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.10" />
+  <node id="500142" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.10" />
 
   <way id="5000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
     <nd ref="500001" />
@@ -117,4 +121,29 @@
     <tag k="highway" v="secondary"/>
     <tag k="name" v="OpenMapTiles Secondary 3"/>
   </way>
+  <way id="5013" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500131" />
+    <nd ref="500132" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Path z13"/>
+  </way>
+  <way id="5014" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500141" />
+    <nd ref="500142" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Track z12"/>
+  </way>
+
+  <relation id="513" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5013" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="colour" v="red"/>
+  </relation>
+  <relation id="514" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5014" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="network" v="nwn"/>
+  </relation>
 </osm>

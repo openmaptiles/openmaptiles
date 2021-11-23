@@ -3,7 +3,6 @@
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
-
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_network
 -- etldoc: osm_route_member ->  osm_transportation_name_network
 CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
@@ -69,12 +68,14 @@ SELECT (ST_Dump(geometry)).geom AS geometry,
        highway,
        subclass,
        brunnel,
+       sac_scale,
        "level",
        layer,
        indoor,
        network_type AS network,
        route_1, route_2, route_3, route_4, route_5, route_6,
-       z_order
+       z_order,
+       route_rank
 FROM (
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
                 tags,
@@ -84,14 +85,17 @@ FROM (
                 CASE WHEN COUNT(*) = COUNT(brunnel) AND MAX(brunnel) = MIN(brunnel)
                      THEN MAX(brunnel)
                      ELSE NULL::text END AS brunnel,
+                sac_scale,
                 "level",
                 layer,
                 indoor,
                 network_type,
                 route_1, route_2, route_3, route_4, route_5, route_6,
-                min(z_order) AS z_order
+                min(z_order) AS z_order,
+                min(route_rank) AS route_rank
          FROM osm_transportation_name_network
-         GROUP BY tags, ref, highway, subclass, "level", layer, indoor, network_type,
+         WHERE tags->'name' <> '' OR tags->'ref' <> ''
+         GROUP BY tags, ref, highway, subclass, "level", layer, sac_scale, indoor, network_type,
                   route_1, route_2, route_3, route_4, route_5, route_6
          UNION ALL
 
@@ -101,6 +105,7 @@ FROM (
                 'shipway' AS highway,
                 shipway AS subclass,
                 NULL AS brunnel,
+                NULL AS sac_scale,
                 NULL::int AS level,
                 layer,
                 NULL AS indoor,
@@ -111,9 +116,10 @@ FROM (
                 NULL AS route_4,
                 NULL AS route_5,
                 NULL AS route_6,
-                min(z_order) AS z_order
+                min(z_order) AS z_order,
+                NULL::int AS route_rank
          FROM osm_shipway_linestring
-         WHERE name <> ''
+         WHERE tags->'name' <> ''
          GROUP BY name, name_en, name_de, tags, subclass, "level", layer
      ) AS highway_union
 ;
@@ -309,11 +315,13 @@ BEGIN
         subclass,
         brunnel,
         level,
+        sac_scale,
         layer,
         indoor,
         network_type,
         route_1, route_2, route_3, route_4, route_5, route_6,
-        z_order
+        z_order,
+        route_rank
     FROM (
         SELECT hl.geometry,
             hl.osm_id,
@@ -327,6 +335,7 @@ BEGIN
             hl.highway,
             NULLIF(hl.construction, '') AS subclass,
             brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
+            sac_scale,
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
             CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
@@ -336,7 +345,8 @@ BEGIN
 	    NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
 	    NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
 	    NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
-            hl.z_order
+            hl.z_order,
+            LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
             hl.osm_id = c.osm_id
@@ -348,7 +358,8 @@ BEGIN
 		LEFT OUTER JOIN osm_route_member rm6 ON rm6.member = hl.osm_id AND rm6.concurrency_index=6
 	WHERE (hl.name <> '' OR hl.ref <> '' OR rm1.ref <> '' OR rm1.network <> '')
           AND hl.highway <> ''
-    ) AS t;
+    ) AS t
+    ON CONFLICT DO NOTHING;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.network_changes;
@@ -398,6 +409,7 @@ CREATE TABLE IF NOT EXISTS transportation_name.name_changes
     highway character varying,
     subclass character varying,
     brunnel character varying,
+    sac_scale character varying,
     level integer,
     layer integer,
     indoor boolean,
@@ -460,13 +472,14 @@ BEGIN
 
     -- Compact the change history to keep only the first and last version, and then uniq version of row
     CREATE TEMP TABLE name_changes_compact AS
-    SELECT DISTINCT ON (tags, ref, highway, subclass, brunnel, level, layer, indoor, network_type,
+    SELECT DISTINCT ON (tags, ref, highway, subclass, brunnel, sac_scale, level, layer, indoor, network_type,
                         route_1, route_2, route_3, route_4, route_5, route_6)
         tags,
         ref,
         highway,
         subclass,
         brunnel,
+        sac_scale,
         level,
         layer,
         indoor,
@@ -497,6 +510,7 @@ BEGIN
       AND n.highway IS NOT DISTINCT FROM c.highway
       AND n.subclass IS NOT DISTINCT FROM c.subclass
       AND n.brunnel IS NOT DISTINCT FROM c.brunnel
+      AND n.sac_scale IS NOT DISTINCT FROM c.sac_scale
       AND n.level IS NOT DISTINCT FROM c.level
       AND n.layer IS NOT DISTINCT FROM c.layer
       AND n.indoor IS NOT DISTINCT FROM c.indoor
@@ -515,6 +529,7 @@ BEGIN
            highway,
            subclass,
            brunnel,
+           sac_scale,
            level,
            layer,
            indoor,
@@ -528,6 +543,7 @@ BEGIN
             n.highway,
             n.subclass,
             n.brunnel,
+            n.sac_scale,
             n.level,
             n.layer,
             n.indoor,
@@ -541,6 +557,7 @@ BEGIN
              AND n.highway IS NOT DISTINCT FROM c.highway
              AND n.subclass IS NOT DISTINCT FROM c.subclass
              AND n.brunnel IS NOT DISTINCT FROM c.brunnel
+             AND n.sac_scale IS NOT DISTINCT FROM c.sac_scale
              AND n.level IS NOT DISTINCT FROM c.level
              AND n.layer IS NOT DISTINCT FROM c.layer
              AND n.indoor IS NOT DISTINCT FROM c.indoor
@@ -551,7 +568,7 @@ BEGIN
              AND n.route_4 IS NOT DISTINCT FROM c.route_4
              AND n.route_5 IS NOT DISTINCT FROM c.route_5
              AND n.route_6 IS NOT DISTINCT FROM c.route_6
-        GROUP BY n.tags, n.ref, n.highway, n.subclass, n.brunnel, n.level, n.layer, n.indoor, n.network_type,
+        GROUP BY n.tags, n.ref, n.highway, n.subclass, n.brunnel, n.sac_scale, n.level, n.layer, n.indoor, n.network_type,
                  n.route_1, n.route_2, n.route_3, n.route_4, n.route_5, n.route_6
     ) AS highway_union;
 
