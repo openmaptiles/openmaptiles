@@ -3,7 +3,6 @@
 -- to allow for nice label rendering
 -- Because this works well for roads that do not have relations as well
 
-
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_network
 -- etldoc: osm_route_member ->  osm_transportation_name_network
 CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
