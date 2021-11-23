@@ -38,7 +38,7 @@ FROM (
                 min(z_order) AS z_order,
                 min(route_rank) AS route_rank
          FROM osm_transportation_name_network
-         WHERE tags->'name' <> '' OR tags->'ref' <> ''
+         WHERE tags->'name' <> '' OR ref <> ''
          GROUP BY tags, ref, highway, subclass, "level", layer, sac_scale, indoor, network_type,
                   route_1, route_2, route_3, route_4, route_5, route_6
          UNION ALL
@@ -67,7 +67,7 @@ FROM (
          GROUP BY name, name_en, name_de, tags, subclass, "level", layer
      ) AS highway_union
 ;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(tags->'name', ''), coalesce(tags->'ref', ''));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(tags->'name', ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_idx
@@ -92,7 +92,7 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen1_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx ON osm_transportation_name_linestring_gen1((coalesce(tags->'name', tags->'ref')));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx ON osm_transportation_name_linestring_gen1((coalesce(tags->'name', ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_partial_idx
@@ -117,7 +117,7 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen2_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx ON osm_transportation_name_linestring_gen2((coalesce(tags->'name', tags->'ref')));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx ON osm_transportation_name_linestring_gen2((coalesce(tags->'name', ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_partial_idx
@@ -142,7 +142,7 @@ WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen3_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx ON osm_transportation_name_linestring_gen3((coalesce(tags->'name', tags->'ref')));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx ON osm_transportation_name_linestring_gen3((coalesce(tags->'name', ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_partial_idx
@@ -167,7 +167,7 @@ WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen4 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen4_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_name_ref_idx ON osm_transportation_name_linestring_gen4((coalesce(tags->'name', tags->'ref')));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_name_ref_idx ON osm_transportation_name_linestring_gen4((coalesce(tags->'name', ref)));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_geometry_idx ON osm_transportation_name_linestring_gen4 USING gist (geometry);
 
 -- Handle updates
@@ -520,7 +520,7 @@ BEGIN
     DELETE FROM osm_transportation_name_linestring_gen1 AS n
     USING name_changes_compact AS c
     WHERE
-        coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+        coalesce(n.tags->'name', n.ref) = c.name_ref
         AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
@@ -538,7 +538,7 @@ BEGIN
     SELECT n.*
     FROM osm_transportation_name_linestring_gen1_view AS n
         JOIN name_changes_compact AS c ON
-            coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+            coalesce(n.tags->'name', n.ref) = c.name_ref
             AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
@@ -556,7 +556,7 @@ BEGIN
     DELETE FROM osm_transportation_name_linestring_gen2 AS n
     USING name_changes_compact AS c
     WHERE
-        coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+        coalesce(n.tags->'name', n.ref) = c.name_ref
         AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
@@ -574,7 +574,7 @@ BEGIN
     SELECT n.*
     FROM osm_transportation_name_linestring_gen2_view AS n
         JOIN name_changes_compact AS c ON
-            coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+            coalesce(n.tags->'name', n.ref) = c.name_ref
             AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
@@ -592,7 +592,7 @@ BEGIN
     DELETE FROM osm_transportation_name_linestring_gen3 AS n
     USING name_changes_compact AS c
     WHERE
-        coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+        coalesce(n.tags->'name', n.ref) = c.name_ref
         AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
@@ -610,7 +610,7 @@ BEGIN
     SELECT n.*
     FROM osm_transportation_name_linestring_gen3_view AS n
         JOIN name_changes_compact AS c ON
-            coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+            coalesce(n.tags->'name', n.ref) = c.name_ref
             AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
@@ -628,7 +628,7 @@ BEGIN
     DELETE FROM osm_transportation_name_linestring_gen4 AS n
     USING name_changes_compact AS c
     WHERE
-        coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+        coalesce(n.tags->'name', n.ref) = c.name_ref
         AND n.tags IS NOT DISTINCT FROM c.tags
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
@@ -646,7 +646,7 @@ BEGIN
     SELECT n.*
     FROM osm_transportation_name_linestring_gen4_view AS n
         JOIN name_changes_compact AS c ON
-            coalesce(n.tags->'name', n.tags->'ref') = c.name_ref
+            coalesce(n.tags->'name', n.ref) = c.name_ref
             AND n.tags IS NOT DISTINCT FROM c.tags
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
