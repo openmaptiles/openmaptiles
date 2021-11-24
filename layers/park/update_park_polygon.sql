@@ -23,11 +23,17 @@ ALTER TABLE osm_park_polygon_gen_z5
 DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
 CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
 (
-  SELECT
-         (ST_Dump(
-            ST_Union(geometry))).geom AS geometry
-  FROM osm_park_polygon_gen_z4
+  SELECT min(osm_id) AS osm_id,
+         ST_Union(geometry) AS geometry
+  FROM (
+        SELECT ST_ClusterDBSCAN(geometry, 0, 1) OVER() AS cluster,
+               osm_id,
+               geometry
+        FROM osm_park_polygon_gen_z4
+  ) park_cluster
+  GROUP BY cluster
 );
+CREATE UNIQUE INDEX IF NOT EXISTS osm_park_polygon_dissolve_idx ON osm_park_polygon_dissolve_z4 (osm_id);
 
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon;
 DROP TRIGGER IF EXISTS update_row ON osm_park_polygon_gen_z13;
@@ -95,7 +101,7 @@ BEGIN
     SET tags           = update_tags(tags, geometry),
         geometry_point = st_centroid(geometry);
 
-    REFRESH MATERIALIZED VIEW osm_park_polygon_dissolve_z4;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_park_polygon_dissolve_z4;
 END;
 $$ LANGUAGE plpgsql;
 
