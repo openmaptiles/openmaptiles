@@ -73,8 +73,8 @@ BEGIN
 
   -- Verify that road classifications show up at the right zoom level
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='motorway';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 motorway count expected 1, got ' || cnt);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 motorway count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='trunk';
@@ -83,8 +83,8 @@ BEGIN
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk count expected 1, got ' || cnt);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z6 WHERE highway='primary';
@@ -93,8 +93,8 @@ BEGIN
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z7 WHERE highway='primary';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z7 primary count expected 1, got ' || cnt);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z7 primary count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z8 WHERE highway='secondary';
@@ -103,8 +103,8 @@ BEGIN
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9 WHERE highway='secondary';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 secondary count expected 1, got ' || cnt);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 secondary count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z10 WHERE highway='tertiary';
@@ -113,8 +113,8 @@ BEGIN
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway='tertiary';
-  IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 tertiary count expected 1, got ' || cnt);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z11 tertiary count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z11 WHERE highway IN ('service', 'track');
@@ -131,6 +131,12 @@ BEGIN
       AND horse = 'no';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import tags expected 1, got ' || cnt);
+  END IF;
+
+  -- Same-named road split into 3 parts, because the middle segment is tagged toll=yes
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring WHERE tags->'name' = 'OpenMapTiles Secondary 3';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring split road count expected 2, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring

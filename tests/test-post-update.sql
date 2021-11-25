@@ -48,7 +48,14 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(400, 'update', 'osm_border_linestring city count expected 2, got ' || cnt);
   END IF;
 
-  -- Test 500: Verify tags changed
+  -- Test 500: Highways
+  -- Same-named road previous split into 3 parts, now merged because the middle segment had toll=yes removed
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring WHERE tags->'name' = 'OpenMapTiles Secondary 3';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'update', 'osm_transportation_linestring unsplit road count expected 1, got ' || cnt);
+  END IF;
+
+  -- Verify tags changed
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
     WHERE is_tunnel = TRUE
       AND is_bridge = FALSE

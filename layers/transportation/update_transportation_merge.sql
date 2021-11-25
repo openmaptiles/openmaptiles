@@ -12,9 +12,6 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
 SELECT
     geometry,
     osm_id,
-    name,
-    name_en,
-    name_de,
     tags,
     ref,
     highway,
@@ -32,10 +29,7 @@ FROM (
     SELECT DISTINCT ON (hl.osm_id)
         hl.geometry,
         hl.osm_id,
-        CASE WHEN length(hl.name) > 15 THEN osml10n_street_abbrev_all(hl.name) ELSE NULLIF(hl.name, '') END AS "name",
-        CASE WHEN length(hl.name_en) > 15 THEN osml10n_street_abbrev_en(hl.name_en) ELSE NULLIF(hl.name_en, '') END AS "name_en",
-        CASE WHEN length(hl.name_de) > 15 THEN osml10n_street_abbrev_de(hl.name_de) ELSE NULLIF(hl.name_de, '') END AS "name_de",
-        slice_language_tags(hl.tags) AS tags,
+        transportation_name_tags(hl.geometry, hl.tags, hl.name, hl.name_en, hl.name_de) AS tags,
         rm1.network_type,
         CASE
             WHEN rm1.network_type IS NOT NULL AND rm1.ref::text <> ''
@@ -68,7 +62,7 @@ FROM (
       AND hl.highway <> ''
 ) AS t;
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
-CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(name, ''), coalesce(ref, ''));
+CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(tags->'name', ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
 
 -- Improve performance of the sql in transportation/update_route_member.sql
