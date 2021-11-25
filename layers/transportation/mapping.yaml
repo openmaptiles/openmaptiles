@@ -159,6 +159,10 @@ surface_field: &surface
   key: surface
   name: surface
   type: string
+expressway_field: &expressway
+  key: expressway
+  name: expressway
+  type: bool
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -206,6 +210,7 @@ tables:
     - *mtb_scale
     - *sac_scale
     - *surface
+    - *expressway
     mapping:
       highway:
       - motorway
