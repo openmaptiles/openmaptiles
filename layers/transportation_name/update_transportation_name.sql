@@ -372,19 +372,19 @@ BEGIN
     IF (tg_op IN ('DELETE', 'UPDATE'))
     THEN
         INSERT INTO transportation_name.name_changes(is_old, osm_id, tags, ref, highway, subclass,
-                                                     brunnel, level, layer, indoor, network_type,
+                                                     brunnel, sac_scale, level, layer, indoor, network_type,
                                                      route_1, route_2, route_3, route_4, route_5, route_6)
         VALUES (TRUE, old.osm_id, old.tags, old.ref, old.highway, old.subclass,
-                old.brunnel, old.level, old.layer, old.indoor, old.network_type,
+                old.brunnel, old.sac_scale, old.level, old.layer, old.indoor, old.network_type,
                 old.route_1, old.route_2, old.route_3, old.route_4, old.route_5, old.route_6);
     END IF;
     IF (tg_op IN ('UPDATE', 'INSERT'))
     THEN
         INSERT INTO transportation_name.name_changes(is_old, osm_id, tags, ref, highway, subclass,
-                                                     brunnel, level, layer, indoor, network_type,
+                                                     brunnel, sac_scale, level, layer, indoor, network_type,
                                                      route_1, route_2, route_3, route_4, route_5, route_6)
         VALUES (FALSE, new.osm_id, new.tags, new.ref, new.highway, new.subclass,
-                new.brunnel, new.level, new.layer, new.indoor, new.network_type,
+                new.brunnel, new.sac_scale, new.level, new.layer, new.indoor, new.network_type,
                 new.route_1, new.route_2, new.route_3, new.route_4, new.route_5, new.route_6);
     END IF;
     RETURN NULL;
