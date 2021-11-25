@@ -11,25 +11,26 @@ $$ LANGUAGE SQL IMMUTABLE
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
     RETURNS TABLE
             (
-                osm_id    bigint,
-                geometry  geometry,
-                class     text,
-                subclass  text,
-                network   text,
-                ramp      int,
-                oneway    int,
-                brunnel   text,
-                service   text,
-                access    text,
-                toll      int,
-                layer     int,
-                level     int,
-                indoor    int,
-                bicycle   text,
-                foot      text,
-                horse     text,
-                mtb_scale text,
-                surface   text
+                osm_id     bigint,
+                geometry   geometry,
+                class      text,
+                subclass   text,
+                network    text,
+                ramp       int,
+                oneway     int,
+                brunnel    text,
+                service    text,
+                access     text,
+                toll       int,
+                expressway int,
+                layer      int,
+                level      int,
+                indoor     int,
+                bicycle    text,
+                foot       text,
+                horse      text,
+                mtb_scale  text,
+                surface    text
             )
 AS
 $$
@@ -49,7 +50,6 @@ SELECT osm_id,
                AND highway_class(highway, public_transport, construction) = 'path'
                THEN COALESCE(NULLIF(public_transport, ''), highway)
            WHEN aerialway IS NOT NULL THEN aerialway
-           WHEN highway NOT IN ('', 'motorway') AND expressway = TRUE THEN 'expressway'
            END AS subclass,
        NULLIF(network, '') AS network,
        -- All links are considered as ramps as well
@@ -62,6 +62,7 @@ SELECT osm_id,
        NULLIF(service, '') AS service,
        access,
        CASE WHEN toll = TRUE THEN 1 END AS toll,
+       CASE WHEN highway NOT IN ('', 'motorway') AND expressway = TRUE THEN 1 END AS expressway,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
