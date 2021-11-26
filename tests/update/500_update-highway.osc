@@ -5,6 +5,13 @@
         Change tags
   -->
   <modify>
+    <way id="5002" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+      <nd ref="500021" />
+      <nd ref="500022" />
+      <tag k="highway" v="primary"/>
+      <tag k="expressway" v="yes"/>
+      <tag k="name" v="OpenMapTiles Primary"/>
+    </way>
     <!-- Change tags -->
     <way id="5003" version="2" timestamp="2020-01-02T00:00:00Z" visible="true">
       <nd ref="500031" />

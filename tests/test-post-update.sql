@@ -55,6 +55,14 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'update', 'osm_transportation_linestring unsplit road count expected 1, got ' || cnt);
   END IF;
 
+  -- Verify expressway tag updated
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
+    WHERE highway = 'primary'
+      AND expressway = TRUE;
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 update expressway expected >=1, got ' || cnt);
+  END IF;
+
   -- Verify tags changed
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
     WHERE is_tunnel = TRUE

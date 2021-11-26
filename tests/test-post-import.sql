@@ -133,6 +133,13 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import tags expected 1, got ' || cnt);
   END IF;
 
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z9
+    WHERE highway = 'trunk'
+      AND expressway = TRUE;
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z9 import expressway expected >=1, got ' || cnt);
+  END IF;
+
   -- Same-named road split into 3 parts, because the middle segment is tagged toll=yes
   SELECT COUNT(*) INTO cnt FROM osm_transportation_name_linestring WHERE tags->'name' = 'OpenMapTiles Secondary 3';
   IF cnt <> 2 THEN
