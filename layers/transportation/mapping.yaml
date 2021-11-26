@@ -45,7 +45,7 @@ generalized_tables:
 # etldoc: osm_highway_linestring -> osm_highway_linestring_gen_z11
   highway_linestring_gen_z11:
     source: highway_linestring
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link')) AND NOT is_area AND ST_IsValid(geometry)
+    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link', 'busway') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link', 'busway')) AND NOT is_area AND ST_IsValid(geometry)
     tolerance: ZRES12
 
 name_field: &name
@@ -151,10 +151,18 @@ mtb_scale_field: &mtb_scale
   key: mtb:scale
   name: mtb_scale
   type: string
+sac_scale_field: &sac_scale
+  key: sac_scale
+  name: sac_scale
+  type: string
 surface_field: &surface
   key: surface
   name: surface
   type: string
+expressway_field: &expressway
+  key: expressway
+  name: expressway
+  type: bool
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -200,7 +208,9 @@ tables:
     - *foot
     - *horse
     - *mtb_scale
+    - *sac_scale
     - *surface
+    - *expressway
     mapping:
       highway:
       - motorway
@@ -227,6 +237,7 @@ tables:
       - service
       - track
       - raceway
+      - busway
       - construction
       public_transport:
       - platform
@@ -424,6 +435,13 @@ tables:
     - *ref
     - *network
     - *name
+    - name: osmc_symbol
+      key: osmc:symbol
+      type: string
+    - name: colour
+      key: colour
+      type: string
     mapping:
       route:
       - road
+      - hiking

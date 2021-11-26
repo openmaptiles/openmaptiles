@@ -18,9 +18,9 @@ $$
 SELECT osm_id,
        geometry,
        class,
-       name,
-       name_en,
-       name_de,
+       NULLIF(name, '') AS name,
+       NULLIF(name_en, '') AS name_en,
+       NULLIF(name_de, '') AS name_de,
        tags,
        rank
 FROM (
