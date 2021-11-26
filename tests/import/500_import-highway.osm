@@ -37,6 +37,7 @@
     <nd ref="500011" />
     <nd ref="500012" />
     <tag k="highway" v="trunk"/>
+    <tag k="expressway" v="yes"/>
     <tag k="name" v="OpenMapTiles Trunk"/>
   </way>
   <way id="5002" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
