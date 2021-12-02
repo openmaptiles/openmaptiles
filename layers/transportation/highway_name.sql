@@ -9,7 +9,4 @@ SELECT hstore(string_agg(nullif(slice_language_tags(tags ||
                      ''), ','))
                      || get_basic_names(tags, geometry);
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
-
-
