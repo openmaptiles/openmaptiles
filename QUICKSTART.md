@@ -59,7 +59,7 @@ If you have problems with the quickstart
 IF the previous step is working,
 THEN you can test other available quickstart extracts ( based on [Geofabrik extracts](http://download.geofabrik.de/index.html) ) !
  * We are using https://github.com/julien-noblet/download-geofabrik tool
- * The current extract list, and more information  ->  `make list`
+ * The current extract list, and more information  ->  `make list-geofabrik` or `make list-bbbike`
 
 This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
 

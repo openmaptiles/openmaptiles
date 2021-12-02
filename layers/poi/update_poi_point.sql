@@ -25,6 +25,7 @@ $$ LANGUAGE plpgsql;
 
 SELECT update_osm_poi_point();
 
+-- etldoc:  osm_poi_stop_rank ->  osm_poi_point
 CREATE OR REPLACE FUNCTION update_osm_poi_point_agg() RETURNS void AS
 $$
 BEGIN

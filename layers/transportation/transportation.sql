@@ -11,25 +11,26 @@ $$ LANGUAGE SQL IMMUTABLE
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
     RETURNS TABLE
             (
-                osm_id    bigint,
-                geometry  geometry,
-                class     text,
-                subclass  text,
-                network   text,
-                ramp      int,
-                oneway    int,
-                brunnel   text,
-                service   text,
-                access    text,
-                toll      int,
-                layer     int,
-                level     int,
-                indoor    int,
-                bicycle   text,
-                foot      text,
-                horse     text,
-                mtb_scale text,
-                surface   text
+                osm_id     bigint,
+                geometry   geometry,
+                class      text,
+                subclass   text,
+                network    text,
+                ramp       int,
+                oneway     int,
+                brunnel    text,
+                service    text,
+                access     text,
+                toll       int,
+                expressway int,
+                layer      int,
+                level      int,
+                indoor     int,
+                bicycle    text,
+                foot       text,
+                horse      text,
+                mtb_scale  text,
+                surface    text
             )
 AS
 $$
@@ -61,6 +62,7 @@ SELECT osm_id,
        NULLIF(service, '') AS service,
        access,
        CASE WHEN toll = TRUE THEN 1 END AS toll,
+       CASE WHEN highway NOT IN ('', 'motorway') AND expressway = TRUE THEN 1 END AS expressway,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
@@ -86,6 +88,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -118,6 +121,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -150,6 +154,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -182,6 +187,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -214,6 +220,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -246,6 +253,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -278,6 +286,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -310,6 +319,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -329,9 +339,12 @@ FROM (
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z13
          -- etldoc: osm_highway_linestring  ->  layer_transportation:z14_
-         SELECT osm_id,
-                geometry,
-                highway,
+         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z12
+         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z13
+         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z14_
+         SELECT hl.osm_id,
+                hl.geometry,
+                hl.highway,
                 construction,
                 network,
                 NULL AS railway,
@@ -344,28 +357,38 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                expressway,
                 is_ramp,
                 is_oneway,
                 man_made,
-                layer,
-                CASE WHEN highway IN ('footway', 'steps') THEN "level" END AS "level",
-                CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+                hl.layer,
+                CASE WHEN hl.highway IN ('footway', 'steps') THEN hl.level END AS level,
+                CASE WHEN hl.highway IN ('footway', 'steps') THEN hl.indoor END AS indoor,
                 bicycle,
                 foot,
                 horse,
                 mtb_scale,
                 surface_value(surface) AS "surface",
-                z_order
-         FROM osm_highway_linestring
+                hl.z_order
+         FROM osm_highway_linestring hl
+         LEFT OUTER JOIN osm_transportation_name_network n ON hl.osm_id = n.osm_id
          WHERE NOT is_area
            AND
-               CASE WHEN zoom_level = 12 THEN transportation_filter_z12(highway, construction)
+               CASE WHEN zoom_level = 12 THEN
+                         CASE WHEN transportation_filter_z12(hl.highway, hl.construction) THEN TRUE
+                              WHEN n.route_rank = 1 THEN TRUE
+                         END
                     WHEN zoom_level = 13 THEN
-                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
-                              ELSE transportation_filter_z13(highway, public_transport, construction, service)
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(hl.geometry)
+                              WHEN hl.highway = 'path' THEN (
+                                                        hl.name <> ''
+                                                     OR n.route_rank BETWEEN 1 AND 2
+                                                     OR hl.sac_scale <> ''
+                                                   )
+                              ELSE transportation_filter_z13(hl.highway, public_transport, hl.construction, service)
                          END
                     WHEN zoom_level >= 14 THEN
-                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(geometry)
+                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(hl.geometry)
                               ELSE TRUE
                          END
                END
@@ -387,6 +410,7 @@ FROM (
                 NULL::boolean AS is_bridge,
                 NULL::boolean AS is_tunnel,
                 NULL::boolean AS is_ford,
+                NULL::boolean AS expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -422,6 +446,7 @@ FROM (
                 NULL::boolean AS is_bridge,
                 NULL::boolean AS is_tunnel,
                 NULL::boolean AS is_ford,
+                NULL::boolean AS expressway,
                 NULL::boolean AS is_ramp,
                 NULL::int AS is_oneway,
                 NULL AS man_made,
@@ -457,6 +482,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -491,6 +517,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -525,6 +552,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -560,6 +588,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -595,6 +624,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -628,6 +658,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -660,6 +691,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -692,6 +724,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -725,6 +758,7 @@ FROM (
                 is_bridge,
                 is_tunnel,
                 is_ford,
+                NULL::boolean AS expressway,
                 is_ramp,
                 is_oneway,
                 NULL AS man_made,
@@ -765,6 +799,7 @@ FROM (
                     END AS is_bridge,
                 FALSE AS is_tunnel,
                 FALSE AS is_ford,
+                NULL::boolean AS expressway,
                 FALSE AS is_ramp,
                 FALSE::int AS is_oneway,
                 man_made,

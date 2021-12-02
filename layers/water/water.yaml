@@ -1,5 +1,8 @@
 layer:
   id: "water"
+  requires:
+    tables:
+      - osm_ocean_polygon
   description: |
       Water polygons representing oceans and lakes. Covered watered areas are excluded (`covered=yes`).
       On low zoom levels all water originates from Natural Earth. To get a more correct display of the south pole you should also
@@ -12,7 +15,7 @@ layer:
     class:
       description: |
           All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
-          Water bodies with the [`waterway=riverbank`](http://wiki.openstreetmap.org/wiki/Tag:waterway=riverbank) 
+          Water bodies with the [`waterway=riverbank`](http://wiki.openstreetmap.org/wiki/Tag:waterway=riverbank)
           or [`water=river`](http://wiki.openstreetmap.org/wiki/Tag:water=river) tag are classified as river.  Wet and dry docks
           tagged [`waterway=dock`](http://wiki.openstreetmap.org/wiki/Tag:waterway=dock) are classified as a `dock`.
           All other water bodies are classified as `lake`.

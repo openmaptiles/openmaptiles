@@ -28,9 +28,9 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
 AS
 $$
 SELECT geometry,
-       name,
-       COALESCE(name_en, name) AS name_en,
-       COALESCE(name_de, name, name_en) AS name_de,
+       tags->'name' AS name,
+       COALESCE(tags->'name:en', tags->'name') AS name_en,
+       COALESCE(tags->'name:de', tags->'name', tags->'name:en') AS name_de,
        tags,
        ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
@@ -93,9 +93,6 @@ FROM (
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12
          SELECT geometry,
-                name,
-                name_en,
-                name_de,
                 "tags",
                 ref,
                 highway,
@@ -109,16 +106,17 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 12
-           AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND (highway_class(highway, '', subclass) NOT IN ('minor', 'track', 'path') OR highway='shipway')
+           AND LineLabel(zoom_level, COALESCE(tags->'name', ref), geometry)
            AND NOT highway_is_link(highway)
+           AND
+               CASE WHEN highway_class(highway, NULL::text, NULL::text) NOT IN ('path', 'minor') THEN TRUE
+                    WHEN highway IN ('aerialway', 'unclassified', 'residential', 'shipway') THEN TRUE
+                    WHEN route_rank = 1 THEN TRUE END
+
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z13
          SELECT geometry,
-                name,
-                name_en,
-                name_de,
                 "tags",
                 ref,
                 highway,
@@ -132,15 +130,21 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 13
-           AND LineLabel(zoom_level, COALESCE(name, ref), geometry)
-           AND (highway_class(highway, '', subclass) NOT IN ('track', 'path') OR highway='shipway')
+           AND LineLabel(zoom_level, COALESCE(tags->'name', ref), geometry)
+           AND
+               CASE WHEN highway <> 'path' THEN TRUE
+                    WHEN highway = 'path' AND (
+                                                   tags->'name' <> ''
+                                                OR network IS NOT NULL
+                                                OR sac_scale <> ''
+                                                OR route_rank <= 2
+                                              ) THEN TRUE
+               END
+
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z14_
          SELECT geometry,
-                name,
-                name_en,
-                name_de,
                 "tags",
                 ref,
                 highway,
@@ -159,11 +163,8 @@ FROM (
          -- etldoc: osm_highway_point ->  layer_transportation_name:z10
          SELECT
 		p.geometry,
-                p.name,
-                p.name_en,
-                p.name_de,
                 p.tags,
-                p.tags->'ref',
+                p.ref,
                 (
                   SELECT highest_highway(l.tags->'highway')
                     FROM osm_highway_linestring l

@@ -1,7 +1,9 @@
 layer:
   id: "transportation_name"
   # transportation_name relies on the function highway_class() defined in transportation layer
-  requires: "transportation"
+  requires:
+    layers:
+      - transportation
   description: |
       This is the layer for labelling the highways. Only highways that are named `name=*` and are long enough
       to place text upon appear. The OSM roads are stitched together if they contain the same name
