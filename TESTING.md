@@ -5,7 +5,7 @@ The OpenMapTiles SQL tests ensure that OSM data is properly imported and updated
 
 Usage:
 
-`make clean && make sql-test`
+`make clean && make test-sql`
 
 ## How it works
 
