@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
 SELECT
     geometry,
     osm_id,
-    tags,
+    tags || get_basic_names(tags, geometry) AS tags,
     ref,
     highway,
     subclass,
