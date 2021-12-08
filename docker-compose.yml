@@ -64,7 +64,6 @@ services:
       - postgres
     env_file: .env
     environment:
-      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
       # Control tilelive-copy threads
       COPY_CONCURRENCY: ${COPY_CONCURRENCY}
@@ -78,7 +77,6 @@ services:
       - postgres
     env_file: .env
     environment:
-      FILTER_MAPNIK_OUTPUT: ${FILTER_MAPNIK_OUTPUT}
       MBTILES_NAME: ${MBTILES_FILE}
       BBOX: ${BBOX}
       MIN_ZOOM: ${MIN_ZOOM}
