@@ -6,10 +6,6 @@ SELECT hstore(string_agg(nullif(slice_language_tags(tags ||
                        'name:en', CASE WHEN length(name_en) > 15 THEN osml10n_street_abbrev_en(name_en) ELSE NULLIF(name_en, '') END,
                        'name:de', CASE WHEN length(name_de) > 15 THEN osml10n_street_abbrev_de(name_de) ELSE NULLIF(name_de, '') END
                      ]))::text,
-                     ''), ','))
-                     || get_basic_names(tags, geometry);
+                     ''), ','));
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
-
-

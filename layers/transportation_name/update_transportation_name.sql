@@ -8,7 +8,7 @@
 -- etldoc: osm_aerialway_linestring ->  osm_transportation_name_linestring
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring AS
 SELECT (ST_Dump(geometry)).geom AS geometry,
-       tags,
+       tags || get_basic_names(tags, geometry) AS tags,
        ref,
        highway,
        subclass,
@@ -278,7 +278,7 @@ BEGIN
     SELECT
         geometry,
         osm_id,
-        tags,
+        tags || get_basic_names(tags, geometry) AS tags,
         ref,
         highway,
         subclass,
@@ -493,7 +493,7 @@ BEGIN
 
     INSERT INTO osm_transportation_name_linestring
     SELECT (ST_Dump(geometry)).geom AS geometry,
-           tags,
+           tags|| get_basic_names(tags, geometry) AS tags,
            ref,
            highway,
            subclass,
