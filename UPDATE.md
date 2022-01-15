@@ -8,7 +8,6 @@ regenerating the tables.
 You can either keep the database up to date based on the daily (or minutely) OSM change feed
 or import specific change files.
 
-
 ### Choosing the Download Source
 
 While GeoFabrik currently provides extracts of basically all countries, they provide only daily updates. 
@@ -42,12 +41,13 @@ make update-osm
 
 #### Troubleshooting
 
-The output will simular to this:
+The output will be similar to this:
 
 ``` 
 [info] Importing #4889572 including changes till ....... +0000 UTC (1m13s behind)
 ``` 
-It will take some time to catch up on the latest changes, but the "time behind" so always decrease. If it doesn't, you need to download a new extract our don't have enough system resources to keep-up with the changes.
+
+It might take some time to catch up with the latest changes, but the "time behind" should always decrease. If it doesn't, you need to download a new extract our don't have enough system resources to keep-up with the changes.
 
 ### Import Change File
 
