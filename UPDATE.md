@@ -1,12 +1,34 @@
-# Keep the vector tiles updated
+# Keeping the Vector Tiles Updated
 
 Once you have imported OpenMapTiles you can also keep it up to date by importing the latest OSM changes and
 regenerating the tables.
 
 ## Import
 
-You can either keep the database up to date based on the daily OSM change feed
+You can either keep the database up to date based on the daily (or minutely) OSM change feed
 or import specific change files.
+
+
+### Choosing the Download Source
+
+While GeoFabrik currently provides extracts of basically all countries, they provide only daily updates. 
+If you need minutely updates you might want to try openstreetmap.fr, for example like this: `make download-osmfr area=africa/eritrea`, which configures minutely updates.
+
+### Preparations
+
+If you plan to keep data updated automatically, before importing any data, make sure to set 
+
+```
+DIFF_MODE=true
+```
+    
+in the `.env`
+
+Now download fresh data:
+
+``` 
+make download area=your-area-of-choice
+```
 
 ### Keep Database Updated
 
@@ -17,6 +39,15 @@ After each run you should also have a list of tiles that have updated.
 ```
 make update-osm
 ```
+
+#### Troubleshooting
+
+The output will simular to this:
+
+``` 
+[info] Importing #4889572 including changes till ....... +0000 UTC (1m13s behind)
+``` 
+It will take some time to catch up on the latest changes, but the "time behind" so always decrease. If it doesn't, you need to download a new extract our don't have enough system resources to keep-up with the changes.
 
 ### Import Change File
 
