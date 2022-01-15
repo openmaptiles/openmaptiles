@@ -49,6 +49,18 @@ The output will be similar to this:
 
 It might take some time to catch up with the latest changes, but the "time behind" should always decrease. If it doesn't, you need to download a new extract our don't have enough system resources to keep-up with the changes.
 
+Finally you will get an output like this - this indicates, that some 6 objects were changed:
+
+```
+[progress]     3s C:       0/s (0) N:       0/s (0) W:       0/s (6) R:      0/s (0)
+```
+
+The process will keep running forever and eventually print something like this - which just means that no changes were in the latest changeset:
+
+```
+[progress]     0s C:       0/s (0) N:       0/s (0) W:       0/s (0) R:      0/s (0)
+```
+
 ### Import Change File
 
 Given you have a file `changes.osc.gz` in your import folder. Once you ran the import command you should also have a list of tiles that have updated.
@@ -62,11 +74,18 @@ make import-diff
 After the import has finished **imposm3** will store lists of tiles in text format in subfolders of the `diffdir`,
 named for the date(s) on which the import took place (`YYYYMMDD`).
 Copy and merge the files to `tiles.txt` in the import folder (`data`), either manually or with the following command, which also removes duplicate tiles so they are only generated once:  
+
 ```
 cd data && sort ./*/*.tiles | uniq > tiles.txt
 ```
 
-Now run the command to read the tilelist and write the vector tiles for it to a new MBTiles.
+After generating the tiles.txt you might and to delete the `*.tiles` files to not include them in the next run:
+
+```
+cd data && rm ./*/*.tiles
+```
+
+Finally run the command to read the tilelist and write the updated vector tiles in the existing MBtiles file.
 
 ```
 docker-compose run generate-changed-vectortiles
