@@ -92,6 +92,8 @@ layer:
           __AND__:
             highway: construction
             construction: raceway
+        aerialway:
+          aerialway: ['chair_lift', 'drag_lift', 'platter', 't-bar', 'gondola', 'cable_car', 'j-bar', 'mixed_lift']
     subclass:
       description: |
           Distinguish more specific classes of railway and path:
