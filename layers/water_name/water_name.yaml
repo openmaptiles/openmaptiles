@@ -6,7 +6,7 @@ layer:
       - lake_centerline
   description: |
       Lake center lines for labelling lake bodies.
-      This is based of the [osm-lakelines](https://github.com/lukasmartinelli/osm-lakelines) project
+      This is based of the [osm-lakelines](https://github.com/openmaptiles/osm-lakelines) project
       which derives nice centerlines from OSM water bodies. Only the most important lakes contain labels.
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the water body.
@@ -14,9 +14,11 @@ layer:
     name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
-          At the moment only `lake` since no ocean parts are labelled. *Reserved for future use*.
+          Distinguish between `lake`, `ocean` and `sea`.
       values:
       - lake
+      - sea
+      - ocean
     intermittent:
       description: |
         Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) lake.

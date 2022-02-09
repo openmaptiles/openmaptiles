@@ -111,7 +111,8 @@ layer:
           [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`building`](http://wiki.openstreetmap.org/wiki/Key:building),
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway)
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
+          [`office`](https://wiki.openstreetmap.org/wiki/Key:office)
           or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
           tag.  Use this to do more precise styling.
     rank: |
