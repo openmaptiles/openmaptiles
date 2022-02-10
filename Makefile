@@ -398,7 +398,7 @@ import-osm: all start-db-nowait
 .PHONY: update-osm
 update-osm: all start-db-nowait
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) up -d $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
@@ -454,7 +454,7 @@ start-tileserver: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
+	docker up -d $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
 
 .PHONY: start-postserve
 start-postserve: start-db
@@ -486,7 +486,7 @@ start-maputnik: stop-maputnik start-postserve
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
+	docker up -d $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
 .PHONY: stop-maputnik
 stop-maputnik:
