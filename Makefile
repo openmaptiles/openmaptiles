@@ -454,7 +454,7 @@ start-tileserver: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker up -d $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
+	docker run -d $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
 
 .PHONY: start-postserve
 start-postserve: start-db
@@ -486,7 +486,7 @@ start-maputnik: stop-maputnik start-postserve
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker up -d $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
+	docker run -d $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
 .PHONY: stop-maputnik
 stop-maputnik:
