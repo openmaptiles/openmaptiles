@@ -24,7 +24,8 @@ layer:
           [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
-          shipping ways), or
+          shipping ways),
+          [`busway`](https://wiki.openstreetmap.org/wiki/Key:busway), or
           [`man_made`](http://wiki.openstreetmap.org/wiki/Key:man_made).
       values:
         motorway:
@@ -134,12 +135,12 @@ layer:
           Mark with `1` whether way is a oneway in the direction of the way,
           with `-1` whether way is a oneway in the opposite direction of the way
           or not a oneway with `0`.
-      values: [0, 1, -1]
+      values: [1, -1]
     ramp:
       description: |
           Mark with `1` whether way is a ramp (link or steps)
           or not with `0`.
-      values: [0, 1]
+      values: [1]
     service:
       description: |
           Original value of the [`service`](http://wiki.openstreetmap.org/wiki/Key:service) tag.

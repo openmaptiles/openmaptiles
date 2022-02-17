@@ -10,10 +10,11 @@ layer:
     name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
-        Use the **class** to differentiate between mountain peak and volcano.
+        Use the **class** to differentiate between natural objects.
       values:
       - peak
       - volcano
+      - saddle
       - ridge
       - cliff
       - arete
