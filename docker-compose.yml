@@ -27,7 +27,7 @@ services:
     networks:
       - postgres
 
-  openmaptiles-tools:
+  openmaptiles-tools: &openmaptiles-tools
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
     env_file: .env
     environment:
@@ -53,6 +53,10 @@ services:
       - ./build/sql:/sql
       - ./build:/mapping
       - ./cache:/cache
+
+  update-osm:
+    <<: *openmaptiles-tools
+    command: import-update
 
   generate-changed-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -97,3 +101,18 @@ services:
       - "${PPORT:-8090}:${PPORT:-8090}"
     volumes:
       - .:/tileset
+
+  maputnik_editor:
+    image: "maputnik/editor"
+    ports:
+      - "8088:8888"
+
+  tileserver-gl:
+    image: "maptiler/tileserver-gl"
+    command:
+      - --port
+      - "${TPORT:-8080}"
+    ports:
+      - "${TPORT:-8080}:${TPORT:-8080}"
+    volumes:
+      - ./data:/data

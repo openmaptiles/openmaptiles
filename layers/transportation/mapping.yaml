@@ -320,8 +320,14 @@ tables:
     - *usage
     mapping:
       aerialway:
-      - cable_car
+      - chair_lift
+      - drag_lift
+      - platter
+      - t-bar
       - gondola
+      - cable_car
+      - j-bar
+      - mixed_lift
 
 # etldoc: imposm3 -> osm_shipway_linestring
   shipway_linestring:
