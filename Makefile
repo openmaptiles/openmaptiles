@@ -172,9 +172,11 @@ Hints for testing areas
 
 Hints for designers:
   make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]
+  make stop-maputnik                   # stop Maputnik Editor + dynamic tile server
   make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]
   make stop-postserve                  # stop dynamic tile server
   make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]
+  make stop-tileserver                 # stop maptiler/tileserver-gl
 
 Hints for developers:
   make                                 # build source code
@@ -395,10 +397,14 @@ import-osm: all start-db-nowait
 	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
-.PHONY: update-osm
-update-osm: all start-db-nowait
+.PHONY: start-update-osm
+start-update-osm: all start-db
 	@$(assert_area_is_given)
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) up -d update-osm
+
+.PHONY: stop-update-osm
+stop-update-osm:
+	$(DOCKER_COMPOSE) stop update-osm
 
 .PHONY: import-diff
 import-diff: all start-db-nowait
@@ -454,7 +460,11 @@ start-tileserver: init-dirs
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
+	$(DOCKER_COMPOSE) up -d tileserver-gl
+
+.PHONY: stop-tileserver
+stop-tileserver:
+	$(DOCKER_COMPOSE) stop tileserver-gl
 
 .PHONY: start-postserve
 start-postserve: start-db
@@ -486,11 +496,11 @@ start-maputnik: stop-maputnik start-postserve
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
+	$(DOCKER_COMPOSE) up -d maputnik_editor
 
 .PHONY: stop-maputnik
 stop-maputnik:
-	-docker rm -f maputnik_editor
+	-$(DOCKER_COMPOSE) stop maputnik_editor
 
 # STAT_FUNCTION=frequency|toplength|variance
 .PHONY: generate-qa

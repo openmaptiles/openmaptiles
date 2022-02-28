@@ -475,7 +475,7 @@ BEGIN
     FROM osm_transportation_name_linestring AS n
         USING name_changes_compact AS c
     WHERE coalesce(n.ref, '') = coalesce(c.ref, '')
-      AND n.tags IS NOT DISTINCT FROM c.tags
+      AND coalesce(n.tags, '') = coalesce(c.tags, '')
       AND n.highway IS NOT DISTINCT FROM c.highway
       AND n.subclass IS NOT DISTINCT FROM c.subclass
       AND n.brunnel IS NOT DISTINCT FROM c.brunnel
@@ -522,7 +522,7 @@ BEGIN
         FROM osm_transportation_name_network AS n
             JOIN name_changes_compact AS c ON
                  coalesce(n.ref, '') = coalesce(c.ref, '')
-             AND n.tags IS NOT DISTINCT FROM c.tags
+             AND coalesce(n.tags, '') = coalesce(c.tags, '')
              AND n.highway IS NOT DISTINCT FROM c.highway
              AND n.subclass IS NOT DISTINCT FROM c.subclass
              AND n.brunnel IS NOT DISTINCT FROM c.brunnel
@@ -546,7 +546,7 @@ BEGIN
     USING name_changes_compact AS c
     WHERE
         coalesce(n.tags->'name', n.ref) = c.name_ref
-        AND n.tags IS NOT DISTINCT FROM c.tags
+        AND coalesce(n.tags, '') = coalesce(c.tags, '')
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -564,7 +564,7 @@ BEGIN
     FROM osm_transportation_name_linestring_gen1_view AS n
         JOIN name_changes_compact AS c ON
             coalesce(n.tags->'name', n.ref) = c.name_ref
-            AND n.tags IS NOT DISTINCT FROM c.tags
+            AND coalesce(n.tags, '') = coalesce(c.tags, '')
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -582,7 +582,7 @@ BEGIN
     USING name_changes_compact AS c
     WHERE
         coalesce(n.tags->'name', n.ref) = c.name_ref
-        AND n.tags IS NOT DISTINCT FROM c.tags
+        AND coalesce(n.tags, '') = coalesce(c.tags, '')
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -600,7 +600,7 @@ BEGIN
     FROM osm_transportation_name_linestring_gen2_view AS n
         JOIN name_changes_compact AS c ON
             coalesce(n.tags->'name', n.ref) = c.name_ref
-            AND n.tags IS NOT DISTINCT FROM c.tags
+            AND coalesce(n.tags, '') = coalesce(c.tags, '')
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -618,7 +618,7 @@ BEGIN
     USING name_changes_compact AS c
     WHERE
         coalesce(n.tags->'name', n.ref) = c.name_ref
-        AND n.tags IS NOT DISTINCT FROM c.tags
+        AND coalesce(n.tags, '') = coalesce(c.tags, '')
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -636,7 +636,7 @@ BEGIN
     FROM osm_transportation_name_linestring_gen3_view AS n
         JOIN name_changes_compact AS c ON
             coalesce(n.tags->'name', n.ref) = c.name_ref
-            AND n.tags IS NOT DISTINCT FROM c.tags
+            AND coalesce(n.tags, '') = coalesce(c.tags, '')
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -654,7 +654,7 @@ BEGIN
     USING name_changes_compact AS c
     WHERE
         coalesce(n.tags->'name', n.ref) = c.name_ref
-        AND n.tags IS NOT DISTINCT FROM c.tags
+        AND coalesce(n.tags, '') = coalesce(c.tags, '')
         AND n.ref IS NOT DISTINCT FROM c.ref
         AND n.highway IS NOT DISTINCT FROM c.highway
         AND n.subclass IS NOT DISTINCT FROM c.subclass
@@ -672,7 +672,7 @@ BEGIN
     FROM osm_transportation_name_linestring_gen4_view AS n
         JOIN name_changes_compact AS c ON
             coalesce(n.tags->'name', n.ref) = c.name_ref
-            AND n.tags IS NOT DISTINCT FROM c.tags
+            AND coalesce(n.tags, '') = coalesce(c.tags, '')
             AND n.ref IS NOT DISTINCT FROM c.ref
             AND n.highway IS NOT DISTINCT FROM c.highway
             AND n.subclass IS NOT DISTINCT FROM c.subclass
