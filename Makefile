@@ -24,6 +24,7 @@ TPORT ?= 8080
 export TPORT
 
 # Allow a custom docker-compose project name
+DC_PROJECT := $(or $(DC_PROJECT),$(shell (. .env; echo $${DC_PROJECT})))
 ifeq ($(DC_PROJECT),)
   DC_PROJECT := $(notdir $(shell pwd))
   DOCKER_COMPOSE := docker-compose
@@ -32,7 +33,7 @@ else
 endif
 
 # Make some operations quieter (e.g. inside the test script)
-ifeq ($(QUIET),)
+ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET})))),)
   QUIET_FLAG :=
 else
   QUIET_FLAG := --quiet
@@ -60,12 +61,12 @@ define newline
 
 endef
 
-# use the old postgres connection values if they are existing
-PGHOST := $(or $(POSTGRES_HOST),$(PGHOST),postgres)
-PGPORT := $(or $(POSTGRES_PORT),$(PGPORT),5432)
-PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE),openmaptiles)
-PGUSER := $(or $(POSTGRES_USER),$(PGUSER),openmaptiles)
-PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD),openmaptiles)
+# Use the old Postgres connection values as a fallback
+PGHOST := $(or $(PGHOST),$(shell (. .env; echo $${PGHOST})),$(POSTGRES_HOST),$(shell (. .env; echo $${POSTGRES_HOST})),postgres)
+PGPORT := $(or $(PGPORT),$(shell (. .env; echo $${PGPORT})),$(POSTGRES_PORT),$(shell (. .env; echo $${POSTGRES_PORT})),postgres)
+PGDATABASE := $(or $(PGDATABASE),$(shell (. .env; echo $${PGDATABASE})),$(POSTGRES_DB),$(shell (. .env; echo $${POSTGRES_DB})),postgres)
+PGUSER := $(or $(PGUSER),$(shell (. .env; echo $${PGUSER})),$(POSTGRES_USER),$(shell (. .env; echo $${POSTGRES_USER})),postgres)
+PGPASSWORD := $(or $(PGPASSWORD),$(shell (. .env; echo $${PGPASSWORD})),$(POSTGRES_PASSWORD),$(shell (. .env; echo $${POSTGRES_PASSWORD})),postgres)
 
 #
 # Determine area to work on
@@ -139,7 +140,7 @@ DOWNLOAD_AREA := $(or $(url), $(area))
 export MBTILES_FILE := $(or $(MBTILES_FILE),$(shell (. .env; echo $${MBTILES_FILE})),$(area).mbtiles)
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
-DIFF_MODE := $(or $(DIFF_MODE),$(shell (. .env; echo $${DIFF_MODE})),true)
+DIFF_MODE := $(or $(DIFF_MODE),$(shell (. .env; echo $${DIFF_MODE})))
 ifeq ($(DIFF_MODE),true)
   # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
   # For one-time only imports, the default value is fine.
@@ -154,6 +155,12 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   BBOX := $(shell $(cat) ${AREA_BBOX_FILE})
   export BBOX
 endif
+
+# Consult .env if needed
+MIN_ZOOM := $(or $(MIN_ZOOM),$(shell (. .env; echo $${MIN_ZOOM})),0)
+MAX_ZOOM := $(or $(MAX_ZOOM),$(shell (. .env; echo $${MAX_ZOOM})),7)
+PPORT := $(or $(PPORT),$(shell (. .env; echo $${PPORT})),7)
+TPORT := $(or $(TPORT),$(shell (. .env; echo $${TPORT})),7)
 
 define HELP_MESSAGE
 ==============================================================================
@@ -281,12 +288,11 @@ clean-test-data:
 	rm -rf data/changes.repl.json
 
 .PHONY: destroy-db
-# TODO:  Use https://stackoverflow.com/a/27852388/177275
-destroy-db: DC_PROJECT := $(shell echo $(DC_PROJECT) | tr A-Z a-z)
+DOCKER_PROJECT = $(shell echo $(DC_PROJECT) | tr A-Z a-z | tr -cd '[:alnum:]')
 destroy-db:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
-	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
+	docker volume ls -q -f "name=^$(DOCKER_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 	mkdir cache
 
@@ -429,7 +435,7 @@ generate-tiles-pg: all start-db
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 # For some reason Ctrl+C doesn't work here without the -T. Must be pressed twice to stop.
-	$(DOCKER_COMPOSE) run -T $(DC_OPTS) openmaptiles-tools generate-tiles
+	$(DOCKER_COMPOSE) run -T $(DC_OPTS) -e MBTILES_FILE="$(MBTILES_FILE)" openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
 			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
