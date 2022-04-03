@@ -204,13 +204,17 @@ SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
        is_tunnel,
        is_ford,
        expressway,
-       min(z_order) as z_order
+       min(z_order) as z_order,
+       cycleway,
+       cycleway_both,
+       cycleway_left,
+       cycleway_right
 FROM osm_transportation_merge_linestring_gen_z9
 WHERE (highway IN ('motorway', 'trunk', 'primary') OR
        construction IN ('motorway', 'trunk', 'primary'))
        AND ST_IsValid(geometry)
        AND access IS NULL
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,cycleway, cycleway_both, cycleway_left, cycleway_right
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
     ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);

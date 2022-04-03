@@ -253,7 +253,7 @@ FROM (
                 NULL::boolean AS indoor,
                 NULL AS bicycle,
                 NULL AS bicycle_all,
-                NULL AS cycleway_all,
+                cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right) AS cycleway_all,
                 NULL::int AS maxspeed_all,
                 NULL AS traffic_sign_all,
                 NULL AS foot,
