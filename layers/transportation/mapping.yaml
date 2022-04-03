@@ -84,6 +84,10 @@ oneway_field: &oneway
   key: oneway
   name: is_oneway
   type: direction
+bicycle_road_field: &bicycle_road
+  key: bicycle_road
+  name: is_bicycle_road
+  type: bool
 area_field: &area
   name: is_area
   key: area
@@ -252,6 +256,7 @@ tables:
     - *usage
     - *public_transport
     - *man_made
+    - *bicycle_road
     - *bicycle
     - *bicycle_forward
     - *bicycle_backward

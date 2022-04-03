@@ -85,6 +85,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        expressway,
        min(z_order) as z_order,
        bicycle,
+       is_bicycle_road,
        bicycle_forward,
        bicycle_backward,
        cycleway,
@@ -108,7 +109,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
        layer
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
-GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, bicycle_forward, bicycle_backward, cycleway, cycleway_both, cycleway_left, cycleway_right, maxspeed, maxspeed_forward, maxspeed_backward, traffic_sign, traffic_sign_forward, traffic_sign_backward, foot, horse, mtb_scale, sac_scale, access, toll, layer
+GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, is_bicycle_road, bicycle_forward, bicycle_backward, cycleway, cycleway_both, cycleway_left, cycleway_right, maxspeed, maxspeed_forward, maxspeed_backward, traffic_sign, traffic_sign_forward, traffic_sign_backward, foot, horse, mtb_scale, sac_scale, access, toll, layer
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
     ON osm_transportation_merge_linestring_gen_z11 USING gist (geometry);
@@ -127,6 +128,7 @@ SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
        expressway,
        z_order,
        bicycle,
+       is_bicycle_road,
        bicycle_forward,
        bicycle_backward,
        cycleway,
@@ -167,6 +169,7 @@ SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
        expressway,
        z_order,
        bicycle,
+       is_bicycle_road,
        bicycle_forward,
        bicycle_backward,
        cycleway,
