@@ -139,6 +139,30 @@ bicycle_field: &bicycle
   key: bicycle
   name: bicycle
   type: string
+bicycle_forward_field: &bicycle_forward
+  key: "bicycle:forward"
+  name: bicycle_forward
+  type: string
+bicycle_backward_field: &bicycle_backward
+  key: "bicycle:backward"
+  name: bicycle_backward
+  type: string
+cycleway_field: &cycleway
+  key: cycleway
+  name: cycleway
+  type: string
+cycleway_both_field: &cycleway_both
+  key: "cycleway:both"
+  name: cycleway_both
+  type: string
+cycleway_left_field: &cycleway_left
+  key: "cycleway:left"
+  name: cycleway_left
+  type: string
+cycleway_right_field: &cycleway_right
+  key: "cycleway:right"
+  name: cycleway_right
+  type: string
 foot_field: &foot
   key: foot
   name: foot
@@ -163,6 +187,30 @@ expressway_field: &expressway
   key: expressway
   name: expressway
   type: bool
+maxspeed_field: &maxspeed
+  key: maxspeed
+  name: maxspeed
+  type: integer
+maxspeed_forward_field: &maxspeed_forward
+  key: "maxspeed:forward"
+  name: maxspeed_forward
+  type: integer
+maxspeed_backward_field: &maxspeed_backward
+  key: "maxspeed:backward"
+  name: maxspeed_backward
+  type: integer
+traffic_sign_field: &traffic_sign
+  key: traffic_sign
+  name: traffic_sign
+  type: string
+traffic_sign_forward_field: &traffic_sign_forward
+  key: "traffic_sign:forward"
+  name: traffic_sign_forward
+  type: string
+traffic_sign_backward_field: &traffic_sign_backward
+  key: "traffic_sign:backward"
+  name: traffic_sign_backward
+  type: string
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -205,6 +253,18 @@ tables:
     - *public_transport
     - *man_made
     - *bicycle
+    - *bicycle_forward
+    - *bicycle_backward
+    - *cycleway
+    - *cycleway_both
+    - *cycleway_left
+    - *cycleway_right
+    - *maxspeed
+    - *maxspeed_forward
+    - *maxspeed_backward
+    - *traffic_sign
+    - *traffic_sign_forward
+    - *traffic_sign_backward
     - *foot
     - *horse
     - *mtb_scale

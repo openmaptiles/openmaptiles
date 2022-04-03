@@ -91,3 +91,41 @@ SELECT CASE
 $$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
+
+-- returns the highest speed
+CREATE OR REPLACE FUNCTION maxspeed_all(maxspeed int, maxspeed_forward int, maxspeed_backward int) RETURNS int AS
+$$
+SELECT GREATEST(maxspeed, maxspeed_forward, maxspeed_backward);
+$$ LANGUAGE SQL IMMUTABLE
+                STRICT
+                PARALLEL SAFE;
+
+-- returns combination of all signs
+CREATE OR REPLACE FUNCTION traffic_sign_all(traffic_sign text, traffic_sign_forward text, traffic_sign_backward text) RETURNS text AS
+$$
+SELECT concat_ws(';', NULLIF(traffic_sign,''), NULLIF(traffic_sign_forward,''), NULLIF(traffic_sign_backward,''));
+$$ LANGUAGE SQL IMMUTABLE
+                STRICT
+                PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION bicycle_all(bicycle text, bicycle_forward text, bicycle_backward text) RETURNS text AS
+$$
+SELECT CASE
+           WHEN bicycle = 'no' OR bicycle_forward = 'no' OR bicycle_backward = 'no' THEN 'no'
+           WHEN bicycle = 'use_sidepath' OR bicycle_forward = 'use_sidepath' OR bicycle_backward = 'use_sidepath' THEN 'use_sidepath'
+           ELSE COALESCE(NULLIF(bicycle,''),NULLIF(bicycle_forward,''),NULLIF(bicycle_backward,''))
+       END
+$$ LANGUAGE SQL IMMUTABLE
+                STRICT
+                PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION cycleway_all(cycleway text, cycleway_both text, cycleway_left text, cycleway_right text) RETURNS text AS
+$$
+SELECT CASE
+           WHEN cycleway = 'no' OR cycleway_both = 'no' OR cycleway_left = 'no' OR cycleway_right = 'no' THEN 'no'
+           WHEN cycleway = 'separate' OR cycleway_both = 'separate' OR cycleway_left = 'separate' OR cycleway_right = 'separate' THEN 'separate'
+           ELSE COALESCE(NULLIF(cycleway,''),NULLIF(cycleway_both,''),NULLIF(cycleway_left,''),NULLIF(cycleway_right,''))
+       END
+$$ LANGUAGE SQL IMMUTABLE
+                STRICT
+                PARALLEL SAFE;

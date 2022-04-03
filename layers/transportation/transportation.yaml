@@ -183,6 +183,10 @@ layer:
     bicycle:
       description: |
           Original value of the [`bicycle`](http://wiki.openstreetmap.org/wiki/Key:bicycle) tag (highways only).
+    bicycle_all: "Combination of all bicycle tags, returns worst"
+    cycleway_all: "Combination of all cycleway tags, returns worst"
+    maxspeed_all: "Combination of all maxspeed tags, returns highest"
+    traffic_sign_all: "Combination of all traffic_sign tags"
     foot:
       description: |
           Original value of the [`foot`](http://wiki.openstreetmap.org/wiki/Key:foot) tag (highways only).
@@ -201,7 +205,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql

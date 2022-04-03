@@ -7,13 +7,13 @@ tileset:
     - layers/mountain_peak/mountain_peak.yaml
     - layers/park/park.yaml
     - layers/boundary/boundary.yaml
-    - layers/aeroway/aeroway.yaml
+#    - layers/aeroway/aeroway.yaml
     - layers/transportation/transportation.yaml
-    - layers/building/building.yaml
+#    - layers/building/building.yaml
     - layers/water_name/water_name.yaml
     - layers/transportation_name/transportation_name.yaml
     - layers/place/place.yaml
-    - layers/housenumber/housenumber.yaml
+#    - layers/housenumber/housenumber.yaml
     - layers/poi/poi.yaml
     - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
