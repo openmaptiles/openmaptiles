@@ -171,6 +171,22 @@ cycleway_right_field: &cycleway_right
   key: "cycleway:right"
   name: cycleway_right
   type: string
+sidewalk_bicycle_field: &sidewalk_bicycle
+  key: "sidewalk:bicycle"
+  name: sidewalk_bicycle
+  type: string
+sidewalk_both_bicycle_field: &sidewalk_both_bicycle
+  key: "sidewalk:both:bicycle"
+  name: sidewalk_both_bicycle
+  type: string
+sidewalk_left_bicycle_field: &sidewalk_left_bicycle
+  key: "sidewalk:left:bicycle"
+  name: sidewalk_left_bicycle
+  type: string
+sidewalk_right_bicycle_field: &sidewalk_right_bicycle
+  key: "sidewalk:right:bicycle"
+  name: sidewalk_right_bicycle
+  type: string
 foot_field: &foot
   key: foot
   name: foot
@@ -269,6 +285,10 @@ tables:
     - *cycleway_both
     - *cycleway_left
     - *cycleway_right
+    - *sidewalk_bicycle
+    - *sidewalk_both_bicycle
+    - *sidewalk_left_bicycle
+    - *sidewalk_right_bicycle
     - *maxspeed
     - *maxspeed_forward
     - *maxspeed_backward
