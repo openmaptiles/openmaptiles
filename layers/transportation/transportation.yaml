@@ -136,6 +136,7 @@ layer:
           with `-1` whether way is a oneway in the opposite direction of the way
           or not a oneway with `0`.
       values: [1, -1]
+    motorroad: Returns `1` if the way is a motorroad
     ramp:
       description: |
           Mark with `1` whether way is a ramp (link or steps)
@@ -206,7 +207,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql

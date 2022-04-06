@@ -84,6 +84,10 @@ oneway_field: &oneway
   key: oneway
   name: is_oneway
   type: direction
+motorroad_field: &motorroad
+  key: motorroad
+  name: is_motorroad
+  type: bool
 bicycle_road_field: &bicycle_road
   key: bicycle_road
   name: is_bicycle_road
@@ -249,6 +253,7 @@ tables:
     - *ramp
     - *ford
     - *oneway
+    - *motorroad
     - *area
     - *service
     - *access
