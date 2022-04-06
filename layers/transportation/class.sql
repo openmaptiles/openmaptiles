@@ -124,6 +124,7 @@ $$
 SELECT CASE
            WHEN cycleway = 'no' OR cycleway_both = 'no' OR cycleway_left = 'no' OR cycleway_right = 'no' THEN 'no'
            WHEN cycleway = 'separate' OR cycleway_both = 'separate' OR cycleway_left = 'separate' OR cycleway_right = 'separate' THEN 'separate'
+           WHEN cycleway = 'track' OR cycleway_both = 'track' OR cycleway_left = 'track' OR cycleway_right = 'track' THEN 'track'
            ELSE COALESCE(NULLIF(cycleway,''),NULLIF(cycleway_both,''),NULLIF(cycleway_left,''),NULLIF(cycleway_right,''))
        END
 $$ LANGUAGE SQL IMMUTABLE
