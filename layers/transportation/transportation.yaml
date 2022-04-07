@@ -15,6 +15,7 @@ layer:
   buffer_size: 4
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
+    osm_id: Id of OpenStreetMap Way
     class:
       description: |
           Distinguish between more and less important roads or railways and roads under construction.
@@ -207,7 +208,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, osm_id, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
