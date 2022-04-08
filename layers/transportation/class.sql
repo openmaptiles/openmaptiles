@@ -97,7 +97,6 @@ CREATE OR REPLACE FUNCTION maxspeed_all(maxspeed int, maxspeed_forward int, maxs
 $$
 SELECT GREATEST(maxspeed, maxspeed_forward, maxspeed_backward);
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
 
 -- returns combination of all signs
@@ -105,7 +104,6 @@ CREATE OR REPLACE FUNCTION traffic_sign_all(traffic_sign text, traffic_sign_forw
 $$
 SELECT concat_ws(';', NULLIF(traffic_sign,''), NULLIF(traffic_sign_forward,''), NULLIF(traffic_sign_backward,''));
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION bicycle_all(bicycle text, 
@@ -123,7 +121,6 @@ SELECT CASE
            ELSE COALESCE(NULLIF(bicycle,''),NULLIF(bicycle_forward,''),NULLIF(bicycle_backward,''))
        END
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION cycleway_all(cycleway text, cycleway_both text, 
@@ -141,5 +138,4 @@ SELECT CASE
            ELSE COALESCE(NULLIF(cycleway,''),NULLIF(cycleway_both,''),NULLIF(cycleway_left,''),NULLIF(cycleway_right,''))
        END
 $$ LANGUAGE SQL IMMUTABLE
-                STRICT
                 PARALLEL SAFE;
