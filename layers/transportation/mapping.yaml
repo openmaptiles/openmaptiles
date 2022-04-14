@@ -143,6 +143,10 @@ man_made_field: &man_made
 z_order_field: &z_order
   name: z_order
   type: wayzorder
+segregated_field: &segregated
+  key: segregated
+  name: segregated
+  type: string
 bicycle_field: &bicycle
   key: bicycle
   name: bicycle
@@ -277,6 +281,7 @@ tables:
     - *usage
     - *public_transport
     - *man_made
+    - *segregated
     - *bicycle_road
     - *bicycle
     - *bicycle_forward

@@ -182,6 +182,7 @@ layer:
           value of the [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
       - 1
+    segregated: Original value of segregated  tag
     bicycle:
       description: |
           Original value of the [`bicycle`](http://wiki.openstreetmap.org/wiki/Key:bicycle) tag (highways only).
@@ -208,7 +209,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, osm_id, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, osm_id, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, segregated, bicycle, is_bicycle_road, bicycle_all, cycleway_all, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
