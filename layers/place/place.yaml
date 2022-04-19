@@ -7,7 +7,8 @@ layer:
       - ne_10m_admin_1_states_provinces
   description: |
       The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
-      [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate) and [cities](http://wiki.openstreetmap.org/wiki/Key:place).
+      [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate), [cities](http://wiki.openstreetmap.org/wiki/Key:place)
+      and [islands](https://wiki.openstreetmap.org/wiki/Tag:place%3Disland).
       Apart from the roads this is also one of the more important layers to create a beautiful map.
       We suggest you use different font styles and sizes to create a text hierarchy.
   fields:
@@ -24,7 +25,7 @@ layer:
       description: |
           Original value of the
           [`place`](http://wiki.openstreetmap.org/wiki/Key:place) tag.
-          Distinguish between continents, countries, states and
+          Distinguish between continents, countries, states, islands and
           places like settlements or smaller entities.
           Use **class** to separately style the different places and build
           a text hierarchy according to their importance.
@@ -41,6 +42,7 @@ layer:
       - quarter
       - neighbourhood
       - isolated_dwelling
+      - island
     iso_a2:
       description: |
           Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Available only for `class=country`.
@@ -50,7 +52,7 @@ layer:
       description: |
           Countries, states and the most important cities all have a
           **rank** to boost their importance on the map.
-          The **rank** field for counries and states ranges from
+          The **rank** field for countries and states ranges from
           `1` to `6` while the **rank** field for cities ranges from
           `1` to `10` for the most important cities
           and continues from `10` serially based on the
