@@ -8,12 +8,6 @@ CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_type_partial_idx
     WHERE aerodrome_type = 'international'
       AND iata <> '';
 
-UPDATE osm_aerodrome_label_point SET aerodrome_type=(
-   CASE
-        %%FIELD_MAPPING: class %%
-        ELSE 'other' END
-);
-
 CREATE SCHEMA IF NOT EXISTS aerodrome_label;
 
 CREATE TABLE IF NOT EXISTS aerodrome_label.osm_ids
@@ -34,6 +28,17 @@ $$
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM aerodrome_label.osm_ids))
         AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
         AND tags != update_tags(tags, geometry);
+
+    UPDATE osm_aerodrome_label_point
+    SET aerodrome_type=
+       CASE
+	    %%FIELD_MAPPING: class %%
+	    ELSE 'other' END
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM aerodrome_label.osm_ids))
+    AND aerodrome_type !=
+       CASE
+	    %%FIELD_MAPPING: class %%
+	    ELSE 'other' END;
 $$ LANGUAGE SQL;
 
 SELECT update_aerodrome_label_point(true);
