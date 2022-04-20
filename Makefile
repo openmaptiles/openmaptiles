@@ -137,7 +137,7 @@ PBF_FILE ?= data/$(area).osm.pbf
 DOWNLOAD_AREA := $(or $(url), $(area))
 
 # The mbtiles file is placed into the $EXPORT_DIR=/export (mapped to ./data)
-export MBTILES_FILE := $(or $(MBTILES_FILE),$(shell (. .env; echo $${MBTILES_FILE})),$(area).mbtiles)
+MBTILES_FILE := $(or $(MBTILES_FILE),$(shell (. .env; echo $${MBTILES_FILE})),$(area).mbtiles)
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
 DIFF_MODE := $(or $(DIFF_MODE),$(shell (. .env; echo $${DIFF_MODE})))
@@ -435,7 +435,7 @@ generate-tiles-pg: all start-db
 	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists) using PostGIS ST_MVT()..."
 	@rm -rf "$(MBTILES_LOCAL_FILE)"
 # For some reason Ctrl+C doesn't work here without the -T. Must be pressed twice to stop.
-	$(DOCKER_COMPOSE) run -T $(DC_OPTS) -e MBTILES_FILE="$(MBTILES_FILE)" openmaptiles-tools generate-tiles
+	$(DOCKER_COMPOSE) run -T $(DC_OPTS) openmaptiles-tools generate-tiles
 	@echo "Updating generated tile metadata ..."
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
 			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
