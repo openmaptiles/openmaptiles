@@ -94,6 +94,8 @@ layer:
           subclass: ['swimming_area', 'swimming']
         castle:
           subclass: ['castle', 'ruins']
+        atm:
+          subclass: ['atm']
     subclass:
       description: |
           Original value of either the
