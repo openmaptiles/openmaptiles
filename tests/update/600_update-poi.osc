@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 600: POIs
+        Change atm's network
+  -->
+  <modify>
+    <node id="600003" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.4" lon="-80.4">
+      <tag k="amenity" v="atm"/>
+      <tag k="network" v="New name"/>
+    </node>
+  </modify>
+</osmChange>

@@ -9,6 +9,7 @@ def_poi_mapping_aerialway: &poi_mapping_aerialway
 # amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
+  - atm
   - bank
   - bar
   - bbq
@@ -366,6 +367,12 @@ def_poi_fields: &poi_fields
     type: integer
   - name: sport
     key: sport
+    type: string
+  - name: operator
+    key: operator
+    type: string
+  - name: network
+    key: network
     type: string
 
 def_poi_mapping: &poi_mapping
