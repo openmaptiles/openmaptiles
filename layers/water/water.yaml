@@ -26,7 +26,6 @@ layer:
           water: 'river'
           waterway: 'riverbank'
         lake:
-          waterway: ''
         ocean:
     intermittent:
       description: |
