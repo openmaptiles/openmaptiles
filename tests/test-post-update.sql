@@ -76,6 +76,22 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'update', 'osm_transportation_linestring z9 update tags expected 1, got ' || cnt);
   END IF;
 
+  -- Test 600
+
+  -- check if name was applied correctly
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'atm'
+      AND tags->'name' = 'OpenMapTiles ATM';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'update', 'osm_poi_point atm with name "OpenMapTiles ATM" expected 2, got ' || cnt);
+  END IF;
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'atm'
+      AND tags->'name' = 'New name';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'update', 'osm_poi_point atm with name "New name" expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$;
