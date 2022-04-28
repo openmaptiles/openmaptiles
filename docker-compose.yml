@@ -54,6 +54,7 @@ services:
       PGUSER: ${PGUSER:-openmaptiles}
       PGPASSWORD: ${PGPASSWORD:-openmaptiles}
       PGPORT: ${PGPORT:-5432}
+      MBTILES_FILE: ${MBTILES_FILE}
     networks:
       - postgres
     volumes:
@@ -130,6 +131,8 @@ services:
     command:
       - --port
       - "${TPORT:-8080}"
+      - --mbtiles
+      - "${MBTILES_FILE}"
     ports:
       - "${TPORT:-8080}:${TPORT:-8080}"
     volumes:

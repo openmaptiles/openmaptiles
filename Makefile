@@ -6,11 +6,8 @@
 SHELL         = /bin/bash
 .SHELLFLAGS   = -o pipefail -c
 
-# Make all .env variables available for make targets
-include .env
-
 # Layers definition and meta data
-TILESET_FILE ?= openmaptiles.yaml
+TILESET_FILE := $(or $(TILESET_FILE),$(shell (. .env; echo $${TILESET_FILE})),openmaptiles.yaml)
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
@@ -27,7 +24,8 @@ TPORT ?= 8080
 export TPORT
 
 # Allow a custom docker-compose project name
-ifeq ($(strip $(DC_PROJECT)),)
+DC_PROJECT := $(or $(DC_PROJECT),$(shell (. .env; echo $${DC_PROJECT})))
+ifeq ($(DC_PROJECT),)
   DC_PROJECT := $(notdir $(shell pwd))
   DOCKER_COMPOSE := docker-compose
 else
@@ -35,7 +33,7 @@ else
 endif
 
 # Make some operations quieter (e.g. inside the test script)
-ifeq ($(strip $(QUIET)),)
+ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET})))),)
   QUIET_FLAG :=
 else
   QUIET_FLAG := --quiet
@@ -55,8 +53,7 @@ else
 endif
 
 # Set OpenMapTiles host
-OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
-export OMT_HOST
+export OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
@@ -64,12 +61,12 @@ define newline
 
 endef
 
-# use the old postgres connection values if they are existing
-PGHOST := $(or $(POSTGRES_HOST),$(PGHOST))
-PGPORT := $(or $(POSTGRES_PORT),$(PGPORT))
-PGDATABASE := $(or $(POSTGRES_DB),$(PGDATABASE))
-PGUSER := $(or $(POSTGRES_USER),$(PGUSER))
-PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
+# Use the old Postgres connection values as a fallback
+PGHOST := $(or $(PGHOST),$(shell (. .env; echo $${PGHOST})),$(POSTGRES_HOST),$(shell (. .env; echo $${POSTGRES_HOST})),postgres)
+PGPORT := $(or $(PGPORT),$(shell (. .env; echo $${PGPORT})),$(POSTGRES_PORT),$(shell (. .env; echo $${POSTGRES_PORT})),postgres)
+PGDATABASE := $(or $(PGDATABASE),$(shell (. .env; echo $${PGDATABASE})),$(POSTGRES_DB),$(shell (. .env; echo $${POSTGRES_DB})),postgres)
+PGUSER := $(or $(PGUSER),$(shell (. .env; echo $${PGUSER})),$(POSTGRES_USER),$(shell (. .env; echo $${POSTGRES_USER})),postgres)
+PGPASSWORD := $(or $(PGPASSWORD),$(shell (. .env; echo $${PGPASSWORD})),$(POSTGRES_PASSWORD),$(shell (. .env; echo $${POSTGRES_PASSWORD})),postgres)
 
 #
 # Determine area to work on
@@ -82,7 +79,7 @@ PGPASSWORD := $(or $(POSTGRES_PASSWORD),$(PGPASSWORD))
 # historically we have been using $(area) rather than $(AREA), so make both work
 area ?= $(AREA)
 # Ensure the $(area) param is set, or try to automatically determine it based on available data files
-ifeq ($(strip $(area)),)
+ifeq ($(area),)
   # An $(area) parameter is not set. If only one *.osm.pbf file is found in ./data, use it as $(area).
   data_files := $(shell find data -name '*.osm.pbf' 2>/dev/null)
   ifneq ($(word 2,$(data_files)),)
@@ -127,7 +124,7 @@ ifeq ($(strip $(area)),)
   endif
 endif
 
-ifneq ($(strip $(AREA_INFO)),)
+ifneq ($(AREA_INFO),)
   define assert_area_is_given
       @echo "$(AREA_INFO)"
   endef
@@ -137,20 +134,17 @@ endif
 PBF_FILE ?= data/$(area).osm.pbf
 
 # For download-osm, allow URL parameter to download file from a given URL. Area param must still be provided.
-ifneq ($(strip $(url)),)
-  DOWNLOAD_AREA := $(url)
-else
-  DOWNLOAD_AREA := $(area)
-endif
+DOWNLOAD_AREA := $(or $(url), $(area))
 
-# The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
-export MBTILES_FILE ?= $(area).mbtiles
+# The mbtiles file is placed into the $EXPORT_DIR=/export (mapped to ./data)
+MBTILES_FILE := $(or $(MBTILES_FILE),$(shell (. .env; echo $${MBTILES_FILE})),$(area).mbtiles)
 MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
 
-ifeq ($(strip $(DIFF_MODE)),true)
+DIFF_MODE := $(or $(DIFF_MODE),$(shell (. .env; echo $${DIFF_MODE})))
+ifeq ($(DIFF_MODE),true)
   # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
-  # For static (no-updates) import, we don't need to override the default value
-  # For the update mode, set location of the dynamically-generated area-based config file
+  # For one-time only imports, the default value is fine.
+  # For diff mode updates, use the dynamically-generated area-based config file
   export IMPOSM_CONFIG_FILE = data/$(area).repl.json
 endif
 
@@ -161,6 +155,12 @@ ifneq (,$(wildcard $(AREA_BBOX_FILE)))
   BBOX := $(shell $(cat) ${AREA_BBOX_FILE})
   export BBOX
 endif
+
+# Consult .env if needed
+MIN_ZOOM := $(or $(MIN_ZOOM),$(shell (. .env; echo $${MIN_ZOOM})),0)
+MAX_ZOOM := $(or $(MAX_ZOOM),$(shell (. .env; echo $${MAX_ZOOM})),7)
+PPORT := $(or $(PPORT),$(shell (. .env; echo $${PPORT})),7)
+TPORT := $(or $(TPORT),$(shell (. .env; echo $${TPORT})),7)
 
 define HELP_MESSAGE
 ==============================================================================
@@ -258,7 +258,7 @@ init-dirs:
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'generate-tm2source $(TILESET_FILE) --host="$(PGHOST)" --port=$(PGPORT) --database="$(PGDATABASE)" --user="$(PGUSER)" --password="$(PGPASSWORD)" > $@'
+		'generate-tm2source $(TILESET_FILE) > $@'
 endif
 
 build/mapping.yaml: init-dirs
@@ -288,12 +288,11 @@ clean-test-data:
 	rm -rf data/changes.repl.json
 
 .PHONY: destroy-db
-# TODO:  Use https://stackoverflow.com/a/27852388/177275
-destroy-db: DC_PROJECT := $(shell echo $(DC_PROJECT) | tr A-Z a-z)
+DOCKER_PROJECT = $(shell echo $(DC_PROJECT) | tr A-Z a-z | tr -cd '[:alnum:]')
 destroy-db:
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 	$(DOCKER_COMPOSE) rm -fv
-	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
+	docker volume ls -q -f "name=^$(DOCKER_PROJECT)_" | $(XARGS) docker volume rm
 	rm -rf cache
 	mkdir cache
 
@@ -336,11 +335,11 @@ OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
 .PHONY: $(ALL_DOWNLOADS)
 $(ALL_DOWNLOADS): init-dirs
 	@$(assert_area_is_given)
-ifneq ($(strip $(url)),)
+ifneq ($(url),)
 	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
 endif
 ifeq (,$(wildcard $(PBF_FILE)))
- ifeq ($(strip $(DIFF_MODE)),true)
+ ifeq ($(DIFF_MODE),true)
 	@echo "Downloading $(DOWNLOAD_AREA) with replication support into $(PBF_FILE) and $(IMPOSM_CONFIG_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
 	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
 				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
@@ -354,7 +353,7 @@ ifeq (,$(wildcard $(PBF_FILE)))
  endif
 	@echo ""
 else
- ifeq ($(strip $(DIFF_MODE)),true)
+ ifeq ($(DIFF_MODE),true)
   ifeq (,$(wildcard $(IMPOSM_CONFIG_FILE)))
 	$(error \
 		$(newline)   Data files $(PBF_FILE) already exists, but $(IMPOSM_CONFIG_FILE) does not. \
@@ -387,7 +386,7 @@ psql: start-db-nowait
 # Special cache handling for Docker Toolbox on Windows
 ifeq ($(MSYSTEM),MINGW64)
   DC_CONFIG_CACHE := -f docker-compose.yml -f docker-compose-$(MSYSTEM).yml
-  DC_OPTS_CACHE := $(strip $(filter-out --user=%,$(DC_OPTS)))
+  DC_OPTS_CACHE := $(filter-out --user=%,$(DC_OPTS))
 else
   DC_OPTS_CACHE := $(DC_OPTS)
 endif
@@ -561,12 +560,12 @@ list-docker-images:
 
 .PHONY: refresh-docker-images
 refresh-docker-images: init-dirs
-ifneq ($(strip $(NO_REFRESH)),)
+ifneq ($(NO_REFRESH),)
 	@echo "Skipping docker image refresh"
 else
 	@echo ""
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
-ifneq ($(strip $(USE_PRELOADED_IMAGE)),)
+ifneq ($(USE_PRELOADED_IMAGE),)
 	POSTGIS_IMAGE=openmaptiles/postgis-preloaded \
 		docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
 else
