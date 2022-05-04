@@ -400,6 +400,7 @@ SELECT osm_id,
        is_bridge,
        is_tunnel
 FROM ne_10m_lakes_gen_z4
+WHERE ST_GeometryType(geometry) != 'ST_LineString'
     );
 CREATE INDEX ON water_z4 USING gist(geometry);
 
@@ -423,6 +424,7 @@ SELECT osm_id,
        is_bridge,
        is_tunnel
 FROM ne_10m_lakes_gen_z5
+WHERE ST_GeometryType(geometry) != 'ST_LineString'
     );
 CREATE INDEX ON water_z5 USING gist(geometry);
 
