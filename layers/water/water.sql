@@ -194,7 +194,7 @@ CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z3 AS
 (
 SELECT COALESCE(osm.osm_id, ne_id) AS osm_id,
        ST_MakeValid(ST_Simplify(geometry, ZRes(5))) AS geometry,
-       'lakes'::text AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
@@ -254,7 +254,7 @@ CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z1 AS
 (
 SELECT COALESCE(osm.osm_id, ne_id) AS osm_id,
        ST_Simplify(geometry, ZRes(3)) AS geometry,
-       'lakes'::text AS class,
+       'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
        NULL::boolean AS is_tunnel
