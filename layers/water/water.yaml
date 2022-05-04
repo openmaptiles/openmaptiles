@@ -12,6 +12,10 @@ layer:
       This however can lead to less rendering options in clients since these boundaries show up. So you might not be
       able to use border styling for ocean water features.
   fields:
+    osm_id: 
+      description: |
+          From zoom 6 are taken OSM IDs. Up to zoom 5 there are used Natural Earth lakes, where are propagated the OSM IDs insted of Natural Earth IDs.
+          For smaller area then planet, NE lakes keep their Natural Earth IDs.
     class:
       description: |
           All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
@@ -39,7 +43,7 @@ layer:
         - tunnel
   buffer_size: 4
   datasource:
-    query: (SELECT geometry, class, intermittent, brunnel FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, class, intermittent, brunnel FROM layer_water(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_water.sql
   - ./water.sql
