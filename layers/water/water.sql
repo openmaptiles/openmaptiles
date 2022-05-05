@@ -57,7 +57,7 @@ WITH name_match AS
         osm.osm_id,
         (ST_Area(ST_Intersection(ne.geometry, osm.geometry))/ST_Area(ne.geometry)) AS area_ratio
 	FROM ne_10m_lakes ne, osm_water_polygon_gen_z6 osm
-	WHERE ST_Intersects(ne.geometry,osm.geometry)
+	WHERE ST_Intersects(ne.geometry, osm.geometry)
         AND ne.ne_id NOT IN 
             (   SELECT ne_id 
                 FROM name_match
@@ -555,11 +555,11 @@ CREATE INDEX ON water_z12 USING gist(geometry);
 
 -- etldoc: layer_water [shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="layer_water |<z0> z0|<z1>z1|<z2>z2|<z3>z3 |<z4> z4|<z5>z5|<z6>z6|<z7>z7| <z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12+" ] ;
-DROP FUNCTION IF EXISTS layer_water(geometry, integer);
+
 CREATE OR REPLACE FUNCTION layer_water(bbox geometry, zoom_level int)
     RETURNS TABLE
             (
-                osm_id           bigint,
+                osm_id       bigint,
                 geometry     geometry,
                 class        text,
                 brunnel      text,
