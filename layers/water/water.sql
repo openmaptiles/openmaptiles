@@ -20,37 +20,17 @@ $$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 -- Add ne_id for missing ne_50m_lakes.
-WITH zero_ne_id AS 
-(
-    SELECT wikidataid 
-    FROM ne_50m_lakes 
-    WHERE ne_id = 0
-)
 UPDATE ne_50m_lakes SET ne_id = ne_10m_lakes.ne_id
-FROM zero_ne_id
+FROM ne_50m_lakes lakes
 LEFT JOIN ne_10m_lakes USING (wikidataid)
-WHERE ne_50m_lakes.wikidataid = ne_10m_lakes.wikidataid;
+WHERE   ne_50m_lakes.wikidataid = ne_10m_lakes.wikidataid
+    AND ne_50m_lakes.ne_id = 0;
 
--- Update ne_110_lakes ne_id where two lakes have identical attributes.
-WITH filter_1159113251 AS 
-(
-    SELECT ne_id 
-    FROM ne_110m_lakes 
-    WHERE ne_id = 1159113251
-)
+-- Update ne_110_lakes ne_id where two lakes (Lake Onega) have identical attributes.
+-- New ne_id is taken from ne_50m_lakes
 UPDATE ne_110m_lakes SET ne_id = 1159126421
-FROM filter_1159113251
-WHERE ST_Equals(geometry, ST_GeomFromText('POLYGON((-12483229.3144705 5033360.527372767,
-                                                    -12486922.479901155 4990456.714552536,
-                                                    -12543349.675710004 5031607.5852004215,
-                                                    -12546318.014280442 5037085.149542927,
-                                                    -12565537.431264574 5105440.89686128,
-                                                    -12533412.069352603 5077299.122474826,
-                                                    -12512904.071283631 5062328.071020125,
-                                                    -12492163.093152434 5075760.691117508,
-                                                    -12488271.463224344 5062806.938351084,
-                                                    -12483229.3144705 5033360.527372767))',3857)
-);
+WHERE   ne_id = 1159113251
+    AND ST_Area(geometry) < 10000000000;
 
 -- Get matching osm id for natural earth id.
 DROP MATERIALIZED VIEW IF EXISTS match_osm_ne_id CASCADE;
