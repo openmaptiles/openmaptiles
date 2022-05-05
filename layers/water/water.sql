@@ -173,7 +173,7 @@ DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z3 CASCADE;
 CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z3 AS
 (
 SELECT COALESCE(osm.osm_id, ne_id) AS osm_id,
-       ST_MakeValid(ST_Simplify(geometry, ZRes(5))) AS geometry,
+       (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(5))))).geom AS geometry,
        'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
@@ -188,7 +188,7 @@ DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z2 CASCADE;
 CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z2 AS
 (
 SELECT osm_id,
-       ST_MakeValid(ST_Simplify(geometry, ZRes(4))) AS geometry,
+       (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(4))))).geom AS geometry,
        class,
        is_intermittent,
        is_bridge,
@@ -233,7 +233,7 @@ DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z1 CASCADE;
 CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z1 AS
 (
 SELECT COALESCE(osm.osm_id, ne_id) AS osm_id,
-       ST_Simplify(geometry, ZRes(3)) AS geometry,
+       (ST_Dump(ST_Simplify(geometry, ZRes(3)))).geom AS geometry,
        'lake'::text AS class,
        NULL::boolean AS is_intermittent,
        NULL::boolean AS is_bridge,
@@ -248,7 +248,7 @@ DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z0 CASCADE;
 CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z0 AS
 (
 SELECT osm_id,
-       ST_Simplify(geometry, ZRes(2)) AS geometry,
+       (ST_Dump(ST_Simplify(geometry, ZRes(2)))).geom AS geometry,
        class,
        is_intermittent,
        is_bridge,
