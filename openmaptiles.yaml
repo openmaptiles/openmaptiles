@@ -17,7 +17,7 @@ tileset:
     - layers/poi/poi.yaml
     - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
-  version: 3.13.0
+  version: 3.13.1
   id: openmaptiles
   description: "A tileset showcasing all layers in OpenMapTiles. https://openmaptiles.org"
   attribution: '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
