@@ -1,9 +1,10 @@
 DO
 $$
     BEGIN
-        IF NOT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'city_place') THEN
+        PERFORM 'city_place'::regtype;
+    EXCEPTION
+        WHEN undefined_object THEN
             CREATE TYPE city_place AS enum ('city', 'town', 'village', 'hamlet', 'suburb', 'quarter', 'neighbourhood', 'isolated_dwelling');
-        END IF;
     END
 $$;
 
