@@ -3,11 +3,17 @@
   <!--
       Test 600: POIs
         Change atm's network
+        Remove Parcel locker name and leave brand
   -->
   <modify>
     <node id="600003" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.4" lon="-80.4">
       <tag k="amenity" v="atm"/>
       <tag k="network" v="New name"/>
+    </node>
+    <node id="600004" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.4" lon="-80.4">
+      <tag k="amenity" v="parcel_locker"/>
+      <tag k="brand" v="Different operator"/>
+      <tag k="ref" v="PL001"/>
     </node>
   </modify>
 </osmChange>
