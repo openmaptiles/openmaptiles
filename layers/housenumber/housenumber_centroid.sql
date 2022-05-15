@@ -22,6 +22,16 @@ $$
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
         AND ST_GeometryType(geometry) <> 'ST_Point'
         AND ST_IsValid(geometry);
+
+    -- we don't need exact name just to know if it's present
+    UPDATE osm_housenumber_point
+    SET has_name = 
+            CASE
+                WHEN has_name = '' THEN '0'
+                ELSE '1'
+            END
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids));
+
 $$ LANGUAGE SQL;
 
 SELECT convert_housenumber_point(true);
