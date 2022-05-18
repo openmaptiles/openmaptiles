@@ -61,7 +61,7 @@ layer:
         ice_cream:
           subclass: ['chocolate', 'confectionery']
         post:
-          subclass: ['post_box', 'post_office']
+          subclass: ['post_box', 'post_office', 'parcel_locker']
         cafe:
           subclass: ['cafe']
         school:
