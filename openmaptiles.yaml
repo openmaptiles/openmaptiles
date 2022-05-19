@@ -29,9 +29,13 @@ tileset:
   languages:
     - am # Amharic
     - ar # Arabic
+    - as # Assamese
     - az # Azerbaijani, Latin
+    - bal # Balochi
     - be # Belorussian
     - bg # Bulgarian
+    - bn # Bengali (Bangla)
+    - bo # Lhasa Tibetan
     - br # Breton, Latin
     - bs # Bosnian, Latin
     - ca # Catalan, Latin
@@ -40,17 +44,20 @@ tileset:
     - cy # Welsh, Latin
     - da # Danish, Latin
     - de # German, Latin
+    - dz # Dzongkha
     - el # Greek
     - en # English, Latin
     - eo # Esperanto, Latin
     - es # Spanish, Latin
     - et # Estonian, Latin
     - eu # Basque, Latin
+    - fa # Persian (Farsi/Dari)
     - fi # Finnish, Latin
     - fr # French, Latin
     - fy # Western Frisian, Latin
     - ga # Irish, Latin
     - gd # Scottish Gaelic, Latin
+    - gu # Gujarati
     - he # Hebrew
     - hi # Hindi
     - hr # Croatian, Latin
@@ -74,17 +81,24 @@ tileset:
     - lb # Luxembourgish, Latin
     - lt # Lithuanian, Latin
     - lv # Latvian, Latin
+    - mai # Maithili
     - mk # Macedonian
     - mt # Maltese, Latin
     - ml # Malayalam
+    - ne # Nepali
     - nl # Dutch, Latin
     - "no" # Norwegian, Latin
     - oc # Occitan (post 1500), Latin
+    - or # Odia
+    - pa # Punjabi, Gurmukhi
     - pl # Polish, Latin
+    - pnb # Punjabi, Shahmukhi
+    - ps # Pashto
     - pt # Portuguese, Latin
     - rm # Romansh, Latin
     - ro # Romania, Latin
     - ru # Russian
+    - sd # Sindhi
     - sk # Slovak, Latin
     - sl # Slovene, Latin
     - sq # Albanian, Latin
@@ -94,8 +108,11 @@ tileset:
     - ta # Tamil
     - te # Telugu
     - th # Thai
+    - tl # Tagalog
     - tr # Turkish, Latin
+    - ug # Uyghur
     - uk # Ukrainian
+    - ur # Urdu
     - zh # Chinese
   defaults:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
