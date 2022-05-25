@@ -18,8 +18,14 @@ services:
     networks:
       - postgres
     ports:
-      - "5432"
-    env_file: .env-postgres
+      - "${PGPORT:-5432}:${PGPORT:-5432}"
+    env_file: .env
+    environment:
+      # postgress container uses old variable names
+      POSTGRES_DB: ${PGDATABASE:-openmaptiles}
+      POSTGRES_USER: ${PGUSER:-openmaptiles}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-openmaptiles}
+      PGPORT: ${PGPORT:-5432}
 
   import-data:
     image: "openmaptiles/import-data:${TOOLS_VERSION}"
@@ -44,6 +50,11 @@ services:
       IMPOSM_CONFIG_FILE: ${IMPOSM_CONFIG_FILE}
       # Control import-sql processes
       MAX_PARALLEL_PSQL: ${MAX_PARALLEL_PSQL}
+      PGDATABASE: ${PGDATABASE:-openmaptiles}
+      PGUSER: ${PGUSER:-openmaptiles}
+      PGPASSWORD: ${PGPASSWORD:-openmaptiles}
+      PGPORT: ${PGPORT:-5432}
+      MBTILES_FILE: ${MBTILES_FILE}
     networks:
       - postgres
     volumes:
@@ -71,6 +82,10 @@ services:
       MBTILES_NAME: ${MBTILES_FILE}
       # Control tilelive-copy threads
       COPY_CONCURRENCY: ${COPY_CONCURRENCY}
+      PGDATABASE: ${PGDATABASE:-openmaptiles}
+      PGUSER: ${PGUSER:-openmaptiles}
+      PGPASSWORD: ${PGPASSWORD:-openmaptiles}
+      PGPORT: ${PGPORT:-5432}
 
   generate-vectortiles:
     image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
@@ -88,6 +103,10 @@ services:
       # Control tilelive-copy threads
       COPY_CONCURRENCY: ${COPY_CONCURRENCY}
       #
+      PGDATABASE: ${PGDATABASE:-openmaptiles}
+      PGUSER: ${PGUSER:-openmaptiles}
+      PGPASSWORD: ${PGPASSWORD:-openmaptiles}
+      PGPORT: ${PGPORT:-5432}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
@@ -112,6 +131,8 @@ services:
     command:
       - --port
       - "${TPORT:-8080}"
+      - --mbtiles
+      - "${MBTILES_FILE}"
     ports:
       - "${TPORT:-8080}:${TPORT:-8080}"
     volumes:

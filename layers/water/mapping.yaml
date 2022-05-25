@@ -75,6 +75,9 @@ tables:
     - name: waterway
       key: waterway
       type: string
+    - name: leisure
+      key: leisure
+      type: string
     - name: water
       key: water
       type: string
