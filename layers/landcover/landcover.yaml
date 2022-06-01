@@ -22,7 +22,7 @@ layer:
         rock:
           subclass: ['bare_rock', 'scree']
         grass:
-          subclass: ['fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
+          subclass: ['fell', 'grassland', 'heath', 'scrub', 'shrubbery', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
         wetland:
           subclass: ['wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove']
         sand:
@@ -42,6 +42,7 @@ layer:
       - bog
       - dune
       - scrub
+      - shrubbery
       - farm
       - farmland
       - fell
