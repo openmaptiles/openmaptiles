@@ -160,6 +160,30 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_name_linestring z12 route_rank expected 1, got ' || cnt);
   END IF;
 
+  -- Test 600
+
+  -- verify that atms are imported with correct name which can come from tags like operator or network
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'atm'
+      AND tags->'name' = 'OpenMapTiles ATM';
+  IF cnt <> 3 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point atm with name "OpenMapTiles ATM" expected 3, got ' || cnt);
+  END IF;
+
+  -- verify that parcel lockers are imported with correct name which can come from tags like brand or operator and can contain ref
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'parcel_locker'
+      AND tags->'name' like 'OpenMapTiles Parcel Locker%';
+  IF cnt <> 3 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point parcel_locker with name like "OpenMapTiles Parcel Locker%" expected 3, got ' || cnt);
+  END IF;
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'parcel_locker'
+      AND tags->'name' like 'OpenMapTiles Parcel Locker PL00%';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point parcel_locker with name like "OpenMapTiles Parcel Locker PL00%" expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$

@@ -75,7 +75,8 @@ BEGIN
     WHERE rm.member IN
       (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
     ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index,
-                                           rank = EXCLUDED.rank;
+                                           rank = EXCLUDED.rank,
+                                           network_type = EXCLUDED.network_type;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -98,7 +99,7 @@ DELETE FROM osm_route_member WHERE id IN
 CREATE UNIQUE INDEX IF NOT EXISTS osm_route_member_network_ref_idx ON osm_route_member ("member", "network", "ref");
 
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
+CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
 
 ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int,
                              ADD COLUMN IF NOT EXISTS rank int;

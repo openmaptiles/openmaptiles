@@ -162,7 +162,7 @@ make import-data            # Import external data from OpenStreetMapData, Natur
 make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
 make import-osm             # import data into postgres
 make import-wikidata        # import Wikidata
-make import-sql             # create / import sql funtions 
+make import-sql             # create / import sql functions 
 make generate-bbox-file     # compute data bbox -- not needed for the whole planet
 make generate-tiles-pg      # generate tiles
 ```

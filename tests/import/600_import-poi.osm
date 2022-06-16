@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="600001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.2" lon="-80.2">
+    <tag k="amenity" v="atm"/>
+    <tag k="name" v="OpenMapTiles ATM"/>
+    <tag k="operator" v="Different operator"/>
+  </node>
+  <node id="600002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.3" lon="-80.3">
+    <tag k="amenity" v="atm"/>
+    <tag k="operator" v="OpenMapTiles ATM"/>
+  </node>
+  <node id="600003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.4" lon="-80.4">
+    <tag k="amenity" v="atm"/>
+    <tag k="network" v="OpenMapTiles ATM"/>
+  </node>
+  <node id="600004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.5" lon="-80.5">
+    <tag k="amenity" v="parcel_locker"/>
+    <tag k="name" v="OpenMapTiles Parcel Locker"/>
+    <tag k="brand" v="Different operator"/>
+    <tag k="ref" v="PL001"/>
+  </node>
+  <node id="600005" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.6" lon="-80.6">
+    <tag k="amenity" v="parcel_locker"/>
+    <tag k="brand" v="OpenMapTiles Parcel Locker"/>
+    <tag k="ref" v="PL002"/>
+  </node>
+  <node id="600006" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.7" lon="-80.7">
+    <tag k="amenity" v="parcel_locker"/>
+    <tag k="operator" v="OpenMapTiles Parcel Locker"/>
+  </node>
+</osm>

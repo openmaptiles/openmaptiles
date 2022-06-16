@@ -9,6 +9,7 @@ def_poi_mapping_aerialway: &poi_mapping_aerialway
 # amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
+  - atm
   - bank
   - bar
   - bbq
@@ -43,6 +44,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - pharmacy
   - place_of_worship
   - police
+  - parcel_locker
   - post_box
   - post_office
   - prison
@@ -352,6 +354,9 @@ def_poi_fields: &poi_fields
   - name: uic_ref
     key: uic_ref
     type: string
+  - name: ref
+    key: ref
+    type: string
   - name: religion
     key: religion
     type: string
@@ -366,6 +371,15 @@ def_poi_fields: &poi_fields
     type: integer
   - name: sport
     key: sport
+    type: string
+  - name: operator
+    key: operator
+    type: string
+  - name: network
+    key: network
+    type: string
+  - name: brand
+    key: brand
     type: string
 
 def_poi_mapping: &poi_mapping
