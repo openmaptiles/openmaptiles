@@ -239,6 +239,14 @@ traffic_sign_backward_field: &traffic_sign_backward
   key: "traffic_sign:backward"
   name: traffic_sign_backward
   type: string
+width: &width
+  key: "width"
+  name: width
+  type: string
+width: &width_carriageway
+  key: "width:carriageway"
+  name: width_carriageway
+  type: string
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -300,6 +308,8 @@ tables:
     - *traffic_sign
     - *traffic_sign_forward
     - *traffic_sign_backward
+    - *width
+    - *width_carriageway
     - *foot
     - *horse
     - *mtb_scale

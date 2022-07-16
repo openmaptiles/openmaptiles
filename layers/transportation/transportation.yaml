@@ -195,6 +195,10 @@ layer:
     cycleway_right: "Right side cycleway"
     maxspeed_all: "Combination of all maxspeed tags, returns highest"
     traffic_sign_all: "Combination of all traffic_sign tags"
+    traffic_sign_is_mandatory: "way is mandatory for bicycle"
+    traffic_sign_is_optional: "way is optional for bicycle"
+    width: "Width of road"
+    width_carriageway: "Width of road (carriageway)"
     foot:
       description: |
           Original value of the [`foot`](http://wiki.openstreetmap.org/wiki/Key:foot) tag (highways only).
@@ -213,7 +217,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, osm_id, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, segregated, bicycle, is_bicycle_road, bicycle_all, bicycle_forward, bicycle_backward, cycleway_all, cycleway_left, cycleway_right, maxspeed_all, traffic_sign_all, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, osm_id, class, subclass, network, oneway, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, segregated, bicycle, is_bicycle_road, bicycle_all, bicycle_forward, bicycle_backward, cycleway_all, cycleway_left, cycleway_right, maxspeed_all, traffic_sign_all, traffic_sign_is_mandatory, traffic_sign_is_optional, width, width_carriageway, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
