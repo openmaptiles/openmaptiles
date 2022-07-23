@@ -31,13 +31,25 @@ make download area=your-area-of-choice
 
 ### Keep Database Updated
 
-You can use the new imposm3 feature to keep the database updated (thanks to the [work by @stirringhalo](https://github.com/openmaptiles/openmaptiles/pull/131)). This will automatically download
-the OSM change feed and import it into the database.
-After each run you should also have a list of tiles that have updated.
+You can use imposm3 to keep the database updated (thanks to the [work by @stirringhalo](https://github.com/openmaptiles/openmaptiles/pull/131)).
+This will repeatedly download the OSM change feed and import it into the database.
+In order to be able to update the database, the initial download and import of the OSM data must be done when `DIFF_MODE=true` is set in the `.env` file.  
 
+To start the update process please use
 ```
-make update-osm
+make start-update-osm
 ```
+
+After each update activation you should also have a list of tiles that have updated.  See [Generate Changed Tiles](#generate-changed-tiles) below.
+
+To stop the update process please use
+```
+make stop-update-osm
+```
+
+#### Note
+When the update process is actively updating the DB it is impossible to successfully generate tiles,
+as there will be conflicts and deadlocks related to the DB access.
 
 #### Troubleshooting
 
@@ -63,30 +75,27 @@ The process will keep running forever and eventually print something like this -
 
 ### Import Change File
 
-Given you have a file `changes.osc.gz` in your import folder. Once you ran the import command you should also have a list of tiles that have updated.
+You may perform a one-time import of changes from a file `changes.osc.gz` in your import folder using
 
 ```
 make import-diff
 ```
 
+Once you ran the import command you should also have a list of tiles that have updated.
+See [Generate Changed Tiles](#generate-changed-tiles) below.
+
 ## Generate Changed Tiles
 
-After the import has finished **imposm3** will store lists of tiles in text format in subfolders of the `diffdir`,
+After each import has finished **imposm3** will store lists of tiles in text format in subfolders of the `diffdir`,
 named for the date(s) on which the import took place (`YYYYMMDD`).
-Copy and merge the files to `tiles.txt` in the import folder (`data`), either manually or with the following command, which also removes duplicate tiles so they are only generated once:  
-
+The following command merges the files to `tiles.txt` in the import folder (`data`) and adds the applicable tiles for all zoom levels:
 ```
-cd data && sort ./*/*.tiles | uniq > tiles.txt
-```
-
-After generating the tiles.txt you might and to delete the `*.tiles` files to not include them in the next run:
-
-```
-cd data && rm ./*/*.tiles
+(. .env ; find ./data -name "*.tiles" -exec cat {} \; -exec rm {} \; | \
+  docker-compose run openmaptiles-tools tile_multiplier ${MIN_ZOOM} ${MAX_ZOOM} >> data/tiles.txt)
 ```
 
 Finally run the command to read the tilelist and write the updated vector tiles in the existing MBtiles file.
-
 ```
-docker-compose run generate-changed-vectortiles
+docker-compose run -e LIST_FILE=data/tiles.txt openmaptiles-tools generate-tiles
+rm -f data/tiles.txt
 ```
