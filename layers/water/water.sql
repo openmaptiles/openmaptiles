@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION water_class(waterway text, water text, leisure text) RETURNS text AS
 $$
 SELECT CASE
-           WHEN waterway='riverbank' THEN 'river'
            %%FIELD_MAPPING: class %%
            ELSE 'lake'
            END;
