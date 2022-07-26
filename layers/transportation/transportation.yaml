@@ -51,6 +51,8 @@ layer:
           highway: raceway
         busway:
           highway: busway
+        bus_guideway:
+          highway: bus_guideway
         motorway_construction:
           __AND__:
             highway: construction
