@@ -10,13 +10,14 @@ DROP TRIGGER IF EXISTS trigger_refresh_name ON transportation_name.updates_name;
 DO
 $$
     BEGIN
-        IF NOT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'route_network_type') THEN
+        PERFORM 'route_network_type'::regtype;
+    EXCEPTION
+        WHEN undefined_object THEN
             CREATE TYPE route_network_type AS enum (
                 'us-interstate', 'us-highway', 'us-state',
                 'ca-transcanada',
                 'gb-motorway', 'gb-trunk'
                 );
-        END IF;
     END
 $$;
 
