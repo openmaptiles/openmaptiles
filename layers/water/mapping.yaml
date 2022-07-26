@@ -101,7 +101,6 @@ tables:
       - bay
       - spring
       waterway:
-      - riverbank
       - dock
       water:
       - river
