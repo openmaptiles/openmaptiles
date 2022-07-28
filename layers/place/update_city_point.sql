@@ -23,10 +23,10 @@ BEGIN
           ne.name ILIKE osm.name_en OR
           ne.namealt ILIKE osm.name OR
           ne.namealt ILIKE osm.name_en OR
+          ne.name_en ILIKE osm.name OR
+          ne.name_en ILIKE osm.name_en OR
           ne.meganame ILIKE osm.name OR
           ne.meganame ILIKE osm.name_en OR
-          ne.gn_ascii ILIKE osm.name OR
-          ne.gn_ascii ILIKE osm.name_en OR
           ne.nameascii ILIKE osm.name OR
           ne.nameascii ILIKE osm.name_en OR
           ne.name = unaccent(osm.name)
