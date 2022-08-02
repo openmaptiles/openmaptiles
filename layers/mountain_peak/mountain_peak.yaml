@@ -1,5 +1,8 @@
 layer:
   id: "mountain_peak"
+  requires:
+    tables:
+      - ne_10m_admin_0_countries
   description: |
       [Natural peaks](http://wiki.openstreetmap.org/wiki/Tag:natural%3Dpeak)
   buffer_size: 64
