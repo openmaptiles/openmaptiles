@@ -27,6 +27,18 @@ BEGIN
       AND name = ''
       AND COALESCE(tags -> 'operator', tags -> 'network') IS NOT NULL;
 
+    -- Parcel locker without name 
+    -- use either brand or operator and add ref if present
+    -- (using name for parcel lockers is discouraged, see osm wiki)
+    UPDATE osm_poi_point
+    SET (name, tags) = (
+        CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')),
+        tags || hstore('name', CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')))
+    )
+    WHERE subclass = 'parcel_locker'
+      AND name = ''
+      AND COALESCE(tags -> 'brand', tags -> 'operator') IS NOT NULL;
+
     UPDATE osm_poi_point
     SET tags = update_tags(tags, geometry)
     WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL

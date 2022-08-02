@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION water_class(waterway text, water text, leisure text) RETURNS text AS
 $$
 SELECT CASE
-           WHEN waterway='riverbank' THEN 'river'
            %%FIELD_MAPPING: class %%
            ELSE 'lake'
            END;
@@ -19,18 +18,6 @@ $$ LANGUAGE SQL IMMUTABLE
                 STRICT
                 PARALLEL SAFE;
 
--- Add ne_id for missing ne_50m_lakes.
-UPDATE ne_50m_lakes SET ne_id = ne_10m_lakes.ne_id
-FROM ne_50m_lakes lakes
-LEFT JOIN ne_10m_lakes USING (wikidataid)
-WHERE   ne_50m_lakes.wikidataid = ne_10m_lakes.wikidataid
-    AND ne_50m_lakes.ne_id = 0;
-
--- Update ne_110_lakes ne_id where two lakes (Lake Onega) have identical attributes.
--- New ne_id is taken from ne_50m_lakes
-UPDATE ne_110m_lakes SET ne_id = 1159126421
-WHERE   ne_id = 1159113251
-    AND ST_Area(geometry) < 10000000000;
 
 -- Get matching osm id for natural earth id.
 DROP MATERIALIZED VIEW IF EXISTS match_osm_ne_id CASCADE;

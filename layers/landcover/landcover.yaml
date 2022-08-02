@@ -2,7 +2,11 @@ layer:
   id: "landcover"
   requires:
     tables:
+      - ne_10m_antarctic_ice_shelves_polys
+      - ne_10m_glaciated_areas
       - ne_50m_antarctic_ice_shelves_polys
+      - ne_50m_glaciated_areas
+      - ne_110m_glaciated_areas
   description: |
       Landcover is used to describe the physical material at the surface of the earth. At lower zoom levels this is
       from Natural Earth data for glaciers and ice shelves and at higher zoom levels the landcover is [implied by OSM tags](http://wiki.openstreetmap.org/wiki/Landcover). The most common use case for this layer
@@ -22,7 +26,7 @@ layer:
         rock:
           subclass: ['bare_rock', 'scree']
         grass:
-          subclass: ['fell', 'grassland', 'heath', 'scrub', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
+          subclass: ['fell', 'grassland', 'heath', 'scrub', 'shrubbery', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
         wetland:
           subclass: ['wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove']
         sand:
@@ -42,6 +46,7 @@ layer:
       - bog
       - dune
       - scrub
+      - shrubbery
       - farm
       - farmland
       - fell

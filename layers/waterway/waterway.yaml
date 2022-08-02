@@ -4,6 +4,9 @@ layer:
   requires:
     layers:
       - water
+    tables:
+      - ne_110m_rivers_lake_centerlines
+      - ne_50m_rivers_lake_centerlines
   description: |
       OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels (z9 and more)
       and Natural Earth rivers and lake centerlines for low zoom levels (z3 - z8).
