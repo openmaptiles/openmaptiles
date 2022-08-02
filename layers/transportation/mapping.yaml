@@ -84,6 +84,10 @@ oneway_field: &oneway
   key: oneway
   name: is_oneway
   type: direction
+junction_field: &junction
+  key: junction
+  name: junction
+  type: string
 motorroad_field: &motorroad
   key: motorroad
   name: is_motorroad
@@ -281,6 +285,7 @@ tables:
     - *ramp
     - *ford
     - *oneway
+    - *junction
     - *motorroad
     - *area
     - *service
