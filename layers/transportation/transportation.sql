@@ -46,7 +46,8 @@ CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
                 foot       text,
                 horse      text,
                 mtb_scale  text,
-                surface    text
+                surface    text,
+                surface_osm text
             )
 AS
 $$
@@ -102,7 +103,8 @@ SELECT osm_id,
        NULLIF(foot, '') AS foot,
        NULLIF(horse, '') AS horse,
        NULLIF(mtb_scale, '') AS mtb_scale,
-       NULLIF(surface, '') AS surface
+       NULLIF(surface, '') AS surface,
+       NULLIF(surface_osm, '') AS surface_osm
 FROM (
          -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
          SELECT osm_id,
@@ -146,6 +148,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z4
          WHERE zoom_level = 4
@@ -193,6 +196,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z5
          WHERE zoom_level = 5
@@ -240,6 +244,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z6
          WHERE zoom_level = 6
@@ -287,6 +292,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z7
          WHERE zoom_level = 7
@@ -321,8 +327,8 @@ FROM (
                 bicycle,
                 NULL::boolean AS is_bicycle_road,
                 bicycle_all(bicycle, bicycle_forward, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS bicycle_all,
-                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 bicycle_forward(bicycle, bicycle_forward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS bicycle_forward,
+                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS cycleway_all,
                 cycleway_left(cycleway, cycleway_both, cycleway_left, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS cycleway_left,
                 cycleway_right(cycleway, cycleway_both, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS cycleway_right,
@@ -334,6 +340,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z8
          WHERE zoom_level = 8
@@ -368,8 +375,8 @@ FROM (
                 bicycle,
                 is_bicycle_road,
                 bicycle_all(bicycle, bicycle_forward, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS bicycle_all,
-                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 bicycle_forward(bicycle, bicycle_forward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS bicycle_forward,
+                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS cycleway_all,
                 cycleway_left(cycleway, cycleway_both, cycleway_left, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS cycleway_left,
                 cycleway_right(cycleway, cycleway_both, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS cycleway_right,
@@ -380,7 +387,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                NULL AS surface,
+                surface_value(surface) AS surface,
+                surface AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z9
          WHERE zoom_level = 9
@@ -415,8 +423,8 @@ FROM (
                 bicycle,
                 is_bicycle_road,
                 bicycle_all(bicycle, bicycle_forward, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS bicycle_all,
-                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 bicycle_forward(bicycle, bicycle_forward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS bicycle_forward,
+                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS cycleway_all,
                 cycleway_left(cycleway, cycleway_both, cycleway_left, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS cycleway_left,
                 cycleway_right(cycleway, cycleway_both, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS cycleway_right,
@@ -427,7 +435,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                NULL AS surface,
+                surface_value(surface) AS surface,
+                surface AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z10
          WHERE zoom_level = 10
@@ -462,8 +471,8 @@ FROM (
                 bicycle,
                 is_bicycle_road,
                 bicycle_all(bicycle, bicycle_forward, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS bicycle_all,
-                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 bicycle_forward(bicycle, bicycle_forward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS bicycle_forward,
+                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS cycleway_all,
                 cycleway_left(cycleway, cycleway_both, cycleway_left, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS cycleway_left,
                 cycleway_right(cycleway, cycleway_both, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS cycleway_right,
@@ -474,7 +483,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
-                NULL AS surface,
+                surface_value(surface) AS surface,
+                surface AS surface_osm,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z11
          WHERE zoom_level = 11
@@ -514,8 +524,8 @@ FROM (
                 bicycle,
                 is_bicycle_road,
                 bicycle_all(bicycle, bicycle_forward, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS bicycle_all,
-                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 bicycle_forward(bicycle, bicycle_forward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS bicycle_forward,
+                bicycle_backward(bicycle, bicycle_backward, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS bicycle_backward,
                 cycleway_all(cycleway, cycleway_both, cycleway_left, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle, sidewalk_right_bicycle) AS cycleway_all,
                 cycleway_left(cycleway, cycleway_both, cycleway_left, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_left_bicycle) AS cycleway_left,
                 cycleway_right(cycleway, cycleway_both, cycleway_right, sidewalk_bicycle, sidewalk_both_bicycle, sidewalk_right_bicycle) AS cycleway_right,
@@ -527,6 +537,7 @@ FROM (
                 horse,
                 mtb_scale,
                 surface_value(surface) AS "surface",
+                surface AS surface_osm,
                 hl.z_order
          FROM osm_highway_linestring hl
          LEFT OUTER JOIN osm_transportation_name_network n ON hl.osm_id = n.osm_id
@@ -593,6 +604,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring_gen_z8
          WHERE zoom_level = 8
@@ -643,6 +655,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring_gen_z9
          WHERE zoom_level = 9
@@ -693,6 +706,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring_gen_z10
          WHERE zoom_level = 10
@@ -742,6 +756,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring_gen_z11
          WHERE zoom_level = 11
@@ -791,6 +806,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring_gen_z12
          WHERE zoom_level = 12
@@ -841,6 +857,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_railway_linestring
          WHERE zoom_level = 13
@@ -891,6 +908,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_aerialway_linestring_gen_z12
          WHERE zoom_level = 12
@@ -939,6 +957,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_aerialway_linestring
          WHERE zoom_level >= 13
@@ -986,6 +1005,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_shipway_linestring_gen_z11
          WHERE zoom_level = 11
@@ -1033,6 +1053,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_shipway_linestring_gen_z12
          WHERE zoom_level = 12
@@ -1081,6 +1102,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_shipway_linestring
          WHERE zoom_level >= 13
@@ -1136,6 +1158,7 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
+                NULL AS surface_osm,
                 z_order
          FROM osm_highway_polygon
               -- We do not want underground pedestrian areas for now

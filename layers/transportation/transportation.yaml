@@ -215,10 +215,11 @@ layer:
       values:
       - paved
       - unpaved
+    surface_osm: "OSM value of surface Tag"
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, osm_id, class, subclass, network, oneway, junction, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, segregated, bicycle, is_bicycle_road, bicycle_all, bicycle_forward, bicycle_backward, cycleway_all, cycleway_left, cycleway_right, maxspeed_all, traffic_sign_all, traffic_sign_is_mandatory, traffic_sign_is_optional, width, width_carriageway, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, osm_id, class, subclass, network, oneway, junction, motorroad, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, segregated, bicycle, is_bicycle_road, bicycle_all, bicycle_forward, bicycle_backward, cycleway_all, cycleway_left, cycleway_right, maxspeed_all, traffic_sign_all, traffic_sign_is_mandatory, traffic_sign_is_optional, width, width_carriageway, foot, horse, mtb_scale, surface, surface_osm FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./class.sql
