@@ -22,7 +22,7 @@ CREATE TABLE simplify_vw_z13 AS
              ST_SimplifyVW(geometry, power(zres(13),2)),
              0.001)) AS geometry
     FROM osm_landcover_polygon
-    WHERE ST_Area(geometry) > power(zres(10),2)
+    WHERE ST_Area(geometry) > power(zres(12),2)
 );
 CREATE INDEX ON simplify_vw_z13 USING GIST (geometry);
 
@@ -58,7 +58,7 @@ CREATE TABLE simplify_vw_z12 AS
              ST_SimplifyVW(geometry, power(zres(12),2)),
              0.001)) AS geometry
     FROM simplify_vw_z13
-    WHERE ST_Area(geometry) > power(zres(9),2)
+    WHERE ST_Area(geometry) > power(zres(11),2)
 );
 CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 
@@ -94,7 +94,7 @@ CREATE TABLE simplify_vw_z11 AS
              ST_SimplifyVW(geometry, power(zres(11),2)),
              0.001)) AS geometry
     FROM simplify_vw_z12
-    WHERE ST_Area(geometry) > power(zres(8),2)
+    WHERE ST_Area(geometry) > power(zres(10),2)
 );
 CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 
@@ -130,7 +130,7 @@ CREATE TABLE simplify_vw_z10 AS
              ST_SimplifyVW(geometry, power(zres(10),2)),
              0.001)) AS geometry
     FROM simplify_vw_z11
-    WHERE ST_Area(geometry) > power(zres(8),2)
+    WHERE ST_Area(geometry) > power(zres(9),2)
 );
 CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 
@@ -166,7 +166,7 @@ CREATE TABLE simplify_vw_z9 AS
              ST_SimplifyVW(geometry, power(zres(9),2)),
              0.001)) AS geometry
     FROM simplify_vw_z10
-    WHERE ST_Area(geometry) > power(zres(7),2)
+    WHERE ST_Area(geometry) > power(zres(8),2)
 );
 CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 
@@ -214,7 +214,7 @@ CREATE TABLE simplify_vw_z8 AS
              ST_SimplifyVW(geometry, power(zres(8),2)),
              0.001)) AS geometry
     FROM simplify_vw_z9
-    WHERE ST_Area(geometry) > power(zres(6),2)
+    WHERE ST_Area(geometry) > power(zres(7),2)
     );
 CREATE INDEX ON simplify_vw_z8 USING GIST (geometry);
 
@@ -231,6 +231,7 @@ SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
                geometry
         FROM simplify_vw_z8
+        WHERE subclass IN ('wood', 'forest')
         ) union_geom
     GROUP BY subclass,
              cid
@@ -253,7 +254,7 @@ CREATE TABLE simplify_vw_z7 AS
              ST_SimplifyVW(geometry, power(zres(7),2)),
              0.001)) AS geometry
     FROM simplify_vw_z8
-    WHERE ST_Area(geometry) > power(zres(5),2)
+    WHERE ST_Area(geometry) > power(zres(6),2)
 );
 CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
 
