@@ -53,6 +53,8 @@ layer:
           highway: busway
         bus_guideway:
           highway: bus_guideway
+        ferry:
+          highway: shipway
         motorway_construction:
           __AND__:
             highway: construction
