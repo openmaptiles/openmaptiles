@@ -49,6 +49,7 @@ layer:
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./class.sql
+  - ./prep_landuse.sql
   - ./landuse.sql
 datasources:
   - type: imposm3
