@@ -48,7 +48,7 @@ FROM (
                 transportation_name_tags(NULL::geometry, tags, name, name_en, name_de) AS tags,
                 NULL AS ref,
                 'shipway' AS highway,
-                NULL AS subclass,
+                shipway AS subclass,
                 NULL AS brunnel,
                 NULL AS sac_scale,
                 NULL::int AS level,
@@ -65,7 +65,7 @@ FROM (
                 NULL::int AS route_rank
          FROM osm_shipway_linestring
          WHERE name <> ''
-         GROUP BY name, name_en, name_de, tags, "level", layer
+         GROUP BY name, name_en, name_de, tags, subclass, "level", layer
          UNION ALL
 
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
