@@ -2,6 +2,12 @@ layer:
   id: "water"
   requires:
     tables:
+      - ne_10m_lakes
+      - ne_10m_ocean
+      - ne_110m_lakes
+      - ne_110m_ocean
+      - ne_50m_lakes
+      - ne_50m_ocean
       - osm_ocean_polygon
   description: |
       Water polygons representing oceans and lakes. Covered watered areas are excluded (`covered=yes`).

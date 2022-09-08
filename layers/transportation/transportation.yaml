@@ -53,6 +53,8 @@ layer:
           highway: busway
         bus_guideway:
           highway: bus_guideway
+        ferry:
+          highway: shipway
         motorway_construction:
           __AND__:
             highway: construction
@@ -119,6 +121,7 @@ layer:
       - bridleway
       - corridor
       - platform
+      - ferry (DEPRECATED - use class)
     network:
       description: |
           The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
