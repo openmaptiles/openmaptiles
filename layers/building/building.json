@@ -1,0 +1,44 @@
+{
+  "layers": [
+    {
+      "id": "building",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "minzoom": 12,
+      "maxzoom": 24,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": {
+          "stops": [
+            [
+              13,
+              "rgba(222, 213, 207, 1)"
+            ],
+            [
+              16,
+              "#d9d0c9"
+            ]
+          ]
+        },
+        "fill-outline-color": {
+          "base": 1,
+          "stops": [
+            [
+              13,
+              "#9A918A"
+            ],
+            [
+              16,
+              "rgba(166, 157, 150, 1)"
+            ]
+          ]
+        }
+      },
+      "metadata": {},
+      "order": 19
+    }
+  ]
+}
