@@ -1,7 +1,11 @@
 ## OSM OpenMapTiles style
 
-OSM OpenMapTiles style is inspired by [OSM Carto](https://github.com/gravitystorm/openstreetmap-carto). 
+_OSM OpenMapTiles_ is the official style of OpenMapTiles.
 Its purpose is to display all features in vector tiles.
+
+OSM OpenMapTiles style is inspired by 
+[OSM Carto](https://github.com/gravitystorm/openstreetmap-carto)
+and adopts its [CC0 License](https://github.com/gravitystorm/openstreetmap-carto/blob/master/LICENSE.txt).
 
 ### Fonts
 
