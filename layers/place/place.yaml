@@ -20,7 +20,7 @@ layer:
           The **capital** field marks the
           [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
           of the boundary the place is a capital of.
-      values: [2, 4]
+      values: [2, 3, 4, 5, 6]
     class:
       description: |
           Original value of the
