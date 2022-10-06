@@ -1,0 +1,40 @@
+{
+  "layers": [
+    {
+      "id": "housenumber",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "housenumber",
+      "minzoom": 17,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              17,
+              9
+            ],
+            [
+              22,
+              11
+            ]
+          ]
+        },
+        "text-field": "{housenumber}",
+        "text-padding": 3,
+        "text-line-height": -0.15,
+        "symbol-avoid-edges": false,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false
+      },
+      "paint": {
+        "text-color": "rgba(102, 102, 102, 1)",
+        "text-halo-color": "rgba(255,255,255,0.8)",
+        "text-halo-width": 1
+      },
+      "order": 145
+    }
+  ]
+}
