@@ -15,7 +15,7 @@ BEGIN
     WHERE funicular = 'yes'
       AND subclass = 'station';
 
-    -- ATM without name 
+    -- ATM without name
     -- use either operator or network
     -- (using name for ATM is discouraged, see osm wiki)
     UPDATE osm_poi_point
@@ -27,7 +27,7 @@ BEGIN
       AND name = ''
       AND COALESCE(tags -> 'operator', tags -> 'network') IS NOT NULL;
 
-    -- Parcel locker without name 
+    -- Parcel locker without name
     -- use either brand or operator and add ref if present
     -- (using name for parcel lockers is discouraged, see osm wiki)
     UPDATE osm_poi_point
