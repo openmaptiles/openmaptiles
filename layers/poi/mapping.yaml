@@ -13,6 +13,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - bank
   - bar
   - bbq
+  - bench
   - bicycle_parking
   - bicycle_rental
   - biergarten
