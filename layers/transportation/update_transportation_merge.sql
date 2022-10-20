@@ -165,8 +165,8 @@ BEGIN
         layer
     FROM osm_transportation_merge_linestring_gen_z11
     WHERE (update_id IS NULL OR id = update_id)
-        AND highway NOT IN ('tertiary', 'tertiary_link', 'busway')
-        AND construction NOT IN ('tertiary', 'tertiary_link', 'busway')
+        AND highway NOT IN ('tertiary', 'tertiary_link', 'busway', 'bus_guideway')
+        AND construction NOT IN ('tertiary', 'tertiary_link', 'busway', 'bus_guideway')
     ;
 
     DELETE FROM osm_transportation_merge_linestring_gen_z9

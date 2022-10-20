@@ -20,14 +20,15 @@ You can start from several GL styles supporting the OpenMapTiles vector schema.
 :link: [Learn how to create Mapbox GL styles with Maputnik and OpenMapTiles](http://openmaptiles.org/docs/style/maputnik/).
 
 
+- [OSM OpenMapTiles](./style/README.md)
 - [OSM Bright](https://github.com/openmaptiles/osm-bright-gl-style)
+- [MapTiler Basic](https://github.com/openmaptiles/maptiler-basic-gl-style)
+- [MapTiler 3D](https://github.com/openmaptiles/maptiler-3d-gl-style)
+- [Fiord Color](https://github.com/openmaptiles/fiord-color-gl-style)
+- [MapTiler Toner](https://github.com/openmaptiles/maptiler-toner-gl-style)
+- [OSM Liberty](https://github.com/maputnik/osm-liberty)
 - [Positron](https://github.com/openmaptiles/positron-gl-style)
 - [Dark Matter](https://github.com/openmaptiles/dark-matter-gl-style)
-- [Klokantech Basic](https://github.com/openmaptiles/klokantech-basic-gl-style)
-- [Klokantech 3D](https://github.com/openmaptiles/klokantech-3d-gl-style)
-- [Fiord Color](https://github.com/openmaptiles/fiord-color-gl-style)
-- [Toner](https://github.com/openmaptiles/toner-gl-style)
-- [OSM Liberty](https://github.com/maputnik/osm-liberty)
 
 We also ported over our favorite old raster styles (TM2).
 
@@ -145,6 +146,16 @@ make
 make import-sql
 ```
 
+Each time you make a modification that adds a new feature to vector tiles e.g. adding new OSM tags, modify the layer 
+style snippet by adding new style layer so the changes are propagated visually into the style.
+All new style layers must have the `order` value which determines the order or rendering in the map style. 
+After the layer style snippet is modified run:
+```bash
+make build-style
+```
+
+
+
 Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
 ```
@@ -162,7 +173,7 @@ make import-data            # Import external data from OpenStreetMapData, Natur
 make download area=albania  # download albania .osm.pbf file -- can be skipped if a .osm.pbf file already existing
 make import-osm             # import data into postgres
 make import-wikidata        # import Wikidata
-make import-sql             # create / import sql funtions 
+make import-sql             # create / import sql functions 
 make generate-bbox-file     # compute data bbox -- not needed for the whole planet
 make generate-tiles-pg      # generate tiles
 ```
@@ -171,7 +182,7 @@ Instead of calling `make download area=albania` you can add a .osm.pbf file in t
 
 ## License
 
-All code in this repository is under the [BSD license](./LICENSE.md) and the cartography decisions encoded in the schema and SQL are licensed under [CC-BY](./LICENSE.md).
+All code in this repository is under the [BSD license](./LICENSE.md). Design and the cartography decisions encoded in the schema and SQL are licensed under [CC-BY](./LICENSE.md).
 
 Products or services using maps derived from OpenMapTiles schema need to visibly credit "OpenMapTiles.org" or reference "OpenMapTiles" with a link to https://openmaptiles.org/. Exceptions to attribution requirement can be granted on request.
 

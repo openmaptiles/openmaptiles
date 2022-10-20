@@ -44,6 +44,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - pharmacy
   - place_of_worship
   - police
+  - parcel_locker
   - post_box
   - post_office
   - prison
@@ -353,6 +354,9 @@ def_poi_fields: &poi_fields
   - name: uic_ref
     key: uic_ref
     type: string
+  - name: ref
+    key: ref
+    type: string
   - name: religion
     key: religion
     type: string
@@ -373,6 +377,9 @@ def_poi_fields: &poi_fields
     type: string
   - name: network
     key: network
+    type: string
+  - name: brand
+    key: brand
     type: string
 
 def_poi_mapping: &poi_mapping

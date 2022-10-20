@@ -33,6 +33,7 @@ tables:
       - grassland
       - heath
       - scrub
+      - shrubbery
       - tundra
       - glacier
       - bare_rock
