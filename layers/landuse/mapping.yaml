@@ -90,7 +90,6 @@ tables:
       - library
       - hospital
       - grave_yard
-      - parking
       leisure:
       - stadium
       - pitch
