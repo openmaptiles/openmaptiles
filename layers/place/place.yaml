@@ -4,7 +4,7 @@ layer:
     tables:
       - ne_10m_admin_1_states_provinces
       - ne_10m_admin_0_countries
-      - ne_10m_admin_1_states_provinces
+      - ne_10m_populated_places
   description: |
       The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
       [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate), [cities](http://wiki.openstreetmap.org/wiki/Key:place)
@@ -20,7 +20,7 @@ layer:
           The **capital** field marks the
           [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
           of the boundary the place is a capital of.
-      values: [2, 4]
+      values: [2, 3, 4, 5, 6]
     class:
       description: |
           Original value of the

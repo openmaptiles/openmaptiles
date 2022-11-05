@@ -1,0 +1,287 @@
+{
+  "layers": [
+    {
+      "id": "boundary_3",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 3,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#845283",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              4,
+              0.4
+            ],
+            [
+              5,
+              0.7
+            ],
+            [
+              12,
+              1.6
+            ]
+          ]
+        },
+        "line-opacity": {
+          "stops": [
+            [
+              3,
+              0.5
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
+        "line-dasharray": [
+          5,
+          3
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "admin_level",
+          3,
+          4
+        ],
+        [
+          "==",
+          "maritime",
+          0
+        ]
+      ],
+      "order": 137
+    },
+    {
+      "id": "boundary_2",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 0,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#a37da1",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              3,
+              0.5
+            ],
+            [
+              5,
+              1.2
+            ],
+            [
+              12,
+              3
+            ]
+          ]
+        },
+        "line-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "admin_level",
+          2
+        ],
+        [
+          "==",
+          "maritime",
+          0
+        ],
+        [
+          "==",
+          "disputed",
+          0
+        ]
+      ],
+      "order": 138
+    },
+    {
+      "id": "boundary_2_disputed",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 0,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#a37da1",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              3,
+              0.3
+            ],
+            [
+              5,
+              1.2
+            ],
+            [
+              12,
+              3
+            ]
+          ]
+        },
+        "line-opacity": 1,
+        "line-dasharray": [
+          4,
+          3
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "admin_level",
+          2
+        ],
+        [
+          "==",
+          "disputed",
+          1
+        ],
+        [
+          "==",
+          "maritime",
+          0
+        ]
+      ],
+      "order": 139
+    },
+    {
+      "id": "boundary_2_disputed_maritime",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 0,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(129, 125, 163, 1)",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              3,
+              0.5
+            ],
+            [
+              5,
+              1.2
+            ],
+            [
+              12,
+              3
+            ]
+          ]
+        },
+        "line-opacity": 1,
+        "line-dasharray": [
+          4,
+          3
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "admin_level",
+          2
+        ],
+        [
+          "==",
+          "disputed",
+          1
+        ],
+        [
+          "==",
+          "maritime",
+          1
+        ]
+      ],
+      "order": 140
+    },
+    {
+      "id": "boundary_2_maritime",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 4,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#a37da1",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              3,
+              0.5
+            ],
+            [
+              5,
+              1.2
+            ],
+            [
+              12,
+              3
+            ]
+          ]
+        },
+        "line-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "admin_level",
+          2
+        ],
+        [
+          "==",
+          "disputed",
+          0
+        ],
+        [
+          "==",
+          "maritime",
+          1
+        ]
+      ],
+      "order": 141
+    }
+  ]
+}
