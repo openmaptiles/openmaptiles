@@ -349,7 +349,13 @@ BEGIN
     FROM osm_transportation_merge_linestring_gen_z5
     WHERE
         (update_id IS NULL OR id = update_id) AND
-        (highway = 'motorway' OR construction = 'motorway') AND
+        (highway = 'motorway'
+            OR construction = 'motorway'
+            -- Allow trunk roads that are part of a nation's most important route network to show at z4
+            OR highway = 'trunk' AND
+                network <> '' AND
+                network IN ('ca-transcanada','us-interstate')
+        ) AND
         ST_Length(geometry) > 1000;
 END;
 $$ LANGUAGE plpgsql;
