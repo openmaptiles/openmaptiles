@@ -13,6 +13,7 @@ services:
   postgres:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
     # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
+    # Use "shm_size: 512m" if you want to prevent a possible 'No space left on device' during 'make generate-tiles-pg'
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -64,6 +65,7 @@ services:
       - ./build/sql:/sql
       - ./build:/mapping
       - ./cache:/cache
+      - ./style:/style
 
   update-osm:
     <<: *openmaptiles-tools
@@ -127,13 +129,15 @@ services:
       - "8088:8888"
 
   tileserver-gl:
-    image: "maptiler/tileserver-gl"
+    image: "maptiler/tileserver-gl:latest"
     command:
       - --port
       - "${TPORT:-8080}"
-      - --mbtiles
-      - "${MBTILES_FILE}"
+      - --config
+      - "/style/config.json"
     ports:
       - "${TPORT:-8080}:${TPORT:-8080}"
     volumes:
       - ./data:/data
+      - ./style:/style
+      - ./build:/build
