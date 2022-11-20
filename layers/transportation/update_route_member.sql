@@ -22,7 +22,7 @@ INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
 
-CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text) RETURNS route_network_type AS
+CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, ref text) RETURNS route_network_type AS
 $$
 SELECT CASE
            WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
@@ -30,6 +30,17 @@ SELECT CASE
            WHEN network LIKE 'US:__' THEN 'us-state'::route_network_type
            -- https://en.wikipedia.org/wiki/Trans-Canada_Highway
            WHEN network LIKE 'CA:transcanada%' THEN 'ca-transcanada'::route_network_type
+           WHEN network = 'CA:QC:A' THEN 'ca-provincial-arterial'::route_network_type
+           WHEN network = 'CA:ON:primary' THEN
+               CASE
+                   WHEN ref LIKE '4__' THEN 'ca-provincial-arterial'::route_network_type
+                   WHEN ref = 'QEW' THEN 'ca-provincial-arterial'::route_network_type
+                   ELSE 'ca-provincial-arterial'::route_network_type
+               END
+           WHEN network = 'CA:MB:PTH' AND ref = '75' THEN 'ca-provincial-arterial'::route_network_type
+           WHEN network = 'CA:AB' AND ref IN ('2','3','4') THEN 'ca-provincial-arterial'::route_network_type
+           WHEN network = 'CA:BC' AND ref IN ('3','5','99') THEN 'ca-provincial-arterial'::route_network_type
+           WHEN network LIKE 'CA:__:%' THEN 'ca-provincial'::route_network_type
            WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
            WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
            END;
@@ -39,9 +50,9 @@ $$ LANGUAGE sql IMMUTABLE
 -- etldoc:  osm_route_member ->  osm_route_member
 -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
 UPDATE osm_route_member
-SET network_type = osm_route_member_network_type(network)
+SET network_type = osm_route_member_network_type(network, ref)
 WHERE network != ''
-  AND network_type IS DISTINCT FROM osm_route_member_network_type(network)
+  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, ref)
 ;
 
 CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
@@ -64,7 +75,7 @@ BEGIN
     SELECT
       id,
       osm_id,
-      osm_route_member_network_type(network) AS network_type,
+      osm_route_member_network_type(network, ref) AS network_type,
       DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
       CASE
            WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
@@ -80,7 +91,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE INDEX IF NOT EXISTS osm_route_member_network_idx ON osm_route_member ("network");
+CREATE INDEX IF NOT EXISTS osm_route_member_network_idx ON osm_route_member ("network", "ref");
 CREATE INDEX IF NOT EXISTS osm_route_member_member_idx ON osm_route_member ("member");
 CREATE INDEX IF NOT EXISTS osm_route_member_name_idx ON osm_route_member ("name");
 CREATE INDEX IF NOT EXISTS osm_route_member_ref_idx ON osm_route_member ("ref");
