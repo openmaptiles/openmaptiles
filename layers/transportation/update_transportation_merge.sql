@@ -354,7 +354,7 @@ BEGIN
             -- Allow trunk roads that are part of a nation's most important route network to show at z4
             OR highway = 'trunk' AND
                 network <> '' AND
-                network IN ('ca-transcanada','us-interstate')
+                network IN ('ca-transcanada','ca-provincial-arterial','us-interstate')
         ) AND
         ST_Length(geometry) > 1000;
 END;
