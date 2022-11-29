@@ -38,7 +38,7 @@ SELECT CASE
                    ELSE 'ca-provincial-arterial'::route_network_type
                END
            WHEN network = 'CA:MB:PTH' AND ref = '75' THEN 'ca-provincial-arterial'::route_network_type
-           WHEN network = 'CA:AB' AND ref IN ('2','3','4') THEN 'ca-provincial-arterial'::route_network_type
+           WHEN network = 'CA:AB:primary' AND ref IN ('2','3','4') THEN 'ca-provincial-arterial'::route_network_type
            WHEN network = 'CA:BC' AND ref IN ('3','5','99') THEN 'ca-provincial-arterial'::route_network_type
            WHEN network LIKE 'CA:__' OR network LIKE 'CA:__:%' THEN 'ca-provincial'::route_network_type
            WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
