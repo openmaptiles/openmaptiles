@@ -353,7 +353,8 @@ BEGIN
         z_order
     FROM osm_transportation_merge_linestring_gen_z5
     WHERE
-        (update_id IS NULL OR id = update_id) AND osm_national_network(network) AND
+        (update_id IS NULL OR id = update_id) AND 
+        osm_national_network(network) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000;
 END;
