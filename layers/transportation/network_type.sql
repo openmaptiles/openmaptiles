@@ -21,6 +21,17 @@ $$
     END
 $$;
 
+-- Top-level national route networks that should display at the lowest zooms
+CREATE OR REPLACE FUNCTION osm_national_network(network text) RETURNS boolean AS
+$$
+    SELECT network <> '' AND network IN (
+        -- Canada
+        'ca-transcanada', 'ca-provincial-arterial',
+        -- United States
+        'us-interstate');
+$$ LANGUAGE sql IMMUTABLE
+                PARALLEL SAFE;
+
 DO
 $$
     BEGIN
