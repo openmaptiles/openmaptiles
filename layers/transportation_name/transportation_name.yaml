@@ -1,5 +1,7 @@
 layer:
   id: "transportation_name"
+  # transportation_name relies on the function highway_class() defined in transportation layer
+  requires: "transportation"
   description: |
       This is the layer for labelling the highways. Only highways that are named `name=*` and are long enough
       to place text upon appear. The OSM roads are stitched together if they contain the same name
@@ -67,6 +69,13 @@ layer:
       - bridleway
       - corridor
       - platform
+    brunnel:
+      description: |
+          Mark whether way is a bridge, a tunnel or a ford.
+      values:
+      - bridge
+      - tunnel
+      - ford
     level:
       description: |
           Experimental feature! Filled only for steps and footways. Original
@@ -84,12 +93,12 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, layer, level, indoor FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./network_type.sql
   - ./update_route_member.sql
   - ./update_transportation_name.sql
-  - ./layer.sql
+  - ./transportation_name.sql
 datasources:
   - type: imposm3
     mapping_file: ../transportation/mapping.yaml

@@ -1,289 +1,582 @@
-# Options to run with docker and docker-compose - ensure the container is destroyed on exit
-DC_OPTS?=--rm
+#
+# First section - common variable initialization
+#
 
-# container runs as the current user rather than root (so that created files are not root-owned)
-DC_USER_OPTS?=$(DC_OPTS) -u $$(id -u $${USER}):$$(id -g $${USER})
+# Ensure that errors don't hide inside pipes
+SHELL         = /bin/bash
+.SHELLFLAGS   = -o pipefail -c
+
+# Make all .env variables available for make targets
+include .env
+
+# Layers definition and meta data
+TILESET_FILE ?= openmaptiles.yaml
+
+# Options to run with docker and docker-compose - ensure the container is destroyed on exit
+# Containers run as the current user rather than root (so that created files are not root-owned)
+DC_OPTS ?= --rm --user=$(shell id -u):$(shell id -g)
+
+# If set to a non-empty value, will use postgis-preloaded instead of postgis docker image
+USE_PRELOADED_IMAGE ?=
+
+# Local port to use with postserve
+PPORT ?= 8090
+export PPORT
+# Local port to use with tileserver
+TPORT ?= 8080
+export TPORT
+
+# Allow a custom docker-compose project name
+ifeq ($(strip $(DC_PROJECT)),)
+  DC_PROJECT := $(notdir $(shell pwd))
+  DOCKER_COMPOSE := docker-compose
+else
+  DOCKER_COMPOSE := docker-compose --project-name $(DC_PROJECT)
+endif
+
+# Make some operations quieter (e.g. inside the test script)
+ifeq ($(strip $(QUIET)),)
+  QUIET_FLAG :=
+else
+  QUIET_FLAG := --quiet
+endif
+
+# Use `xargs --no-run-if-empty` flag, if supported
+XARGS := xargs $(shell xargs --no-run-if-empty </dev/null 2>/dev/null && echo --no-run-if-empty)
 
 # If running in the test mode, compare files rather than copy them
 TEST_MODE?=no
 ifeq ($(TEST_MODE),yes)
-  COPY_TO_GIT=diff
+  # create images in ./build/devdoc and compare them to ./layers
+  GRAPH_PARAMS=./build/devdoc ./layers
 else
-  COPY_TO_GIT=cp
+  # update graphs in the ./layers dir
+  GRAPH_PARAMS=./layers
 endif
 
+# Set OpenMapTiles host
+OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+export OMT_HOST
+
+# This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
+define newline
+
+
+endef
+
+
+#
+# Determine area to work on
+# If $(area) parameter is not set, and only one *.osm.pbf file is found in ./data, use it as $(area).
+# Otherwise, all make targets requiring an area will show an error.
+# Note: If no *.osm.pbf files are found, once the users call  "make download area=..."
+#       they will not need to use an "area=" parameter again because there will be just a single file.
+#
+
+# historically we have been using $(area) rather than $(AREA), so make both work
+area ?= $(AREA)
+# Ensure the $(area) param is set, or try to automatically determine it based on available data files
+ifeq ($(strip $(area)),)
+  # An $(area) parameter is not set. If only one *.osm.pbf file is found in ./data, use it as $(area).
+  data_files := $(shell find data -name '*.osm.pbf' 2>/dev/null)
+  ifneq ($(word 2,$(data_files)),)
+    define assert_area_is_given
+	  @echo ""
+	  @echo "ERROR: The 'area' parameter or environment variable have not been set, and there several 'area' options:"
+	  @$(patsubst data/%.osm.pbf,echo "  '%'";,$(data_files))
+	  @echo ""
+	  @echo "To specify an area use:"
+	  @echo "  make $@ area=<area-id>"
+	  @echo ""
+	  @exit 1
+    endef
+  else
+    ifeq ($(word 1,$(data_files)),)
+      define assert_area_is_given
+        @echo ""
+        @echo "ERROR: The 'area' parameter (or env var) has not been set, and there are no data/*.osm.pbf files"
+        @echo ""
+        @echo "To specify an area use"
+        @echo "  make $@ area=<area-id>"
+        @echo ""
+        @echo "To download an area, use   make download area=<area-id>"
+        @echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+        @exit 1
+        @echo ""
+      endef
+    else
+      # Keep just the name of the data file, without the .osm.pbf extension
+      area := $(patsubst data/%.osm.pbf,%,$(data_files))
+      # Rename area-latest.osm.pbf to area.osm.pbf
+      # TODO: This if statement could be removed in a few months once everyone is using the file without the `-latest`?
+      ifneq ($(area),$(area:-latest=))
+        $(shell mv "data/$(area).osm.pbf" "data/$(area:-latest=).osm.pbf")
+        area := $(area:-latest=)
+        $(warning ATTENTION: File data/$(area)-latest.osm.pbf was renamed to $(area).osm.pbf.)
+        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area)-latest.osm.pbf' file - renamed to '$(area).osm.pbf'. Use 'area' parameter or environment variable to override.
+      else
+        AREA_INFO := Detected area=$(area) based on finding a 'data/$(area).osm.pbf' file. Use 'area' parameter or environment variable to override.
+      endif
+    endif
+  endif
+endif
+
+ifneq ($(strip $(AREA_INFO)),)
+  define assert_area_is_given
+      @echo "$(AREA_INFO)"
+  endef
+endif
+
+# If set, this file will be downloaded in download-osm and imported in the import-osm targets
+PBF_FILE ?= data/$(area).osm.pbf
+
+# For download-osm, allow URL parameter to download file from a given URL. Area param must still be provided.
+ifneq ($(strip $(url)),)
+  DOWNLOAD_AREA := $(url)
+else
+  DOWNLOAD_AREA := $(area)
+endif
+
+# import-borders uses these temp files during border parsing/import
+export BORDERS_CLEANUP_FILE ?= data/borders/$(area).cleanup.pbf
+export BORDERS_PBF_FILE ?= data/borders/$(area).filtered.pbf
+export BORDERS_CSV_FILE ?= data/borders/$(area).lines.csv
+
+# The file is placed into the $EXPORT_DIR=/export (mapped to ./data)
+export MBTILES_FILE ?= $(area).mbtiles
+MBTILES_LOCAL_FILE = data/$(MBTILES_FILE)
+
+ifeq ($(strip $(DIFF_MODE)),true)
+  # import-osm implementation requires IMPOSM_CONFIG_FILE to be set to a valid file
+  # For static (no-updates) import, we don't need to override the default value
+  # For the update mode, set location of the dynamically-generated area-based config file
+  export IMPOSM_CONFIG_FILE = data/$(area).repl.json
+endif
+
+# Load area-specific bbox file that gets generated by the download-osm --bbox
+AREA_BBOX_FILE ?= data/$(area).bbox
+ifneq (,$(wildcard $(AREA_BBOX_FILE)))
+  cat := $(if $(filter $(OS),Windows_NT),type,cat)
+  BBOX := $(shell $(cat) ${AREA_BBOX_FILE})
+  export BBOX
+endif
+
+ifeq ($(strip $(area)),)
+  define assert_area_is_given
+	@echo ""
+	@echo "ERROR: $(AREA_ERROR)"
+	@echo ""
+	@echo "  make $@ area=<area-id>"
+	@echo ""
+	@echo "To download an area, use   make download <area-id>"
+	@echo "To list downloadable areas, use   make list-geofabrik   and/or   make list-bbbike"
+	@exit 1
+  endef
+else
+  ifneq ($(strip $(AREA_INFO)),)
+    define assert_area_is_given
+	@echo "$(AREA_INFO)"
+    endef
+  endif
+endif
+
+#
+#  TARGETS
+#
+
 .PHONY: all
-all: build/openmaptiles.tm2source/data.yml build/mapping.yaml build/tileset.sql
+all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
 
 .PHONY: help
 help:
 	@echo "=============================================================================="
 	@echo " OpenMapTiles  https://github.com/openmaptiles/openmaptiles "
 	@echo "Hints for testing areas                "
-	@echo "  make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>> "
-	@echo "  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>> "
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>> "
 	@echo "  ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar "
-	@echo "  "
+	@echo " "
 	@echo "Hints for designers:"
-	@echo "  make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ] "
-	@echo "  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ] "
-	@echo "  "
+	@echo "  make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see $(OMT_HOST):8088 ]"
+	@echo "  make start-postserve                 # start dynamic tile server                   [ see $(OMT_HOST):$(PPORT) ]"
+	@echo "  make start-tileserver                # start maptiler/tileserver-gl                [ see $(OMT_HOST):$(TPORT) ]"
+	@echo " "
 	@echo "Hints for developers:"
 	@echo "  make                                 # build source code"
-	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik, and create config file"
+	@echo "  make list-geofabrik                  # list actual geofabrik OSM extracts for download"
+	@echo "  make list-bbbike                     # list actual BBBike OSM extracts for download"
+	@echo "  make download area=albania           # download OSM data from any source       and create config file"
+	@echo "  make download-geofabrik area=albania # download OSM data from geofabrik.de     and create config file"
+	@echo "  make download-osmfr area=asia/qatar  # download OSM data from openstreetmap.fr and create config file"
+	@echo "  make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file"
+	@echo "  make generate-bbox-file              # compute bounding box of a data file and store it in a file"
 	@echo "  make psql                            # start PostgreSQL console"
 	@echo "  make psql-list-tables                # list all PostgreSQL tables"
-	@echo "  make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE"
-	@echo "  make psql-analyze                    # PostgreSQL: ANALYZE"
-	@echo "  make generate-qareports              # generate reports [./build/qareports]"
-	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers  [./build/devdoc]"
-	@echo "  make etl-graph                       # hint for generating a single etl graph"
-	@echo "  make mapping-graph                   # hint for generating a single mapping graph"
-	@echo "  make import-sql-dev                  # start import-sql /bin/bash terminal"
-	@echo "  make import-osm-dev                  # start import-osm /bin/bash terminal (imposm3)"
-	@echo "  make clean-docker                    # remove docker containers, PG data volume"
-	@echo "  make forced-clean-sql                # drop all PostgreSQL tables for clean environment"
-	@echo "  make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)"
+	@echo "  make vacuum-db                       # PostgreSQL: VACUUM ANALYZE"
+	@echo "  make analyze-db                      # PostgreSQL: ANALYZE"
+	@echo "  make generate-qa                     # statistics for a given layer's field"
+	@echo "  make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]"
+	@echo "  make bash                            # start openmaptiles-tools /bin/bash terminal"
+	@echo "  make destroy-db                      # remove docker containers and PostgreSQL data volume"
+	@echo "  make start-db                        # start PostgreSQL, creating it if it doesn't exist"
+	@echo "  make start-db-preloaded              # start PostgreSQL, creating data-prepopulated one if it doesn't exist"
+	@echo "  make stop-db                         # stop PostgreSQL database without destroying the data"
+	@echo "  make clean-unnecessary-docker        # clean unnecessary docker image(s) and container(s)"
 	@echo "  make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB"
 	@echo "  make remove-docker-images            # remove openmaptiles docker images"
-	@echo "  make pgclimb-list-views              # list PostgreSQL public schema views"
-	@echo "  make pgclimb-list-tables             # list PostgreSQL public schema tables"
+	@echo "  make list-views                      # list PostgreSQL public schema views"
+	@echo "  make list-tables                     # list PostgreSQL public schema tables"
 	@echo "  cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information"
-	@echo "  cat  quickstart.log                  # backup of the last ./quickstart.sh"
+	@echo "  cat  quickstart.log                  # transcript of the last ./quickstart.sh run"
 	@echo "  make help                            # help about available commands"
 	@echo "=============================================================================="
 
-.PHONY: build
-build:
-	mkdir -p build
+.PHONY: init-dirs
+init-dirs:
+	@mkdir -p build/sql/parallel
+	@mkdir -p build/openmaptiles.tm2source
+	@mkdir -p data/borders
+	@mkdir -p cache
 
-build/openmaptiles.tm2source/data.yml: build
-	mkdir -p build/openmaptiles.tm2source
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
+build/openmaptiles.tm2source/data.yml: init-dirs
+ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tm2source $(TILESET_FILE) --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > $@
+endif
 
-build/mapping.yaml: build
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+build/mapping.yaml: init-dirs
+ifeq (,$(wildcard build/mapping.yaml))
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-imposm3 $(TILESET_FILE) > $@
+endif
 
-build/tileset.sql: build
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
+.PHONY: build-sql
+build-sql: init-dirs
+ifeq (,$(wildcard build/sql/run_last.sql))
+	@mkdir -p build/sql/parallel
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'generate-sql $(TILESET_FILE) --dir ./build/sql \
+		&& generate-sqltomvt $(TILESET_FILE) \
+							 --key --gzip --postgis-ver 3.0.1 \
+							 --function --fname=getmvt >> ./build/sql/run_last.sql'
+endif
 
 .PHONY: clean
 clean:
-	rm -f build/openmaptiles.tm2source/data.yml && rm -f build/mapping.yaml && rm -f build/tileset.sql
+	rm -rf build
 
-.PHONY: clean-docker
-clean-docker:
-	docker-compose down -v --remove-orphans
-	docker-compose rm -fv
-	docker volume ls -q | grep openmaptiles  | xargs -r docker volume rm || true
+.PHONY: destroy-db
+# TODO:  Use https://stackoverflow.com/a/27852388/177275
+destroy-db: DC_PROJECT := $(shell echo $(DC_PROJECT) | tr A-Z a-z)
+destroy-db:
+	$(DOCKER_COMPOSE) down -v --remove-orphans
+	$(DOCKER_COMPOSE) rm -fv
+	docker volume ls -q -f "name=^$(DC_PROJECT)_" | $(XARGS) docker volume rm
+	rm -rf cache
 
-.PHONY: db-start
-db-start:
-	docker-compose up -d postgres
+.PHONY: start-db-nowait
+start-db-nowait: init-dirs
+	@echo "Starting postgres docker compose target using $${POSTGIS_IMAGE:-default} image (no recreate if exists)" && \
+	$(DOCKER_COMPOSE) up --no-recreate -d postgres
+
+.PHONY: start-db
+start-db: start-db-nowait
 	@echo "Wait for PostgreSQL to start..."
-	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools pgwait
 
-.PHONY: download-geofabrik
-download-geofabrik:
-	@echo ===============  download-geofabrik =======================
-	@echo Download area :   $(area)
-	@echo [[ example: make download-geofabrik  area=albania ]]
-	@echo [[ list areas:  make download-geofabrik-list       ]]
-	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik.sh $(area)
-	ls -la ./data/$(area).*
-	@echo "Generated config file: ./data/docker-compose-config.yml"
-	@echo " "
-	cat ./data/docker-compose-config.yml
-	@echo " "
+# Wrap start-db target but use the preloaded image
+.PHONY: start-db-preloaded
+start-db-preloaded: export POSTGIS_IMAGE=openmaptiles/postgis-preloaded
+start-db-preloaded: export COMPOSE_HTTP_TIMEOUT=180
+start-db-preloaded: start-db
+
+.PHONY: stop-db
+stop-db:
+	@echo "Stopping PostgreSQL..."
+	$(DOCKER_COMPOSE) stop postgres
+
+.PHONY: list-geofabrik
+list-geofabrik: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list geofabrik
+
+.PHONY: list-bbbike
+list-bbbike: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm list bbbike
+
+#
+# download, download-geofabrik, download-osmfr, and download-bbbike are handled here
+# The --imposm-cfg will fail for some of the sources, but we ignore that error -- only needed for diff mode
+#
+OSM_SERVERS := geofabrik osmfr bbbike
+ALL_DOWNLOADS := $(addprefix download-,$(OSM_SERVERS)) download
+OSM_SERVER=$(patsubst download,,$(patsubst download-%,%,$@))
+.PHONY: $(ALL_DOWNLOADS)
+$(ALL_DOWNLOADS): init-dirs
+	@$(assert_area_is_given)
+ifneq ($(strip $(url)),)
+	$(if $(OSM_SERVER),$(error url parameter can only be used with non-specific download target:$(newline)       make download area=$(area) url="$(url)"$(newline)))
+endif
+ifeq (,$(wildcard $(PBF_FILE)))
+ ifeq ($(strip $(DIFF_MODE)),true)
+	@echo "Downloading $(DOWNLOAD_AREA) with replication support into $(PBF_FILE) and $(IMPOSM_CONFIG_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--imposm-cfg "$(IMPOSM_CONFIG_FILE)" \
+				--bbox "$(AREA_BBOX_FILE)" \
+				--output "$(PBF_FILE)"
+ else
+	@echo "Downloading $(DOWNLOAD_AREA) into $(PBF_FILE) from $(if $(OSM_SERVER),$(OSM_SERVER),any source)"
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm $(OSM_SERVER) "$(DOWNLOAD_AREA)" \
+				--bbox "$(AREA_BBOX_FILE)" \
+				--output "$(PBF_FILE)"
+ endif
+	@echo ""
+else
+ ifeq ($(strip $(DIFF_MODE)),true)
+  ifeq (,$(wildcard $(IMPOSM_CONFIG_FILE)))
+	$(error \
+		$(newline)   Data files $(PBF_FILE) already exists, but $(IMPOSM_CONFIG_FILE) does not. \
+		$(newline)   You probably downloaded the data file before setting DIFF_MODE=true. \
+		$(newline)   You can delete the data file  $(PBF_FILE) and re-run  make download \
+		$(newline)   to re-download and generate config, or manually create  $(IMPOSM_CONFIG_FILE) \
+		$(newline)   See example    https://github.com/openmaptiles/openmaptiles-tools/blob/v5.2/bin/config/repl_config.json \
+		$(newline))
+  else
+	@echo "Data files $(PBF_FILE) and replication config $(IMPOSM_CONFIG_FILE) already exists, skipping the download."
+  endif
+ else
+	@echo "Data files $(PBF_FILE) already exists, skipping the download."
+ endif
+endif
+
+.PHONY: generate-bbox-file
+generate-bbox-file:
+	@$(assert_area_is_given)
+ifeq (,$(wildcard $(AREA_BBOX_FILE)))
+	@$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools download-osm bbox "$(PBF_FILE)" "$(AREA_BBOX_FILE)"
+else
+	@echo "Configuration file $(AREA_BBOX_FILE) already exists, no need to regenerate."
+endif
 
 .PHONY: psql
-psql: db-start
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh
+psql: start-db-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && psql.sh'
+
+# Special cache handling for Docker Toolbox on Windows
+ifeq ($(MSYSTEM),MINGW64)
+  DC_CONFIG_CACHE := -f docker-compose.yml -f docker-compose-$(MSYSTEM).yml
+  DC_OPTS_CACHE := $(strip $(filter-out --user=%,$(DC_OPTS)))
+else
+  DC_OPTS_CACHE := $(DC_OPTS)
+endif
 
 .PHONY: import-osm
-import-osm: db-start all
-	docker-compose run $(DC_OPTS) import-osm
+import-osm: all start-db-nowait
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
+
+.PHONY: update-osm
+update-osm: all start-db-nowait
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-update'
+
+.PHONY: import-diff
+import-diff: all start-db-nowait
+	@$(assert_area_is_given)
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
+
+.PHONY: import-data
+import-data: start-db
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) import-data
+
+.PHONY: import-borders
+import-borders: start-db-nowait
+	@$(assert_area_is_given)
+	# If CSV borders file already exists, use it without re-parsing
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
+		'pgwait && import-borders $$([ -f "$(BORDERS_CSV_FILE)" ] && echo load $(BORDERS_CSV_FILE) || echo import $(PBF_FILE))'
 
 .PHONY: import-sql
-import-sql: db-start all
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
-
-.PHONY: import-osmsql
-import-osmsql: db-start all
-	docker-compose run $(DC_OPTS) import-osm
-	docker-compose run $(DC_OPTS) openmaptiles-tools import-sql
+import-sql: all start-db-nowait
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c 'pgwait && import-sql' | \
+	  awk -v s=": WARNING:" '1{print; fflush()} $$0~s{print "\n*** WARNING detected, aborting"; exit(1)}'
 
 .PHONY: generate-tiles
-generate-tiles: db-start all
-	rm -rf data/tiles.mbtiles
-	if [ -f ./data/docker-compose-config.yml ]; then \
-		docker-compose -f docker-compose.yml -f ./data/docker-compose-config.yml run $(DC_OPTS) generate-vectortiles; \
-	else \
-		docker-compose run $(DC_OPTS) generate-vectortiles; \
-	fi
-	docker-compose run $(DC_OPTS) openmaptiles-tools  generate-metadata ./data/tiles.mbtiles
-	docker-compose run $(DC_OPTS) openmaptiles-tools  chmod 666         ./data/tiles.mbtiles
+generate-tiles: all start-db
+	@$(assert_area_is_given)
+	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
+	@rm -rf "$(MBTILES_LOCAL_FILE)"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) generate-vectortiles
+	@echo "Updating generated tile metadata ..."
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
+			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
+
+.PHONY: generate-tiles-pg
+generate-tiles-pg: all start-db
+	@$(assert_area_is_given)
+	@echo "Generating tiles into $(MBTILES_LOCAL_FILE) (will delete if already exists)..."
+	@rm -rf "$(MBTILES_LOCAL_FILE)"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools generate-tiles
+	@echo "Updating generated tile metadata ..."
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
+			mbtiles-tools meta-generate "$(MBTILES_LOCAL_FILE)" $(TILESET_FILE) --auto-minmax --show-ranges
 
 .PHONY: start-tileserver
-start-tileserver:
+start-tileserver: init-dirs
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Download/refresh klokantech/tileserver-gl docker image"
-	@echo "* see documentation: https://github.com/klokantech/tileserver-gl"
+	@echo "* Download/refresh maptiler/tileserver-gl docker image"
+	@echo "* see documentation: https://github.com/maptiler/tileserver-gl"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker pull klokantech/tileserver-gl
+	docker pull maptiler/tileserver-gl
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Start klokantech/tileserver-gl "
-	@echo "*       ----------------------------> check localhost:8080 "
+	@echo "* Start maptiler/tileserver-gl "
+	@echo "*       ----------------------------> check $(OMT_HOST):$(TPORT) "
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p 8080:80 klokantech/tileserver-gl
+	docker run $(DC_OPTS) -it --name tileserver-gl -v $$(pwd)/data:/data -p $(TPORT):$(TPORT) maptiler/tileserver-gl --port $(TPORT)
 
 .PHONY: start-postserve
-start-postserve: db-start
+start-postserve: start-db
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
-	@echo "* Bring up postserve at localhost:8090"
+	@echo "* Bring up postserve at $(OMT_HOST):$(PPORT)"
+	@echo "*     --> can view it locally (use make start-maputnik)"
+	@echo "*     --> or can use https://maputnik.github.io/editor"
+	@echo "* "
+	@echo "*  set data source / TileJSON URL to $(OMT_HOST):$(PPORT)"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker-compose up -d postserve
-	docker pull maputnik/editor
+	$(DOCKER_COMPOSE) up -d postserve
+
+.PHONY: stop-postserve
+stop-postserve:
+	$(DOCKER_COMPOSE) stop postserve
+
+.PHONY: start-maputnik
+start-maputnik: stop-maputnik start-postserve
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
 	@echo "* Start maputnik/editor "
-	@echo "*       ---> go to http://localhost:8088"
-	@echo "*       ---> set 'data source' to  http://localhost:8090"
+	@echo "*       ---> go to $(OMT_HOST):8088 "
+	@echo "*       ---> set data source / TileJSON URL to $(OMT_HOST):$(PPORT)"
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker rm -f maputnik_editor || true
 	docker run $(DC_OPTS) --name maputnik_editor -d -p 8088:8888 maputnik/editor
 
-.PHONY: generate-qareports
-generate-qareports:
-	./qa/run.sh
+.PHONY: stop-maputnik
+stop-maputnik:
+	-docker rm -f maputnik_editor
 
-build/devdoc:
-	mkdir -p ./build/devdoc
-
-
-layers = $(notdir $(wildcard layers/*)) # all layers
-
-.PHONY: etl-graph
-etl-graph:
-	@echo 'Use'
-	@echo '   make etl-graph-[layer]	to generate etl graph for [layer]'
-	@echo '   example: make etl-graph-poi'
-	@echo 'Valid layers: $(layers)'
-
-# generate etl graph for a certain layer, e.g. etl-graph-building, etl-graph-place
-etl-graph-%: layers/% build/devdoc
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-etlgraph layers/$*/$*.yaml ./build/devdoc
-	@$(COPY_TO_GIT) ./build/devdoc/etl_$*.png layers/$*/etl_diagram.png
-
-
-mappingLayers = $(notdir $(patsubst %/mapping.yaml,%, $(wildcard layers/*/mapping.yaml))) # layers with mapping.yaml
-
-# generate mapping graph for a certain layer, e.g. mapping-graph-building, mapping-graph-place
-.PHONY: mapping-graph
-mapping-graph:
-	@echo 'Use'
-	@echo '   make mapping-graph-[layer]	to generate mapping graph for [layer]'
-	@echo '   example: make mapping-graph-poi'
-	@echo 'Valid layers: $(mappingLayers)'
-
-mapping-graph-%: ./layers/%/mapping.yaml build/devdoc
-	docker-compose run $(DC_USER_OPTS) openmaptiles-tools generate-mapping-graph layers/$*/$*.yaml ./build/devdoc/mapping-diagram-$*
-	@$(COPY_TO_GIT) ./build/devdoc/mapping-diagram-$*.png layers/$*/mapping_diagram.png
+# STAT_FUNCTION=frequency|toplength|variance
+.PHONY: generate-qa
+generate-qa: all start-db-nowait
+	@echo " "
+	@echo "e.g. make generate-qa STAT_FUNCTION=frequency LAYER=transportation ATTRIBUTE=class"
+	@echo " "
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools \
+		layer-stats $(STAT_FUNCTION) $(TILESET_FILE) $(LAYER) $(ATTRIBUTE) -m 0 -n 14 -v
 
 # generate all etl and mapping graphs
-generate-devdoc: $(addprefix etl-graph-,$(layers)) $(addprefix mapping-graph-,$(mappingLayers))
+.PHONY: generate-devdoc
+generate-devdoc: init-dirs
+	mkdir -p ./build/devdoc && \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools sh -c \
+			'generate-etlgraph $(TILESET_FILE) $(GRAPH_PARAMS) && \
+			 generate-mapping-graph $(TILESET_FILE) $(GRAPH_PARAMS)'
 
-.PHONY: import-sql-dev
-import-sql-dev:
-	docker-compose run $(DC_OPTS) openmaptiles-tools bash
+.PHONY: bash
+bash: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash
 
-.PHONY: import-osm-dev
-import-osm-dev:
-	docker-compose run $(DC_OPTS) import-osm /bin/bash
+.PHONY: import-wikidata
+import-wikidata: init-dirs
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools import-wikidata --cache /cache/wikidata-cache.json $(TILESET_FILE)
 
-# the `download-geofabrik` error message mention `list`, if the area parameter is wrong. so I created a similar make command
-.PHONY: list
-list:
-	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
+.PHONY: reset-db-stats
+reset-db-stats: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'SELECT pg_stat_statements_reset();'
 
-# same as a `make list`
-.PHONY: download-geofabrik-list
-download-geofabrik-list:
-	docker-compose run $(DC_OPTS) import-osm  ./download-geofabrik-list.sh
+.PHONY: list-views
+list-views: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+		-c "select viewname from pg_views where schemaname='public' order by viewname;"
 
-.PHONY: download-wikidata
-download-wikidata:
-	mkdir -p wikidata && docker-compose run $(DC_OPTS) --entrypoint /usr/src/app/download-gz.sh import-wikidata
+.PHONY: list-tables
+list-tables: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -A -F"," -P pager=off -P footer=off \
+		-c "select tablename from pg_tables where schemaname='public' order by tablename;"
 
 .PHONY: psql-list-tables
-psql-list-tables:
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c "\d+"
+psql-list-tables: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c "\d+"
 
-.PHONY: psql-pg-stat-reset
-psql-pg-stat-reset:
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'SELECT pg_stat_statements_reset();'
-
-.PHONY: forced-clean-sql
-forced-clean-sql:
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "DROP SCHEMA IF EXISTS public CASCADE ; CREATE SCHEMA IF NOT EXISTS public; "
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent; CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;"
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh -c "GRANT ALL ON SCHEMA public TO public;COMMENT ON SCHEMA public IS 'standard public schema';"
-
-.PHONY: pgclimb-list-views
-pgclimb-list-views:
-	docker-compose run $(DC_OPTS) import-osm ./pgclimb.sh -c "select schemaname,viewname from pg_views where schemaname='public' order by viewname;" csv
-
-.PHONY: pgclimb-list-tables
-pgclimb-list-tables:
-	docker-compose run $(DC_OPTS) import-osm ./pgclimb.sh -c "select schemaname,tablename from pg_tables where schemaname='public' order by tablename;" csv
-
-.PHONY: psql-vacuum-analyze
-psql-vacuum-analyze:
+.PHONY: vacuum-db
+vacuum-db: init-dirs
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'VACUUM ANALYZE VERBOSE;'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
 
-.PHONY: psql-analyze
-psql-analyze:
-	@echo "Start - postgresql: ANALYZE VERBOSE ;"
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh  -P pager=off  -c 'ANALYZE VERBOSE;'
+.PHONY: analyze-db
+analyze-db: init-dirs
+	@echo "Start - postgresql: ANALYZE VERBOSE;"
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
 .PHONY: list-docker-images
 list-docker-images:
 	docker images | grep openmaptiles
 
 .PHONY: refresh-docker-images
-refresh-docker-images:
-	docker-compose pull --ignore-pull-failures
+refresh-docker-images: init-dirs
+ifneq ($(strip $(NO_REFRESH)),)
+	@echo "Skipping docker image refresh"
+else
+	@echo ""
+	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
+ifneq ($(strip $(USE_PRELOADED_IMAGE)),)
+	POSTGIS_IMAGE=openmaptiles/postgis-preloaded \
+		docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
+else
+	docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres import-data
+endif
+endif
 
 .PHONY: remove-docker-images
 remove-docker-images:
 	@echo "Deleting all openmaptiles related docker image(s)..."
-	@docker-compose down
-	@docker images | grep "openmaptiles" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "osm2vectortiles/mapbox-studio" | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
-	@docker images | grep "klokantech/tileserver-gl"      | awk -F" " '{print $$3}' | xargs --no-run-if-empty docker rmi -f
+	@$(DOCKER_COMPOSE) down
+	@docker images "openmaptiles/*" -q                | $(XARGS) docker rmi -f
+	@docker images "maputnik/editor" -q               | $(XARGS) docker rmi -f
+	@docker images "maptiler/tileserver-gl" -q        | $(XARGS) docker rmi -f
 
-.PHONY: docker-unnecessary-clean
-docker-unnecessary-clean:
+.PHONY: clean-unnecessary-docker
+clean-unnecessary-docker:
 	@echo "Deleting unnecessary container(s)..."
-	@docker ps -a  | grep Exited | awk -F" " '{print $$1}' | xargs  --no-run-if-empty docker rm
+	@docker ps -a -q --filter "status=exited" | $(XARGS) docker rm
 	@echo "Deleting unnecessary image(s)..."
-	@docker images | grep \<none\> | awk -F" " '{print $$3}' | xargs  --no-run-if-empty  docker rmi
+	@docker images | grep \<none\> | awk -F" " '{print $$3}' | $(XARGS) docker rmi
+
+.PHONY: test-perf-null
+test-perf-null: init-dirs
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools test-perf $(TILESET_FILE) --test null --no-color
+
+.PHONY: build-test-pbf
+build-test-pbf: init-dirs
+	docker-compose run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
+
+.PHONY: debug
+debug:  ## Use this target when developing Makefile itself to verify loaded environment variables
+	@$(assert_area_is_given)
+	@echo file_exists = $(wildcard $(AREA_BBOX_FILE))
+	@echo AREA_BBOX_FILE = $(AREA_BBOX_FILE) , $$AREA_ENV_FILE
+	@echo BBOX = $(BBOX) , $$BBOX
+	@echo MIN_ZOOM = $(MIN_ZOOM) , $$MIN_ZOOM
+	@echo MAX_ZOOM = $(MAX_ZOOM) , $$MAX_ZOOM
 
 qwant:
 	./generate_qwant.sh

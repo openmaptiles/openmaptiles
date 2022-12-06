@@ -29,7 +29,7 @@ schema:
   - ./update_marine_point.sql
   - ./update_water_lakeline.sql
   - ./update_water_point.sql
-  - ./layer.sql
+  - ./water_name.sql
 datasources:
   - type: imposm3
     mapping_file: ../water/mapping.yaml

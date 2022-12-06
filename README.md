@@ -14,9 +14,9 @@ To generate them, you need to:
  * run `CONFIG_DIR=<path_to_kartotherian_config> make qwant`
 
 
-## OpenMapTiles [![Build Status](https://travis-ci.org/openmaptiles/openmaptiles.svg?branch=master)](https://travis-ci.org/openmaptiles/openmaptiles)
+## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OMT_CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
 
-OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [openmaptiles.com](https://openmaptiles.com/).
+OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [maptiler.com/data/](https://www.maptiler.com/data/).
 
 We encourage you to collaborate, reuse and adapt existing layers, or add your own layers. You may use our approach for your own vector tile project. Feel free to fork the repo and experiment. The repository is built on top of the [openmaptiles/openmaptiles-tools](https://github.com/openmaptiles/openmaptiles-tools) to simplify vector tile creation.
 
@@ -24,7 +24,7 @@ Please keep in mind that OpenMapTiles schema should display general topographic 
 
 - :link: Schema https://openmaptiles.org/schema
 - :link: Docs https://openmaptiles.org/docs
-- :link: Production package: https://openmaptiles.com/production-package/
+- :link: Data for download: https://www.maptiler.com/data/
 - :link: Hosting https://www.maptiler.com/cloud/
 - :link: Create own layer https://github.com/openmaptiles/openmaptiles-skiing
 - :link: Discuss at the #openmaptiles channel at [OSM Slack](https://osmus-slack.herokuapp.com/)
@@ -99,10 +99,10 @@ make
 ```
 
 You can execute the following manual steps (for better understanding)
-or use the provided `quickstart.sh` script.
+or use the provided `quickstart.sh` script to automatically download and import given area. If area is not given, albania will be imported.
 
 ```
-./quickstart.sh
+./quickstart.sh <area>
 ```
 
 ### Prepare the Database
@@ -110,40 +110,35 @@ or use the provided `quickstart.sh` script.
 Now start up the database container.
 
 ```bash
-docker-compose up -d postgres
+make start-db
 ```
 
 Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines).
 
 ```bash
-docker-compose run import-water
-docker-compose run import-natural-earth
-docker-compose run import-lakelines
-docker-compose run import-osmborder
+make import-data
 ```
 
-**[Optional]**
-Import latest Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
-
-Beware that current [Wikidata dump](https://dumps.wikimedia.org/wikidatawiki/entities/latest-all.json.gz) is more than 55GB, it takes time to download and import it. If you just want to have a quickstart on OpenMapTiles, just skip this step.
+Download OpenStreetMap data extracts from any source like [Geofabrik](http://download.geofabrik.de/), and store the PBF file in the `./data` directory. To use a specific download source, use `download-geofabrik`, `download-bbbike`, or `download-osmfr`, or use `download` to make it auto-pick the area. You can use `area=planet` for the entire OSM dataset (very large).  Note that if you have more than one `data/*.osm.pbf` file, every `make` command will always require `area=...` parameter (or you can just `export area=...` first).
 
 ```bash
-make download-wikidata
-docker-compose run import-wikidata
-```
-
-[Download OpenStreetMap data extracts](http://download.geofabrik.de/) and store the PBF file in the `./data` directory.
-
-```bash
-cd data
-wget http://download.geofabrik.de/europe/albania-latest.osm.pbf
+make download area=albania
 ```
 
 [Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
-`build/mapping.yaml` (which has been created by `make`).
+`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.  Also create borders table using extra processing with [osmborder](https://github.com/pnorman/osmborder) tool.
 
 ```bash
-docker-compose run import-osm
+make import-osm
+make import-borders
+```
+
+Import labels from Wikidata. If an OSM feature has [Key:wikidata](https://wiki.openstreetmap.org/wiki/Key:wikidata), OpenMapTiles check corresponding item in Wikidata and use its [labels](https://www.wikidata.org/wiki/Help:Label) for languages listed in [openmaptiles.yaml](openmaptiles.yaml). So the generated vector tiles includes multi-languages in name field.
+
+This step uses [Wikidata Query Service](https://query.wikidata.org) to download just the Wikidata IDs that already exist in the database.
+
+```bash
+make import-wikidata
 ```
 
 ### Work on Layers
@@ -156,11 +151,11 @@ make
 make import-sql
 ```
 
-Now you are ready to **generate the vector tiles**. Using environment variables
-you can limit the bounding box and zoom levels of what you want to generate (`docker-compose.yml`).
+Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
 ```
-docker-compose run generate-vectortiles
+make generate-bbox-file  # compute data bbox -- not needed for the whole planet
+make generate-tiles      # generate tiles
 ```
 
 ## License

@@ -15,7 +15,7 @@ the OSM change feed and import it into the database.
 After each run you should also have a list of tiles that have updated.
 
 ```
-docker-compose run update-osm
+make update-osm
 ```
 
 ### Import Change File
@@ -23,13 +23,17 @@ docker-compose run update-osm
 Given you have a file `changes.osc.gz` in your import folder. Once you ran the import command you should also have a list of tiles that have updated.
 
 ```
-docker-compose run import-osm-diff
+make import-diff
 ```
 
 ## Generate Changed Tiles
 
-After the import has finished **imposm3** will store a list of tiles in text format in the `diffdir`.
-Copy the as `tiles.txt` to the import folder.
+After the import has finished **imposm3** will store lists of tiles in text format in subfolders of the `diffdir`,
+named for the date(s) on which the import took place (`YYYYMMDD`).
+Copy and merge the files to `tiles.txt` in the import folder (`data`), either manually or with the following command, which also removes duplicate tiles so they are only generated once:  
+```
+cd data && sort ./*/*.tiles | uniq > tiles.txt
+```
 
 Now run the command to read the tilelist and write the vector tiles for it to a new MBTiles.
 
