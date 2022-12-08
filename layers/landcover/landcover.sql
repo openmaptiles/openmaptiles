@@ -25,7 +25,8 @@ CREATE MATERIALIZED VIEW ne_50m_antarctic_ice_shelves_polys_gen_z4 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(6)) as geometry,
-    'ice_shelf'::text AS subclass
+    'ice_shelf'::text AS subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_antarctic_ice_shelves_polys
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_antarctic_ice_shelves_polys_gen_z4_idx ON ne_50m_antarctic_ice_shelves_polys_gen_z4 USING gist (geometry);
@@ -37,7 +38,8 @@ CREATE MATERIALIZED VIEW ne_110m_glaciated_areas_gen_z1 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(3)) as geometry,
-    'glacier'::text AS subclass
+    'glacier'::text AS subclass,
+    ST_Area(geometry) AS area
 FROM ne_110m_glaciated_areas
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_glaciated_areas_gen_z1_idx ON ne_110m_glaciated_areas_gen_z1 USING gist (geometry);
@@ -48,7 +50,8 @@ CREATE MATERIALIZED VIEW ne_110m_glaciated_areas_gen_z0 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(2)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_110m_glaciated_areas_gen_z1
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_110m_glaciated_areas_gen_z0_idx ON ne_110m_glaciated_areas_gen_z0 USING gist (geometry);
@@ -59,7 +62,8 @@ CREATE MATERIALIZED VIEW ne_50m_antarctic_ice_shelves_polys_gen_z3 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(5)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_antarctic_ice_shelves_polys_gen_z4
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_antarctic_ice_shelves_polys_gen_z3_idx ON ne_50m_antarctic_ice_shelves_polys_gen_z3 USING gist (geometry);
@@ -70,7 +74,8 @@ CREATE MATERIALIZED VIEW ne_50m_antarctic_ice_shelves_polys_gen_z2 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(4)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_antarctic_ice_shelves_polys_gen_z3
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_antarctic_ice_shelves_polys_gen_z2_idx ON ne_50m_antarctic_ice_shelves_polys_gen_z2 USING gist (geometry);
@@ -82,7 +87,8 @@ CREATE MATERIALIZED VIEW ne_50m_glaciated_areas_gen_z4 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(6)) as geometry,
-    'glacier'::text AS subclass
+    'glacier'::text AS subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_glaciated_areas
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_glaciated_areas_gen_z4_idx ON ne_50m_glaciated_areas_gen_z4 USING gist (geometry);
@@ -93,7 +99,8 @@ CREATE MATERIALIZED VIEW ne_50m_glaciated_areas_gen_z3 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(5)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_glaciated_areas_gen_z4
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_glaciated_areas_gen_z3_idx ON ne_50m_glaciated_areas_gen_z3 USING gist (geometry);
@@ -104,7 +111,8 @@ CREATE MATERIALIZED VIEW ne_50m_glaciated_areas_gen_z2 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(4)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_50m_glaciated_areas_gen_z3
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_50m_glaciated_areas_gen_z2_idx ON ne_50m_glaciated_areas_gen_z2 USING gist (geometry);
@@ -116,7 +124,8 @@ CREATE MATERIALIZED VIEW ne_10m_glaciated_areas_gen_z6 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(8)) as geometry,
-    'glacier'::text AS subclass
+    'glacier'::text AS subclass,
+    ST_Area(geometry) AS area
 FROM ne_10m_glaciated_areas
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_glaciated_areas_gen_z6_idx ON ne_10m_glaciated_areas_gen_z6 USING gist (geometry);
@@ -127,7 +136,8 @@ CREATE MATERIALIZED VIEW ne_10m_glaciated_areas_gen_z5 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(7)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_10m_glaciated_areas_gen_z6
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_glaciated_areas_gen_z5_idx ON ne_10m_glaciated_areas_gen_z5 USING gist (geometry);
@@ -139,7 +149,8 @@ CREATE MATERIALIZED VIEW ne_10m_antarctic_ice_shelves_polys_gen_z6 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(8)) as geometry,
-    'ice_shelf'::text AS subclass
+    'ice_shelf'::text AS subclass,
+    ST_Area(geometry) AS area
 FROM ne_10m_antarctic_ice_shelves_polys
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_antarctic_ice_shelves_polys_gen_z6_idx ON ne_10m_antarctic_ice_shelves_polys_gen_z6 USING gist (geometry);
@@ -150,7 +161,8 @@ CREATE MATERIALIZED VIEW ne_10m_antarctic_ice_shelves_polys_gen_z5 AS
 (
 SELECT
     ST_Simplify(geometry, ZRes(7)) as geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_10m_antarctic_ice_shelves_polys_gen_z6
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_antarctic_ice_shelves_polys_gen_z5_idx ON ne_10m_antarctic_ice_shelves_polys_gen_z5 USING gist (geometry);
@@ -252,7 +264,8 @@ UNION ALL
 -- etldoc: ne_10m_antarctic_ice_shelves_polys_gen_z6 ->  landcover_z6
 SELECT
     geometry,
-    subclass
+    subclass,
+    ST_Area(geometry) AS area
 FROM ne_10m_antarctic_ice_shelves_polys_gen_z6
     );
 
@@ -280,77 +293,88 @@ FROM (
          UNION ALL
          -- etldoc:  landcover_z1 -> layer_landcover:z1
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z1
          WHERE zoom_level = 1
            AND geometry && bbox
          UNION ALL
          -- etldoc:  landcover_z2 -> layer_landcover:z2
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z2
          WHERE zoom_level = 2
            AND geometry && bbox
          UNION ALL
          -- etldoc:  landcover_z3 -> layer_landcover:z3
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z3
          WHERE zoom_level = 3
            AND geometry && bbox
          UNION ALL
          -- etldoc:  landcover_z4 -> layer_landcover:z4
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z4
          WHERE zoom_level = 4
            AND geometry && bbox
          UNION ALL
          -- etldoc:  landcover_z5 -> layer_landcover:z5
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z5
          WHERE zoom_level = 5
            AND geometry && bbox
          UNION ALL
          -- etldoc:  landcover_z6 -> layer_landcover:z6
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM landcover_z6
          WHERE zoom_level = 6
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z7 -> layer_landcover:z7
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z7
          WHERE zoom_level = 7
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z8 -> layer_landcover:z8
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z8
          WHERE zoom_level = 8
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z9 -> layer_landcover:z9
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z9
          WHERE zoom_level = 9
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z10 -> layer_landcover:z10
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z10
          WHERE zoom_level = 10
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z11 -> layer_landcover:z11
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z11
          WHERE zoom_level = 11
            AND geometry && bbox
@@ -364,14 +388,16 @@ FROM (
          UNION ALL
          -- etldoc:  osm_landcover_gen_z13 -> layer_landcover:z13
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z13
          WHERE zoom_level = 13
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_polygon -> layer_landcover:z14_
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_polygon
          WHERE zoom_level >= 14
            AND geometry && bbox

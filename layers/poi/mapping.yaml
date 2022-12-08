@@ -135,6 +135,3 @@ tables:
     type: polygon
     columns: *poi_fields
     mapping: *poi_mapping
-
-tags:
-  load_all: true
