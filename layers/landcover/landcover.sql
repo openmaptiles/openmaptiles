@@ -403,8 +403,8 @@ FROM (
          FROM osm_landcover_polygon
          WHERE zoom_level >= 14
            AND geometry && bbox
-         ORDER BY area DESC;
-     ) AS zoom_levels
+         ORDER BY area DESC
+     ) AS zoom_levels;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
