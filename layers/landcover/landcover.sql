@@ -259,7 +259,7 @@ CREATE OR REPLACE VIEW landcover_z6 AS
 (
 -- etldoc: ne_10m_glaciated_areas_gen_z6 ->  landcover_z6
 SELECT
-    geometry, subclass, area FROM ne_10m_glaciated_areas_gen_z6
+    geometry, subclass, ST_Area(geometry) AS area FROM ne_10m_glaciated_areas_gen_z6
 UNION ALL
 -- etldoc: ne_10m_antarctic_ice_shelves_polys_gen_z6 ->  landcover_z6
 SELECT
@@ -286,7 +286,8 @@ SELECT geometry,
 FROM (
          -- etldoc:  landcover_z0 -> layer_landcover:z0
          SELECT geometry,
-                subclass
+                subclass,
+                ST_Area(geometry) AS area
          FROM landcover_z0
          WHERE zoom_level = 0
            AND geometry && bbox
@@ -381,7 +382,8 @@ FROM (
          UNION ALL
          -- etldoc:  osm_landcover_gen_z12 -> layer_landcover:z12
          SELECT geometry,
-                subclass
+                subclass,
+             ST_Area(geometry) AS area
          FROM osm_landcover_gen_z12
          WHERE zoom_level = 12
            AND geometry && bbox
@@ -401,8 +403,8 @@ FROM (
          FROM osm_landcover_polygon
          WHERE zoom_level >= 14
            AND geometry && bbox
+         ORDER BY area DESC;
      ) AS zoom_levels
-    ORDER BY area DESC;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
