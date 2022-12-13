@@ -54,6 +54,8 @@ endif
 
 .PHONY: all
 all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
+
+.PHONY: init-dirs
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
