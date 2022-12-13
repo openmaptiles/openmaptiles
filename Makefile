@@ -54,6 +54,13 @@ endif
 
 .PHONY: all
 all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
+init-dirs:
+	@mkdir -p build/sql/parallel
+	@mkdir -p build/openmaptiles.tm2source
+	@mkdir -p data
+	@mkdir -p cache
+	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
+
 
 .PHONY: help
 help:
