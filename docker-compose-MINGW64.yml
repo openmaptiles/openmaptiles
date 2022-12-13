@@ -1,5 +1,5 @@
 # This version must match the MAKE_DC_VERSION in docker-compose.yml
-version: "2.3"
+version: "3"
 
 volumes:
   cache:

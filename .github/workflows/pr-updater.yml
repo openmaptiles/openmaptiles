@@ -1,21 +1,20 @@
 name: Update PR comments
 
 on:
-  # This number should correspond to the IGNORE_RUNS_OLDER_THAN value below.
-  # When setting up for the first time, use "on: push" instead of "on: schedule"
-  # and set IGNORE_RUNS_OLDER_THAN to a very high number until it runs once.
-  schedule:
-    - cron: '*/6 * * * *'
+  workflow_run:
+    workflows: ["OpenMapTiles Performance CI"]
+    types: [completed]
 
 jobs:
   update_PRs:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: main
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          WORKFLOW_NAME: "OpenMapTiles CI"
+          WORKFLOW_NAME: "OpenMapTiles Performance CI"
           # the name of the artifact whose content comment published by PR. Must have a single markdown file inside.
           MSG_ARTIFACT_NAME: "pr_message"
           # How far back to look for finished runs, in minutes.

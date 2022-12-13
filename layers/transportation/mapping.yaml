@@ -42,22 +42,10 @@ generalized_tables:
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
-# etldoc: osm_highway_linestring_gen_z10 -> osm_highway_linestring_gen_z9
-  highway_linestring_gen_z9:
-    source: highway_linestring_gen_z10
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
-    tolerance: ZRES10
-
-# etldoc: osm_highway_linestring_gen_z11 -> osm_highway_linestring_gen_z10
-  highway_linestring_gen_z10:
-    source: highway_linestring_gen_z11
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link')) AND NOT is_area
-    tolerance: ZRES11
-
 # etldoc: osm_highway_linestring -> osm_highway_linestring_gen_z11
   highway_linestring_gen_z11:
     source: highway_linestring
-    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link')) AND NOT is_area AND ST_IsValid(geometry)
+    sql_filter: (highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link', 'busway') OR highway = 'construction' AND construction IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link', 'busway')) AND NOT is_area AND ST_IsValid(geometry)
     tolerance: ZRES12
 
 name_field: &name
@@ -104,6 +92,14 @@ service_field: &service
   key: service
   name: service
   type: string
+access_field: &access
+  key: access
+  name: access
+  type: string
+toll_field: &toll
+  key: toll
+  name: toll
+  type: bool
 usage_field: &usage
   key: usage
   name: usage
@@ -155,10 +151,18 @@ mtb_scale_field: &mtb_scale
   key: mtb:scale
   name: mtb_scale
   type: string
+sac_scale_field: &sac_scale
+  key: sac_scale
+  name: sac_scale
+  type: string
 surface_field: &surface
   key: surface
   name: surface
   type: string
+expressway_field: &expressway
+  key: expressway
+  name: expressway
+  type: bool
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -195,6 +199,8 @@ tables:
     - *oneway
     - *area
     - *service
+    - *access
+    - *toll
     - *usage
     - *public_transport
     - *man_made
@@ -202,7 +208,9 @@ tables:
     - *foot
     - *horse
     - *mtb_scale
+    - *sac_scale
     - *surface
+    - *expressway
     mapping:
       highway:
       - motorway
@@ -229,11 +237,15 @@ tables:
       - service
       - track
       - raceway
+      - busway
       - construction
       public_transport:
       - platform
       man_made:
       - pier
+      service:
+      - driveway
+      - parking_aisle
 
 # etldoc: imposm3 -> osm_railway_linestring
   railway_linestring:
@@ -364,6 +376,7 @@ tables:
       type: bool
     - *public_transport
     - *man_made
+    - *service
     mapping:
       highway:
       - path
@@ -378,6 +391,33 @@ tables:
       man_made:
       - bridge
       - pier
+
+  # etldoc: imposm3 -> highway_point
+  highway_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: highway
+      key: highway
+      type: string
+    - name: z_order
+      type: wayzorder
+    - *layer
+    - *level
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: ref
+      key: ref
+      type: string
+    mapping:
+      highway:
+      - motorway_junction
 
 # TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
@@ -395,6 +435,13 @@ tables:
     - *ref
     - *network
     - *name
+    - name: osmc_symbol
+      key: osmc:symbol
+      type: string
+    - name: colour
+      key: colour
+      type: string
     mapping:
       route:
       - road
+      - hiking

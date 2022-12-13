@@ -1,3 +1,4 @@
+-- etldoc:  osm_poi_point ->  osm_poi_stop_centroid
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_centroid CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS
 (
@@ -5,12 +6,14 @@ SELECT uic_ref,
        count(*) AS count,
        CASE WHEN count(*) > 2 THEN ST_Centroid(ST_UNION(geometry)) END AS centroid
 FROM osm_poi_point
-WHERE nullif(uic_ref, '') IS NOT NULL
+WHERE uic_ref <> ''
   AND subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
 GROUP BY uic_ref
 HAVING count(*) > 1
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */;
 
+-- etldoc:  osm_poi_stop_centroid ->  osm_poi_stop_rank
+-- etldoc:  osm_poi_point ->  osm_poi_stop_rank
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_rank CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_rank AS
 (

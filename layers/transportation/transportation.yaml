@@ -1,5 +1,8 @@
 layer:
   id: "transportation"
+  requires:
+    tables:
+      - ne_10m_admin_0_countries
   description: |
       **transportation** contains roads, railways, aerial ways, and shipping
        lines.
@@ -22,7 +25,7 @@ layer:
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
           shipping ways), or
-          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:route).
+          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:man_made).
       values:
         motorway:
           highway: ['motorway', 'motorway_link']
@@ -45,6 +48,8 @@ layer:
           highway: track
         raceway:
           highway: raceway
+        busway:
+          highway: busway
         motorway_construction:
           __AND__:
             highway: construction
@@ -111,6 +116,12 @@ layer:
       - bridleway
       - corridor
       - platform
+    network:
+      description: |
+          The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+          See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
+          [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
+          or [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads).
     brunnel:
       description: |
           Mark whether way is a tunnel or bridge.
@@ -140,6 +151,21 @@ layer:
       - driveway
       - alley
       - parking_aisle
+    access:
+      description: |
+          Access restrictions on this road.  Supported values of the
+          [`access`](http://wiki.openstreetmap.org/wiki/Key:access) tag are `no` and `private`,
+          which resolve to `no`.
+      values:
+      - no
+    toll:
+      description: |
+          Whether this is a toll road, based on the [`toll`](http://wiki.openstreetmap.org/wiki/Key:toll) tag.
+      values: [0, 1]
+    expressway:
+      description: |
+          Whether this is an expressway, based on the [`expressway`](http://wiki.openstreetmap.org/wiki/Key:expressway) tag.
+      values: [1]
     layer:
       description: |
           Original value of the [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
@@ -174,9 +200,12 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, class, subclass, oneway, ramp, brunnel, service, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./network_type.sql
   - ./class.sql
+  - ./highway_name.sql
+  - ./update_route_member.sql
   - ./update_transportation_merge.sql
   - ./transportation.sql
 datasources:

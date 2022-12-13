@@ -18,7 +18,7 @@ $$
             CASE
                 WHEN ST_NPoints(ST_ConvexHull(geometry)) = ST_NPoints(geometry)
                     THEN ST_Centroid(geometry)
-                ELSE ST_PointOnSurface(ST_MakeValid(geometry))
+                ELSE ST_PointOnSurface(geometry)
                 END
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_polygon.osm_ids))
       AND ST_GeometryType(geometry) <> 'ST_Point'

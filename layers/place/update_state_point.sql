@@ -29,8 +29,8 @@ $$
           -- because name matching is difficult
             ST_Within(osm.geometry, ne.geometry)
           -- We leave out leess important states
-          AND ne.scalerank <= 3
-          AND ne.labelrank <= 2
+          AND ne.scalerank <= 6
+          AND ne.labelrank <= 7
     )
     UPDATE osm_state_point AS osm
         -- Normalize both scalerank and labelrank into a ranking system from 1 to 6.

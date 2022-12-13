@@ -1,0 +1,300 @@
+# Workflow to run performance tests OMT`s new Pull Requests and commits pushed into OMT repo
+
+name: OpenMapTiles Performance CI
+
+on:
+  push:
+    branches: [ master, master-tools ]
+  pull_request:
+
+jobs:
+  performance:
+    name: Evaluate performance
+    runs-on: self-hosted
+    env:
+      ## Smaller tests (runs everything in about 30 minutes)
+      ## Two test areas:  equatorial-guinea  and  liechtenstein
+      #TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=12vw07f9W0MiAHIqMztRiIMwahJfqTi21"
+      #TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --bbox 5.4172943,-1.6732196,12.3733400,4.3475256 --bbox 9.0900979,46.9688169,9.6717077,47.5258072"
+
+      # Large test, size is 79,472,850
+      #  --bbox 5.4172943,-1.6732196,12.3733400,4.3475256       `# equatorial-guinea 87,768 tiles at z14, 2.1MB, 24.9 bytes/tile [8438/7993]x[8755/8268]` \
+      #  --bbox 9.0900979,46.9688169,9.6717077,47.5258072       `# liechtenstein 1,064 tiles at z14, 2.2MB, 2,217.0 bytes/tile [8605/5727]x[8632/5764]` \
+      #  --bbox -78.7749754,38.7820235,-76.8957735,39.6985009   `# district-of-columbia 4,785 tiles at z14, 16.0MB, 3,508.9 bytes/tile [4606/6220]x[4692/6274]` \
+      #  --bbox -0.6124681,51.2268449,0.3996690,51.7873570      `# greater-london 1,974 tiles at z14, 55.5MB, 29,458.3 bytes/tile [8164/5427]x[8210/5468]` \
+      TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=18nP3f06aBBiEKhUNmAkqq30gqQnU2_VJ"
+      TEST_PERF_PARAMS: >-
+        --minzoom 0 --maxzoom 14
+        --bbox 5.4172943,-1.6732196,12.3733400,4.3475256
+        --bbox 9.0900979,46.9688169,9.6717077,47.5258072
+        --bbox -78.7749754,38.7820235,-76.8957735,39.6985009
+        --bbox -0.6124681,51.2268449,0.3996690,51.7873570
+
+      ## Large test data -- we should switch to it after everything is working ok
+      # TEST_DATA_URL: "https://drive.google.com/uc?export=download&id=1kw7XPDPd1Rc-Zi2XxGLTXdinUSq-S4pT"
+      # TEST_PERF_PARAMS: "--minzoom 0 --maxzoom 14 --test hungary --test isle-of-man"
+    steps:
+      - name: Cleanup workdir
+        id: cleanup
+        run: |
+          set -euo pipefail
+          pwd
+          ls -al .
+          shopt -s dotglob
+          rm -rf *
+
+      - name: Cache test data download
+        id: cache-testdata
+        uses: actions/cache@v2
+        with:
+          path: ci_cache
+          key: "v2-${{ env.TEST_DATA_URL }}"
+
+      - name: Download test data on cache miss
+        if: steps.cache-testdata.outputs.cache-hit != 'true'
+        run: |
+          echo "Data file does not exist, downloading $TEST_DATA_URL"
+          mkdir -p ci_cache
+          curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf "$TEST_DATA_URL"
+
+      - name: Get code
+        uses: actions/checkout@v2
+        with:
+          # Fetch the last two commits in case this is a PR,
+          # and we need to profile the base branch first
+          fetch-depth: 2
+          path: code
+
+      - name: Compute git revision hash to cache
+        id: calc
+        run: |
+          # If this is a pull request, we should cache the parent (base) revision
+          # Otherwise cache the current one
+          cd code
+          REV_HASH=$(git log -1 --format="%H")
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            # Take the first parent of the grafted commit (cannot use HEAD^1 with shallow clones)
+            REV_HASH=$(git cat-file -p $REV_HASH | awk 'NR > 1 {if(/^parent/){print $2; exit}}')
+          fi
+          echo "::set-output name=hash::$REV_HASH"
+
+      - name: Set up caching for the performance results
+        uses: actions/cache@v2
+        with:
+          path: perf_cache
+          # If profiling result cache has incompatible format, increase this "v" number
+          key: "v13-${{ steps.calc.outputs.hash }}-${{ env.TEST_DATA_URL }}"
+
+      - name: Load test data into DB and run performance test
+        id: main
+        env:
+          CACHE_SHA: "${{ steps.calc.outputs.hash }}"
+        run: |
+          profile() {
+            TIME_FORMAT="# %C
+          P\t%P\tPercentage of the CPU that this job got.  This is just user + system times divided by the total running time.  It also prints a percentage sign.
+          x\t%x\tExit status of the command.
+          -\t-----\t-- Time --------------------------------------------------------------------------------------------------
+          e\t%e\tElapsed real (wall clock) time used by the process, in seconds.
+          E\t%E\tElapsed real (wall clock) time used by the process, in [hours:]minutes:seconds.
+          U\t%U\tTotal number of CPU-seconds that the process used directly (in user mode), in seconds.
+          S\t%S\tTotal number of CPU-seconds used by the system on behalf of the process (in kernel mode), in seconds.
+          -\t-----\t-- Context Switches --------------------------------------------------------------------------------------
+          c\t%c\tNumber of times the process was context-switched involuntarily (because the time slice expired).
+          w\t%w\tNumber of times that the program was context-switched voluntarily, for instance while waiting for an I/O operation to complete.
+          -\t-----\t-- Page faults -------------------------------------------------------------------------------------------
+          F\t%F\tNumber of major, or I/O-requiring, page faults that occurred while the process was running.  These are faults where the page has actually migrated out of primary memory.
+          R\t%R\tNumber of minor, or recoverable, page faults.  These are pages that are not valid (so they fault) but which have not yet been claimed by other virtual pages.  Thus the data in the page is still valid but the system tables must be updated.
+          W\t%W\tNumber of times the process was swapped out of main memory.
+          -\t-----\t-- Memory ------------------------------------------------------------------------------------------------
+          K\t%K\tAverage total (data+stack+text) memory use of the process, in Kilobytes.
+          t\t%t\tAverage resident set size of the process, in Kilobytes.
+          p\t%p\tAverage unshared stack size of the process, in Kilobytes.
+          M\t%M\tMaximum resident set size of the process during its lifetime, in Kilobytes.
+          D\t%D\tAverage size of the process's unshared data area, in Kilobytes.
+          X\t%X\tAverage amount of shared text in the process, in Kilobytes.
+          Z\t%Z\tSystem's page size, in bytes.  This is a per-system constant, but varies between systems.
+          -\t-----\t-- Other -------------------------------------------------------------------------------------------------
+          I\t%I\tNumber of file system inputs by the process.
+          O\t%O\tNumber of file system outputs by the process.
+          k\t%k\tNumber of signals delivered to the process.
+          r\t%r\tNumber of socket messages received by the process.
+          s\t%s\tNumber of socket messages sent by the process.
+          "
+
+            # reset system for a more predictable results (hopefully)
+            sudo -- bash -c "
+              set -euo pipefail
+              echo 'Hardware reset $1 ...'
+              # Run the TRIM command (for SSDs)
+              /sbin/fstrim --all
+              # Run sync to minimize the number of dirty objects on the system
+              /bin/sync
+              # Give sync a little bit of time to finish. See https://linux.die.net/man/8/sync
+              sleep 5
+              # Free slab objects and pagecache
+              echo 3 > /proc/sys/vm/drop_caches
+              # Request compaction to reduce memory fragmentation
+              echo 1 > /proc/sys/vm/compact_memory
+              echo 'Hardware reset $1 done'
+            "
+
+            # Must use full path to get the full-featured version of time
+            # profile-*.tsv filenames are parsed using ${file:8:-4} below
+            /usr/bin/time --format "$TIME_FORMAT" --output "${PROFILE_DIR}/profile-${1}.tsv" "${@:2}"
+          }
+
+          create_db() {
+            make clean
+            make init-dirs
+            cp ../ci_cache/perf-test-areas-latest.osm.pbf data/perf-test-areas.osm.pbf
+            make destroy-db
+            make all
+            make start-db
+            profile 1_data     make import-data
+            profile 2_osm      make import-osm
+
+            if [ -f ../ci_cache/wikidata-cache.json ]; then
+              cp ../ci_cache/wikidata-cache.json cache/wikidata-cache.json
+            fi
+            profile 3_wikidata make import-wikidata
+            profile 4_sql      make import-sql
+
+            # Get database total size, in MB
+            # Once Makefile has a few more improvements, we can use this approach instead:
+            # echo $'\\set QUIET on \\a \\x off \\t \\\\ select pg_database_size(current_database())/1024/1024;' | make -s psql
+            DB_SIZE_MB=$(docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
+            docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools pg_dump --schema-only > "${PROFILE_DIR}/schema.sql"
+            echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
+          }
+
+          echo "Ensuring we have the needed dirs"
+          pwd
+          mkdir -p perf_cache
+          mkdir -p artifacts
+          mkdir -p pr_message
+          cd code
+
+          CURRENT_SHA=$(git log -1 --format="%H")
+
+          if [ ! -f ../perf_cache/results.json ]; then
+            echo "We do not have cached performance results, create them..."
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git reset --hard ${CURRENT_SHA}^1
+            fi
+
+            docker-compose pull
+            PROFILE_DIR=../perf_cache
+            create_db
+            if [ ! -f ../ci_cache/wikidata-cache.json ]; then
+              cp cache/wikidata-cache.json ../ci_cache/wikidata-cache.json
+            fi
+
+            (set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
+              test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+              --record /tileset/results.json)
+            echo "Done generating base perf results, moving them to ../perf_cache"
+            pwd
+            mv results.json ../perf_cache
+
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              # For pull requests, restore to the PR version before continuing
+              git reset --hard ${CURRENT_SHA}
+            fi
+          else
+            echo "Found cached performance results"
+          fi
+
+          docker-compose pull
+          pushd ../perf_cache
+          echo "Should be in perf_cache"
+          pwd
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            cp results.json ../artifacts/base-results.json
+            # Copy all tsv files, not just the ones with "profile-" prefix.
+            for file in *.tsv; do
+              cp "$file" "../artifacts/base-$file"
+            done
+          else
+            cp results.json ../artifacts/results.json
+            # Copy all tsv files, not just the ones with "profile-" prefix.
+            cp *.tsv ../artifacts
+          fi
+          popd
+
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            echo "Comparing pull request results with the base..."
+
+            PROFILE_DIR=../artifacts
+            create_db
+
+            echo "Copying existing perf_cache results to current dir"
+            pwd
+            cp ../perf_cache/results.json .
+            OUTPUT="$(set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
+                        test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
+                        --compare /tileset/results.json --record /tileset/pr-results.json)"
+            rm results.json
+            mv pr-results.json ../artifacts/
+
+            # Split into two parts -- before and after the ===== SUMMARY =====
+            OUT_SUMMARY="${OUTPUT##*========}"
+            OUT_DETAILS="${OUTPUT%%========*}"
+
+            pushd ../artifacts
+            PROFILING_MSG="step | total time | change | user time | change
+            --- | --- | --- | --- | ---
+            "
+            for file in profile*.tsv; do
+              new_total_time_fmt=$(grep -E '^E' "$file"   | cut -d$'\t' -f 2)
+              old_total_time=$(grep -E '^e' "base-$file"  | cut -d$'\t' -f 2)
+              new_total_time=$(grep -E '^e' "$file"       | cut -d$'\t' -f 2)
+              old_user_time=$(grep -E '^U' "base-$file"   | cut -d$'\t' -f 2)
+              new_user_time=$(grep -E '^U' "$file"        | cut -d$'\t' -f 2)
+
+              PROFILING_MSG="${PROFILING_MSG}${file:8:-4} \
+              | ${new_total_time_fmt} | $( echo "$old_total_time $new_total_time" | awk '{ if ($1 == 0) print "-"; else printf  "%.1f%%", ($2-$1)*100/$1 }' ) \
+              | $( echo "$old_user_time $new_user_time" | awk '{ if ($1 == 0) print "%s | -", $2 ; else printf  "%s | %.1f%%", $2, ($2-$1)*100/$1 }' ) \
+              "$'\n'
+            done
+
+            DB_SIZE_CHANGE=$( echo "$(cat base-db_size.tsv) $(cat db_size.tsv)" | \
+              awk '{ printf "PostgreSQL DB size in MB: %s ⇒ %s", $1, $2; if ($1 != 0) printf " (%.1f%% change)", ($2-$1)*100/$1 }' )
+
+            popd
+
+            cat > ../pr_message/message.md <<EOF
+          Results evaluating commit $(git log HEAD^2 -1 --format="%H") (merged with base $CACHE_SHA as $GITHUB_SHA). See [run details](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID).
+
+          $DB_SIZE_CHANGE
+
+          $PROFILING_MSG
+
+          \`\`\`
+          $OUT_SUMMARY
+          \`\`\`
+
+          <details>
+          <summary>expand for details...</summary>
+
+          \`\`\`
+          $OUT_DETAILS
+          \`\`\`
+
+          </details>
+          EOF
+
+          fi
+
+      - name: Save performance artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: performance_results
+          path: artifacts
+
+      - name: Save PR message artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v2
+        with:
+          name: pr_message
+          path: pr_message
