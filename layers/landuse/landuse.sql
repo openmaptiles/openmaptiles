@@ -6,7 +6,7 @@ CREATE MATERIALIZED VIEW ne_50m_urban_areas_gen_z5 AS
 SELECT
        NULL::bigint AS osm_id,
        ST_Simplify(geometry, ZRes(7)) as geometry,
-       'residential'::text AS landuse,
+       'urban_area'::text AS landuse,
        NULL::text AS amenity,
        NULL::text AS leisure,
        NULL::text AS tourism,
@@ -254,6 +254,7 @@ FROM (
          WHERE zoom_level = 4
          UNION ALL
          -- etldoc: ne_50m_urban_areas_gen_z5 -> layer_landuse:z5
+         -- etldoc: ne_50m_urban_areas_gen_z5 -> layer_landuse:z6
          SELECT osm_id,
                 geometry,
                 landuse,
@@ -263,7 +264,7 @@ FROM (
                 place,
                 waterway
          FROM ne_50m_urban_areas_gen_z5
-         WHERE zoom_level = 5
+         WHERE zoom_level BETWEEN 5 AND 6
          UNION ALL
          -- etldoc: osm_landuse_polygon_gen_z6_union -> layer_landuse:z6
          SELECT osm_id,
