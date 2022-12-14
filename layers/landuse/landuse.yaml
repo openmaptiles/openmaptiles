@@ -5,7 +5,7 @@ layer:
       - ne_50m_urban_areas
   description: |
       Landuse is used to describe use of land by humans. At lower zoom levels this is
-      from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
+      from Natural Earth data for urban areas and at higher zoom levels mostly OSM `landuse` tags.
   buffer_size: 4
   fields:
     class:
@@ -25,6 +25,7 @@ layer:
       - residential
       - commercial
       - industrial
+      - urban_area
       - garages
       - retail
       - bus_station
