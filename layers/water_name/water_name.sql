@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION layer_water_name(bbox geometry, zoom_level integer)
             (
                 osm_id       bigint,
                 geometry     geometry,
-                area         float,
+                tile_area    float,
                 name         text,
                 name_en      text,
                 name_de      text,
@@ -44,7 +44,7 @@ SELECT
         ELSE osm_id * 10 + 1
         END AS osm_id_hash,
     geometry,
-    area,
+    POWER(4,zoom_level) * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as tile_area,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
