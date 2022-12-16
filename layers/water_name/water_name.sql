@@ -6,6 +6,7 @@ CREATE OR REPLACE FUNCTION layer_water_name(bbox geometry, zoom_level integer)
             (
                 osm_id       bigint,
                 geometry     geometry,
+                area         float,
                 name         text,
                 name_en      text,
                 name_de      text,
@@ -23,6 +24,7 @@ SELECT
         ELSE osm_id * 10 + 1
         END AS osm_id_hash,
     geometry,
+    NULL::float,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
@@ -42,6 +44,7 @@ SELECT
         ELSE osm_id * 10 + 1
         END AS osm_id_hash,
     geometry,
+    area,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
@@ -61,6 +64,7 @@ SELECT
     -- etldoc: osm_marine_point ->  layer_water_name:z14_
     osm_id * 10 AS osm_id_hash,
     geometry,
+    NULL::float,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
