@@ -23,8 +23,8 @@ $$
              LEFT JOIN ne_10m_populated_places AS ne ON
             (
                 (osm.tags ? 'wikidata' AND osm.tags->'wikidata' = ne.wikidataid) OR
-                lower(osm.name) IN (lower(ne.name), lower(ne.namealt), lower(ne.meganame), lower(ne.gn_ascii), lower(ne.nameascii)) OR
-                lower(osm.name_en) IN (lower(ne.name), lower(ne.namealt), lower(ne.meganame), lower(ne.gn_ascii), lower(ne.nameascii)) OR
+                lower(osm.name) IN (lower(ne.name), lower(ne.namealt), lower(ne.meganame), lower(ne.name_en), lower(ne.nameascii)) OR
+                lower(osm.name_en) IN (lower(ne.name), lower(ne.namealt), lower(ne.meganame), lower(ne.name_en), lower(ne.nameascii)) OR
                 ne.name = unaccent(osm.name)
             )
           AND osm.place IN ('city', 'town', 'village')
