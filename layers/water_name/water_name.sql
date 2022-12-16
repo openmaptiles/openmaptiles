@@ -44,7 +44,8 @@ SELECT
         ELSE osm_id * 10 + 1
         END AS osm_id_hash,
     geometry,
-    POWER(4,zoom_level) * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as tile_area,
+    -- Percentage of a single tile covered by this feature
+    POWER(4,zoom_level) * earth_area as tile_area,
     name,
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
@@ -54,7 +55,8 @@ SELECT
 FROM osm_water_point
 WHERE geometry && bbox
   AND (
-        (zoom_level BETWEEN 9 AND 13 AND area > 70000 * 2 ^ (20 - zoom_level))
+        -- Show a label if a water feature covers at least 1/4 of a tile or z14+
+        (zoom_level BETWEEN 9 AND 13 AND POWER(4,zoom_level) * earth_area > 0.25)
         OR (zoom_level >= 14)
     )
 UNION ALL

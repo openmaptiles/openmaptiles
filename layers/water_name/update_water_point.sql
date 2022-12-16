@@ -2,6 +2,8 @@ DROP TRIGGER IF EXISTS trigger_delete_point ON osm_water_polygon;
 DROP TRIGGER IF EXISTS trigger_update_point ON osm_water_polygon;
 DROP TRIGGER IF EXISTS trigger_insert_point ON osm_water_polygon;
 
+-- etldoc:  osm_water_polygon ->  osm_water_point_view
+-- etldoc:  lake_centerline ->  osm_water_point_view
 CREATE OR REPLACE VIEW osm_water_point_view AS
 SELECT wp.osm_id,
        ST_PointOnSurface(wp.geometry) AS geometry,
@@ -9,7 +11,8 @@ SELECT wp.osm_id,
        wp.name_en,
        wp.name_de,
        update_tags(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
-       ST_Area(wp.geometry) AS area,
+       -- Area of the feature in square meters
+       ST_Area(wp.geometry) as area,
        wp.is_intermittent
 FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
@@ -17,11 +20,23 @@ WHERE ll.osm_id IS NULL
   AND wp.name <> ''
   AND ST_IsValid(wp.geometry);
 
--- etldoc:  osm_water_polygon ->  osm_water_point
--- etldoc:  lake_centerline ->  osm_water_point
+-- etldoc:  osm_water_point_view ->  osm_water_point_earth_view
+CREATE OR REPLACE VIEW osm_water_point_earth_view AS
+SELECT osm_id,
+       geometry,
+       name,
+       name_en,
+       name_de,
+       tags,
+       -- Percentage of the earth's surface covered by this feature (approximately)
+       area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as earth_area,
+       is_intermittent
+FROM osm_water_point_view;
+
+-- etldoc:  osm_water_point_earth_view ->  osm_water_point
 CREATE TABLE IF NOT EXISTS osm_water_point AS
 SELECT *
-FROM osm_water_point_view;
+FROM osm_water_point_earth_view;
 DO
 $$
     BEGIN
