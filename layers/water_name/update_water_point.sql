@@ -29,6 +29,7 @@ SELECT osm_id,
        name_de,
        tags,
        -- Percentage of the earth's surface covered by this feature (approximately)
+       -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
        area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as earth_area,
        is_intermittent
 FROM osm_water_point_view;
