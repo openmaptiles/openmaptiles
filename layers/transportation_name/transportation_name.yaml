@@ -30,6 +30,7 @@ layer:
       - ca-transcanada
       - gb-motorway
       - gb-trunk
+      - gb-primary
       - road (default)
     class:
       description: |
