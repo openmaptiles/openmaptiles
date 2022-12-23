@@ -6,7 +6,7 @@ WHERE iso_a2 = 'GB';
 CREATE OR REPLACE VIEW gbr_route_members_view AS
 SELECT 0,
        osm_id,
-       substring(ref FROM E'^[ABM][0-9AM()]+'),
+       substring(ref FROM E'^[ABM][0-9ABM()]+'),
        -- See https://wiki.openstreetmap.org/wiki/Roads_in_the_United_Kingdom
        CASE WHEN highway = 'motorway' THEN 'omt-gb-motorway'
             WHEN highway = 'trunk' THEN 'omt-gb-trunk' 
