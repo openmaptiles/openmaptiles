@@ -31,6 +31,9 @@ layer:
       - gb-motorway
       - gb-trunk
       - gb-primary
+      - gb-motorway
+      - gb-national
+      - gb-regional
       - road (default)
     class:
       description: |

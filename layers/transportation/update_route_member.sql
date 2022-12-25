@@ -1,8 +1,16 @@
-CREATE TABLE IF NOT EXISTS ne_10m_admin_0_bg_buffer AS
+-- Create bounding windows for country-specific processing
+CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
 WHERE iso_a2 = 'GB';
 
+CREATE TABLE IF NOT EXISTS ne_10m_admin_0_ie_buffer AS
+SELECT ST_Buffer(geometry, 10000)
+FROM ne_10m_admin_0_countries
+WHERE iso_a2 = 'IE';
+
+-- Assign pseudo-networks based highway classification
+-- etldoc:  osm_highway_linestring ->  gbr_route_members_view
 CREATE OR REPLACE VIEW gbr_route_members_view AS
 SELECT 0,
        osm_id,
@@ -13,17 +21,40 @@ SELECT 0,
             WHEN highway IN ('primary','secondary') THEN 'omt-gb-primary' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
-  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_bg_buffer))
+  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_gb_buffer))
   AND highway IN ('motorway', 'trunk', 'primary', 'secondary')
 ;
--- Create GBR relations (so we can use it in the same way as other relations)
+
+-- etldoc:  osm_highway_linestring ->  ire_route_members_view
+CREATE OR REPLACE VIEW ire_route_members_view AS
+SELECT 0,
+       osm_id,
+       substring(ref FROM E'^[MNRL][0-9]+'),
+       -- See https://wiki.openstreetmap.org/wiki/Ireland/Roads
+       CASE WHEN highway = 'motorway' THEN 'omt-ie-motorway'
+            WHEN highway IN ('trunk','primary') THEN 'omt-ie-national' 
+            WHEN highway IN ('secondary','tertiary') THEN 'omt-ie-regional' END AS network
+FROM osm_highway_linestring
+WHERE length(ref) > 1
+  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_ie_buffer))
+  AND highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary')
+;
+
+-- Create GBR/IRE relations (so we can use it in the same way as other relations)
 DELETE
 FROM osm_route_member
-WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary');
--- etldoc:  osm_highway_linestring ->  osm_route_member
+WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary',
+                  'omt-ie-motorway', 'omt-ie-national', 'omt-ie-national');
+
+-- etldoc:  gbr_route_members_view ->  osm_route_member
 INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
+
+-- etldoc:  ire_route_members_view ->  osm_route_member
+INSERT INTO osm_route_member (osm_id, member, ref, network)
+SELECT *
+FROM ire_route_members_view;
 
 CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text) RETURNS route_network_type AS
 $$
@@ -36,7 +67,10 @@ SELECT CASE
            WHEN network = 'omt-gb-motorway' THEN 'gb-motorway'::route_network_type
            WHEN network = 'omt-gb-trunk' THEN 'gb-trunk'::route_network_type
            WHEN network = 'omt-gb-primary' THEN 'gb-primary'::route_network_type
-           END;
+           WHEN network = 'omt-ie-motorway' THEN 'ie-motorway'::route_network_type
+           WHEN network = 'omt-ie-national' THEN 'ie-national'::route_network_type
+           WHEN network = 'omt-ie-regional' THEN 'ie-regional'::route_network_type
+            END;
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
 
@@ -55,12 +89,19 @@ BEGIN
     FROM osm_route_member AS r
         USING
             transportation_name.network_changes AS c
-    WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary')
+    WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary',
+                      'omt-ie-motorway', 'omt-ie-national', 'omt-ie-regional')
       AND r.osm_id = c.osm_id;
 
     INSERT INTO osm_route_member (osm_id, member, ref, network)
     SELECT r.*
     FROM gbr_route_members_view AS r
+             JOIN transportation_name.network_changes AS c ON
+        r.osm_id = c.osm_id;
+
+    INSERT INTO osm_route_member (osm_id, member, ref, network)
+    SELECT r.*
+    FROM ire_route_members_view AS r
              JOIN transportation_name.network_changes AS c ON
         r.osm_id = c.osm_id;
 
