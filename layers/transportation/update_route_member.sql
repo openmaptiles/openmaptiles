@@ -33,11 +33,11 @@ SELECT 0,
        -- See https://wiki.openstreetmap.org/wiki/Ireland/Roads
        CASE WHEN highway = 'motorway' THEN 'omt-ie-motorway'
             WHEN highway IN ('trunk','primary') THEN 'omt-ie-national' 
-            WHEN highway IN ('secondary','tertiary') THEN 'omt-ie-regional' END AS network
+            ELSE 'omt-ie-regional' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
   AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_ie_buffer))
-  AND highway IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary')
+  AND highway IN ('motorway', 'trunk', 'primary', 'secondary', 'unclassified')
 ;
 
 -- Create GBR/IRE relations (so we can use it in the same way as other relations)
