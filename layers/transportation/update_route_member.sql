@@ -1,26 +1,27 @@
-CREATE TABLE IF NOT EXISTS ne_10m_admin_0_bg_buffer AS
+CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
 WHERE iso_a2 = 'GB';
 
+-- etldoc:  osm_route_member ->  gbr_route_members_view
 CREATE OR REPLACE VIEW gbr_route_members_view AS
 SELECT 0,
        osm_id,
-       substring(ref FROM E'^[ABM][0-9AM()]+'),
+       substring(ref FROM E'^[ABM][0-9ABM()]+'),
        -- See https://wiki.openstreetmap.org/wiki/Roads_in_the_United_Kingdom
        CASE WHEN highway = 'motorway' THEN 'omt-gb-motorway'
             WHEN highway = 'trunk' THEN 'omt-gb-trunk' 
             WHEN highway IN ('primary','secondary') THEN 'omt-gb-primary' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
-  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_bg_buffer))
+  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_gb_buffer))
   AND highway IN ('motorway', 'trunk', 'primary', 'secondary')
 ;
 -- Create GBR relations (so we can use it in the same way as other relations)
 DELETE
 FROM osm_route_member
 WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary');
--- etldoc:  osm_highway_linestring ->  osm_route_member
+-- etldoc:  gbr_route_members_view ->  osm_route_member
 INSERT INTO osm_route_member (osm_id, member, ref, network)
 SELECT *
 FROM gbr_route_members_view;
