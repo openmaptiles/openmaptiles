@@ -104,4 +104,9 @@ tables:
       - dock
       water:
       - river
+      - stream
+      - canal
+      - ditch
+      - drain
+      - lake
     type: polygon
