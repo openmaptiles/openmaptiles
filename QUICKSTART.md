@@ -363,11 +363,12 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh yukon                        # Yukon, Canada
 ```
 ### Using your own OSM data
-Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an osm.pbf inside/
+Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *-latest.osm.pbf inside. Inside of folder have to be `docker-compose-config.yml` file too, otherwize whole folder `data/` will be deleted and `download-osm` will try to download osm.pbf file from `geofabric`, `osmfr` or `bbbike`.
 
 ```
 mkdir -p data
-mv my.osm.pbf data/
+mv my-latest.osm.pbf data/
+make generate-bbox-file
 ./quickstart.sh my
 ```
 
@@ -384,20 +385,26 @@ and the generated maps are going to be available in webbrowser on [localhost:808
 This is only a quick preview, because your mbtiles only generated to zoom level 7 !
 
 
-### Change MIN_ZOOM and MAX_ZOOM
+### Set which zooms to generate
 
-modify the settings in the `.env`  file, the defaults :
-* QUICKSTART_MIN_ZOOM=0
-* QUICKSTART_MAX_ZOOM=7
-
-and re-start  `./quickstart.sh `
-*  the new config file re-generating to here  ./data/docker-compose-config.yml
-*  Known problems:
-    * If you use same area - then the ./data/docker-compose-config.yml not re-generating, so you have to modify by hand!
+modify the settings in the `.env` file, the defaults:
+* `MIN_ZOOM=0`
+* `MAX_ZOOM=7`
 
 Hints:
-* Small increments! Never starts with the MAX_ZOOM = 14
-* The suggested  MAX_ZOOM = 14  - use only with small extracts
+* Small increments! Never starts with the `MAX_ZOOM = 14`
+* The suggested  `MAX_ZOOM = 14`  - use only with small extracts
+
+### Set the bounding box to generate
+
+By default, tile generation is done for the full extent of the area.
+If you want to generate a tiles for a smaller extent, modify the settings in the `.env` file, the default:
+* `BBOX=-180.0,-85.0511,180.0,85.0511`
+
+Delete the `./data/<area>.bbox` file, and re-start `./quickstart.sh <area>`
+
+Hint:
+* The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
 
 ### Check other commands
 
@@ -411,12 +418,11 @@ the current output:
  OpenMapTiles  https://github.com/openmaptiles/openmaptiles
 Hints for testing areas
   make download-geofabrik-list         # list actual geofabrik OSM extracts for download -> <<your-area>>
-  make list                            # list actual geofabrik OSM extracts for download -> <<your-area>>
   ./quickstart.sh <<your-area>>        # example:  ./quickstart.sh madagascar
 
 Hints for designers:
   make start-postserve                 # start Postserver + Maputnik Editor [ see localhost:8088 ]
-  make start-tileserver                # start klokantech/tileserver-gl [ see localhost:8080 ]
+  make start-tileserver                # start maptiler/tileserver-gl [ see localhost:8080 ]
 
 Hints for developers:
   make                                 # build source code
@@ -425,17 +431,15 @@ Hints for developers:
   make psql-list-tables                # list all PostgreSQL tables
   make psql-vacuum-analyze             # PostgreSQL: VACUUM ANALYZE
   make psql-analyze                    # PostgreSQL: ANALYZE
-  make generate-qareports              # generate reports [./build/qareports]
+  make generate-qa                     # statistics for a given layer's field
   make generate-devdoc                 # generate devdoc  [./build/devdoc]
-  make import-sql-dev                  # start import-sql  /bin/bash terminal
-  make import-osm-dev                  # start import-osm  /bin/bash terminal (imposm3)
-  make clean-docker                    # remove docker containers, PG data volume
-  make forced-clean-sql                # drop all PostgreSQL tables for clean environment
+  make tools-dev                       # start import-sql  /bin/bash terminal
+  make db-destroy                      # remove docker containers, PG data volume
   make docker-unnecessary-clean        # clean unnecessary docker image(s) and container(s)
   make refresh-docker-images           # refresh openmaptiles docker images from Docker HUB
   make remove-docker-images            # remove openmaptiles docker images
-  make pgclimb-list-views              # list PostgreSQL public schema views
-  make pgclimb-list-tables             # list PostgreSQL public schema tables
+  make list-views                      # list PostgreSQL public schema views
+  make list-tables                     # list PostgreSQL public schema tables
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat ./quickstart.log                 # backup  of the last ./quickstart.sh
   make help                            # help about available commands

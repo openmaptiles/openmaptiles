@@ -19,11 +19,12 @@ layer:
       - helipad
       - taxiway
       - apron
+      - gate
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, ref, class FROM layer_aeroway(!bbox!, z(!scale_denominator!))) AS t
 schema:
-  - ./layer.sql
+  - ./aeroway.sql
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml

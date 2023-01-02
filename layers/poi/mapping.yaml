@@ -127,14 +127,11 @@ tables:
   # etldoc: imposm3 -> osm_poi_point
   poi_point:
     type: point
-    fields: *poi_fields
+    columns: *poi_fields
     mapping: *poi_mapping
 
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
-    fields: *poi_fields
+    columns: *poi_fields
     mapping: *poi_mapping
-
-tags:
-  load_all: true

@@ -5,9 +5,14 @@ layer:
       this is welcomed.
   buffer_size: 4
   datasource:
-    query: (SELECT geometry FROM layer_building_no_height(!bbox!, z(!scale_denominator!))) AS t
+    geometry_field: geometry
+    key_field: osm_id
+    key_field_as_attribute: no
+    srid: 900913
+    query: (SELECT osm_id, geometry FROM layer_building_no_height(!bbox!, z(!scale_denominator!))) AS t
   fields: {}
 schema:
+  - ./update_building.sql
   - ./building.sql
 datasources:
   - type: imposm3
