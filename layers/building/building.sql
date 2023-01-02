@@ -37,7 +37,7 @@ SELECT
     obr.role IS NOT NULL AS hide_3d
 FROM osm_building_polygon obp
          LEFT JOIN osm_building_relation obr ON
-        obp.osm_id >= -1e17 AND
+        obp.osm_id >= 0 AND
         obr.member = obp.osm_id AND
         obr.role = 'outline'
 WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
@@ -82,9 +82,22 @@ SELECT geometry,
        CASE WHEN hide_3d THEN TRUE END AS hide_3d
 FROM (
          SELECT
-        -- etldoc: osm_building_polygon -> layer_building:z14_
-         DISTINCT ON (osm_id) osm_id,
-                                geometry,
+             -- etldoc: osm_building_block_gen_z13 -> layer_building:z13
+             osm_id,
+             geometry,
+             NULL::int AS render_height,
+             NULL::int AS render_min_height,
+             NULL::text AS material,
+             NULL::text AS colour,
+             FALSE AS hide_3d
+         FROM osm_building_block_gen_z13
+         WHERE zoom_level = 13
+           AND geometry && bbox
+         UNION ALL
+         SELECT
+                                  -- etldoc: osm_building_polygon -> layer_building:z14_
+             DISTINCT ON (osm_id) osm_id,
+                                  geometry,
                                   ceil(COALESCE(height, levels * 3.66, 5))::int AS render_height,
                                   floor(COALESCE(min_height, min_level * 3.66, 0))::int AS render_min_height,
                                   material,
@@ -119,5 +132,4 @@ $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE
                 ;
-
 -- not handled: where a building outline covers building parts

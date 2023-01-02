@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS place_island_polygon.osm_ids
 CREATE OR REPLACE FUNCTION update_osm_island_polygon(full_update boolean) RETURNS void AS
 $$
     UPDATE osm_island_polygon
-    SET geometry = ST_PointOnSurface(ST_MakeValid(geometry)
-   ) WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_island_polygon.osm_ids))
+    SET geometry = ST_PointOnSurface(geometry)
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM place_island_polygon.osm_ids))
       AND ST_GeometryType(geometry) <> 'ST_Point'
       AND ST_IsValid(geometry);
 

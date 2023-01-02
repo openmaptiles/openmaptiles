@@ -1,5 +1,10 @@
 layer:
   id: "place"
+  requires:
+    tables:
+      - ne_10m_admin_1_states_provinces
+      - ne_10m_admin_0_countries
+      - ne_10m_admin_1_states_provinces
   description: |
       The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
       [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate) and [cities](http://wiki.openstreetmap.org/wiki/Key:place).
@@ -27,16 +32,18 @@ layer:
       - continent
       - country
       - state
+      - province
       - city
       - town
       - village
       - hamlet
       - suburb
+      - quarter
       - neighbourhood
       - isolated_dwelling
     iso_a2:
       description: |
-          Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+          Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Available only for `class=country`.
           Original value of the
           [`country_code_iso3166_1_alpha_2`](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry) tag.
     rank:

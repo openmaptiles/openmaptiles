@@ -1,5 +1,8 @@
 layer:
   id: "landuse"
+  requires:
+    tables:
+      - ne_50m_urban_areas
   description: |
       Landuse is used to describe use of land by humans. At lower zoom levels this is
       from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
@@ -22,6 +25,7 @@ layer:
       - residential
       - commercial
       - industrial
+      - garages
       - retail
       - bus_station
       - school
@@ -37,12 +41,14 @@ layer:
       - theme_park
       - zoo
       - suburb
+      - quarter
       - neighbourhood
       - dam
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./class.sql
   - ./landuse.sql
 datasources:
   - type: imposm3

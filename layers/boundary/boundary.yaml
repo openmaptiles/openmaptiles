@@ -1,5 +1,13 @@
 layer:
   id: "boundary"
+  requires:
+    tables:
+      - osm_border_linestring
+      - ne_10m_admin_0_countries
+      - ne_10m_admin_0_boundary_lines_land
+      - ne_10m_admin_1_states_provinces_lines
+      - ne_50m_admin_0_boundary_lines_land
+      - ne_110m_admin_0_boundary_lines_land
   description: |
       Contains administrative boundaries as linestrings.
       Until z4 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which
