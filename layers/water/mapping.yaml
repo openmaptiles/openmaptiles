@@ -108,5 +108,4 @@ tables:
       - canal
       - ditch
       - drain
-      - lake
     type: polygon
