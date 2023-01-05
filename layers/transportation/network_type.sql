@@ -15,11 +15,22 @@ $$
         WHEN undefined_object THEN
             CREATE TYPE route_network_type AS enum (
                 'us-interstate', 'us-highway', 'us-state',
-                'ca-transcanada',
+                'ca-transcanada', 'ca-provincial-arterial', 'ca-provincial',
                 'gb-motorway', 'gb-trunk'
                 );
     END
 $$;
+
+-- Top-level national route networks that should display at the lowest zooms
+CREATE OR REPLACE FUNCTION osm_national_network(network text) RETURNS boolean AS
+$$
+    SELECT network <> '' AND network IN (
+        -- Canada
+        'ca-transcanada', 'ca-provincial-arterial',
+        -- United States
+        'us-interstate');
+$$ LANGUAGE sql IMMUTABLE
+                PARALLEL SAFE;
 
 DO
 $$
