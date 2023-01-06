@@ -26,7 +26,8 @@ layer:
       description: |
           All water polygons from [OpenStreetMapData](http://osmdata.openstreetmap.de/) have the class `ocean`.
           Water bodies with the [`water=river`](http://wiki.openstreetmap.org/wiki/Tag:water=river) tag are classified as river.  Wet and dry docks
-          tagged [`waterway=dock`](http://wiki.openstreetmap.org/wiki/Tag:waterway=dock) are classified as a `dock`. 
+          tagged [`waterway=dock`](http://wiki.openstreetmap.org/wiki/Tag:waterway=dock) are classified as a `dock`.
+          Various minor waterbodies are classified as a `pond`.
           Swimming pools tagged [`leisure=swimming_pool`](https://wiki.openstreetmap.org/wiki/Tag:leisure=swimming_pool) are classified as a `swimming_pool`
           All other water bodies are classified as `lake`.
       values:
@@ -34,6 +35,8 @@ layer:
           waterway: 'dock'
         river:
           water: 'river'
+        pond:
+          water: ['pond', 'basin', 'wastewater']
         lake:
         ocean:
         swimming_pool:
