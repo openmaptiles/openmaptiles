@@ -21,7 +21,6 @@ layer:
       - strait
       - sea
       - ocean
-    tile_area: Surface area of the feature, in tiles (1.0 = feature is the size of 1 tile)
     intermittent:
       description: |
         Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) lake.
@@ -33,7 +32,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, tile_area, name, name_en, name_de, {name_languages}, class, intermittent FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, intermittent FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_marine_point.sql
   - ./update_water_lakeline.sql
