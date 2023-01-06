@@ -282,7 +282,7 @@
           "bridge"
         ]
       ],
-      "order": 103
+      "order": 111
     },
     {
       "id": "waterway-bridge",
@@ -322,7 +322,7 @@
           "bridge"
         ]
       ],
-      "order": 104
+      "order": 112
     },
     {
       "id": "water_way_name",
@@ -367,7 +367,7 @@
           "LineString"
         ]
       ],
-      "order": 142
+      "order": 151
     }
   ]
 }
