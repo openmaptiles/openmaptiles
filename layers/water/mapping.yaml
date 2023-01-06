@@ -107,4 +107,7 @@ tables:
       - dock
       water:
       - river
+      - pond
+      - basin
+      - wastewater
     type: polygon
