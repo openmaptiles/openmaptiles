@@ -71,11 +71,11 @@ SELECT
     is_intermittent::int AS intermittent
 FROM osm_marine_point
 WHERE geometry && bbox
-  AND (
-        place = 'ocean'
-        OR (zoom_level >= "rank" AND "rank" IS NOT NULL)
-        OR (zoom_level >= 8)
-    );
+  AND CASE
+      WHEN place = 'ocean' THEN TRUE
+      WHEN zoom_level >= "rank" AND "rank" IS NOT NULL THEN TRUE
+      WHEN "natural" = 'bay' THEN zoom_level >= 13
+      ELSE zoom_level >= 8 END;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;
