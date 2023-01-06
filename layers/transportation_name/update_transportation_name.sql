@@ -45,7 +45,7 @@ FROM (
          UNION ALL
 
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
-                transportation_name_tags(NULL::geometry, tags, name, name_en, name_de) AS tags,
+                transportation_name_tags(NULL::geometry, tags, name) AS tags,
                 NULL AS ref,
                 'shipway' AS highway,
                 shipway AS subclass,
@@ -65,11 +65,11 @@ FROM (
                 NULL::int AS route_rank
          FROM osm_shipway_linestring
          WHERE name <> ''
-         GROUP BY name, name_en, name_de, tags, subclass, "level", layer
+         GROUP BY name, tags, subclass, "level", layer
          UNION ALL
 
          SELECT ST_LineMerge(ST_Collect(geometry)) AS geometry,
-                transportation_name_tags(NULL::geometry, tags, name, name_en, name_de) AS tags,
+                transportation_name_tags(NULL::geometry, tags, name) AS tags,
                 NULL AS ref,
                 'aerialway' AS highway,
                 aerialway AS subclass,
@@ -89,7 +89,7 @@ FROM (
                 NULL::int AS route_rank
          FROM osm_aerialway_linestring
          WHERE name <> ''
-         GROUP BY name, name_en, name_de, tags, subclass, "level", layer
+         GROUP BY name, tags, subclass, "level", layer
      ) AS highway_union
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(tags->'name', ''), coalesce(ref, ''));
@@ -294,7 +294,7 @@ BEGIN
     FROM (
         SELECT hl.geometry,
             hl.osm_id,
-            transportation_name_tags(hl.geometry, hl.tags, hl.name, hl.name_en, hl.name_de) AS tags,
+            transportation_name_tags(hl.geometry, hl.tags, hl.name) AS tags,
             rm1.network_type,
             CASE
                 WHEN rm1.network_type IS NOT NULL AND rm1.ref::text <> ''
