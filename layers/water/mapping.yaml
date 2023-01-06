@@ -108,4 +108,7 @@ tables:
       - canal
       - ditch
       - drain
+      - pond
+      - basin
+      - wastewater
     type: polygon

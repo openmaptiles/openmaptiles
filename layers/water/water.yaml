@@ -31,6 +31,7 @@ layer:
           [`water=ditch`](http://wiki.openstreetmap.org/wiki/Tag:water=ditch), or
           [`water=drain`](http://wiki.openstreetmap.org/wiki/Tag:water=drain) tags are classified as river.  Wet and dry docks
           tagged [`waterway=dock`](http://wiki.openstreetmap.org/wiki/Tag:waterway=dock) are classified as a `dock`.
+          Various minor waterbodies are classified as a `pond`.
           Swimming pools tagged [`leisure=swimming_pool`](https://wiki.openstreetmap.org/wiki/Tag:leisure=swimming_pool) are classified as a `swimming_pool`
           All other water bodies are classified as `lake`.
       values:
@@ -38,6 +39,8 @@ layer:
           waterway: 'dock'
         river:
           water: ['river', 'stream', 'canal', 'ditch', 'drain']
+        pond:
+          water: ['pond', 'basin', 'wastewater']
         lake:
         ocean:
         swimming_pool:

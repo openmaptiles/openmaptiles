@@ -85,7 +85,7 @@
           "suburb"
         ]
       ],
-      "order": 184
+      "order": 193
     },
     {
       "id": "place_village",
@@ -128,7 +128,7 @@
           "village"
         ]
       ],
-      "order": 189
+      "order": 198
     },
     {
       "id": "place_town",
@@ -176,7 +176,7 @@
           "town"
         ]
       ],
-      "order": 190
+      "order": 199
     },
     {
       "id": "place_state",
@@ -227,7 +227,7 @@
           3
         ]
       ],
-      "order": 191
+      "order": 200
     },
     {
       "id": "place_city",
@@ -310,7 +310,7 @@
           1
         ]
       ],
-      "order": 192
+      "order": 201
     },
     {
       "id": "place_capital",
@@ -395,7 +395,7 @@
           2
         ]
       ],
-      "order": 193
+      "order": 202
     },
     {
       "id": "country_other",
@@ -448,7 +448,7 @@
           "iso_a2"
         ]
       ],
-      "order": 194
+      "order": 203
     },
     {
       "id": "country_3",
@@ -517,7 +517,7 @@
           "iso_a2"
         ]
       ],
-      "order": 195
+      "order": 204
     },
     {
       "id": "country_2",
@@ -586,7 +586,7 @@
           "iso_a2"
         ]
       ],
-      "order": 196
+      "order": 205
     },
     {
       "id": "country_1",
@@ -655,7 +655,7 @@
           "iso_a2"
         ]
       ],
-      "order": 197
+      "order": 206
     }
   ]
 }
