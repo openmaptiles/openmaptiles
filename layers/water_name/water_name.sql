@@ -31,7 +31,7 @@ SELECT
     is_intermittent::int AS intermittent
 FROM osm_water_lakeline
 WHERE geometry && bbox
-  AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
+  AND ((zoom_level BETWEEN 3 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
     OR (zoom_level >= 14))
 UNION ALL
 SELECT
