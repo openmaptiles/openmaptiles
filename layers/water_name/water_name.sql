@@ -46,7 +46,7 @@ SELECT
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    'lake'::text AS class,
+    class,
     is_intermittent::int AS intermittent
 FROM osm_water_point
 WHERE geometry && bbox

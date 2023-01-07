@@ -10,6 +10,11 @@ SELECT wp.osm_id,
        wp.name,
        wp.name_en,
        wp.name_de,
+       CASE
+           WHEN "natural" = 'bay' THEN 'bay'
+           WHEN place = 'sea' THEN 'sea'
+           ELSE 'lake'
+       END AS class,
        update_tags(wp.tags, ST_PointOnSurface(wp.geometry)) AS tags,
        -- Area of the feature in square meters
        ST_Area(wp.geometry) as area,
@@ -27,6 +32,7 @@ SELECT osm_id,
        name,
        name_en,
        name_de,
+       class,
        tags,
        -- Percentage of the earth's surface covered by this feature (approximately)
        -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
