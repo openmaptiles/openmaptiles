@@ -53,7 +53,7 @@ WHERE geometry && bbox
   AND (
         -- Show a label if a water feature covers at least 1/4 of a tile or z14+
         (tags->'place' IN ('sea', 'ocean') AND POWER(4,zoom_level) * earth_area > 0.25)
-        OR (zoom_level BETWEEN 9 AND 13 AND POWER(4,zoom_level) * earth_area > 0.25)
+        OR (zoom_level BETWEEN 3 AND 13 AND POWER(4,zoom_level) * earth_area > 0.25)
         OR (zoom_level >= 14)
     )
 UNION ALL
