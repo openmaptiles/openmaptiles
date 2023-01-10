@@ -82,7 +82,8 @@
           "island",
           "islet",
           "neighbourhood",
-          "suburb"
+          "suburb",
+          "borough"
         ]
       ],
       "order": 193
