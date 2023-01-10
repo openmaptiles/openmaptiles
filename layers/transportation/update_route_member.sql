@@ -1,10 +1,12 @@
 -- Create bounding windows for country-specific processing
 
+-- etldoc: ne_10m_admin_0_countries ->  ne_10m_admin_0_gb_buffer
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
 WHERE iso_a2 = 'GB';
 
+-- etldoc: ne_10m_admin_0_countries ->  ne_10m_admin_0_ie_buffer
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_ie_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
@@ -12,6 +14,7 @@ WHERE iso_a2 = 'IE';
 
 -- Assign pseudo-networks based highway classification
 -- etldoc:  osm_highway_linestring ->  gbr_route_members_view
+-- etldoc:  ne_10m_admin_0_gb_buffer ->  gbr_route_members_view
 CREATE OR REPLACE VIEW gbr_route_members_view AS
 SELECT 0,
        osm_id,
@@ -27,6 +30,7 @@ WHERE length(ref) > 1
 ;
 
 -- etldoc:  osm_highway_linestring ->  ire_route_members_view
+-- etldoc:  ne_10m_admin_0_ie_buffer ->  ire_route_members_view
 CREATE OR REPLACE VIEW ire_route_members_view AS
 SELECT 0,
        osm_id,
@@ -42,6 +46,7 @@ WHERE length(ref) > 1
 ;
 
 -- Create GBR/IRE relations (so we can use it in the same way as other relations)
+-- etldoc:  osm_route_member ->  osm_route_member
 DELETE
 FROM osm_route_member
 WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary',
@@ -151,6 +156,7 @@ ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int,
                              ADD COLUMN IF NOT EXISTS rank int;
 
 -- One-time load of concurrency indexes; updates occur via trigger
+-- etldoc:  osm_route_member ->  osm_route_member
 INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
   SELECT
     id,
@@ -164,11 +170,13 @@ INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
   FROM osm_route_member
   ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index, rank = EXCLUDED.rank;
 
+-- etldoc:  osm_route_member ->  osm_highway_linestring
 UPDATE osm_highway_linestring hl
   SET network = rm.network_type
   FROM osm_route_member rm
   WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
 
+-- etldoc:  osm_route_member ->  osm_highway_linestring_gen_z11
 UPDATE osm_highway_linestring_gen_z11 hl
   SET network = rm.network_type
   FROM osm_route_member rm
