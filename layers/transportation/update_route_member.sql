@@ -1,4 +1,5 @@
 -- Create bounding windows for country-specific processing
+
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
