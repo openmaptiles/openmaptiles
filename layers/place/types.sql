@@ -4,7 +4,7 @@ $$
         PERFORM 'city_place'::regtype;
     EXCEPTION
         WHEN undefined_object THEN
-            CREATE TYPE city_place AS enum ('city', 'town', 'village', 'hamlet', 'suburb', 'quarter', 'neighbourhood', 'isolated_dwelling');
+            CREATE TYPE city_place AS enum ('city', 'town', 'village', 'hamlet', 'borough', 'suburb', 'quarter', 'neighbourhood', 'isolated_dwelling');
     END
 $$;
 
