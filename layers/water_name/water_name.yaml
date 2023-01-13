@@ -14,9 +14,11 @@ layer:
     name_de: German name `name:de` if available, otherwise `name` or `name:en`.
     class:
       description: |
-          Distinguish between `lake`, `ocean` and `sea`.
+          Distinguish between `lake`, `ocean`, `bay`, `strait`, and `sea`.
       values:
       - lake
+      - bay
+      - strait
       - sea
       - ocean
     intermittent:

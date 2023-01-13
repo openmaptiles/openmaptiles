@@ -66,6 +66,9 @@ tables:
       type: string
     - name: tags
       type: hstore_tags
+    - name: place
+      key: place
+      type: string
     - name: natural
       key: natural
       type: string
@@ -104,4 +107,7 @@ tables:
       - dock
       water:
       - river
+      - pond
+      - basin
+      - wastewater
     type: polygon
