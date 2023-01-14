@@ -107,6 +107,10 @@ tables:
       - dock
       water:
       - river
+      - stream
+      - canal
+      - ditch
+      - drain
       - pond
       - basin
       - wastewater
