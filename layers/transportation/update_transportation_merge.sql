@@ -327,7 +327,12 @@ BEGIN
     FROM osm_transportation_merge_linestring_gen_z6
     WHERE
         (update_id IS NULL OR id = update_id) AND
-        -- Current view: motorway/trunk
+        -- Current view: all motorways and trunks of national-importance
+        (highway = 'motorway'
+            OR construction = 'motorway'
+            -- Allow trunk roads that are part of a nation's most important route network to show at z4
+            OR (highway = 'trunk' AND osm_national_network(network))
+        ) AND
         ST_Length(geometry) > 500;
 
     DELETE FROM osm_transportation_merge_linestring_gen_z4
@@ -349,7 +354,8 @@ BEGIN
     FROM osm_transportation_merge_linestring_gen_z5
     WHERE
         (update_id IS NULL OR id = update_id) AND
-        (highway = 'motorway' OR construction = 'motorway') AND
+        osm_national_network(network) AND
+        -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000;
 END;
 $$ LANGUAGE plpgsql;

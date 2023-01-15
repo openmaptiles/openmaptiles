@@ -480,7 +480,7 @@ generate-changed-tiles: data/tiles.txt
 	fi
 
 .PHONY: start-tileserver
-start-tileserver: init-dirs
+start-tileserver: init-dirs build-style download-fonts
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
