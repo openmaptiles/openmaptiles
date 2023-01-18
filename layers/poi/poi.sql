@@ -83,6 +83,7 @@ FROM (
                  ((subclass = 'station' AND mapping_key = 'railway')
                  OR subclass IN ('halt', 'ferry_terminal')) THEN TRUE 
                WHEN zoom_level BETWEEN 10 AND 14 THEN
+                 subclass IN ('university', 'college') AND
                  POWER(4,zoom_level)
                  -- Compute percentage of the earth's surface covered by this feature (approximately)
                  -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
