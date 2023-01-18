@@ -68,20 +68,6 @@ FROM (
 
          -- etldoc: osm_poi_polygon ->  layer_poi:z12
          -- etldoc: osm_poi_polygon ->  layer_poi:z13
-         SELECT *,
-                NULL::integer AS agg_stop,
-                CASE
-                    WHEN osm_id < 0 THEN -osm_id * 10 + 4
-                    ELSE osm_id * 10 + 1
-                    END AS osm_id_hash
-         FROM osm_poi_polygon
-         WHERE geometry && bbox
-           AND zoom_level BETWEEN 12 AND 13
-           AND ((subclass = 'station' AND mapping_key = 'railway')
-             OR subclass IN ('halt', 'ferry_terminal'))
-
-         UNION ALL
-
          -- etldoc: osm_poi_polygon ->  layer_poi:z14_
          SELECT *,
                 NULL::integer AS agg_stop,
@@ -90,17 +76,17 @@ FROM (
                     ELSE osm_id * 10 + 1
                     END AS osm_id_hash
          FROM osm_poi_polygon
-         WHERE geometry && bbox
-           AND (
-            zoom_level >= 14 OR
-            zoom_level >= 10 AND
-              POWER(4,zoom_level)
-              -- Compute percentage of the earth's surface covered by this feature (approximately)
-              -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
-              * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180))
-              -- Match features that are at least 10% of a tile at this zoom
-              > 0.10
-           )
+         WHERE geometry && bbox AND
+           CASE
+               WHEN ((subclass = 'station' AND mapping_key = 'railway')
+                 OR subclass IN ('halt', 'ferry_terminal')) THEN zoom_level >= 12
+               WHEN POWER(4,zoom_level)
+                 -- Compute percentage of the earth's surface covered by this feature (approximately)
+                 -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
+                 * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180))
+                 -- Match features that are at least 10% of a tile at this zoom
+                 > 0.10 THEN zoom_level >= 10
+               ELSE zoom_level >= 14 END
      ) AS poi_union
 ORDER BY "rank"
 $$ LANGUAGE SQL STABLE
