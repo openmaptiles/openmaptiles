@@ -80,12 +80,13 @@ FROM (
            CASE
                WHEN ((subclass = 'station' AND mapping_key = 'railway')
                  OR subclass IN ('halt', 'ferry_terminal')) THEN zoom_level >= 12
-               WHEN POWER(4,zoom_level)
+               WHEN zoom_level BETWEEN 10 AND 14 THEN
+                 POWER(4,zoom_level)
                  -- Compute percentage of the earth's surface covered by this feature (approximately)
                  -- The constant below is 111,842^2 * 180 * 180, where 111,842 is the length of one degree of latitude at the equator in meters.
                  * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180))
                  -- Match features that are at least 10% of a tile at this zoom
-                 > 0.10 THEN zoom_level >= 10
+                 > 0.10
                ELSE zoom_level >= 14 END
      ) AS poi_union
 ORDER BY "rank"
