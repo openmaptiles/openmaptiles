@@ -78,8 +78,10 @@ FROM (
          FROM osm_poi_polygon
          WHERE geometry && bbox AND
            CASE
-               WHEN ((subclass = 'station' AND mapping_key = 'railway')
-                 OR subclass IN ('halt', 'ferry_terminal')) THEN zoom_level >= 12
+               WHEN zoom_level >= 14 THEN TRUE
+               WHEN zoom_level >= 12 AND
+                 ((subclass = 'station' AND mapping_key = 'railway')
+                 OR subclass IN ('halt', 'ferry_terminal')) THEN TRUE 
                WHEN zoom_level BETWEEN 10 AND 14 THEN
                  POWER(4,zoom_level)
                  -- Compute percentage of the earth's surface covered by this feature (approximately)
@@ -87,7 +89,7 @@ FROM (
                  * area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180))
                  -- Match features that are at least 10% of a tile at this zoom
                  > 0.10
-               ELSE zoom_level >= 14 END
+               ELSE FALSE END
      ) AS poi_union
 ORDER BY "rank"
 $$ LANGUAGE SQL STABLE
