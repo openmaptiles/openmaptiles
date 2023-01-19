@@ -12,6 +12,15 @@ tables:
     - name: housenumber
       key: addr:housenumber
       type: string
+    - name: street
+      key: addr:street
+      type: string
+    - name: block_number
+      key: addr:block_number
+      type: string
+    - name: has_name
+      key: name
+      type: string
     type_mappings:
       points:
         addr:housenumber:
