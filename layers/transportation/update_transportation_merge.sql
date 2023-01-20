@@ -12,14 +12,14 @@ DROP TRIGGER IF EXISTS trigger_refresh_z11 ON transportation.updates_z11;
 CREATE OR REPLACE FUNCTION visible_brunnel(g geometry, brunnel boolean, zoom_level integer)
     RETURNS boolean AS
 $$
-SELECT CASE
-    WHEN brunnel IS FALSE THEN FALSE
-    -- Width of a tile in metters (111,842 is the length of one degree of latitude at the equator in meters)
-    -- 111,842 * 180 / 4^zoom_level
-    --  = 20131560 / POW(4, zoom_level)
-    -- Drop brunnel if length of way < 0.5% of tile width (less than 3 pixels)
-    ELSE ST_Length(g) / (20131560 / POW(4, zoom_level)) < 0.005 END;  --TODO add cosine
-$$ LANGUAGE SQL IMMUTABLE
+SELECT
+    brunnel AND
+    -- Width of a tile in meters (111,842 is the length of one degree of latitude at the equator in meters)
+    -- 111,842 * 180 / 2^zoom_level
+    --  = 20131560 / POW(2, zoom_level)
+    -- Drop brunnel if length of way < 2% of tile width (less than 3 pixels)
+    ST_Length(g) / (20131560 / POW(2, zoom_level)) > 0.02  --TODO add cosine
+$$ LANGUAGE SQL IMMUTABLE LEAKPROOF
                 PARALLEL SAFE;
 
 -- Instead of using relations to find out the road names we
@@ -38,8 +38,8 @@ SELECT
     highway,
     subclass,
     brunnel,
-    "level",
     sac_scale,
+    "level",
     layer,
     indoor,
     network_type,
@@ -136,7 +136,28 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
            ELSE NULL::text END AS access,
        toll,
        layer
-FROM osm_highway_linestring_gen_z11
+FROM (
+    -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+    SELECT geometry,
+           NULL::bigint AS osm_id,
+           highway,
+           network,
+           construction,
+           visible_brunnel(geometry, is_bridge, 11) AS is_bridge,
+           visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
+           visible_brunnel(geometry, is_ford, 11) AS is_ford,
+           expressway,
+           z_order,
+           bicycle,
+           foot,
+           horse,
+           mtb_scale,
+           sac_scale,
+           access,
+           toll,
+           layer
+    FROM osm_highway_linestring_gen_z11
+) osm_highway_linestring_normalized_brunnel_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
 GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer
 ;
@@ -178,7 +199,28 @@ BEGIN
         access,
         toll,
         layer
-    FROM osm_transportation_merge_linestring_gen_z11
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            NULL::bigint AS osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 11) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 11) AS is_ford,
+            expressway,
+            z_order,
+            bicycle,
+            foot,
+            horse,
+            mtb_scale,
+            sac_scale,
+            access,
+            toll,
+            layer
+        FROM osm_highway_linestring_gen_z11
+    ) osm_highway_linestring_normalized_brunnel_z11
     WHERE (update_id IS NULL OR id = update_id)
         AND highway NOT IN ('tertiary', 'tertiary_link', 'busway', 'bus_guideway')
         AND construction NOT IN ('tertiary', 'tertiary_link', 'busway', 'bus_guideway')
