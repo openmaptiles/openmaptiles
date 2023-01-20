@@ -25,7 +25,8 @@ FROM (
                  OR BOOL_OR(disputed_by <> '') AS disputed,
              NULLIF(name, '') AS name,
              NULLIF(claimed_by, '') AS claimed_by,
-             BOOL_OR(maritime) AS maritime
+             BOOL_OR(maritime)
+                OR BOOL_OR(boundary_type = 'maritime') AS maritime
       FROM osm_border_linestring
       WHERE admin_level BETWEEN 3 AND 10
             AND type = 1 -- ways only
