@@ -18,7 +18,9 @@ SELECT
     -- 111,842 * 180 / 2^zoom_level
     --  = 20131560 / POW(2, zoom_level)
     -- Drop brunnel if length of way < 2% of tile width (less than 3 pixels)
-    ST_Length(g) / (20131560 / POW(2, zoom_level)) > 0.02  --TODO add cosine
+    ST_Length(g) *
+        COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
+        POW(2, zoom_level) / 20131560 > 0.02
 $$ LANGUAGE SQL IMMUTABLE LEAKPROOF
                 PARALLEL SAFE;
 
