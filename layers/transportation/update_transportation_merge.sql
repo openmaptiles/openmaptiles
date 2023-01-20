@@ -7,6 +7,21 @@ DROP TRIGGER IF EXISTS trigger_store_transportation_highway_linestring_gen_z11 O
 DROP TRIGGER IF EXISTS trigger_flag_transportation_z11 ON osm_highway_linestring_gen_z11;
 DROP TRIGGER IF EXISTS trigger_refresh_z11 ON transportation.updates_z11;
 
+-- Determine whether a segment is long enough to have bridge/tunnel attributes
+-- Dropping small brunnel sections allow for generalization as distinct segments get too small
+CREATE OR REPLACE FUNCTION visible_brunnel(g geometry, brunnel boolean, zoom_level integer)
+    RETURNS boolean AS
+$$
+SELECT CASE
+    WHEN brunnel IS FALSE THEN FALSE
+    -- Width of a tile in metters (111,842 is the length of one degree of latitude at the equator in meters)
+    -- 111,842 * 180 / 4^zoom_level
+    --  = 20131560 / POW(4, zoom_level)
+    -- Drop brunnel if length of way < 0.5% of tile width (less than 3 pixels)
+    ELSE ST_Length(g) / (20131560 / POW(4, zoom_level)) < 0.005 END;  --TODO add cosine
+$$ LANGUAGE SQL IMMUTABLE
+                PARALLEL SAFE;
+
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
 -- to allow for nice label rendering
