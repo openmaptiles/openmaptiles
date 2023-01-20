@@ -204,6 +204,7 @@ BEGIN
     FROM (
         -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
         SELECT geometry,
+            id,
             NULL::bigint AS osm_id,
             highway,
             network,
@@ -221,7 +222,7 @@ BEGIN
             access,
             toll,
             layer
-        FROM osm_highway_linestring_gen_z11
+        FROM osm_transportation_merge_linestring_gen_z11
     ) osm_highway_linestring_normalized_brunnel_z11
     WHERE (update_id IS NULL OR id = update_id)
         AND highway NOT IN ('tertiary', 'tertiary_link', 'busway', 'bus_guideway')
@@ -252,7 +253,29 @@ BEGIN
         access,
         toll,
         layer
-    FROM osm_transportation_merge_linestring_gen_z10
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            id,
+            NULL::bigint AS osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 10) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 10) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 10) AS is_ford,
+            expressway,
+            z_order,
+            bicycle,
+            foot,
+            horse,
+            mtb_scale,
+            sac_scale,
+            access,
+            toll,
+            layer
+        FROM osm_transportation_merge_linestring_gen_z10
+    ) osm_highway_linestring_normalized_brunnel_z10
     WHERE (update_id IS NULL OR id = update_id)
     ;
 END;
