@@ -320,11 +320,24 @@ SELECT ST_Simplify(ST_LineMerge(ST_Collect(geometry)), ZRes(10)) AS geometry,
        is_ford,
        expressway,
        min(z_order) as z_order
-FROM osm_transportation_merge_linestring_gen_z9
-WHERE (highway IN ('motorway', 'trunk', 'primary') OR
-       construction IN ('motorway', 'trunk', 'primary'))
-       AND ST_IsValid(geometry)
-       AND access IS NULL
+FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 9) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 9) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 9) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z9
+        WHERE (highway IN ('motorway', 'trunk', 'primary') OR
+            construction IN ('motorway', 'trunk', 'primary'))
+            AND ST_IsValid(geometry)
+            AND access IS NULL
+    ) osm_highway_linestring_normalized_brunnel_z9
 GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
 ;
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
@@ -362,7 +375,21 @@ BEGIN
         is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z8
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 8) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 8) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z8
+    ) osm_highway_linestring_normalized_brunnel_z8
         -- Current view: motorway/trunk/primary
     WHERE
         (update_id IS NULL OR id = update_id) AND
@@ -384,10 +411,26 @@ BEGIN
         is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z7
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 7) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 7) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 7) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z7
+        WHERE
+            (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
+    ) osm_highway_linestring_normalized_brunnel_z7
+        -- Current view: motorway/trunk/primary
     WHERE
         (update_id IS NULL OR id = update_id) AND
-        (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk')) AND
         ST_Length(geometry) > 100;
 
     DELETE FROM osm_transportation_merge_linestring_gen_z5
@@ -406,15 +449,30 @@ BEGIN
         is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z6
-    WHERE
-        (update_id IS NULL OR id = update_id) AND
-        -- Current view: all motorways and trunks of national-importance
-        (highway = 'motorway'
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 6) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 6) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 6) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z6
+        WHERE
+            (highway = 'motorway'
             OR construction = 'motorway'
             -- Allow trunk roads that are part of a nation's most important route network to show at z4
             OR (highway = 'trunk' AND osm_national_network(network))
-        ) AND
+        )
+    ) osm_highway_linestring_normalized_brunnel_z6
+    WHERE
+        (update_id IS NULL OR id = update_id) AND
+        -- Current view: all motorways and trunks of national-importance
         ST_Length(geometry) > 500;
 
     DELETE FROM osm_transportation_merge_linestring_gen_z4
@@ -433,10 +491,24 @@ BEGIN
         is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z5
+    FROM (
+        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+        SELECT geometry,
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            visible_brunnel(geometry, is_bridge, 5) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 5) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 5) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z5
+        WHERE osm_national_network(network)
+    ) osm_highway_linestring_normalized_brunnel_z5
     WHERE
         (update_id IS NULL OR id = update_id) AND
-        osm_national_network(network) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000;
 END;
