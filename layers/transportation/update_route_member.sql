@@ -149,6 +149,17 @@ CREATE INDEX IF NOT EXISTS osm_route_member_ref_idx ON osm_route_member ("ref");
 
 CREATE INDEX IF NOT EXISTS osm_route_member_network_type_idx ON osm_route_member ("network_type");
 
+/**
+* Discard duplicate routes
+*/
+DELETE FROM osm_route_member WHERE id IN
+   (SELECT id
+    FROM (SELECT id,
+                 ROW_NUMBER() OVER (partition BY member, network, ref ORDER BY id) AS rnum
+          FROM osm_route_member) t
+    WHERE t.rnum > 1);
+CREATE UNIQUE INDEX IF NOT EXISTS osm_route_member_network_ref_idx ON osm_route_member ("member", "network", "ref");
+
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
 CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
 
