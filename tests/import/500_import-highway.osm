@@ -147,4 +147,22 @@
     <tag k="route" v="hiking"/>
     <tag k="network" v="nwn"/>
   </relation>
+
+  <!-- Route Concurrency de-duplication -->
+  <relation id="515" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5000" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="95"/>
+    <tag k="description" v="I-95 Northbound"/>
+  </relation>
+  <relation id="516" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5000" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="95"/>
+    <tag k="description" v="I-95 Southbound"/>
+  </relation>
 </osm>

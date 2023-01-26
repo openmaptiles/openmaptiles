@@ -160,6 +160,13 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_name_linestring z12 route_rank expected 1, got ' || cnt);
   END IF;
 
+  -- Duplicate route concurrencies collapsed
+  SELECT COUNT(*) INTO cnt FROM osm_route_member
+    WHERE network='US:I' AND ref='95';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_route_member 1 route membership expected, got ' || cnt);
+  END IF;
+
   -- Test 600
 
   -- verify that atms are imported with correct name which can come from tags like operator or network
