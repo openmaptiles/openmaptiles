@@ -48,7 +48,7 @@ CREATE OR REPLACE FUNCTION surface_value(surface text) RETURNS text AS
 $$
 SELECT CASE
            WHEN surface IN ('paved', 'asphalt', 'cobblestone', 'concrete', 'concrete:lanes', 'concrete:plates', 'metal',
-                            'paving_stones', 'sett', 'unhewn_cobblestone', 'wood') THEN 'paved'
+                            'paving_stones', 'sett', 'unhewn_cobblestone', 'wood', 'grade1') THEN 'paved'
            WHEN surface IN ('unpaved', 'compacted', 'dirt', 'earth', 'fine_gravel', 'grass', 'grass_paver', 'gravel',
                             'gravel_turf', 'ground', 'ice', 'mud', 'pebblestone', 'salt', 'sand', 'snow', 'woodchips')
                THEN 'unpaved'
