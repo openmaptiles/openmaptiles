@@ -46,7 +46,7 @@ FROM (
         NULLIF(hl.construction, '') AS subclass,
         brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
         sac_scale,
-        CASE WHEN highway IN ('footway', 'steps') AND layer <> 0 THEN layer END AS layer,
+        CASE WHEN highway IN ('footway', 'steps') THEN NULLIF(layer, 0) END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
         CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
         NULLIF(rm1.network, '') || '=' || COALESCE(rm1.ref, '') AS route_1,
@@ -120,7 +120,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Collect(geometry)))).geom AS geometry,
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
        toll,
-       CASE WHEN layer <> 0 THEN layer END AS layer
+       NULLIF(layer, 0) as layer
 FROM osm_highway_linestring_gen_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
 GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer
