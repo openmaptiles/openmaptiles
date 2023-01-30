@@ -180,6 +180,9 @@ tables:
     - name: construction
       key: construction
       type: string
+    - name: tracktype
+      key: tracktype
+      type: string
     - *ref
     - *network
     - *z_order
