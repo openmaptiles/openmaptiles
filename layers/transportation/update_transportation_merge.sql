@@ -24,6 +24,23 @@ SELECT
 $$ LANGUAGE SQL IMMUTABLE LEAKPROOF
                 PARALLEL SAFE;
 
+-- Determine whether a segment is long enough to have layer attributes
+CREATE OR REPLACE FUNCTION visible_layer(g geometry, layer int, zoom_level integer)
+    RETURNS int AS
+$$
+SELECT
+    CASE WHEN
+    -- Width of a tile in meters (111,842 is the length of one degree of latitude at the equator in meters)
+    -- 111,842 * 180 / 2^zoom_level
+    --  = 20131560 / POW(2, zoom_level)
+    -- Drop brunnel if length of way < 2% of tile width (less than 3 pixels)
+    ST_Length(g) *
+        COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
+        POW(2, zoom_level) / 20131560 > 0.02
+    THEN layer END
+$$ LANGUAGE SQL IMMUTABLE LEAKPROOF
+                PARALLEL SAFE;
+
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
 -- to allow for nice label rendering
@@ -157,7 +174,7 @@ FROM (
            sac_scale,
            access,
            toll,
-           layer
+           visible_layer(geometry, layer, 11) AS layer
     FROM osm_highway_linestring_gen_z11
 ) osm_highway_linestring_normalized_brunnel_z11
 -- mapping.yaml pre-filter: motorway/trunk/primary/secondary/tertiary, with _link variants, construction, ST_IsValid()
@@ -221,7 +238,7 @@ BEGIN
             sac_scale,
             access,
             toll,
-            layer
+            visible_layer(geometry, layer, 11) AS layer
         FROM osm_transportation_merge_linestring_gen_z11
     ) osm_highway_linestring_normalized_brunnel_z11
     WHERE (update_id IS NULL OR id = update_id)
