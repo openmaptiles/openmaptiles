@@ -290,7 +290,7 @@ BEGIN
             sac_scale,
             access,
             toll,
-            layer
+            visible_layer(geometry, layer, 10) AS layer
         FROM osm_transportation_merge_linestring_gen_z10
     ) osm_highway_linestring_normalized_brunnel_z10
     WHERE (update_id IS NULL OR id = update_id)
