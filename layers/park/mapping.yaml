@@ -90,8 +90,8 @@ tables:
     - name: boundary
       key: boundary
       type: string
-    - name: protection_title
-      key: protection_title
+    - name: historic
+      key: historic
       type: string
     - name: area
       type: area
@@ -101,3 +101,7 @@ tables:
       boundary:
       - national_park
       - protected_area
+      historic:
+      - archaeological_site
+      - battlefield
+      - district

@@ -26,11 +26,7 @@ SELECT osm_id,
 FROM (
          SELECT osm_id,
                 geometry,
-                COALESCE(
-                        LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
-                        NULLIF(boundary, ''),
-                        NULLIF(leisure, '')
-                    ) AS class,
+                park_class(boundary, leisure, landuse, historic) AS class,
                 name,
                 name_en,
                 name_de,
@@ -45,8 +41,9 @@ FROM (
                          NULL AS name_de,
                          NULL AS tags,
                          NULL AS leisure,
+                         NULL AS landuse,
                          NULL AS boundary,
-                         NULL AS protection_title
+                         NULL AS historic
                   FROM osm_park_polygon_dissolve_z4
                   WHERE zoom_level = 4
                     AND geometry && bbox
@@ -59,8 +56,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z5
                   WHERE zoom_level = 5
                     AND geometry && bbox
@@ -73,8 +71,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z6
                   WHERE zoom_level = 6
                     AND geometry && bbox
@@ -87,8 +86,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z7
                   WHERE zoom_level = 7
                     AND geometry && bbox
@@ -101,8 +101,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z8
                   WHERE zoom_level = 8
                     AND geometry && bbox
@@ -115,8 +116,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z9
                   WHERE zoom_level = 9
                     AND geometry && bbox
@@ -129,8 +131,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z10
                   WHERE zoom_level = 10
                     AND geometry && bbox
@@ -143,8 +146,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z11
                   WHERE zoom_level = 11
                     AND geometry && bbox
@@ -157,8 +161,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z12
                   WHERE zoom_level = 12
                     AND geometry && bbox
@@ -171,8 +176,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon_gen_z13
                   WHERE zoom_level = 13
                     AND geometry && bbox
@@ -185,8 +191,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title
+                         historic
                   FROM osm_park_polygon
                   WHERE zoom_level >= 14
                     AND geometry && bbox
@@ -195,11 +202,7 @@ FROM (
          UNION ALL
          SELECT osm_id,
                 geometry_point AS geometry,
-                COALESCE(
-                        LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
-                        NULLIF(boundary, ''),
-                        NULLIF(leisure, '')
-                    ) AS class,
+                park_class(boundary, leisure, landuse, historic) AS class,
                 name,
                 name_en,
                 name_de,
@@ -220,8 +223,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z5
                   WHERE zoom_level = 5
@@ -237,8 +241,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z6
                   WHERE zoom_level = 6
@@ -254,8 +259,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z7
                   WHERE zoom_level = 7
@@ -271,8 +277,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z8
                   WHERE zoom_level = 8
@@ -288,8 +295,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z9
                   WHERE zoom_level = 9
@@ -305,8 +313,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z10
                   WHERE zoom_level = 10
@@ -322,8 +331,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z11
                   WHERE zoom_level = 11
@@ -339,8 +349,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z12
                   WHERE zoom_level = 12
@@ -356,8 +367,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon_gen_z13
                   WHERE zoom_level = 13
@@ -373,8 +385,9 @@ FROM (
                          name_de,
                          tags,
                          leisure,
+                         landuse,
                          boundary,
-                         protection_title,
+                         historic,
                          area
                   FROM osm_park_polygon
                   WHERE zoom_level >= 14
