@@ -12,6 +12,7 @@ tileset:
     - layers/water_name/water_name.yaml
     - layers/transportation_name/transportation_name.yaml
     - layers/place/place.yaml
+    - layers/poi/poi.yaml
     - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
   version: 3.12.1
