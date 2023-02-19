@@ -17,35 +17,79 @@ layer:
         and `kindergarten`. Or use the class `shop` to style all shops.
       values:
         shop:
-          subclass: ['accessories', 'boutique', 
-                     'convenience', 'garden_centre', 'doityourself',
-                     'electronics', 
-                     'general', 'gift', 'hardware', 'ice_cream', 
-                     'kiosk', 'mall', 'mobile_phone',
-                     'outdoor', 'pet', 'shoes', 'sports',
-                     'tobacco', 'weapons', 'wholesale']
+          subclass: ['accessories', 'antiques', 'beauty', 'bed', 'boutique', 'camera', 'carpet', 'charity', 'chemist',
+                     'coffee', 'computer', 'convenience', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
+                     'erotic', 'electronics', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
+                     'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'ice_cream', 'interior_decoration',
+                     'jewelry', 'kiosk', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone', 'newsagent',
+                     'optician', 'outdoor', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 'shoes', 'sports',
+                     'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency', 'watches',
+                     'weapons', 'wholesale']
+        town_hall:
+          subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']
+        golf:
+          subclass: ['golf', 'golf_course', 'miniature_golf']
         fast_food:
           subclass: ['fast_food', 'food_court']
         park:
           subclass: ['park', 'bbq']
+        bus:
+          subclass: ['bus_stop', 'bus_station']
+        railway:
+          - __AND__:
+              subclass: 'station'
+              mapping_key: 'railway'
+          - subclass: ['halt', 'tram_stop', 'subway']
+        aerialway:
+          __AND__:
+            subclass: 'station'
+            mapping_key: 'aerialway'
+        entrance:
+          subclass: ['subway_entrance', 'train_station_entrance']
         campsite:
           subclass: ['camp_site', 'caravan_site']
+        laundry:
+          subclass: ['laundry', 'dry_cleaning']
         grocery:
           subclass: ['supermarket', 'deli', 'delicatessen', 'department_store', 'greengrocer', 'marketplace']
+        library:
+          subclass: ['books', 'library']
+        college:
+          subclass: ['university', 'college']
         lodging:
           subclass: ['hotel', 'motel', 'bed_and_breakfast', 'guest_house', 'hostel', 'chalet', 'alpine_hut', 'dormitory']
         ice_cream:
           subclass: ['chocolate', 'confectionery']
+        post:
+          subclass: ['post_box', 'post_office']
         cafe:
           subclass: ['cafe']
+        school:
+          subclass: ['school', 'kindergarten']
         alcohol_shop:
           subclass: ['alcohol', 'beverages', 'wine']
         bar:
           subclass: ['bar', 'nightclub']
         harbor:
           subclass: ['marina', 'dock']
+        car:
+          subclass: ['car', 'car_repair', 'car_parts', 'taxi']
+        hospital:
+          subclass: ['hospital', 'nursing_home', 'clinic']
+        cemetery:
+          subclass: ['grave_yard', 'cemetery']
+        attraction:
+          subclass: ['attraction', 'viewpoint']
         beer:
           subclass: ['biergarten', 'pub']
+        music:
+          subclass: ['music', 'musical_instrument']
+        stadium:
+          subclass: ['american_football', 'stadium', 'soccer']
+        art_gallery:
+          subclass: ['art', 'artwork', 'gallery', 'arts_centre']
+        clothing_store:
+          subclass: ['bag', 'clothes']
         swimming:
           subclass: ['swimming_area', 'swimming']
         castle:
