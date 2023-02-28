@@ -163,9 +163,7 @@ FROM (
 GROUP BY member, network_type, network, ref, rank;
 
 CREATE INDEX IF NOT EXISTS transportation_route_member_member_idx ON transportation_route_member_coalesced ("member");
-
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
-CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
 
 -- etldoc:  osm_route_member ->  osm_highway_linestring
 UPDATE osm_highway_linestring hl
