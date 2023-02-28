@@ -158,7 +158,46 @@ DELETE FROM osm_route_member WHERE id IN
                  ROW_NUMBER() OVER (partition BY member, network, ref ORDER BY id) AS rnum
           FROM osm_route_member) t
     WHERE t.rnum > 1);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_route_member_network_ref_idx ON osm_route_member ("member", "network", "ref");
+
+CREATE OR REPLACE FUNCTION route_member_deduplication() RETURNS TRIGGER AS $$
+DECLARE
+  found_duplicate boolean;
+BEGIN
+  -- Check if there is a duplicate row
+  SELECT 1 FROM osm_route_member
+  WHERE member = NEW.member
+    AND network = NEW.network
+    AND ref = NEW.ref
+  INTO STRICT found_duplicate;
+
+  -- If a duplicate was found, update the existing row
+  IF found_duplicate THEN
+    UPDATE osm_route_member 
+    SET 
+      role = NEW.role,
+      type = NEW.type,
+      ref = NEW.ref,
+      name = NEW.name,
+      osmc_symbol = NEW.osmc_symbol,
+      colour = NEW.colour,
+      network_type = NEW.network_type,
+      concurrency_index = NEW.concurrency_index,
+      rank = NEW.rank
+    WHERE
+      member = NEW.member AND
+      network = NEW.network AND
+      ref = NEW.ref;
+  END IF;
+  RETURN NULL;  -- Prevent the original insert from executing
+EXCEPTION WHEN no_data_found THEN
+  RETURN NEW;   -- Allow the original insert to execute
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER route_member_deduplicatin_trigger
+BEFORE INSERT ON osm_route_member
+FOR EACH ROW
+EXECUTE FUNCTION route_member_deduplication();
 
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
 CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
