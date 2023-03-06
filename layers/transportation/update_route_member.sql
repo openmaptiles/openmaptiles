@@ -122,73 +122,57 @@ BEGIN
              JOIN transportation_name.network_changes AS c ON
         r.osm_id = c.osm_id;
 
-    INSERT INTO osm_route_member (id, osm_id, network_type, concurrency_index, rank)
+    INSERT INTO osm_route_member (id, osm_id, network_type)
     SELECT
       id,
       osm_id,
-      osm_route_member_network_type(network, ref) AS network_type,
-      DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
-      CASE
-           WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
-           WHEN network = 'lwn' THEN 2
-           WHEN osmc_symbol || colour <> '' THEN 2
-      END AS rank
+      osm_route_member_network_type(network, ref) AS network_type
     FROM osm_route_member rm
     WHERE rm.member IN
       (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
-    ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index,
-                                           rank = EXCLUDED.rank,
-                                           network_type = EXCLUDED.network_type;
+    ON CONFLICT (id, osm_id) DO UPDATE SET network_type = EXCLUDED.network_type;
+    REFRESH MATERIALIZED VIEW transportation_route_member_coalesced;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE INDEX IF NOT EXISTS osm_route_member_network_idx ON osm_route_member ("network", "ref");
-CREATE INDEX IF NOT EXISTS osm_route_member_member_idx ON osm_route_member ("member");
-CREATE INDEX IF NOT EXISTS osm_route_member_name_idx ON osm_route_member ("name");
-CREATE INDEX IF NOT EXISTS osm_route_member_ref_idx ON osm_route_member ("ref");
+CREATE INDEX IF NOT EXISTS osm_route_member_osm_id_idx ON osm_route_member ("osm_id");
 
-CREATE INDEX IF NOT EXISTS osm_route_member_network_type_idx ON osm_route_member ("network_type");
-
-/**
-* Discard duplicate routes
-*/
-DELETE FROM osm_route_member WHERE id IN
-   (SELECT id
-    FROM (SELECT id,
-                 ROW_NUMBER() OVER (partition BY member, network, ref ORDER BY id) AS rnum
-          FROM osm_route_member) t
-    WHERE t.rnum > 1);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_route_member_network_ref_idx ON osm_route_member ("member", "network", "ref");
-
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
-CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_gen_z11_osm_id_idx ON osm_highway_linestring_gen_z11 ("osm_id");
-
-ALTER TABLE osm_route_member ADD COLUMN IF NOT EXISTS concurrency_index int,
-                             ADD COLUMN IF NOT EXISTS rank int;
-
--- One-time load of concurrency indexes; updates occur via trigger
--- etldoc:  osm_route_member ->  osm_route_member
-INSERT INTO osm_route_member (id, osm_id, concurrency_index, rank)
-  SELECT
-    id,
-    osm_id,
-    DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
+-- etldoc: osm_route_member ->  transportation_route_member_coalesced
+DROP MATERIALIZED VIEW IF EXISTS transportation_route_member_coalesced CASCADE;
+CREATE MATERIALIZED VIEW transportation_route_member_coalesced AS
+SELECT
+  member, 
+  network_type,
+  network,
+  ref,
+  DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
+  rank
+FROM (
+  SELECT DISTINCT
+    member,
+    network_type,
+    network,
+    ref,
     CASE
          WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
          WHEN network = 'lwn' THEN 2
          WHEN osmc_symbol || colour <> '' THEN 2
     END AS rank
   FROM osm_route_member
-  ON CONFLICT (id, osm_id) DO UPDATE SET concurrency_index = EXCLUDED.concurrency_index, rank = EXCLUDED.rank;
+) osm_route_member_filtered
+GROUP BY member, network_type, network, ref, rank;
+
+CREATE INDEX IF NOT EXISTS transportation_route_member_member_idx ON transportation_route_member_coalesced ("member");
+CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
 
 -- etldoc:  osm_route_member ->  osm_highway_linestring
 UPDATE osm_highway_linestring hl
   SET network = rm.network_type
-  FROM osm_route_member rm
+  FROM transportation_route_member_coalesced rm
   WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
 
 -- etldoc:  osm_route_member ->  osm_highway_linestring_gen_z11
 UPDATE osm_highway_linestring_gen_z11 hl
   SET network = rm.network_type
-  FROM osm_route_member rm
+  FROM transportation_route_member_coalesced rm
   WHERE hl.osm_id=rm.member AND rm.concurrency_index=1;
