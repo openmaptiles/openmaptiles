@@ -1,6 +1,6 @@
 # Introduction
 
-Thank you for considering contributing to OpenMapTiles. It's people like you that make OpenMapTiles such a great project. Talk to us at the OSM Slack **#openmaptiles** channel ([join](https://osmus-slack.herokuapp.com/)).
+Thank you for considering contributing to OpenMapTiles. It's people like you that make OpenMapTiles such a great project. Talk to us at the OSM Slack **#openmaptiles** channel ([join](https://slack.openstreetmap.us/)).
 
 Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, and helping you finalize your pull requests.
 
