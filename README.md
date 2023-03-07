@@ -1,4 +1,4 @@
-## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OMT_CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
+## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OpenMapTiles%20Integrity%20CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
 
 OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [maptiler.com/data/](https://www.maptiler.com/data/).
 
@@ -88,7 +88,7 @@ make
 ```
 
 You can execute the following manual steps (for better understanding)
-or use the provided `quickstart.sh` script to automatically download and import given area. If area is not given, albania will be imported.
+or use the provided `quickstart.sh` script to automatically download and import given area. If area is not given, Albania will be imported. List of available areas `make list-geofabrik`.
 
 ```
 ./quickstart.sh <area>
@@ -114,8 +114,8 @@ Download OpenStreetMap data extracts from any source like [Geofabrik](http://dow
 make download area=albania
 ```
 
-[Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/tree/master/docker/import-osm) with the mapping rules from
-`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition.
+[Import OpenStreetMap data](https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/import-osm) with the mapping rules from
+`build/mapping.yaml` (which has been created by `make`). Run after any change in layers definition (any change in `mapping.yaml`).
 
 ```bash
 make import-osm

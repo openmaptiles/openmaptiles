@@ -166,7 +166,7 @@ TPORT := $(or $(TPORT),$(shell (. .env; echo $${TPORT})),7)
 
 define HELP_MESSAGE
 ==============================================================================
- OpenMapTiles  https://github.com/openmaptiles/openmaptiles
+OpenMapTiles  https://github.com/openmaptiles/openmaptiles
 
 Hints for testing areas
   make list-geofabrik                  # list actual geofabrik OSM extracts for download -> <<your-area>>

@@ -60,7 +60,7 @@ BEGIN
                 THEN 1
         END
     WHERE
-        agg_stop != CASE
+        agg_stop IS DISTINCT FROM CASE
             WHEN p.subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
                 THEN 1
         END;
@@ -70,15 +70,15 @@ BEGIN
         agg_stop = (
         CASE
             WHEN p.subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
-                     AND r.rk IS NULL OR r.rk = 1
+                     AND (r.rk IS NULL OR r.rk = 1)
                 THEN 1
         END)
     FROM osm_poi_stop_rank r
     WHERE p.osm_id = r.osm_id AND
-        agg_stop != (
+        agg_stop IS DISTINCT FROM (
         CASE
             WHEN p.subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
-                     AND r.rk IS NULL OR r.rk = 1
+                     AND (r.rk IS NULL OR r.rk = 1)
                 THEN 1
         END);
 

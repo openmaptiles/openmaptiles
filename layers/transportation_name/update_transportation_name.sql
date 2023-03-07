@@ -261,7 +261,7 @@ BEGIN
     UPDATE osm_highway_linestring hl
     SET network = rm.network_type
     FROM transportation_name.network_changes c,
-         osm_route_member rm
+         transportation_route_member_coalesced rm
     WHERE hl.osm_id=c.osm_id
       AND hl.osm_id=rm.member
       AND rm.concurrency_index=1;
@@ -269,7 +269,7 @@ BEGIN
     UPDATE osm_highway_linestring_gen_z11 hl
     SET network = rm.network_type
     FROM transportation_name.network_changes c,
-         osm_route_member rm
+         transportation_route_member_coalesced rm
     WHERE hl.osm_id=c.osm_id
       AND hl.osm_id=rm.member
       AND rm.concurrency_index=1;
@@ -319,12 +319,12 @@ BEGIN
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
             hl.osm_id = c.osm_id
-		LEFT OUTER JOIN osm_route_member rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
-		LEFT OUTER JOIN osm_route_member rm2 ON rm2.member = hl.osm_id AND rm2.concurrency_index=2
-		LEFT OUTER JOIN osm_route_member rm3 ON rm3.member = hl.osm_id AND rm3.concurrency_index=3
-		LEFT OUTER JOIN osm_route_member rm4 ON rm4.member = hl.osm_id AND rm4.concurrency_index=4
-		LEFT OUTER JOIN osm_route_member rm5 ON rm5.member = hl.osm_id AND rm5.concurrency_index=5
-		LEFT OUTER JOIN osm_route_member rm6 ON rm6.member = hl.osm_id AND rm6.concurrency_index=6
+		LEFT OUTER JOIN transportation_route_member_coalesced rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
+		LEFT OUTER JOIN transportation_route_member_coalesced rm2 ON rm2.member = hl.osm_id AND rm2.concurrency_index=2
+		LEFT OUTER JOIN transportation_route_member_coalesced rm3 ON rm3.member = hl.osm_id AND rm3.concurrency_index=3
+		LEFT OUTER JOIN transportation_route_member_coalesced rm4 ON rm4.member = hl.osm_id AND rm4.concurrency_index=4
+		LEFT OUTER JOIN transportation_route_member_coalesced rm5 ON rm5.member = hl.osm_id AND rm5.concurrency_index=5
+		LEFT OUTER JOIN transportation_route_member_coalesced rm6 ON rm6.member = hl.osm_id AND rm6.concurrency_index=6
 	WHERE (hl.name <> '' OR hl.ref <> '' OR rm1.ref <> '' OR rm1.network <> '')
           AND hl.highway <> ''
     ) AS t
