@@ -31,6 +31,48 @@ generalized_tables:
     sql_filter: ST_IsValid(geometry)
     tolerance: ZRES13
 
+# etldoc: osm_shipway_linestring_gen_z5 -> osm_shipway_linestring_gen_z4
+  shipway_linestring_gen_z4:
+    source: shipway_linestring_gen_z5
+    sql_filter: ST_Length(geometry)>2*ZRES0
+    tolerance: ZRES5
+
+# etldoc: osm_shipway_linestring_gen_z6 -> osm_shipway_linestring_gen_z5
+  shipway_linestring_gen_z5:
+    source: shipway_linestring_gen_z6
+    sql_filter: ST_Length(geometry)>ZRES0
+    tolerance: ZRES6
+
+# etldoc: osm_shipway_linestring_gen_z7 -> osm_shipway_linestring_gen_z6
+  shipway_linestring_gen_z6:
+    source: shipway_linestring_gen_z7
+    sql_filter: ST_Length(geometry)>ZRES1
+    tolerance: ZRES7
+
+# etldoc: osm_shipway_linestring_gen_z8 -> osm_shipway_linestring_gen_z7
+  shipway_linestring_gen_z7:
+    source: shipway_linestring_gen_z8
+    sql_filter: ST_Length(geometry)>ZRES2
+    tolerance: ZRES8
+
+# etldoc: osm_shipway_linestring_gen_z9 -> osm_shipway_linestring_gen_z8
+  shipway_linestring_gen_z8:
+    source: shipway_linestring_gen_z9
+    sql_filter: ST_Length(geometry)>ZRES3
+    tolerance: ZRES9
+
+# etldoc: osm_shipway_linestring_gen_z10 -> osm_shipway_linestring_gen_z9
+  shipway_linestring_gen_z9:
+    source: shipway_linestring_gen_z10
+    sql_filter: ST_Length(geometry)>ZRES4
+    tolerance: ZRES10
+
+# etldoc: osm_shipway_linestring_gen_z11 -> osm_shipway_linestring_gen_z10
+  shipway_linestring_gen_z10:
+    source: shipway_linestring_gen_z11
+    sql_filter: ST_Length(geometry)>ZRES5
+    tolerance: ZRES11
+
 # etldoc: osm_shipway_linestring_gen_z12 -> osm_shipway_linestring_gen_z11
   shipway_linestring_gen_z11:
     source: shipway_linestring_gen_z12
