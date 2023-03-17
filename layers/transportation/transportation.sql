@@ -674,6 +674,237 @@ FROM (
          WHERE zoom_level >= 13
          UNION ALL
 
+         -- etldoc: osm_shipway_linestring_gen_z4  ->  layer_transportation:z4
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z4
+         WHERE zoom_level = 4
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z5  ->  layer_transportation:z5
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z5
+         WHERE zoom_level = 5
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z6  ->  layer_transportation:z6
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z6
+         WHERE zoom_level = 6
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z7  ->  layer_transportation:z7
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z7
+         WHERE zoom_level = 7
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z8  ->  layer_transportation:z8
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z8
+         WHERE zoom_level = 8
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z9  ->  layer_transportation:z9
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z9
+         WHERE zoom_level = 9
+         UNION ALL
+
+         -- etldoc: osm_shipway_linestring_gen_z10  ->  layer_transportation:z10
+         SELECT osm_id,
+                geometry,
+                NULL AS highway,
+                NULL AS construction,
+                NULL AS network,
+                NULL AS railway,
+                NULL AS aerialway,
+                shipway,
+                NULL AS public_transport,
+                service_value(service) AS service,
+                NULL::text AS access,
+                NULL::boolean AS toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                NULL::boolean AS expressway,
+                is_ramp,
+                is_oneway,
+                NULL AS man_made,
+                layer,
+                NULL::int AS level,
+                NULL::boolean AS indoor,
+                NULL AS bicycle,
+                NULL AS foot,
+                NULL AS horse,
+                NULL AS mtb_scale,
+                NULL AS surface,
+                z_order
+         FROM osm_shipway_linestring_gen_z10
+         WHERE zoom_level = 10
+         UNION ALL
+
          -- etldoc: osm_shipway_linestring_gen_z11  ->  layer_transportation:z11
          SELECT osm_id,
                 geometry,
