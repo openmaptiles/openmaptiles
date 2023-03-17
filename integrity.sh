@@ -9,8 +9,6 @@ echo MAX_ZOOM=14 >> .env
 export TEST_MODE=yes
 make generate-devdoc
 area=europe/monaco
-echo MIN_ZOOM=0 >> .env
-echo MAX_ZOOM=14 >> .env
 echo DIFF_MODE=true >> .env
 
 # Cleanup
