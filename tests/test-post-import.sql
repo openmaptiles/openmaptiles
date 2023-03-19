@@ -166,10 +166,10 @@ BEGIN
   END IF;
 
   -- Duplicate route concurrencies collapsed
-  SELECT COUNT(*) INTO cnt FROM osm_route_member
+  SELECT COUNT(*) INTO cnt FROM transportation_route_member_coalesced
     WHERE network='US:I' AND ref='95';
   IF cnt <> 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_route_member 1 route membership expected, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'transportation_route_member_coalesced 1 route membership expected, got ' || cnt);
   END IF;
 
   -- Test 600
