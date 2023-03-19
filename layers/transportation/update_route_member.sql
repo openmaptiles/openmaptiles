@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS trigger_store_transportation_highway_linestring ON osm_highway_linestring;
+
 -- Create bounding windows for country-specific processing
 
 -- etldoc: ne_10m_admin_0_countries ->  ne_10m_admin_0_gb_buffer
@@ -16,12 +18,11 @@ WHERE iso_a2 = 'IE';
 -- etldoc:  osm_highway_linestring ->  gbr_route_members_view
 -- etldoc:  ne_10m_admin_0_gb_buffer ->  gbr_route_members_view
 CREATE OR REPLACE VIEW gbr_route_members_view AS
-SELECT 0,
-       osm_id,
-       substring(ref FROM E'^[ABM][0-9ABM()]+'),
+SELECT osm_id AS member,
+       substring(ref FROM E'^[ABM][0-9ABM()]+') AS ref,
        -- See https://wiki.openstreetmap.org/wiki/Roads_in_the_United_Kingdom
        CASE WHEN highway = 'motorway' THEN 'omt-gb-motorway'
-            WHEN highway = 'trunk' THEN 'omt-gb-trunk' 
+            WHEN highway = 'trunk' THEN 'omt-gb-trunk'
             WHEN highway IN ('primary','secondary') THEN 'omt-gb-primary' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
@@ -32,35 +33,17 @@ WHERE length(ref) > 1
 -- etldoc:  osm_highway_linestring ->  ire_route_members_view
 -- etldoc:  ne_10m_admin_0_ie_buffer ->  ire_route_members_view
 CREATE OR REPLACE VIEW ire_route_members_view AS
-SELECT 0,
-       osm_id,
-       substring(ref FROM E'^[MNRL][0-9]+'),
+SELECT osm_id AS member,
+       substring(ref FROM E'^[MNRL][0-9]+') AS ref,
        -- See https://wiki.openstreetmap.org/wiki/Ireland/Roads
        CASE WHEN highway = 'motorway' THEN 'omt-ie-motorway'
-            WHEN highway IN ('trunk','primary') THEN 'omt-ie-national' 
+            WHEN highway IN ('trunk','primary') THEN 'omt-ie-national'
             ELSE 'omt-ie-regional' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
   AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_ie_buffer))
   AND highway IN ('motorway', 'trunk', 'primary', 'secondary', 'unclassified')
 ;
-
--- Create GBR/IRE relations (so we can use it in the same way as other relations)
--- etldoc:  osm_route_member ->  osm_route_member
-DELETE
-FROM osm_route_member
-WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary',
-                  'omt-ie-motorway', 'omt-ie-national', 'omt-ie-national');
-
--- etldoc:  gbr_route_members_view ->  osm_route_member
-INSERT INTO osm_route_member (osm_id, member, ref, network)
-SELECT *
-FROM gbr_route_members_view;
-
--- etldoc:  ire_route_members_view ->  osm_route_member
-INSERT INTO osm_route_member (osm_id, member, ref, network)
-SELECT *
-FROM ire_route_members_view;
 
 CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, ref text) RETURNS route_network_type AS
 $$
@@ -91,79 +74,132 @@ SELECT CASE
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
 
--- etldoc:  osm_route_member ->  osm_route_member
--- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
-UPDATE osm_route_member
-SET network_type = osm_route_member_network_type(network, ref)
-WHERE network != ''
-  AND network_type IS DISTINCT FROM osm_route_member_network_type(network, ref)
-;
+CREATE TABLE IF NOT EXISTS transportation_route_member_coalesced
+(
+    member            bigint,
+    network           varchar,
+    ref               varchar,
+    osm_id            bigint not null,
+    role              varchar,
+    type              smallint,
+    name              varchar,
+    osmc_symbol       varchar,
+    colour            varchar,
+    network_type      route_network_type,
+    concurrency_index integer,
+    rank              integer,
+    PRIMARY KEY (member, network, ref)
+);
 
-CREATE OR REPLACE FUNCTION update_osm_route_member() RETURNS void AS
+CREATE OR REPLACE FUNCTION update_osm_route_member(full_update bool) RETURNS void AS
 $$
 BEGIN
+    -- Analyze tracking and source tables before performing update
+    ANALYZE transportation_name.network_changes;
+    ANALYZE osm_highway_linestring;
+    ANALYZE osm_route_member;
+
     DELETE
-    FROM osm_route_member AS r
-        USING
-            transportation_name.network_changes AS c
-    WHERE network IN ('omt-gb-motorway', 'omt-gb-trunk', 'omt-gb-primary',
-                      'omt-ie-motorway', 'omt-ie-national', 'omt-ie-regional')
-      AND r.osm_id = c.osm_id;
+    FROM transportation_route_member_coalesced
+    USING transportation_name.network_changes c
+    WHERE c.is_old IS TRUE AND transportation_route_member_coalesced.member = c.osm_id;
 
-    INSERT INTO osm_route_member (osm_id, member, ref, network)
-    SELECT r.*
-    FROM gbr_route_members_view AS r
-             JOIN transportation_name.network_changes AS c ON
-        r.osm_id = c.osm_id;
+    -- Create GBR/IRE relations (so we can use it in the same way as other relations)
+    -- etldoc:  gbr_route_members_view ->  transportation_route_member_coalesced
+    INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
+    SELECT member, network, ref, osm_route_member_network_type(network, ref) AS network_type,
+           1 AS concurrency_index, 0 AS osm_id
+    FROM gbr_route_members_view
+    WHERE full_update OR EXISTS(
+        SELECT NULL
+        FROM transportation_name.network_changes c
+        WHERE c.is_old IS FALSE AND c.osm_id = gbr_route_members_view.member
+    )
+    GROUP BY member, network, ref
+    ON CONFLICT (member, network, ref) DO NOTHING;
 
-    INSERT INTO osm_route_member (osm_id, member, ref, network)
-    SELECT r.*
-    FROM ire_route_members_view AS r
-             JOIN transportation_name.network_changes AS c ON
-        r.osm_id = c.osm_id;
+    -- etldoc:  ire_route_members_view ->  transportation_route_member_coalesced
+    INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
+    SELECT member, network, ref, osm_route_member_network_type(network, ref) AS network_type,
+           1 AS concurrency_index, 0 AS osm_id
+    FROM ire_route_members_view
+    WHERE full_update OR EXISTS(
+        SELECT NULL
+        FROM transportation_name.network_changes c
+        WHERE c.is_old IS FALSE AND c.osm_id = ire_route_members_view.member
+    )
+    GROUP BY member, network, ref
+    ON CONFLICT (member, network, ref) DO NOTHING;
 
-    INSERT INTO osm_route_member (id, osm_id, network_type)
+    -- etldoc: osm_route_member ->  transportation_route_member_coalesced
+    INSERT INTO transportation_route_member_coalesced
     SELECT
-      id,
-      osm_id,
-      osm_route_member_network_type(network, ref) AS network_type
-    FROM osm_route_member rm
-    WHERE rm.member IN
-      (SELECT DISTINCT osm_id FROM transportation_name.network_changes)
-    ON CONFLICT (id, osm_id) DO UPDATE SET network_type = EXCLUDED.network_type;
-    REFRESH MATERIALIZED VIEW transportation_route_member_coalesced;
+      osm_route_member_filtered.*,
+      osm_route_member_network_type(network, ref) AS network_type,
+      DENSE_RANK() OVER (
+          PARTITION BY member
+          ORDER BY osm_route_member_network_type(network, ref), network, LENGTH(ref), ref
+      ) AS concurrency_index,
+      CASE
+           WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
+           WHEN network = 'lwn' THEN 2
+           WHEN osmc_symbol || colour <> '' THEN 2
+      END AS rank
+    FROM (
+        -- etldoc:  osm_route_member ->  osm_route_member
+        -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
+        SELECT DISTINCT ON (member, network, ref)
+            member,
+            network,
+            ref,
+            osm_id,
+            role,
+            type,
+            name,
+            osmc_symbol,
+            colour
+        FROM osm_route_member
+        WHERE full_update OR EXISTS(
+            SELECT NULL
+            FROM transportation_name.network_changes c
+            WHERE c.is_old IS FALSE AND c.osm_id = osm_route_member.member
+        )
+    ) osm_route_member_filtered
+    ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
+                                                     type = EXCLUDED.type, name = EXCLUDED.name,
+                                                     osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour,
+                                                     rank = EXCLUDED.rank;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE INDEX IF NOT EXISTS osm_route_member_osm_id_idx ON osm_route_member ("osm_id");
+-- Indexes which can be utilized during full-update for queries originating from update_osm_route_member() function
+CREATE INDEX IF NOT EXISTS osm_route_member_member_network_ref_idx ON osm_route_member (member, network, ref);
 
--- etldoc: osm_route_member ->  transportation_route_member_coalesced
-DROP MATERIALIZED VIEW IF EXISTS transportation_route_member_coalesced CASCADE;
-CREATE MATERIALIZED VIEW transportation_route_member_coalesced AS
-SELECT
-  member, 
-  network_type,
-  network,
-  ref,
-  DENSE_RANK() over (PARTITION BY member ORDER BY network_type, network, LENGTH(ref), ref) AS concurrency_index,
-  rank
-FROM (
-  SELECT DISTINCT
-    member,
-    network_type,
-    network,
-    ref,
-    CASE
-         WHEN network IN ('iwn', 'nwn', 'rwn') THEN 1
-         WHEN network = 'lwn' THEN 2
-         WHEN osmc_symbol || colour <> '' THEN 2
-    END AS rank
-  FROM osm_route_member
-) osm_route_member_filtered
-GROUP BY member, network_type, network, ref, rank;
+-- Analyze created index
+ANALYZE osm_route_member;
 
-CREATE INDEX IF NOT EXISTS transportation_route_member_member_idx ON transportation_route_member_coalesced ("member");
-CREATE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
+-- Ensure transportation_name.network_changes table exists since it is required by update_osm_route_member
+CREATE SCHEMA IF NOT EXISTS transportation_name;
+CREATE TABLE IF NOT EXISTS transportation_name.network_changes
+(
+    is_old bool,
+    osm_id bigint,
+    PRIMARY KEY (is_old, osm_id)
+);
+
+-- Fill transportation_route_member_coalesced table
+TRUNCATE transportation_route_member_coalesced;
+SELECT update_osm_route_member(TRUE);
+
+-- Index for queries against transportation_route_member_coalesced during transportation-name-network updates
+CREATE INDEX IF NOT EXISTS transportation_route_member_member_idx ON
+    transportation_route_member_coalesced ("member", "concurrency_index");
+
+-- Analyze populated table with indexes
+ANALYZE transportation_route_member_coalesced;
+
+-- Ensure OSM-ID index exists on osm_highway_linestring
+CREATE UNIQUE INDEX IF NOT EXISTS osm_highway_linestring_osm_id_idx ON osm_highway_linestring ("osm_id");
 
 -- etldoc:  osm_route_member ->  osm_highway_linestring
 UPDATE osm_highway_linestring hl

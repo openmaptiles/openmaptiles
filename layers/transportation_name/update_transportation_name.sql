@@ -203,17 +203,26 @@ CREATE SCHEMA IF NOT EXISTS transportation_name;
 
 CREATE TABLE IF NOT EXISTS transportation_name.network_changes
 (
+    is_old bool,
     osm_id bigint,
-    UNIQUE (osm_id)
+    PRIMARY KEY (is_old, osm_id)
 );
 
 CREATE OR REPLACE FUNCTION transportation_name.route_member_store() RETURNS trigger AS
 $$
 BEGIN
-    INSERT INTO transportation_name.network_changes(osm_id)
-    VALUES (CASE WHEN tg_op IN ('DELETE', 'UPDATE') THEN old.member ELSE new.member END)
-    ON CONFLICT(osm_id) DO NOTHING;
-
+    IF tg_op = 'DELETE' OR (tg_op = 'UPDATE' AND (old.member IS DISTINCT FROM new.member))
+    THEN
+        INSERT INTO transportation_name.network_changes(is_old, osm_id)
+        VALUES (TRUE, old.member)
+        ON CONFLICT(is_old, osm_id) DO NOTHING;
+    END IF;
+    IF (tg_op IN ('UPDATE', 'INSERT'))
+    THEN
+        INSERT INTO transportation_name.network_changes(is_old, osm_id)
+        VALUES (FALSE, new.member)
+        ON CONFLICT(is_old, osm_id) DO NOTHING;
+    END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -221,10 +230,18 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION transportation_name.highway_linestring_store() RETURNS trigger AS
 $$
 BEGIN
-    INSERT INTO transportation_name.network_changes(osm_id)
-    VALUES (CASE WHEN tg_op IN ('DELETE', 'UPDATE') THEN old.osm_id ELSE new.osm_id END)
-    ON CONFLICT(osm_id) DO NOTHING;
-
+    IF tg_op = 'DELETE' OR (tg_op = 'UPDATE' AND (old.osm_id IS DISTINCT FROM new.osm_id))
+    THEN
+        INSERT INTO transportation_name.network_changes(is_old, osm_id)
+        VALUES (TRUE, old.osm_id)
+        ON CONFLICT(is_old, osm_id) DO NOTHING;
+    END IF;
+    IF (tg_op IN ('UPDATE', 'INSERT'))
+    THEN
+        INSERT INTO transportation_name.network_changes(is_old, osm_id)
+        VALUES (FALSE, new.osm_id)
+        ON CONFLICT(is_old, osm_id) DO NOTHING;
+    END IF;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -249,30 +266,38 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh transportation_name_network';
-    PERFORM update_osm_route_member();
+
+    -- Update Way-Relations and analyze table afterwards
+    PERFORM update_osm_route_member(FALSE);
+    ANALYZE transportation_route_member_coalesced;
 
     -- REFRESH osm_transportation_name_network
     DELETE
-    FROM osm_transportation_name_network AS n
-        USING
-            transportation_name.network_changes AS c
-    WHERE n.osm_id = c.osm_id;
+    FROM osm_transportation_name_network
+    USING transportation_name.network_changes c
+    WHERE c.is_old IS TRUE AND osm_transportation_name_network.osm_id = c.osm_id;
 
-    UPDATE osm_highway_linestring hl
-    SET network = rm.network_type
-    FROM transportation_name.network_changes c,
-         transportation_route_member_coalesced rm
-    WHERE hl.osm_id=c.osm_id
-      AND hl.osm_id=rm.member
-      AND rm.concurrency_index=1;
+    UPDATE osm_highway_linestring
+    SET network = NULL
+    FROM transportation_name.network_changes c
+    WHERE c.is_old IS TRUE AND osm_highway_linestring.osm_id = c.osm_id;
 
-    UPDATE osm_highway_linestring_gen_z11 hl
+    UPDATE osm_highway_linestring_gen_z11
+    SET network = NULL
+    FROM transportation_name.network_changes c
+    WHERE c.is_old IS TRUE AND osm_highway_linestring_gen_z11.osm_id = c.osm_id;
+
+    UPDATE osm_highway_linestring
     SET network = rm.network_type
-    FROM transportation_name.network_changes c,
-         transportation_route_member_coalesced rm
-    WHERE hl.osm_id=c.osm_id
-      AND hl.osm_id=rm.member
-      AND rm.concurrency_index=1;
+    FROM transportation_name.network_changes c
+    JOIN transportation_route_member_coalesced rm ON (c.osm_id = rm.member AND rm.concurrency_index=1)
+    WHERE c.is_old IS FALSE AND osm_highway_linestring.osm_id=c.osm_id;
+
+    UPDATE osm_highway_linestring_gen_z11
+    SET network = rm.network_type
+    FROM transportation_name.network_changes c
+    JOIN transportation_route_member_coalesced rm ON (c.osm_id = rm.member AND rm.concurrency_index=1)
+    WHERE c.is_old IS FALSE AND osm_highway_linestring_gen_z11.osm_id=c.osm_id;
 
     INSERT INTO osm_transportation_name_network
     SELECT
@@ -318,7 +343,7 @@ BEGIN
             LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
         FROM osm_highway_linestring hl
                 JOIN transportation_name.network_changes AS c ON
-            hl.osm_id = c.osm_id
+                c.is_old IS FALSE AND hl.osm_id = c.osm_id
 		LEFT OUTER JOIN transportation_route_member_coalesced rm1 ON rm1.member = hl.osm_id AND rm1.concurrency_index=1
 		LEFT OUTER JOIN transportation_route_member_coalesced rm2 ON rm2.member = hl.osm_id AND rm2.concurrency_index=2
 		LEFT OUTER JOIN transportation_route_member_coalesced rm3 ON rm3.member = hl.osm_id AND rm3.concurrency_index=3
