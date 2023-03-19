@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS water_name_marine;
 
 CREATE TABLE IF NOT EXISTS water_name_marine.osm_ids
 (
-    osm_id bigint
+    osm_id bigint PRIMARY KEY
 );
 
 CREATE OR REPLACE FUNCTION update_osm_marine_point(full_update boolean) RETURNS void AS
@@ -45,11 +45,7 @@ CREATE INDEX IF NOT EXISTS osm_marine_point_rank_idx ON osm_marine_point ("rank"
 CREATE OR REPLACE FUNCTION water_name_marine.store() RETURNS trigger AS
 $$
 BEGIN
-    IF (tg_op = 'DELETE') THEN
-        INSERT INTO water_name_marine.osm_ids VALUES (OLD.osm_id);
-    ELSE
-        INSERT INTO water_name_marine.osm_ids VALUES (NEW.osm_id);
-    END IF;
+    INSERT INTO water_name_marine.osm_ids VALUES (NEW.osm_id) ON CONFLICT (osm_id) DO NOTHING;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -74,6 +70,11 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh water_name_marine rank';
+
+    -- Analyze tracking and source tables before performing update
+    ANALYZE water_name_marine.osm_ids;
+    ANALYZE osm_marine_point;
+
     PERFORM update_osm_marine_point(false);
     -- noinspection SqlWithoutWhere
     DELETE FROM water_name_marine.osm_ids;
@@ -86,13 +87,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_store
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_marine_point
     FOR EACH ROW
 EXECUTE PROCEDURE water_name_marine.store();
 
 CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_marine_point
     FOR EACH STATEMENT
 EXECUTE PROCEDURE water_name_marine.flag();
