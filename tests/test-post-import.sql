@@ -72,19 +72,24 @@ BEGIN
   -- Test 500
 
   -- Verify that road classifications show up at the right zoom level
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='motorway';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE osm_national_network(network);
   IF cnt < 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 motorway count expected >=1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 national network count expected >=1, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='trunk';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE NOT osm_national_network(network);
   IF cnt <> 0 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 trunk count expected 0, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 not national network count expected 0, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='motorway';
   IF cnt < 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk count expected >=1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 motorway count expected >=1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk' AND osm_national_network(network);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk and national network count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z6 WHERE highway='primary';
