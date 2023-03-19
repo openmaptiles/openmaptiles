@@ -1,18 +1,28 @@
 DROP TRIGGER IF EXISTS trigger_flag ON osm_poi_point;
 DROP TRIGGER IF EXISTS trigger_refresh ON poi_point.updates;
+DROP TRIGGER IF EXISTS trigger_store ON osm_poi_point;
+
+CREATE SCHEMA IF NOT EXISTS poi_point;
+
+CREATE TABLE IF NOT EXISTS poi_point.osm_ids
+(
+    osm_id bigint PRIMARY KEY
+);
 
 -- etldoc:  osm_poi_point ->  osm_poi_point
-CREATE OR REPLACE FUNCTION update_osm_poi_point() RETURNS void AS
+CREATE OR REPLACE FUNCTION update_osm_poi_point(full_update bool) RETURNS void AS
 $$
 BEGIN
     UPDATE osm_poi_point
     SET subclass = 'subway'
-    WHERE station = 'subway'
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+      AND station = 'subway'
       AND subclass = 'station';
 
     UPDATE osm_poi_point
     SET subclass = 'halt'
-    WHERE funicular = 'yes'
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+      AND funicular = 'yes'
       AND subclass = 'station';
 
     -- ATM without name 
@@ -23,7 +33,8 @@ BEGIN
         COALESCE(tags -> 'operator', tags -> 'network'),
         tags || hstore('name', COALESCE(tags -> 'operator', tags -> 'network'))
     )
-    WHERE subclass = 'atm'
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+      AND subclass = 'atm'
       AND name = ''
       AND COALESCE(tags -> 'operator', tags -> 'network') IS NOT NULL;
 
@@ -35,19 +46,21 @@ BEGIN
         CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')),
         tags || hstore('name', CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')))
     )
-    WHERE subclass = 'parcel_locker'
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+      AND subclass = 'parcel_locker'
       AND name = ''
       AND COALESCE(tags -> 'brand', tags -> 'operator') IS NOT NULL;
 
     UPDATE osm_poi_point
     SET tags = update_tags(tags, geometry)
-    WHERE COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+      AND COALESCE(tags->'name:latin', tags->'name:nonlatin', tags->'name_int') IS NULL
       AND tags != update_tags(tags, geometry);
 
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT update_osm_poi_point();
+SELECT update_osm_poi_point(TRUE);
 
 -- etldoc:  osm_poi_stop_rank ->  osm_poi_point
 CREATE OR REPLACE FUNCTION update_osm_poi_point_agg() RETURNS void AS
@@ -91,7 +104,13 @@ SELECT update_osm_poi_point_agg();
 
 -- Handle updates
 
-CREATE SCHEMA IF NOT EXISTS poi_point;
+CREATE OR REPLACE FUNCTION poi_point.store() RETURNS trigger AS
+$$
+BEGIN
+    INSERT INTO poi_point.osm_ids VALUES (NEW.osm_id) ON CONFLICT (osm_id) DO NOTHING;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS poi_point.updates
 (
@@ -113,10 +132,17 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh poi_point';
-    PERFORM update_osm_poi_point();
+
+    -- Analyze tracking and source tables before performing update
+    ANALYZE poi_point.osm_ids;
+    ANALYZE osm_poi_point;
+
+    PERFORM update_osm_poi_point(FALSE);
     REFRESH MATERIALIZED VIEW osm_poi_stop_centroid;
     REFRESH MATERIALIZED VIEW osm_poi_stop_rank;
     PERFORM update_osm_poi_point_agg();
+    -- noinspection SqlWithoutWhere
+    DELETE FROM poi_point.osm_ids;
     -- noinspection SqlWithoutWhere
     DELETE FROM poi_point.updates;
 
@@ -125,8 +151,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE TRIGGER trigger_store
+    AFTER INSERT OR UPDATE
+    ON osm_poi_point
+    FOR EACH ROW
+EXECUTE PROCEDURE poi_point.store();
+
 CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_poi_point
     FOR EACH STATEMENT
 EXECUTE PROCEDURE poi_point.flag();
