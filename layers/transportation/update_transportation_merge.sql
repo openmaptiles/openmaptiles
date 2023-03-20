@@ -102,8 +102,6 @@ FROM (
       AND hl.highway <> ''
 ) AS t;
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network (osm_id);
-CREATE INDEX IF NOT EXISTS osm_transportation_name_network_name_ref_idx ON osm_transportation_name_network (coalesce(tags->'name', ''), coalesce(ref, ''));
-CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist (geometry);
 
 -- Improve performance of the sql in transportation/update_route_member.sql
 CREATE INDEX IF NOT EXISTS osm_highway_linestring_highway_partial_idx
@@ -305,8 +303,6 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_geometry_
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z10_id_idx
     ON osm_transportation_merge_linestring_gen_z10(id);
 
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z9 USING gist (geometry);
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_id_idx
     ON osm_transportation_merge_linestring_gen_z9(id);
 
@@ -357,8 +353,6 @@ FROM (
     ) osm_highway_linestring_normalized_brunnel_z9
 GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
 ;
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z8 USING gist (geometry);
 
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z7
     (LIKE osm_transportation_merge_linestring_gen_z8);
@@ -532,27 +526,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 SELECT insert_transportation_merge_linestring_gen_z7(NULL);
-
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z7 USING gist (geometry);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_id_idx
-    ON osm_transportation_merge_linestring_gen_z7(id);
-
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z6 USING gist (geometry);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z6_id_idx
-    ON osm_transportation_merge_linestring_gen_z6(id);
-
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z5 USING gist (geometry);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z5_id_idx
-    ON osm_transportation_merge_linestring_gen_z5(id);
-
-CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z4_geometry_idx
-    ON osm_transportation_merge_linestring_gen_z4 USING gist (geometry);
-CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z4_id_idx
-    ON osm_transportation_merge_linestring_gen_z4(id);
-
 
 -- Handle updates on
 -- osm_highway_linestring_gen_z11 -> osm_transportation_merge_linestring_gen_z11

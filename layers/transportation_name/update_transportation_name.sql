@@ -92,7 +92,6 @@ FROM (
          GROUP BY name, name_en, name_de, tags, subclass, "level", layer
      ) AS highway_union
 ;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_name_ref_idx ON osm_transportation_name_linestring (coalesce(tags->'name', ''), coalesce(ref, ''));
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_geometry_idx ON osm_transportation_name_linestring USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_highway_partial_idx
@@ -117,8 +116,6 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen1_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_name_ref_idx ON osm_transportation_name_linestring_gen1((coalesce(tags->'name', ref)));
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_geometry_idx ON osm_transportation_name_linestring_gen1 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen1_highway_partial_idx
     ON osm_transportation_name_linestring_gen1 (highway, subclass)
@@ -142,8 +139,6 @@ WHERE (highway IN ('motorway', 'trunk') OR highway = 'construction' AND subclass
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen2 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen2_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_name_ref_idx ON osm_transportation_name_linestring_gen2((coalesce(tags->'name', ref)));
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_geometry_idx ON osm_transportation_name_linestring_gen2 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen2_highway_partial_idx
     ON osm_transportation_name_linestring_gen2 (highway, subclass)
@@ -167,8 +162,6 @@ WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen3 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen3_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_name_ref_idx ON osm_transportation_name_linestring_gen3((coalesce(tags->'name', ref)));
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_geometry_idx ON osm_transportation_name_linestring_gen3 USING gist (geometry);
 
 CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen3_highway_partial_idx
     ON osm_transportation_name_linestring_gen3 (highway, subclass)
@@ -192,8 +185,6 @@ WHERE (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway
 CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen4 AS
 SELECT *
 FROM osm_transportation_name_linestring_gen4_view;
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_name_ref_idx ON osm_transportation_name_linestring_gen4((coalesce(tags->'name', ref)));
-CREATE INDEX IF NOT EXISTS osm_transportation_name_linestring_gen4_geometry_idx ON osm_transportation_name_linestring_gen4 USING gist (geometry);
 
 -- Handle updates
 
