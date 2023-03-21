@@ -685,11 +685,13 @@ test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-te
     	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
 
 	@echo "Test SQL output for Import Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql' 2>&1 | \
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
 
 	@echo "Run UPDATE process on test data..."
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 	@echo "Test SQL output for Update Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql' 2>&1 | \
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
