@@ -49,8 +49,6 @@ $$ LANGUAGE SQL;
 
 SELECT update_osm_city_point(true);
 
-CREATE INDEX IF NOT EXISTS osm_city_point_rank_idx ON osm_city_point ("rank");
-
 -- Handle updates
 
 CREATE OR REPLACE FUNCTION place_city.store() RETURNS trigger AS

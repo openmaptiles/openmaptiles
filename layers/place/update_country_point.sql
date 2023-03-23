@@ -98,8 +98,6 @@ $$ LANGUAGE SQL;
 
 SELECT update_osm_country_point(true);
 
-CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point ("rank");
-
 -- Handle updates
 
 CREATE OR REPLACE FUNCTION place_country.store() RETURNS trigger AS
