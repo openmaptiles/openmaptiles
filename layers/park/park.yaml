@@ -8,7 +8,7 @@ layer:
     This layer also includes boundaries for indigenous lands tagged with 
     [`boundary=aboriginal_lands`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Daboriginal_lands).
     Indigenous boundaries are not parks, but they are included in this layer for technical reasons related to data processing.
-    These boundaries represent important and distinct areas with cultural and historical significance for indigenous peoples.
+    These boundaries represent areas with special legal and administrative status for indigenous peoples.
   buffer_size: 4
   fields:
     class:
