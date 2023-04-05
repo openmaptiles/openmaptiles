@@ -13,7 +13,7 @@ layer:
   fields:
     class:
       description: |
-        Use the **class** to differentiate between different parks.
+        Use the **class** to differentiate between different kinds of features in the `parks` layer, for example between parks and non-parks.
         The class for `boundary=protected_area` parks is the lower-case of the
         [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
         value with blanks replaced by `_`.
