@@ -6,7 +6,7 @@ layer:
     [`boundary=protected_area`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
     or [`leisure=nature_reserve`](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
     This layer also includes boundaries for indigenous lands tagged with 
-    [`boundary=aboriginal_lands`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area).
+    [`boundary=aboriginal_lands`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Daboriginal_lands).
     Indigenous boundaries are not parks, but they are included in this layer for technical reasons related to data processing.
     These boundaries represent important and distinct areas with cultural and historical significance for indigenous peoples.
   buffer_size: 4
