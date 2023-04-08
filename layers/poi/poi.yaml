@@ -101,6 +101,7 @@ layer:
           Original value of either the
           [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
           [`barrier`](http://wiki.openstreetmap.org/wiki/Key:barrier),
+          [`cuisine`](http://wiki.openstreetmap.org/wiki/Key:cuisine),
           [`historic`](http://wiki.openstreetmap.org/wiki/Key:historic),
           [`information`](http://wiki.openstreetmap.org/wiki/Key:information),
           [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),

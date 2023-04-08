@@ -32,6 +32,8 @@ SELECT osm_id_hash AS osm_id,
                THEN NULLIF(information, '')
            WHEN subclass = 'place_of_worship'
                THEN NULLIF(religion, '')
+           WHEN subclass IN ('fast_food', 'restaurant')
+               THEN NULLIF(cuisine, '')
            WHEN subclass = 'pitch'
                THEN NULLIF(sport, '')
            ELSE subclass
