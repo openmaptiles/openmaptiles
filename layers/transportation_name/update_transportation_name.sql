@@ -1119,7 +1119,7 @@ BEGIN
     -- REFRESH osm_transportation_name_linestring from osm_shipway_linestring
 
     -- Analyze tracking and source tables before performing update
-    ANALYZE transportation_name.name_changes;
+    ANALYZE transportation_name.shipway_changes;
     ANALYZE osm_shipway_linestring;
 
     -- Fetch updated and deleted Merged-LineString from relation-table filtering for each Merged-LineString which
@@ -1288,7 +1288,7 @@ BEGIN
     -- REFRESH osm_transportation_name_linestring from osm_aerialway_linestring
 
     -- Analyze tracking and source tables before performing update
-    ANALYZE transportation_name.name_changes;
+    ANALYZE transportation_name.aerialway_changes;
     ANALYZE osm_aerialway_linestring;
 
     -- Fetch updated and deleted Merged-LineString from relation-table filtering for each Merged-LineString which
