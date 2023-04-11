@@ -981,22 +981,21 @@ BEGIN
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
     SELECT s.source_id AS osm_id, m.id,
-           geometry, highway, network, construction,
-           visible_brunnel(geometry, is_bridge, 11) AS is_bridge,
-           visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
-           visible_brunnel(geometry, is_ford, 11) AS is_ford,
-           expressway, bicycle, foot, horse, mtb_scale, sac_scale, access, toll,
-           visible_layer(geometry, layer, 11) AS layer, z_order
-    FROM osm_transportation_merge_linestring_gen_z11 m
-    JOIN osm_transportation_merge_linestring_gen_z11_source_ids s ON (m.id = s.id)
-    WHERE EXISTS(SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry));
+           m.geometry, m.highway, m.network, m.construction,
+           visible_brunnel(m.geometry, m.is_bridge, 11) AS is_bridge,
+           visible_brunnel(m.geometry, m.is_tunnel, 11) AS is_tunnel,
+           visible_brunnel(m.geometry, m.is_ford, 11) AS is_ford,
+           m.expressway, m.bicycle, m.foot, m.horse, m.mtb_scale, m.sac_scale, m.access, m.toll,
+           visible_layer(m.geometry, m.layer, 11) AS layer, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_merge_linestring_gen_z11 m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_transportation_merge_linestring_gen_z11_source_ids s ON (m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1260,31 +1259,30 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_transportation_merge_linestring_gen_z9 ON (
-        affected_source_linestrings.source_id = osm_transportation_merge_linestring_gen_z9.id AND
-        (
-            highway IN ('motorway', 'trunk', 'primary') OR
-            construction IN ('motorway', 'trunk', 'primary')
-        ) AND
-        ST_IsValid(geometry) AND
-        access IS NULL
-    );
+        affected_source_linestrings.source_id = osm_transportation_merge_linestring_gen_z9.id
+    )
+    WHERE (
+        highway IN ('motorway', 'trunk', 'primary') OR
+        construction IN ('motorway', 'trunk', 'primary')
+    ) AND
+    ST_IsValid(geometry) AND
+    access IS NULL;
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id, m.id, geometry, highway, network, construction,
-           visible_brunnel(geometry, is_bridge, 9) AS is_bridge,
-           visible_brunnel(geometry, is_tunnel, 9) AS is_tunnel,
-           visible_brunnel(geometry, is_ford, 9) AS is_ford, expressway, z_order
-    FROM osm_transportation_merge_linestring_gen_z8 m
-    JOIN osm_transportation_merge_linestring_gen_z8_source_ids s ON (m.id = s.id)
-    WHERE EXISTS(SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry));
+    SELECT s.source_id, m.id, m.geometry, m.highway, m.network, m.construction,
+           visible_brunnel(m.geometry, m.is_bridge, 9) AS is_bridge,
+           visible_brunnel(m.geometry, m.is_tunnel, 9) AS is_tunnel,
+           visible_brunnel(m.geometry, m.is_ford, 9) AS is_ford, m.expressway, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_merge_linestring_gen_z8 m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_transportation_merge_linestring_gen_z8_source_ids s ON (m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;

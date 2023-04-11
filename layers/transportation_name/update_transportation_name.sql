@@ -987,27 +987,24 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_transportation_name_network ON (
-        affected_source_linestrings.source_id = osm_transportation_name_network.osm_id AND
-        coalesce(tags->'name', '') <> '' OR coalesce(ref, '') <> ''
-    );
+        affected_source_linestrings.source_id = osm_transportation_name_network.osm_id
+    )
+    WHERE coalesce(tags->'name', '') <> '' OR coalesce(ref, '') <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, ref, highway, subclass, brunnel, sac_scale, level,
-           layer, indoor, network AS network_type, route_1, route_2, route_3, route_4, route_5, route_6, z_order,
-           route_rank
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 0 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT s.source_id AS osm_id, m.id, m.geometry, m.tags, m.ref, m.highway, m.subclass, m.brunnel, m.sac_scale,
+           m.level, m.layer, m.indoor, m.network AS network_type, m.route_1, m.route_2, m.route_3,
+           m.route_4, m.route_5, m.route_6, m.z_order, m.route_rank
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 0 AND m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1169,25 +1166,22 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_shipway_linestring ON (
-        affected_source_linestrings.source_id = osm_shipway_linestring.osm_id AND
-        name <> ''
-    );
+        affected_source_linestrings.source_id = osm_shipway_linestring.osm_id
+    )
+    WHERE name <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, subclass, layer, z_order
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 1 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT s.source_id AS osm_id, m.id, m.geometry, m.tags, m.subclass, m.layer, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 1 AND m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1338,25 +1332,22 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_aerialway_linestring ON (
-        affected_source_linestrings.source_id = osm_aerialway_linestring.osm_id AND
-        name <> ''
-    );
+        affected_source_linestrings.source_id = osm_aerialway_linestring.osm_id
+    )
+    WHERE name <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, subclass, layer, z_order
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 2 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT s.source_id AS osm_id, m.id, m.geometry, m.tags, m.subclass, m.layer, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 2 AND m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;

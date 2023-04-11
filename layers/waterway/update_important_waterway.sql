@@ -414,23 +414,22 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_waterway_linestring ON (
-        affected_source_linestrings.source_id = osm_waterway_linestring.osm_id AND
-        name <> '' AND waterway = 'river' AND ST_IsValid(geometry)
-    );
+        affected_source_linestrings.source_id = osm_waterway_linestring.osm_id
+    )
+    WHERE name <> '' AND waterway = 'river' AND ST_IsValid(geometry);
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, name, name_en, name_de, tags
-    FROM osm_important_waterway_linestring m
-    JOIN osm_important_waterway_linestring_source_ids s ON (m.id = s.id)
-    WHERE EXISTS(SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry));
+    SELECT s.source_id AS osm_id, m.id, m.geometry, m.name, m.name_en, m.name_de, m.tags
+    FROM linestrings_to_merge
+    JOIN osm_important_waterway_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    JOIN osm_important_waterway_linestring_source_ids s ON (m.id = s.id);
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
