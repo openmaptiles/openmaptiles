@@ -24,14 +24,16 @@ DROP MATERIALIZED VIEW IF EXISTS osm_park_polygon_dissolve_z4 CASCADE;
 CREATE MATERIALIZED VIEW osm_park_polygon_dissolve_z4 AS
 (
   SELECT min(osm_id) AS osm_id,
-         ST_Union(geometry) AS geometry
+         ST_Union(geometry) AS geometry,
+         boundary
   FROM (
         SELECT ST_ClusterDBSCAN(geometry, 0, 1) OVER() AS cluster,
                osm_id,
-               geometry
+               geometry,
+               boundary
         FROM osm_park_polygon_gen_z4
   ) park_cluster
-  GROUP BY cluster
+  GROUP BY boundary, cluster
 );
 CREATE UNIQUE INDEX IF NOT EXISTS osm_park_polygon_dissolve_idx ON osm_park_polygon_dissolve_z4 (osm_id);
 
