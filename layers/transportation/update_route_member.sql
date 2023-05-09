@@ -107,7 +107,8 @@ BEGIN
     -- Create GBR/IRE relations (so we can use it in the same way as other relations)
     -- etldoc:  gbr_route_members_view ->  transportation_route_member_coalesced
     INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
-    SELECT member, network, ref, osm_route_member_network_type(network, ref) AS network_type,
+    SELECT member, network, coalesce(ref, '') AS ref,
+           osm_route_member_network_type(network, coalesce(ref, '')) AS network_type,
            1 AS concurrency_index, 0 AS osm_id
     FROM gbr_route_members_view
     WHERE full_update OR EXISTS(
@@ -115,12 +116,13 @@ BEGIN
         FROM transportation_name.network_changes c
         WHERE c.is_old IS FALSE AND c.osm_id = gbr_route_members_view.member
     )
-    GROUP BY member, network, ref
+    GROUP BY member, network, coalesce(ref, '')
     ON CONFLICT (member, network, ref) DO NOTHING;
 
     -- etldoc:  ire_route_members_view ->  transportation_route_member_coalesced
     INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
-    SELECT member, network, ref, osm_route_member_network_type(network, ref) AS network_type,
+    SELECT member, network, coalesce(ref, '') AS ref,
+           osm_route_member_network_type(network, coalesce(ref, '')) AS network_type,
            1 AS concurrency_index, 0 AS osm_id
     FROM ire_route_members_view
     WHERE full_update OR EXISTS(
@@ -128,7 +130,7 @@ BEGIN
         FROM transportation_name.network_changes c
         WHERE c.is_old IS FALSE AND c.osm_id = ire_route_members_view.member
     )
-    GROUP BY member, network, ref
+    GROUP BY member, network, coalesce(ref, '')
     ON CONFLICT (member, network, ref) DO NOTHING;
 
     -- etldoc: osm_route_member ->  transportation_route_member_coalesced
@@ -148,10 +150,10 @@ BEGIN
     FROM (
         -- etldoc:  osm_route_member ->  osm_route_member
         -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
-        SELECT DISTINCT ON (member, network, ref)
+        SELECT DISTINCT ON (member, COALESCE(network, ''), COALESCE(ref, ''))
             member,
-            network,
-            ref,
+            COALESCE(network, '') AS network,
+            COALESCE(ref, '') AS ref,
             osm_id,
             role,
             type,
@@ -168,12 +170,14 @@ BEGIN
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
                                                      type = EXCLUDED.type, name = EXCLUDED.name,
                                                      osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour,
+                                                     concurrency_index = EXCLUDED.concurrency_index,
                                                      rank = EXCLUDED.rank;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Indexes which can be utilized during full-update for queries originating from update_osm_route_member() function
-CREATE INDEX IF NOT EXISTS osm_route_member_member_network_ref_idx ON osm_route_member (member, network, ref);
+CREATE INDEX IF NOT EXISTS osm_route_member_member_network_ref_idx
+    ON osm_route_member (member, COALESCE(network, ''), COALESCE(ref, ''));
 
 -- Analyze created index
 ANALYZE osm_route_member;
