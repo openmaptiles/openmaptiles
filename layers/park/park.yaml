@@ -1,23 +1,27 @@
 layer:
   id: "park"
   description: |
-      The park layer contains parks from OpenStreetMap tagged with
-      [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
-      [`boundary=protected_area`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
-      or [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
+    The park layer in OpenMapTiles contains natural and protected areas from OpenStreetMap, 
+    such as parks tagged with [`boundary=national_park`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
+    [`boundary=protected_area`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
+    or [`leisure=nature_reserve`](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
+    This layer also includes boundaries for indigenous lands tagged with 
+    [`boundary=aboriginal_lands`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Daboriginal_lands).
+    Indigenous boundaries are not parks, but they are included in this layer for technical reasons related to data processing.
+    These boundaries represent areas with special legal and administrative status for indigenous peoples.
   buffer_size: 4
   fields:
     class:
       description: |
-          Use the **class** to differentiate between different parks.
-          The class for `boundary=protected_area` parks is the lower-case of the
-          [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
-          value with blanks replaced by `_`.
-          `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
-          `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
-          The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
-          values is similarly assigned.
-          The class for `boundary=aboriginal_lands` is `aboriginal_lands`.
+        Use the **class** to differentiate between different kinds of features in the `parks` layer, for example between parks and non-parks.
+        The class for `boundary=protected_area` parks is the lower-case of the
+        [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
+        value with blanks replaced by `_`.
+        `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
+        `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
+        The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
+        values is similarly assigned.
+        The class for `boundary=aboriginal_lands` is `aboriginal_lands`.
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the park (point features only).
     name_en: English name `name:en` if available, otherwise `name` (point features only).
     name_de: German name `name:de` if available, otherwise `name` or `name:en` (point features only).

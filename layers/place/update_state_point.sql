@@ -60,8 +60,6 @@ $$ LANGUAGE SQL;
 
 SELECT update_osm_state_point(true);
 
-CREATE INDEX IF NOT EXISTS osm_state_point_rank_idx ON osm_state_point ("rank");
-
 -- Handle updates
 
 CREATE OR REPLACE FUNCTION place_state.store() RETURNS trigger AS
