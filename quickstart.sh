@@ -163,6 +163,13 @@ else
     echo " "
 fi
 
+# override the output filename based on the area if the default `tiles.mbtiles` is found
+if [[ "$(source .env ; echo "$MBTILES_FILE")" = "tiles.mbtiles" ]]; then
+  MBTILES_FILENAME=${area}.mbtiles
+else
+  MBTILES_FILENAME=$(source .env ; echo "$MBTILES_FILE")
+fi
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Stopping running services & removing old containers"
@@ -180,8 +187,8 @@ make init-dirs
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Removing old MBTILES if exists ( ./data/${area}.mbtiles ) "
-rm -f "./data/${area}.mbtiles"
+echo "====> : Removing old MBTILES if exists ( ./data/$MBTILES_FILENAME ) "
+rm -f "./data/$MBTILES_FILENAME"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -292,9 +299,9 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) using PostGIS. "
-echo "      : Output MBTiles: ./data/${area}.mbtiles  "
+echo "      : Output MBTiles: $MBTILES_FILENAME  "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
-make generate-tiles-pg
+MBTILES_FILE=$MBTILES_FILENAME make generate-tiles-pg
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -326,7 +333,7 @@ docker images | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created the new vectortiles ( ./data/${area}.mbtiles ) "
+echo "====> : (disk space) We have created the new vectortiles ( ./data/$MBTILES_FILENAME ) "
 echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
 echo "      : Data directory content:"
 ls -la ./data
