@@ -21,6 +21,9 @@ tables:
     - name: place
       key: place
       type: string
+    - name: natural
+      key: natural
+      type: string
     - name: rank
       key: rank
       type: integer
@@ -34,3 +37,6 @@ tables:
       place:
       - ocean
       - sea
+      natural:
+      - bay
+      - strait

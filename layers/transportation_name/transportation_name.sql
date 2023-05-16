@@ -54,7 +54,20 @@ SELECT geometry,
 FROM (
 
          -- etldoc: osm_transportation_name_linestring_gen4 ->  layer_transportation_name:z6
-         SELECT *,
+         SELECT geometry,
+                tags,
+                ref,
+                highway,
+                subclass,
+                brunnel,
+                network,
+                route_1,
+                route_2,
+                route_3,
+                route_4,
+                route_5,
+                route_6,
+                z_order,
                 NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor
@@ -63,7 +76,20 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring_gen3 ->  layer_transportation_name:z7
-         SELECT *,
+         SELECT geometry,
+                tags,
+                ref,
+                highway,
+                subclass,
+                brunnel,
+                network,
+                route_1,
+                route_2,
+                route_3,
+                route_4,
+                route_5,
+                route_6,
+                z_order,
                 NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor
@@ -72,7 +98,20 @@ FROM (
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z8
-         SELECT *,
+         SELECT geometry,
+                tags,
+                ref,
+                highway,
+                subclass,
+                brunnel,
+                network,
+                route_1,
+                route_2,
+                route_3,
+                route_4,
+                route_5,
+                route_6,
+                z_order,
                 NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor
@@ -83,7 +122,20 @@ FROM (
          -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z9
          -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z10
          -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z11
-         SELECT *,
+         SELECT geometry,
+                tags,
+                ref,
+                highway,
+                subclass,
+                brunnel,
+                network,
+                route_1,
+                route_2,
+                route_3,
+                route_4,
+                route_5,
+                route_6,
+                z_order,
                 NULL::int AS layer,
                 NULL::int AS level,
                 NULL::boolean AS indoor

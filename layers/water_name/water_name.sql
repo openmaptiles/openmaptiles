@@ -31,7 +31,7 @@ SELECT
     is_intermittent::int AS intermittent
 FROM osm_water_lakeline
 WHERE geometry && bbox
-  AND ((zoom_level BETWEEN 9 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
+  AND ((zoom_level BETWEEN 3 AND 13 AND LineLabel(zoom_level, NULLIF(name, ''), geometry))
     OR (zoom_level >= 14))
 UNION ALL
 SELECT
@@ -46,12 +46,14 @@ SELECT
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    'lake'::text AS class,
+    class,
     is_intermittent::int AS intermittent
 FROM osm_water_point
 WHERE geometry && bbox
   AND (
-        (zoom_level BETWEEN 9 AND 13 AND area > 70000 * 2 ^ (20 - zoom_level))
+        -- Show a label if a water feature covers at least 1/4 of a tile or z14+
+        (tags->'place' IN ('sea', 'ocean') AND POWER(4,zoom_level) * earth_area > 0.25)
+        OR (zoom_level BETWEEN 3 AND 13 AND POWER(4,zoom_level) * earth_area > 0.25)
         OR (zoom_level >= 14)
     )
 UNION ALL
@@ -65,15 +67,15 @@ SELECT
     COALESCE(NULLIF(name_en, ''), name) AS name_en,
     COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
     tags,
-    place::text AS class,
+    COALESCE(NULLIF("natural",''), "place") AS class,
     is_intermittent::int AS intermittent
 FROM osm_marine_point
 WHERE geometry && bbox
-  AND (
-        place = 'ocean'
-        OR (zoom_level >= "rank" AND "rank" IS NOT NULL)
-        OR (zoom_level >= 8)
-    );
+  AND CASE
+      WHEN place = 'ocean' THEN TRUE
+      WHEN zoom_level >= "rank" AND "rank" IS NOT NULL THEN TRUE
+      WHEN "natural" = 'bay' THEN zoom_level >= 13
+      ELSE zoom_level >= 8 END;
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;

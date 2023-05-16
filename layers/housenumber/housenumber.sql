@@ -15,9 +15,19 @@ SELECT
     osm_id,
     geometry,
     housenumber
-FROM osm_housenumber_point
-WHERE zoom_level >= 14
-  AND geometry && bbox;
+FROM (
+    SELECT
+        osm_id,
+        geometry,
+        housenumber,
+        row_number() OVER(PARTITION BY concat(street, block_number, housenumber) ORDER BY has_name ASC) as rn
+    FROM osm_housenumber_point
+    WHERE 1=1
+        AND zoom_level >= 14
+        AND geometry && bbox
+) t
+WHERE rn = 1;
+
 $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE;

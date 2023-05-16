@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS place_country;
 
 CREATE TABLE IF NOT EXISTS place_country.osm_ids
 (
-    osm_id bigint
+    osm_id bigint PRIMARY KEY
 );
 
 -- etldoc: ne_10m_admin_0_countries   -> osm_country_point
@@ -98,18 +98,12 @@ $$ LANGUAGE SQL;
 
 SELECT update_osm_country_point(true);
 
-CREATE INDEX IF NOT EXISTS osm_country_point_rank_idx ON osm_country_point ("rank");
-
 -- Handle updates
 
 CREATE OR REPLACE FUNCTION place_country.store() RETURNS trigger AS
 $$
 BEGIN
-    IF (tg_op = 'DELETE') THEN
-        INSERT INTO place_country.osm_ids VALUES (OLD.osm_id);
-    ELSE
-        INSERT INTO place_country.osm_ids VALUES (NEW.osm_id);
-    END IF;
+    INSERT INTO place_country.osm_ids VALUES (NEW.osm_id) ON CONFLICT (osm_id) DO NOTHING;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -134,6 +128,11 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh place_country rank';
+
+    -- Analyze tracking and source tables before performing update
+    ANALYZE place_country.osm_ids;
+    ANALYZE osm_country_point;
+
     PERFORM update_osm_country_point(false);
     -- noinspection SqlWithoutWhere
     DELETE FROM place_country.osm_ids;
@@ -146,13 +145,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_store
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_country_point
     FOR EACH ROW
 EXECUTE PROCEDURE place_country.store();
 
 CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_country_point
     FOR EACH STATEMENT
 EXECUTE PROCEDURE place_country.flag();
