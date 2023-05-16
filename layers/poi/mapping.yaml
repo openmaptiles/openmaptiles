@@ -193,6 +193,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - newsagent
   - optician
   - outdoor
+  - paint
   - perfume
   - perfumery
   - pet
