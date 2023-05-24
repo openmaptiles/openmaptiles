@@ -114,6 +114,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
   - stadium
   - swimming_area
   - swimming_pool
+  - tree
   - water_park
 
 # office values , see http://taginfo.openstreetmap.org/keys/office#values
