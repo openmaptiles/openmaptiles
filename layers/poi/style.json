@@ -976,7 +976,8 @@
           "class",
           "car",
           "bicycle_parking",
-          "fuel"
+          "fuel",
+          "charging_station"
         ]
       ],
       "order": 170
