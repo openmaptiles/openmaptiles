@@ -21,9 +21,9 @@ layer:
                      'coffee', 'computer', 'convenience', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
                      'erotic', 'electronics', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
                      'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'ice_cream', 'interior_decoration',
-                     'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone', 
-                     'newsagent', 'optician', 'outdoor', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
-                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency', 
+                     'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone',
+                     'newsagent', 'optician', 'outdoor', 'paint', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
+                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency',
                      'watches', 'weapons', 'wholesale']
         town_hall:
           subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']

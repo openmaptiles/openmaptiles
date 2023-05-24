@@ -38,6 +38,7 @@ layer:
       - town
       - village
       - hamlet
+      - borough
       - suburb
       - quarter
       - neighbourhood

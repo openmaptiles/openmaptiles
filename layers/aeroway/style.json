@@ -157,7 +157,7 @@
           "taxiway"
         ]
       ],
-      "order": 182
+      "order": 191
     },
     {
       "id": "airport_gate",
@@ -197,7 +197,7 @@
           "gate"
         ]
       ],
-      "order": 183
+      "order": 192
     }
   ]
 }

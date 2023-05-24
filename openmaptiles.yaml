@@ -32,6 +32,7 @@ tileset:
     - az # Azerbaijani, Latin
     - be # Belorussian
     - bg # Bulgarian
+    - bn # Bengali
     - br # Breton, Latin
     - bs # Bosnian, Latin
     - ca # Catalan, Latin
@@ -46,6 +47,7 @@ tileset:
     - es # Spanish, Latin
     - et # Estonian, Latin
     - eu # Basque, Latin
+    - fa # Persian
     - fi # Finnish, Latin
     - fr # French, Latin
     - fy # Western Frisian, Latin
@@ -80,6 +82,8 @@ tileset:
     - nl # Dutch, Latin
     - "no" # Norwegian, Latin
     - oc # Occitan (post 1500), Latin
+    - pa # Punjabi
+    - pnb # Western Punjabi
     - pl # Polish, Latin
     - pt # Portuguese, Latin
     - rm # Romansh, Latin
@@ -96,7 +100,11 @@ tileset:
     - th # Thai
     - tr # Turkish, Latin
     - uk # Ukrainian
+    - ur # Urdu
+    - vi # Vietnamese, Latin
     - zh # Chinese
+    - zh-Hant # Traditional Chinese
+    - zh-Hans # Simplified Chinese
   defaults:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
     datasource:
