@@ -22,7 +22,7 @@ SELECT
     ST_Length(g) *
         COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
         POW(2, zoom_level) / 20131560 > 0.02
-$$ LANGUAGE SQL IMMUTABLE LEAKPROOF
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 -- Determine whether a segment is long enough to have layer attributes
@@ -39,7 +39,7 @@ SELECT
         COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
         POW(2, zoom_level) / 20131560 > 0.02
     THEN layer END
-$$ LANGUAGE SQL IMMUTABLE LEAKPROOF
+$$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
 -- Instead of using relations to find out the road names we
