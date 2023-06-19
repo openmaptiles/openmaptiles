@@ -787,6 +787,12 @@ EXECUTE PROCEDURE transportation_name.refresh_network();
 -- osm_transportation_name_linestring -> osm_transportation_name_linestring_gen3
 -- osm_transportation_name_linestring -> osm_transportation_name_linestring_gen4
 
+CREATE OR REPLACE AGGREGATE array_cat_agg(anycompatiblearray) (
+  SFUNC=array_cat,
+  STYPE=anycompatiblearray,
+  INITCOND = '{}'
+);
+
 CREATE TABLE IF NOT EXISTS transportation_name.name_changes
 (
     is_old boolean,
@@ -974,8 +980,8 @@ BEGIN
     -- Create a table containing all LineStrings which should be merged
     CREATE TEMPORARY TABLE linestrings_to_merge AS
     -- Add all Source-LineStrings affected by this update
-    SELECT osm_id, NULL::INTEGER AS id, geometry, tags, ref, highway, subclass, brunnel, sac_scale, level, layer,
-           indoor, network_type, route_1, route_2, route_3, route_4, route_5, route_6,
+    SELECT osm_id, NULL::INTEGER AS id, NULL::BIGINT[] AS source_ids, geometry, tags, ref, highway, subclass, brunnel,
+           sac_scale, level, layer, indoor, network_type, route_1, route_2, route_3, route_4, route_5, route_6,
            z_order, route_rank
     FROM (
         -- Get Source-LineString-IDs of deleted or updated elements
@@ -987,27 +993,30 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_transportation_name_network ON (
-        affected_source_linestrings.source_id = osm_transportation_name_network.osm_id AND
-        coalesce(tags->'name', '') <> '' OR coalesce(ref, '') <> ''
-    );
+        affected_source_linestrings.source_id = osm_transportation_name_network.osm_id
+    )
+    WHERE coalesce(tags->'name', '') <> '' OR coalesce(ref, '') <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, ref, highway, subclass, brunnel, sac_scale, level,
-           layer, indoor, network AS network_type, route_1, route_2, route_3, route_4, route_5, route_6, z_order,
-           route_rank
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 0 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT NULL::BIGINT AS osm_id, m.id,
+           ARRAY(
+               SELECT s.source_id
+               FROM osm_transportation_name_linestring_source_ids s
+               WHERE s.source = 0 AND m.id = s.id
+           )::BIGINT[] AS source_ids,
+           m.geometry, m.tags, m.ref, m.highway, m.subclass, m.brunnel, m.sac_scale,
+           m.level, m.layer, m.indoor, m.network AS network_type, m.route_1, m.route_2, m.route_3,
+           m.route_4, m.route_5, m.route_6, m.z_order, m.route_rank
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    WHERE m.source = 0;
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1050,16 +1059,18 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID column to store relations before they have been
+    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
     -- intersected
-    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
 
 
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
-        INSERT INTO osm_transportation_name_linestring(source, geometry, source_ids, tags, ref, highway, subclass,
-                                                       brunnel, sac_scale, "level", layer, indoor, network, route_1,
-                                                       route_2, route_3, route_4, route_5, route_6,z_order, route_rank)
+        INSERT INTO osm_transportation_name_linestring(source, geometry, new_source_ids, old_source_ids, tags, ref,
+                                                       highway, subclass, brunnel, sac_scale, "level", layer, indoor,
+                                                       network, route_1, route_2, route_3, route_4, route_5, route_6,
+                                                       z_order, route_rank)
         SELECT 0 AS source, (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries
                -- to merge. https://postgis.net/docs/ST_Union.html
@@ -1068,13 +1079,15 @@ BEGIN
                -- https://postgis.net/docs/ST_LineMerge.html
                -- In order to not end up with a mixture of LineStrings and MultiLineStrings we dump eventual
                -- MultiLineStrings via ST_Dump. https://postgis.net/docs/ST_Dump.html
-               array_agg(osm_id) AS source_ids, tags, ref, highway, subclass, brunnel, sac_scale, level, layer,
-               indoor, network_type, route_1, route_2, route_3, route_4, route_5, route_6, min(z_order) AS z_order,
-               min(route_rank) AS route_rank
+               coalesce( array_agg(osm_id) FILTER (WHERE osm_id IS NOT NULL), '{}' )::BIGINT[] AS new_source_ids,
+               array_cat_agg(source_ids)::BIGINT[] as old_source_ids,
+               tags, ref, highway, subclass, brunnel, sac_scale, level, layer,
+               indoor, network_type, route_1, route_2, route_3, route_4, route_5, route_6,
+               min(z_order) AS z_order, min(route_rank) AS route_rank
         FROM clustered_linestrings_to_merge
         GROUP BY cluster_group, cluster, tags, ref, highway, subclass, brunnel, level, layer, sac_scale, indoor,
                  network_type, route_1, route_2, route_3, route_4, route_5, route_6
-        RETURNING source, id, source_ids, geometry
+        RETURNING source, id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources.
     -- This is required because ST_LineMerge only merges across singular intersections and groups its output into a
@@ -1082,8 +1095,14 @@ BEGIN
     INSERT INTO osm_transportation_name_linestring_source_ids (source, id, source_id)
     SELECT m.source, m.id, source_id
     FROM (
-        SELECT source, id, unnest(source_ids) AS source_id, geometry
+        SELECT source, id, source_id, geometry
         FROM inserted_linestrings
+        CROSS JOIN LATERAL (
+            SELECT DISTINCT all_source_ids.source_id
+            FROM unnest(
+                array_cat(inserted_linestrings.new_source_ids, inserted_linestrings.old_source_ids)
+            ) AS all_source_ids(source_id)
+        ) source_ids
     ) m
     JOIN osm_transportation_name_network s ON (m.source_id = s.osm_id)
     WHERE ST_Intersects(s.geometry, m.geometry)
@@ -1092,8 +1111,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID column
-    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS source_ids;
+    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS new_source_ids;
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS old_source_ids;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.name_changes;
@@ -1155,7 +1175,7 @@ BEGIN
     -- Create a table containing all LineStrings which should be merged
     CREATE TEMPORARY TABLE linestrings_to_merge AS
     -- Add all Source-LineStrings affected by this update
-    SELECT osm_id, NULL::INTEGER AS id, geometry,
+    SELECT osm_id, NULL::INTEGER AS id, NULL::BIGINT[] AS source_ids, geometry,
            transportation_name_tags(
                NULL::geometry, tags, name, name_en, name_de
            ) AS tags, shipway AS subclass, layer, z_order
@@ -1169,25 +1189,28 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_shipway_linestring ON (
-        affected_source_linestrings.source_id = osm_shipway_linestring.osm_id AND
-        name <> ''
-    );
+        affected_source_linestrings.source_id = osm_shipway_linestring.osm_id
+    )
+    WHERE name <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, subclass, layer, z_order
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 1 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT NULL::BIGINT AS osm_id, m.id,
+           ARRAY(
+               SELECT s.source_id
+               FROM osm_transportation_name_linestring_source_ids s
+               WHERE s.source = 1 AND m.id = s.id
+           )::BIGINT[] AS source_ids,
+           m.geometry, m.tags, m.subclass, m.layer, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    WHERE m.source = 1;
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1224,14 +1247,15 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID column to store relations before they have been
+    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
     -- intersected
-    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
 
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
-        INSERT INTO osm_transportation_name_linestring(source, geometry, source_ids, tags, highway, subclass,
-                                                       z_order)
+        INSERT INTO osm_transportation_name_linestring(source, geometry, new_source_ids, old_source_ids, tags, highway,
+                                                       subclass, z_order)
         SELECT 1 AS source, (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries
                -- to merge. https://postgis.net/docs/ST_Union.html
@@ -1240,10 +1264,12 @@ BEGIN
                -- https://postgis.net/docs/ST_LineMerge.html
                -- In order to not end up with a mixture of LineStrings and MultiLineStrings we dump eventual
                -- MultiLineStrings via ST_Dump. https://postgis.net/docs/ST_Dump.html
-               array_agg(osm_id) AS source_ids, tags, 'shipway' AS highway, subclass, min(z_order) AS z_order
+               coalesce( array_agg(osm_id) FILTER (WHERE osm_id IS NOT NULL), '{}' )::BIGINT[] AS new_source_ids,
+               array_cat_agg(source_ids)::BIGINT[] as old_source_ids,
+               tags, 'shipway' AS highway, subclass, min(z_order) AS z_order
         FROM clustered_linestrings_to_merge
         GROUP BY cluster_group, cluster, tags, subclass, layer
-        RETURNING source, id, source_ids, geometry
+        RETURNING source, id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources.
     -- This is required because ST_LineMerge only merges across singular intersections and groups its output into a
@@ -1251,8 +1277,14 @@ BEGIN
     INSERT INTO osm_transportation_name_linestring_source_ids (source, id, source_id)
     SELECT m.source, m.id, source_id
     FROM (
-        SELECT source, id, unnest(source_ids) AS source_id, geometry
+        SELECT source, id, source_id, geometry
         FROM inserted_linestrings
+        CROSS JOIN LATERAL (
+            SELECT DISTINCT all_source_ids.source_id
+            FROM unnest(
+                array_cat(inserted_linestrings.new_source_ids, inserted_linestrings.old_source_ids)
+            ) AS all_source_ids(source_id)
+        ) source_ids
     ) m
     JOIN osm_shipway_linestring s ON (m.source_id = s.osm_id)
     WHERE ST_Intersects(s.geometry, m.geometry)
@@ -1261,8 +1293,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID column
-    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS source_ids;
+    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS new_source_ids;
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS old_source_ids;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.shipway_changes;
@@ -1324,7 +1357,7 @@ BEGIN
     -- Create a table containing all LineStrings which should be merged
     CREATE TEMPORARY TABLE linestrings_to_merge AS
     -- Add all Source-LineStrings affected by this update
-    SELECT osm_id, NULL::INTEGER AS id, geometry,
+    SELECT osm_id, NULL::INTEGER AS id, NULL::BIGINT[] AS source_ids, geometry,
            transportation_name_tags(
                NULL::geometry, tags, name, name_en, name_de
            ) AS tags, aerialway AS subclass, layer, z_order
@@ -1338,25 +1371,28 @@ BEGIN
         ORDER BY source_id
     ) affected_source_linestrings
     JOIN osm_aerialway_linestring ON (
-        affected_source_linestrings.source_id = osm_aerialway_linestring.osm_id AND
-        name <> ''
-    );
+        affected_source_linestrings.source_id = osm_aerialway_linestring.osm_id
+    )
+    WHERE name <> '';
 
     -- Drop temporary tables early to save resources
     DROP TABLE affected_merged_linestrings;
 
-    -- Create index on geometry column and analyze the created table to speed up subsequent queries
-    CREATE INDEX ON linestrings_to_merge USING GIST (geometry);
+    -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
 
     -- Add all Merged-LineStrings intersecting with Source-LineStrings affected by this update
     INSERT INTO linestrings_to_merge
-    SELECT s.source_id AS osm_id, m.id, geometry, tags, subclass, layer, z_order
-    FROM osm_transportation_name_linestring m
-    JOIN osm_transportation_name_linestring_source_ids s ON (s.source = 2 AND m.id = s.id)
-    WHERE EXISTS(
-        SELECT NULL FROM linestrings_to_merge WHERE ST_Intersects(linestrings_to_merge.geometry, m.geometry)
-    );
+    SELECT NULL::BIGINT AS osm_id, m.id,
+           ARRAY(
+               SELECT s.source_id
+               FROM osm_transportation_name_linestring_source_ids s
+               WHERE s.source = 2 AND m.id = s.id
+           )::BIGINT[] AS source_ids,
+           m.geometry, m.tags, m.subclass, m.layer, m.z_order
+    FROM linestrings_to_merge
+    JOIN osm_transportation_name_linestring m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry))
+    WHERE m.source = 2;
 
     -- Analyze the created table to speed up subsequent queries
     ANALYZE linestrings_to_merge;
@@ -1393,14 +1429,15 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID column to store relations before they have been
+    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
     -- intersected
-    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+    ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
 
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
-        INSERT INTO osm_transportation_name_linestring(source, geometry, source_ids, tags, highway, subclass,
-                                                       z_order)
+        INSERT INTO osm_transportation_name_linestring(source, geometry, new_source_ids, old_source_ids, tags, highway,
+                                                       subclass, z_order)
         SELECT 2 AS source, (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries
                -- to merge. https://postgis.net/docs/ST_Union.html
@@ -1409,10 +1446,12 @@ BEGIN
                -- https://postgis.net/docs/ST_LineMerge.html
                -- In order to not end up with a mixture of LineStrings and MultiLineStrings we dump eventual
                -- MultiLineStrings via ST_Dump. https://postgis.net/docs/ST_Dump.html
-               array_agg(osm_id) AS source_ids, tags, 'aerialway' AS highway, subclass, min(z_order) AS z_order
+               coalesce( array_agg(osm_id) FILTER (WHERE osm_id IS NOT NULL), '{}' )::BIGINT[] AS new_source_ids,
+               array_cat_agg(source_ids)::BIGINT[] as old_source_ids,
+               tags, 'aerialway' AS highway, subclass, min(z_order) AS z_order
         FROM clustered_linestrings_to_merge
         GROUP BY cluster_group, cluster, tags, subclass, layer
-        RETURNING source, id, source_ids, geometry
+        RETURNING source, id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources.
     -- This is required because ST_LineMerge only merges across singular intersections and groups its output into a
@@ -1420,8 +1459,14 @@ BEGIN
     INSERT INTO osm_transportation_name_linestring_source_ids (source, id, source_id)
     SELECT m.source, m.id, source_id
     FROM (
-        SELECT source, id, unnest(source_ids) AS source_id, geometry
+        SELECT source, id, source_id, geometry
         FROM inserted_linestrings
+        CROSS JOIN LATERAL (
+            SELECT DISTINCT all_source_ids.source_id
+            FROM unnest(
+                array_cat(inserted_linestrings.new_source_ids, inserted_linestrings.old_source_ids)
+            ) AS all_source_ids(source_id)
+        ) source_ids
     ) m
     JOIN osm_aerialway_linestring s ON (m.source_id = s.osm_id)
     WHERE ST_Intersects(s.geometry, m.geometry)
@@ -1430,8 +1475,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID column
-    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS source_ids;
+    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS new_source_ids;
+    ALTER TABLE osm_transportation_name_linestring DROP COLUMN IF EXISTS old_source_ids;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation_name.aerialway_changes;
