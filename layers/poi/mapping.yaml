@@ -52,7 +52,6 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - restaurant
   - school
   - shelter
-  - swimming_pool
   - taxi
   - telephone
   - theatre
