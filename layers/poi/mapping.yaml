@@ -1,4 +1,3 @@
-
 # imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
 # Warning: this is not the official imposm3
 
@@ -372,20 +371,20 @@ def_poi_fields: &poi_fields
 
 def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
-  amenity: [__any__]
+  amenity: [ __any__ ]
   barrier: *poi_mapping_barrier
   building: *poi_mapping_building
-  craft: [__any__]
-  healthcare: [__any__]
+  craft: [ __any__ ]
+  healthcare: [ __any__ ]
   highway: *poi_mapping_highway
   historic: *poi_mapping_historic
   landuse: *poi_mapping_landuse
   leisure: *poi_mapping_leisure
   office: *poi_mapping_office
   railway: *poi_mapping_railway
-  shop: [__any__]
-  sport: [__any__]
-  tourism: [__any__]
+  shop: [ __any__ ]
+  sport: [ __any__ ]
+  tourism: [ __any__ ]
   waterway: *poi_mapping_waterway
 
 tables:
@@ -406,8 +405,9 @@ tables:
                    'fountain', 'parking_entrance', 'parking_space', 'photo_booth',
                    'reception_desk', 'ticket_validator', 'vending_machine',
                    'waste_disposal', 'water_point' ]
-        landuse: ['yes', 'no', 'none', 'common', 'nature_reserve', 'picnic_table', 'slipway', 'swimming_pool', 'track' ]
-        shop: ['yes' , 'no' , 'none' , 'vacant']
+        landuse: [ 'yes', 'no', 'none' ]
+        leisure: [ 'yes', 'no', 'none', 'common', 'nature_reserve', 'picnic_table', 'slipway', 'swimming_pool', 'track' ]
+        shop: [ 'yes' , 'no' , 'none' , 'vacant' ]
 
 tags:
   load_all: true
