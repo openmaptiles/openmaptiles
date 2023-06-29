@@ -371,7 +371,7 @@ def_poi_fields: &poi_fields
 
 def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
-  amenity: [ __any__ ]
+  amenity: *poi_mapping_amenity
   barrier: *poi_mapping_barrier
   building: *poi_mapping_building
   craft: [ __any__ ]
@@ -383,7 +383,7 @@ def_poi_mapping: &poi_mapping
   office: *poi_mapping_office
   railway: *poi_mapping_railway
   shop: [ __any__ ]
-  sport: [ __any__ ]
+  sport: *poi_mapping_sport
   tourism: [ __any__ ]
   waterway: *poi_mapping_waterway
 
@@ -397,15 +397,6 @@ tables:
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
-    filters:
-      reject:
-        amenity: [ 'yes', 'no', 'none', 'bench', 'clock', 'drinking_water',
-                   'fountain', 'parking_entrance', 'parking_space', 'photo_booth',
-                   'reception_desk', 'ticket_validator', 'vending_machine',
-                   'waste_disposal', 'water_point' ]
-        landuse: [ 'yes', 'no', 'none' ]
-        leisure: [ 'yes', 'no', 'none', 'common', 'nature_reserve', 'picnic_table', 'slipway', 'swimming_pool', 'track' ]
-        shop: [ 'yes' , 'no' , 'none' , 'vacant' ]
     columns: *poi_fields
     mapping: *poi_mapping
 
