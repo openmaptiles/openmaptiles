@@ -397,8 +397,6 @@ tables:
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
-    columns: *poi_fields
-    mapping: *poi_mapping
     filters:
       reject:
         amenity: [ 'yes', 'no', 'none', 'bench', 'clock', 'drinking_water',
@@ -408,6 +406,8 @@ tables:
         landuse: [ 'yes', 'no', 'none' ]
         leisure: [ 'yes', 'no', 'none', 'common', 'nature_reserve', 'picnic_table', 'slipway', 'swimming_pool', 'track' ]
         shop: [ 'yes' , 'no' , 'none' , 'vacant' ]
+    columns: *poi_fields
+    mapping: *poi_mapping
 
 tags:
   load_all: true
