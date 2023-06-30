@@ -371,6 +371,9 @@ def_poi_fields: &poi_fields
   - name: sport
     key: sport
     type: string
+  - name: wikidata
+    key: wikidata
+    type: string
 
 def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
