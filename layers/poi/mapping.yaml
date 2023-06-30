@@ -120,6 +120,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 # office values , see http://taginfo.openstreetmap.org/keys/office#values
 def_poi_mapping_office: &poi_mapping_office
   - diplomatic
+  - government
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
