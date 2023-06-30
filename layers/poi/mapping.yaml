@@ -8,6 +8,7 @@ def_poi_mapping_aerialway: &poi_mapping_aerialway
 # amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
+  - atm
   - bank
   - bar
   - bbq
@@ -16,6 +17,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - biergarten
   - bus_station
   - cafe
+  - car_sharing
   - cinema
   - clinic
   - college
@@ -47,6 +49,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - prison
   - pub
   - public_building
+  - public_bookcase
   - recycling
   - restaurant
   - school
@@ -90,13 +93,11 @@ def_poi_mapping_landuse: &poi_mapping_landuse
   - basin
   - brownfield
   - cemetery
-  - commercial
   - military
   - port
   - recreation_ground
   - religious
   - reservoir
-  - retail
   - winter_sports
 
 # leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
@@ -121,6 +122,7 @@ def_poi_mapping_leisure: &poi_mapping_leisure
 def_poi_mapping_office: &poi_mapping_office
   - diplomatic
   - government
+  - company
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
