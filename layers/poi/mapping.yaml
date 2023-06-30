@@ -1,4 +1,3 @@
-
 # imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
 # Warning: this is not the official imposm3
 
@@ -9,6 +8,7 @@ def_poi_mapping_aerialway: &poi_mapping_aerialway
 # amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
 def_poi_mapping_amenity: &poi_mapping_amenity
   - arts_centre
+  - atm
   - bank
   - bar
   - bbq
@@ -17,6 +17,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - biergarten
   - bus_station
   - cafe
+  - car_sharing
   - cinema
   - clinic
   - college
@@ -48,11 +49,11 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - prison
   - pub
   - public_building
+  - public_bookcase
   - recycling
   - restaurant
   - school
   - shelter
-  - swimming_pool
   - taxi
   - telephone
   - theatre
@@ -92,13 +93,11 @@ def_poi_mapping_landuse: &poi_mapping_landuse
   - basin
   - brownfield
   - cemetery
-  - commercial
   - military
   - port
   - recreation_ground
   - religious
   - reservoir
-  - retail
   - winter_sports
 
 # leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
@@ -117,12 +116,13 @@ def_poi_mapping_leisure: &poi_mapping_leisure
   - sports_centre
   - stadium
   - swimming_area
-  - swimming_pool
   - water_park
 
 # office values , see http://taginfo.openstreetmap.org/keys/office#values
 def_poi_mapping_office: &poi_mapping_office
   - diplomatic
+  - government
+  - company
 
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
@@ -374,20 +374,20 @@ def_poi_fields: &poi_fields
 
 def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
-  amenity: [__any__]
+  amenity: *poi_mapping_amenity
   barrier: *poi_mapping_barrier
   building: *poi_mapping_building
-  craft: [__any__]
-  healthcare: [__any__]
+  craft: [ __any__ ]
+  healthcare: [ __any__ ]
   highway: *poi_mapping_highway
   historic: *poi_mapping_historic
   landuse: *poi_mapping_landuse
   leisure: *poi_mapping_leisure
   office: *poi_mapping_office
   railway: *poi_mapping_railway
-  shop: [__any__]
-  sport: [__any__]
-  tourism: [__any__]
+  shop: [ __any__ ]
+  sport: *poi_mapping_sport
+  tourism: [ __any__ ]
   waterway: *poi_mapping_waterway
 
 tables:
@@ -402,3 +402,6 @@ tables:
     type: polygon
     columns: *poi_fields
     mapping: *poi_mapping
+
+tags:
+  load_all: true

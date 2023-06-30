@@ -30,6 +30,8 @@ layer:
           subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']
         golf:
           subclass: ['golf', 'golf_course', 'miniature_golf']
+        barrier:
+          subclass: ['bollard', 'border_control', 'cycle_barrier', 'gate', 'lift_gate', 'sally_port', 'stile', 'toll_booth']
         fast_food:
           subclass: ['fast_food', 'food_court']
         park:
