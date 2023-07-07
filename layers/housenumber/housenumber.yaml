@@ -7,12 +7,14 @@ layer:
   buffer_size: 8
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
-    housenumber: Value of the [`addr:housenumber`](http://wiki.openstreetmap.org/wiki/Key:addr) tag.
+    housenumber: Value of the [`addr:housenumber`](http://wiki.openstreetmap.org/wiki/Key:addr) tag. 
+      If there are multiple values separated by semi-colons, the first and last value separated by a dash.
   datasource:
     geometry_field: geometry
     srid: 900913
     query: (SELECT geometry, housenumber FROM layer_housenumber(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./housenumber_display.sql
   - ./housenumber_centroid.sql
   - ./housenumber.sql
 datasources:
