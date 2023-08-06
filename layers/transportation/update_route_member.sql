@@ -58,7 +58,7 @@ SELECT CASE
                CASE
                    WHEN ref LIKE '4__' THEN 'ca-provincial-arterial'::route_network_type
                    WHEN ref = 'QEW' THEN 'ca-provincial-arterial'::route_network_type
-                   ELSE 'ca-provincial-arterial'::route_network_type
+                   ELSE 'ca-provincial'::route_network_type
                END
            WHEN network = 'CA:MB:PTH' AND ref = '75' THEN 'ca-provincial-arterial'::route_network_type
            WHEN network = 'CA:AB:primary' AND ref IN ('2','3','4') THEN 'ca-provincial-arterial'::route_network_type
