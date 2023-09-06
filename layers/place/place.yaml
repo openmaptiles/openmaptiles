@@ -65,7 +65,7 @@ layer:
           and states and for cities consists out of a shifted
           Natural Earth `scalerank` combined with a local rank
           within a grid for cities that do not have a Natural Earth `scalerank`.
-  buffer_size: 256
+  buffer_size: 0
   datasource:
     geometry_field: geometry
     key_field: osm_id
