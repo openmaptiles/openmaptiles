@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS transportation_route_member_coalesced
     role              varchar,
     type              smallint,
     name              varchar,
+    short_name        varchar,
     osmc_symbol       varchar,
     colour            varchar,
     network_type      route_network_type,
@@ -158,6 +159,7 @@ BEGIN
             role,
             type,
             name,
+            short_name,
             osmc_symbol,
             colour
         FROM osm_route_member
@@ -168,7 +170,7 @@ BEGIN
         )
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
-                                                     type = EXCLUDED.type, name = EXCLUDED.name,
+                                                     type = EXCLUDED.type, name = EXCLUDED.name, short_name = EXCLUDED.short_name,
                                                      osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour,
                                                      concurrency_index = EXCLUDED.concurrency_index,
                                                      rank = EXCLUDED.rank;

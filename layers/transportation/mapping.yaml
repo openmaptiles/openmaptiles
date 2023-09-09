@@ -487,6 +487,9 @@ tables:
     - *ref
     - *network
     - *name
+    - name: short_name
+      key: short_name
+      type: string
     - name: osmc_symbol
       key: osmc:symbol
       type: string
