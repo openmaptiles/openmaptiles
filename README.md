@@ -11,6 +11,7 @@ Please keep in mind that OpenMapTiles schema should display general topographic 
 - :link: Data for download: https://www.maptiler.com/data/
 - :link: Hosting https://www.maptiler.com/cloud/
 - :link: Create own layer https://github.com/openmaptiles/openmaptiles-skiing
+- :link: Practical usage of OpenMapTiles https://github.com/maptiler/foss4g-workshop
 - :link: Discuss at the #openmaptiles channel at [OSM Slack](https://slack.openstreetmap.us/)
 
 ## Styles
