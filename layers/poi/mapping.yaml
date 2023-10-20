@@ -340,6 +340,7 @@ def_poi_fields: &poi_fields
     type: string
   - name: tags
     type: hstore_tags
+    load_all: true
   - name: subclass
     type: mapping_value
   - name: mapping_key
@@ -405,6 +406,3 @@ tables:
     type: polygon
     columns: *poi_fields
     mapping: *poi_mapping
-
-tags:
-  load_all: true
