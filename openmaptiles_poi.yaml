@@ -1,6 +1,11 @@
 tileset:
   layers:
+    - layers/water/water.yaml
+    - layers/place/place.yaml
+    - layers/waterway/waterway.yaml
+    - layers/water_name/water_name.yaml
     - layers/poi/poi.yaml
+    - layers/aerodrome_label/aerodrome_label.yaml
   name: OpenMapTiles
   version: 3.3.0
   id: openmaptiles
