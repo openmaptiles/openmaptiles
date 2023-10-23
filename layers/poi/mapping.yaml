@@ -405,3 +405,6 @@ tables:
     type: polygon
     columns: *poi_fields
     mapping: *poi_mapping
+
+tags:
+  include: [aerodrome, opening_hours, cuisine, organic, zero_waste, bulk_purchase, operator]
