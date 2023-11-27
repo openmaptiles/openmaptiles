@@ -407,4 +407,4 @@ tables:
     mapping: *poi_mapping
 
 tags:
-  include: [aerodrome, opening_hours, cuisine, organic, zero_waste, bulk_purchase, operator, wikidata, fee, website, phone, description, email]
+  include: [aerodrome, opening_hours, cuisine, organic, zero_waste, bulk_purchase, operator, wikidata, fee, website, phone, description, email, stars]
