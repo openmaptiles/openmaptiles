@@ -252,6 +252,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - newsagent
   - optician
   - outdoor
+  - paint
   - perfume
   - perfumery
   - pet
@@ -386,6 +387,8 @@ def_poi_fields: &poi_fields
     type: id
   - name: geometry
     type: geometry
+  - name: area
+    type: area
   - name: name
     key: name
     type: string

@@ -2,7 +2,7 @@
 
 ### Req:
 * CPU: AMD64 ( = Intel 64 bit)
-    *  The base docker debian images are x86_64 based, so the ARM,MIPS currently not supported!
+    *  The base docker debian images are x86_64 based, so the ARM, MIPS currently not supported!
 * Operating system
     * Linux is suggested
         * The development and the testing platform is Linux.
@@ -423,9 +423,11 @@ Hints for testing areas
 
 Hints for designers:
   make start-maputnik                  # start Maputnik Editor + dynamic tile server [ see http://localhost:8088 ]
+  make stop-maputnik                   # stop Maputnik Editor + dynamic tile server
   make start-postserve                 # start dynamic tile server                   [ see http://localhost:8090 ]
   make stop-postserve                  # stop dynamic tile server
   make start-tileserver                # start maptiler/tileserver-gl                [ see http://localhost:8080 ]
+  make stop-tileserver                 # stop maptiler/tileserver-gl
 
 Hints for developers:
   make                                 # build source code
@@ -435,6 +437,7 @@ Hints for developers:
   make generate-qa                     # statistics for a given layer's field
   make generate-tiles-pg               # generate vector tiles based on .env settings using PostGIS ST_MVT()
   make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
+  make generate-changed-tiles          # Generate tiles changed by import-diff
   make test-sql                        # run unit tests on the OpenMapTiles SQL schema
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
@@ -449,6 +452,7 @@ Hints for downloading & importing data:
   make download-bbbike area=Amsterdam  # download OSM data from bbbike.org       and create config file
   make import-data                     # Import data from OpenStreetMapData, Natural Earth and OSM Lake Labels.
   make import-osm                      # Import OSM data with the mapping rules from build/mapping.yaml
+  make import-diff                     # Import OSM updates from data/changes.osc.gz
   make import-wikidata                 # Import labels from Wikidata
   make import-sql                      # Import layers (run this after modifying layer SQL)
 

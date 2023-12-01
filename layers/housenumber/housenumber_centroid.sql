@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS housenumber;
 
 CREATE TABLE IF NOT EXISTS housenumber.osm_ids
 (
-    osm_id bigint
+    osm_id bigint PRIMARY KEY
 );
 
 -- etldoc: osm_housenumber_point -> osm_housenumber_point
@@ -22,6 +22,16 @@ $$
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids))
         AND ST_GeometryType(geometry) <> 'ST_Point'
         AND ST_IsValid(geometry);
+
+    -- we don't need exact name just to know if it's present
+    UPDATE osm_housenumber_point
+    SET has_name = 
+            CASE
+                WHEN has_name = '' THEN '0'
+                ELSE '1'
+            END
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM housenumber.osm_ids));
+
 $$ LANGUAGE SQL;
 
 SELECT convert_housenumber_point(true);
@@ -31,11 +41,7 @@ SELECT convert_housenumber_point(true);
 CREATE OR REPLACE FUNCTION housenumber.store() RETURNS trigger AS
 $$
 BEGIN
-    IF (tg_op = 'DELETE') THEN
-        INSERT INTO housenumber.osm_ids VALUES (OLD.osm_id);
-    ELSE
-        INSERT INTO housenumber.osm_ids VALUES (NEW.osm_id);
-    END IF;
+    INSERT INTO housenumber.osm_ids VALUES (NEW.osm_id) ON CONFLICT (osm_id) DO NOTHING;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -60,6 +66,11 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh housenumber';
+
+    -- Analyze tracking and source tables before performing update
+    ANALYZE housenumber.osm_ids;
+    ANALYZE osm_housenumber_point;
+
     PERFORM convert_housenumber_point(false);
     -- noinspection SqlWithoutWhere
     DELETE FROM housenumber.osm_ids;
@@ -72,13 +83,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_store
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_housenumber_point
     FOR EACH ROW
 EXECUTE PROCEDURE housenumber.store();
 
 CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_housenumber_point
     FOR EACH STATEMENT
 EXECUTE PROCEDURE housenumber.flag();

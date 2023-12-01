@@ -28,8 +28,14 @@ layer:
       - us-highway
       - us-state
       - ca-transcanada
+      - ca-provincial-arterial
+      - ca-provincial
       - gb-motorway
       - gb-trunk
+      - gb-primary
+      - ie-motorway
+      - ie-national
+      - ie-regional
       - road (default)
     class:
       description: |

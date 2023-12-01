@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS poi_polygon;
 
 CREATE TABLE IF NOT EXISTS poi_polygon.osm_ids
 (
-    osm_id bigint
+    osm_id bigint PRIMARY KEY
 );
 
 -- etldoc:  osm_poi_polygon ->  osm_poi_polygon
@@ -51,11 +51,7 @@ SELECT update_poi_polygon(true);
 CREATE OR REPLACE FUNCTION poi_polygon.store() RETURNS trigger AS
 $$
 BEGIN
-    IF (tg_op = 'DELETE') THEN
-        INSERT INTO poi_polygon.osm_ids VALUES (OLD.osm_id);
-    ELSE
-        INSERT INTO poi_polygon.osm_ids VALUES (NEW.osm_id);
-    END IF;
+    INSERT INTO poi_polygon.osm_ids VALUES (NEW.osm_id) ON CONFLICT (osm_id) DO NOTHING;
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -80,6 +76,11 @@ DECLARE
     t TIMESTAMP WITH TIME ZONE := clock_timestamp();
 BEGIN
     RAISE LOG 'Refresh poi_polygon';
+
+    -- Analyze tracking and source tables before performing update
+    ANALYZE poi_polygon.osm_ids;
+    ANALYZE osm_poi_polygon;
+
     PERFORM update_poi_polygon(false);
     -- noinspection SqlWithoutWhere
     DELETE FROM poi_polygon.osm_ids;
@@ -92,13 +93,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_store
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_poi_polygon
     FOR EACH ROW
 EXECUTE PROCEDURE poi_polygon.store();
 
 CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
+    AFTER INSERT OR UPDATE
     ON osm_poi_polygon
     FOR EACH STATEMENT
 EXECUTE PROCEDURE poi_polygon.flag();

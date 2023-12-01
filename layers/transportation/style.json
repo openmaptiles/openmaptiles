@@ -5,13 +5,13 @@
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "minzoom": 10,
+      "minzoom": 4,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#7d7df8",
+        "line-color": "#66f",
         "line-width": {
           "stops": [
             [
@@ -25,8 +25,8 @@
           ]
         },
         "line-dasharray": [
-          2,
-          2
+          6,
+          6
         ]
       },
       "filter": [
@@ -755,7 +755,7 @@
       "order": 38
     },
     {
-      "id": "tunnel_path_pedestrian",
+      "id": "tunnel_path_casing_casing",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
@@ -763,23 +763,155 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(204, 196, 176, 0.45)",
+        "line-color": "rgba(50, 50, 50, 1)",
         "line-width": {
           "base": 1.2,
           "stops": [
             [
-              14,
-              0.5
+              13,
+              3.7
             ],
             [
-              20,
-              6
+              14,
+              4
+            ],
+            [
+              15,
+              4.3
+            ],
+            [
+              17,
+              4.3
+            ],
+            [
+              18,
+              4.6
             ]
           ]
         },
         "line-dasharray": [
           1,
-          0.75
+          0.5
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "path"
+        ]
+      ],
+      "order": 39
+    },
+    {
+      "id": "tunnel_path_casing",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(255, 255, 255, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              2.7
+            ],
+            [
+              14,
+              3
+            ],
+            [
+              15,
+              3.3
+            ],
+            [
+              17,
+              3.3
+            ],
+            [
+              18,
+              3.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          1,
+          0
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "path"
+        ]
+      ],
+      "order": 40
+    },
+    {
+      "id": "tunnel_path_cycleway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "paint": {
+        "line-color": "#0000ff",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          2,
+          2
         ]
       },
       "metadata": {},
@@ -798,11 +930,175 @@
         [
           "in",
           "class",
-          "path",
-          "pedestrian"
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
         ]
       ],
-      "order": 39
+      "order": 41
+    },
+    {
+      "id": "tunnel_path_bridleway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "paint": {
+        "line-color": "#008000",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          2,
+          2
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "bridleway"
+          ],
+          [
+            "==",
+            "horse",
+            "designated"
+          ]
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ]
+      ],
+      "order": 42
+    },
+    {
+      "id": "tunnel_path_footway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "paint": {
+        "line-color": "#fa8072",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          2,
+          2
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "in",
+          "subclass",
+          "footway",
+          "path"
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ],
+        [
+          "!=",
+          "horse",
+          "designated"
+        ]
+      ],
+      "order": 43
     },
     {
       "id": "tunnel_motorway_link",
@@ -878,7 +1174,7 @@
           "tunnel"
         ]
       ],
-      "order": 40
+      "order": 44
     },
     {
       "id": "tunnel_service_track",
@@ -933,7 +1229,7 @@
           "track"
         ]
       ],
-      "order": 41
+      "order": 45
     },
     {
       "id": "tunnel_service_track_construction",
@@ -992,7 +1288,7 @@
           "track_construction"
         ]
       ],
-      "order": 42
+      "order": 46
     },
     {
       "id": "tunnel_link",
@@ -1046,7 +1342,7 @@
           0
         ]
       ],
-      "order": 43
+      "order": 47
     },
     {
       "id": "tunnel_minor",
@@ -1092,7 +1388,7 @@
           "minor"
         ]
       ],
-      "order": 44
+      "order": 48
     },
     {
       "id": "tunnel_minor_construction",
@@ -1142,7 +1438,7 @@
           "minor_construction"
         ]
       ],
-      "order": 45
+      "order": 49
     },
     {
       "id": "tunnel_tertiary",
@@ -1207,7 +1503,7 @@
           "tertiary"
         ]
       ],
-      "order": 46
+      "order": 50
     },
     {
       "id": "tunnel_tertiary_construction",
@@ -1276,7 +1572,7 @@
           "tertiary_construction"
         ]
       ],
-      "order": 47
+      "order": 51
     },
     {
       "id": "tunnel_secondary",
@@ -1354,7 +1650,7 @@
           "secondary"
         ]
       ],
-      "order": 48
+      "order": 52
     },
     {
       "id": "tunnel_secondary_construction",
@@ -1436,7 +1732,7 @@
           "secondary_construction"
         ]
       ],
-      "order": 49
+      "order": 53
     },
     {
       "id": "tunnel_primary",
@@ -1519,7 +1815,7 @@
           "primary"
         ]
       ],
-      "order": 50
+      "order": 54
     },
     {
       "id": "tunnel_primary_construction",
@@ -1606,7 +1902,7 @@
           "primary_construction"
         ]
       ],
-      "order": 51
+      "order": 55
     },
     {
       "id": "tunnel_trunk",
@@ -1699,7 +1995,7 @@
           "trunk"
         ]
       ],
-      "order": 52
+      "order": 56
     },
     {
       "id": "tunnel_trunk_construction",
@@ -1785,7 +2081,7 @@
           "trunk_construction"
         ]
       ],
-      "order": 53
+      "order": 57
     },
     {
       "id": "tunnel_motorway",
@@ -1841,7 +2137,7 @@
           "tunnel"
         ]
       ],
-      "order": 54
+      "order": 58
     },
     {
       "id": "tunnel_motorway_construction",
@@ -1901,7 +2197,7 @@
           "tunnel"
         ]
       ],
-      "order": 55
+      "order": 59
     },
     {
       "id": "tunnel_major_rail",
@@ -1945,7 +2241,7 @@
           "rail"
         ]
       ],
-      "order": 56
+      "order": 60
     },
     {
       "id": "tunnel_major_rail_hatching",
@@ -1997,7 +2293,7 @@
         [
           "in",
           "brunnel",
-          "bridge",
+          "tunnel",
           "tunnel"
         ],
         [
@@ -2006,7 +2302,7 @@
           "rail"
         ]
       ],
-      "order": 57
+      "order": 61
     },
     {
       "id": "road_area_pier",
@@ -2034,7 +2330,7 @@
           "pier"
         ]
       ],
-      "order": 58
+      "order": 62
     },
     {
       "id": "road_pier",
@@ -2075,7 +2371,7 @@
           "pier"
         ]
       ],
-      "order": 59
+      "order": 63
     },
     {
       "id": "road_area_bridge",
@@ -2104,7 +2400,7 @@
           "bridge"
         ]
       ],
-      "order": 60
+      "order": 64
     },
     {
       "id": "road_area_platform",
@@ -2140,7 +2436,7 @@
           "platform"
         ]
       ],
-      "order": 61
+      "order": 65
     },
     {
       "id": "road_area_pedestrian",
@@ -2172,7 +2468,7 @@
           "pier"
         ]
       ],
-      "order": 62
+      "order": 66
     },
     {
       "id": "road_service_track_casing",
@@ -2232,7 +2528,7 @@
           "track"
         ]
       ],
-      "order": 63
+      "order": 67
     },
     {
       "id": "road_primary_link_casing",
@@ -2312,7 +2608,7 @@
           "primary"
         ]
       ],
-      "order": 64
+      "order": 68
     },
     {
       "id": "road_trunk_link_casing",
@@ -2388,7 +2684,7 @@
           "trunk"
         ]
       ],
-      "order": 65
+      "order": 69
     },
     {
       "id": "road_motorway_link_casing",
@@ -2469,7 +2765,7 @@
           1
         ]
       ],
-      "order": 66
+      "order": 70
     },
     {
       "id": "road_minor_casing",
@@ -2551,7 +2847,7 @@
           "1"
         ]
       ],
-      "order": 67
+      "order": 71
     },
     {
       "id": "road_tertiary_casing",
@@ -2625,7 +2921,7 @@
           1
         ]
       ],
-      "order": 68
+      "order": 72
     },
     {
       "id": "road_secondary_link_casing",
@@ -2710,7 +3006,7 @@
           1
         ]
       ],
-      "order": 69
+      "order": 73
     },
     {
       "id": "road_secondary_casing",
@@ -2795,7 +3091,7 @@
           1
         ]
       ],
-      "order": 70
+      "order": 74
     },
     {
       "id": "road_trunk_casing",
@@ -2885,7 +3181,7 @@
           1
         ]
       ],
-      "order": 71
+      "order": 75
     },
     {
       "id": "road_primary_casing",
@@ -2975,7 +3271,7 @@
           1
         ]
       ],
-      "order": 72
+      "order": 76
     },
     {
       "id": "road_motorway_casing",
@@ -3039,7 +3335,7 @@
           1
         ]
       ],
-      "order": 73
+      "order": 77
     },
     {
       "id": "road_pedestrian_casing",
@@ -3103,7 +3399,7 @@
           "tunnel"
         ]
       ],
-      "order": 74
+      "order": 78
     },
     {
       "id": "road_pedestrian",
@@ -3167,14 +3463,76 @@
           "tunnel"
         ]
       ],
-      "order": 75
+      "order": 79
     },
     {
-      "id": "road_path_cycleway_casing",
+      "id": "road_path_steps_casing",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "minzoom": 14,
+      "minzoom": 15,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(236, 236, 236, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              14,
+              4
+            ],
+            [
+              15,
+              4.3
+            ],
+            [
+              17,
+              4.3
+            ],
+            [
+              18,
+              4.6
+            ]
+          ]
+        },
+        "line-opacity": 0.6
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "==",
+          "subclass",
+          "steps"
+        ]
+      ],
+      "order": 80
+    },
+    {
+      "id": "road_path_bridleway_casing",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3224,12 +3582,95 @@
           "path"
         ],
         [
-          "==",
-          "subclass",
-          "cycleway"
+          "any",
+          [
+            "==",
+            "subclass",
+            "bridleway"
+          ],
+          [
+            "==",
+            "horse",
+            "designated"
+          ]
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
         ]
       ],
-      "order": 76
+      "order": 81
+    },
+    {
+      "id": "road_path_cycleway_casing",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(236, 236, 236, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              14,
+              3
+            ],
+            [
+              15,
+              3.3
+            ],
+            [
+              17,
+              3.3
+            ],
+            [
+              18,
+              3.6
+            ]
+          ]
+        },
+        "line-opacity": 0.6
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
+        ]
+      ],
+      "order": 82
     },
     {
       "id": "road_path_footway_casing",
@@ -3242,7 +3683,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(255, 255, 255, 0.8)",
+        "line-color": "rgba(236, 236, 236, 1)",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -3263,7 +3704,8 @@
               3.6
             ]
           ]
-        }
+        },
+        "line-opacity": 0.6
       },
       "metadata": {},
       "filter": [
@@ -3289,9 +3731,19 @@
           "subclass",
           "footway",
           "path"
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ],
+        [
+          "!=",
+          "horse",
+          "designated"
         ]
       ],
-      "order": 77
+      "order": 83
     },
     {
       "id": "road_path_cycleway",
@@ -3351,19 +3803,170 @@
           "path"
         ],
         [
-          "==",
-          "subclass",
-          "cycleway"
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
         ]
       ],
-      "order": 78
+      "order": 84
+    },
+    {
+      "id": "road_path_steps",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#fa8072",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              12,
+              1.7
+            ],
+            [
+              14,
+              1.9
+            ],
+            [
+              17,
+              2
+            ],
+            [
+              18,
+              2.3
+            ]
+          ]
+        },
+        "line-dasharray": [
+          0.5,
+          0.5
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "==",
+          "subclass",
+          "steps"
+        ]
+      ],
+      "order": 85
+    },
+    {
+      "id": "road_path_bridleway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#008000",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              12,
+              0.7
+            ],
+            [
+              14,
+              0.9
+            ],
+            [
+              17,
+              1
+            ],
+            [
+              18,
+              1.3
+            ]
+          ]
+        },
+        "line-dasharray": [
+          2,
+          2
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "bridleway"
+          ],
+          [
+            "==",
+            "horse",
+            "designated"
+          ]
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ]
+      ],
+      "order": 86
     },
     {
       "id": "road_path_footway",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "minzoom": 13,
+      "minzoom": 12,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3424,9 +4027,19 @@
           "subclass",
           "footway",
           "path"
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ],
+        [
+          "!=",
+          "horse",
+          "designated"
         ]
       ],
-      "order": 79
+      "order": 87
     },
     {
       "id": "road_primary_link",
@@ -3494,7 +4107,7 @@
           "primary"
         ]
       ],
-      "order": 80
+      "order": 88
     },
     {
       "id": "road_trunk_link",
@@ -3570,7 +4183,7 @@
           "trunk"
         ]
       ],
-      "order": 81
+      "order": 89
     },
     {
       "id": "road_motorway_link",
@@ -3654,7 +4267,7 @@
           1
         ]
       ],
-      "order": 82
+      "order": 90
     },
     {
       "id": "road_service_track",
@@ -3719,7 +4332,7 @@
           "track"
         ]
       ],
-      "order": 83
+      "order": 91
     },
     {
       "id": "road_service_track_construction",
@@ -3788,7 +4401,7 @@
           "track_construction"
         ]
       ],
-      "order": 84
+      "order": 92
     },
     {
       "id": "road_raceway",
@@ -3850,7 +4463,7 @@
           "raceway"
         ]
       ],
-      "order": 85
+      "order": 93
     },
     {
       "id": "road_minor",
@@ -3950,7 +4563,7 @@
           ]
         ]
       ],
-      "order": 86
+      "order": 94
     },
     {
       "id": "road_minor_construction",
@@ -4054,7 +4667,7 @@
           ]
         ]
       ],
-      "order": 87
+      "order": 95
     },
     {
       "id": "road_secondary",
@@ -4145,7 +4758,7 @@
           "secondary"
         ]
       ],
-      "order": 88
+      "order": 96
     },
     {
       "id": "road_tertiary",
@@ -4232,7 +4845,7 @@
           "tertiary"
         ]
       ],
-      "order": 89
+      "order": 97
     },
     {
       "id": "road_tertiary_construction",
@@ -4319,7 +4932,7 @@
           "tertiary_construction"
         ]
       ],
-      "order": 90
+      "order": 98
     },
     {
       "id": "road_secondary_construction",
@@ -4414,7 +5027,7 @@
           "secondary_construction"
         ]
       ],
-      "order": 91
+      "order": 99
     },
     {
       "id": "road_primary_construction",
@@ -4510,7 +5123,7 @@
           "primary_construction"
         ]
       ],
-      "order": 92
+      "order": 100
     },
     {
       "id": "road_primary",
@@ -4606,7 +5219,7 @@
           "primary"
         ]
       ],
-      "order": 93
+      "order": 101
     },
     {
       "id": "road_trunk",
@@ -4702,7 +5315,7 @@
           "trunk"
         ]
       ],
-      "order": 94
+      "order": 102
     },
     {
       "id": "road_trunk_construction",
@@ -4802,7 +5415,7 @@
           "trunk_construction"
         ]
       ],
-      "order": 95
+      "order": 103
     },
     {
       "id": "road_motorway",
@@ -4866,7 +5479,7 @@
           1
         ]
       ],
-      "order": 96
+      "order": 104
     },
     {
       "id": "road_motorway_construction",
@@ -4935,7 +5548,7 @@
           1
         ]
       ],
-      "order": 97
+      "order": 105
     },
     {
       "id": "rail_subway",
@@ -4979,7 +5592,7 @@
           "subway"
         ]
       ],
-      "order": 98
+      "order": 106
     },
     {
       "id": "rail_major",
@@ -4994,7 +5607,7 @@
           "stops": [
             [
               8,
-              " #787878"
+              "#787878"
             ],
             [
               14,
@@ -5039,7 +5652,7 @@
           "rail"
         ]
       ],
-      "order": 99
+      "order": 107
     },
     {
       "id": "rail_minor",
@@ -5085,7 +5698,7 @@
           "light_rail"
         ]
       ],
-      "order": 100
+      "order": 108
     },
     {
       "id": "rail_major_hatching",
@@ -5146,7 +5759,7 @@
           "rail"
         ]
       ],
-      "order": 101
+      "order": 109
     },
     {
       "id": "rail_minor_hatching",
@@ -5196,7 +5809,7 @@
           "light_rail"
         ]
       ],
-      "order": 102
+      "order": 110
     },
     {
       "id": "bridge_motorway_link_casing",
@@ -5262,7 +5875,7 @@
           "bridge"
         ]
       ],
-      "order": 105
+      "order": 113
     },
     {
       "id": "bridge_service_track_casing",
@@ -5307,7 +5920,7 @@
           "track"
         ]
       ],
-      "order": 106
+      "order": 114
     },
     {
       "id": "bridge_link_casing",
@@ -5356,7 +5969,7 @@
           "bridge"
         ]
       ],
-      "order": 107
+      "order": 115
     },
     {
       "id": "bridge_street_casing",
@@ -5417,10 +6030,73 @@
           "street_limited"
         ]
       ],
-      "order": 108
+      "order": 116
     },
     {
-      "id": "bridge_path_cycleway_casing",
+      "id": "bridge_path_casing_casing",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "layout": {
+        "line-join": "miter",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(0, 0, 0, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              3.7
+            ],
+            [
+              14,
+              4
+            ],
+            [
+              15,
+              4.3
+            ],
+            [
+              17,
+              4.3
+            ],
+            [
+              18,
+              4.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          1,
+          0
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ]
+      ],
+      "order": 117
+    },
+    {
+      "id": "bridge_path_casing",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
@@ -5478,82 +6154,9 @@
           "in",
           "class",
           "path"
-        ],
-        [
-          "==",
-          "subclass",
-          "cycleway"
         ]
       ],
-      "order": 109
-    },
-    {
-      "id": "bridge_path_footway_casing",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
-      "layout": {
-        "line-join": "miter",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "rgba(255, 255, 255, 1)",
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              13,
-              2.7
-            ],
-            [
-              14,
-              3
-            ],
-            [
-              15,
-              3.3
-            ],
-            [
-              17,
-              3.3
-            ],
-            [
-              18,
-              3.6
-            ]
-          ]
-        },
-        "line-dasharray": [
-          1,
-          0
-        ]
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ],
-        [
-          "in",
-          "class",
-          "path"
-        ],
-        [
-          "==",
-          "subclass",
-          "footway"
-        ]
-      ],
-      "order": 110
+      "order": 118
     },
     {
       "id": "bridge_secondary_casing",
@@ -5616,7 +6219,7 @@
           "tertiary"
         ]
       ],
-      "order": 111
+      "order": 119
     },
     {
       "id": "bridge_tertiary_casing",
@@ -5658,7 +6261,7 @@
           "tertiary"
         ]
       ],
-      "order": 112
+      "order": 120
     },
     {
       "id": "bridge_trunk_casing",
@@ -5726,7 +6329,7 @@
           "trunk"
         ]
       ],
-      "order": 113
+      "order": 121
     },
     {
       "id": "bridge_primary_casing",
@@ -5783,7 +6386,7 @@
           "primary"
         ]
       ],
-      "order": 114
+      "order": 122
     },
     {
       "id": "bridge_motorway_casing",
@@ -5833,7 +6436,7 @@
           1
         ]
       ],
-      "order": 115
+      "order": 123
     },
     {
       "id": "bridge_path_cycleway",
@@ -5892,12 +6495,97 @@
           "path"
         ],
         [
-          "==",
-          "subclass",
-          "cycleway"
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
         ]
       ],
-      "order": 116
+      "order": 124
+    },
+    {
+      "id": "bridge_path_bridleway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
+      "paint": {
+        "line-color": "#008000",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        },
+        "line-dasharray": [
+          2,
+          2
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "bridleway"
+          ],
+          [
+            "==",
+            "horse",
+            "designated"
+          ]
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ]
+      ],
+      "order": 125
     },
     {
       "id": "bridge_path_footway",
@@ -5956,12 +6644,23 @@
           "path"
         ],
         [
-          "==",
+          "in",
           "subclass",
-          "footway"
+          "footway",
+          "path"
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ],
+        [
+          "!=",
+          "horse",
+          "designated"
         ]
       ],
-      "order": 117
+      "order": 126
     },
     {
       "id": "bridge_motorway_link",
@@ -6026,7 +6725,7 @@
           "bridge"
         ]
       ],
-      "order": 118
+      "order": 127
     },
     {
       "id": "bridge_service_track",
@@ -6072,7 +6771,7 @@
           "track"
         ]
       ],
-      "order": 119
+      "order": 128
     },
     {
       "id": "bridge_service_track_construction",
@@ -6122,7 +6821,7 @@
           "track_construction"
         ]
       ],
-      "order": 120
+      "order": 129
     },
     {
       "id": "bridge_link",
@@ -6171,7 +6870,7 @@
           "bridge"
         ]
       ],
-      "order": 121
+      "order": 130
     },
     {
       "id": "bridge_minor",
@@ -6216,7 +6915,7 @@
           "minor"
         ]
       ],
-      "order": 122
+      "order": 131
     },
     {
       "id": "bridge_minor_construction",
@@ -6266,7 +6965,7 @@
           "minor_construction"
         ]
       ],
-      "order": 123
+      "order": 132
     },
     {
       "id": "bridge_tertiary",
@@ -6332,7 +7031,7 @@
           "tertiary"
         ]
       ],
-      "order": 124
+      "order": 133
     },
     {
       "id": "bridge_secondary",
@@ -6402,7 +7101,7 @@
           "secondary"
         ]
       ],
-      "order": 125
+      "order": 134
     },
     {
       "id": "bridge_secondary_construction-copy",
@@ -6450,7 +7149,7 @@
           "secondary_construction"
         ]
       ],
-      "order": 126
+      "order": 135
     },
     {
       "id": "bridge_tertiary_construction",
@@ -6498,7 +7197,7 @@
           "tertiary_construction"
         ]
       ],
-      "order": 127
+      "order": 136
     },
     {
       "id": "bridge_primary",
@@ -6563,7 +7262,7 @@
           "primary"
         ]
       ],
-      "order": 128
+      "order": 137
     },
     {
       "id": "bridge_trunk",
@@ -6624,7 +7323,7 @@
           "trunk"
         ]
       ],
-      "order": 129
+      "order": 138
     },
     {
       "id": "bridge_trunk_primary_construction",
@@ -6674,7 +7373,7 @@
           "trunk_construction"
         ]
       ],
-      "order": 130
+      "order": 139
     },
     {
       "id": "bridge_motorway",
@@ -6734,7 +7433,7 @@
           1
         ]
       ],
-      "order": 131
+      "order": 140
     },
     {
       "id": "bridge_motorway_construction",
@@ -6798,7 +7497,7 @@
           1
         ]
       ],
-      "order": 132
+      "order": 141
     },
     {
       "id": "bridge_major_rail",
@@ -6857,7 +7556,7 @@
           "rail"
         ]
       ],
-      "order": 133
+      "order": 142
     },
     {
       "id": "bridge_major_rail_hatching",
@@ -6917,7 +7616,7 @@
           "rail"
         ]
       ],
-      "order": 134
+      "order": 143
     },
     {
       "id": "cablecar",
@@ -6950,7 +7649,7 @@
         "class",
         "aerialway"
       ],
-      "order": 135
+      "order": 144
     },
     {
       "id": "cablecar-dash",
@@ -6987,10 +7686,10 @@
         "class",
         "aerialway"
       ],
-      "order": 136
+      "order": 145
     },
     {
-      "id": "road_path-cycleway_oneway",
+      "id": "road_path_oneway",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "transportation",
@@ -7008,7 +7707,7 @@
             ]
           ]
         },
-        "icon-image": "oneway-cycleway",
+        "icon-image": "oneway-path",
         "visibility": "visible",
         "icon-padding": 2,
         "symbol-spacing": 125,
@@ -7029,14 +7728,9 @@
           "==",
           "class",
           "path"
-        ],
-        [
-          "==",
-          "subclass",
-          "cycleway"
         ]
       ],
-      "order": 172
+      "order": 181
     },
     {
       "id": "road_oneway",
@@ -7086,7 +7780,7 @@
           "service"
         ]
       ],
-      "order": 173
+      "order": 182
     },
     {
       "id": "road_oneway_opposite",
@@ -7137,7 +7831,7 @@
           "service"
         ]
       ],
-      "order": 174
+      "order": 183
     }
   ]
 }
