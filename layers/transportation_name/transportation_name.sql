@@ -94,7 +94,7 @@ FROM (
                 NULL::int AS level,
                 NULL::boolean AS indoor
          FROM osm_transportation_name_linestring_gen3
-         WHERE zoom_level = 7
+         WHERE ST_Length(geometry) > 20000 AND zoom_level = 7
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring_gen2 ->  layer_transportation_name:z8
@@ -116,7 +116,7 @@ FROM (
                 NULL::int AS level,
                 NULL::boolean AS indoor
          FROM osm_transportation_name_linestring_gen2
-         WHERE zoom_level = 8
+         WHERE ST_Length(geometry) > 14000 AND zoom_level = 8
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring_gen1 ->  layer_transportation_name:z9
@@ -140,7 +140,7 @@ FROM (
                 NULL::int AS level,
                 NULL::boolean AS indoor
          FROM osm_transportation_name_linestring_gen1
-         WHERE zoom_level BETWEEN 9 AND 11
+         WHERE ST_Length(geometry) > 8000 / POWER(2, zoom_level - 9) AND zoom_level BETWEEN 9 AND 11
          UNION ALL
 
          -- etldoc: osm_transportation_name_linestring ->  layer_transportation_name:z12
