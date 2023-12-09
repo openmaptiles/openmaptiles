@@ -44,7 +44,7 @@ $$
         TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))),
         tags || hstore('name', TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))))
     )
-    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_polygon.osm_ids))
       AND subclass IN ('parcel_locker', 'charging_station')
       AND name = ''
       AND COALESCE(tags -> 'brand', tags -> 'operator') IS NOT NULL;
