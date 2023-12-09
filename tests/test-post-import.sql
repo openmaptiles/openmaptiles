@@ -195,6 +195,20 @@ BEGIN
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point parcel_locker with name like "OpenMapTiles Parcel Locker PL00%" expected 1, got ' || cnt);
   END IF;
+  
+  -- verify that charging stations are imported with correct name which can come from tags like brand or operator and can contain ref
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'charging_station'
+      AND tags->'name' = 'OpenMapTiles Charging Station';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point charging_station with name "OpenMapTiles Charging Station" expected 2, got ' || cnt);
+  END IF;
+  SELECT COUNT(*) INTO cnt FROM osm_poi_polygon
+    WHERE subclass = 'charging_station'
+      AND tags->'name' = 'OpenMapTiles Charging Station Brand';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_polygon charging_station with name "OpenMapTiles Charging Station Brand" expected 1, got ' || cnt);
+  END IF;
 
 END;
 
