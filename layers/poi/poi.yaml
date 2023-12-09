@@ -106,6 +106,8 @@ layer:
           subclass: ['castle', 'ruins']
         atm:
           subclass: ['atm']
+        fuel:
+          subclass: ['fuel', 'charging_station']
     subclass:
       description: |
           Original value of either the
