@@ -25,6 +25,16 @@ layer:
                      'newsagent', 'optician', 'outdoor', 'paint', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
                      'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency',
                      'watches', 'weapons', 'wholesale']
+        office:
+          subclass: ['accountant', 'advertising_agency', 'architect', 'association', 'bail_bond_agent', 'charity',
+                     'company', 'construction_company', 'consulting', 'cooperative', 'courier', 'coworking', 'diplomatic',
+                     'educational_institution', 'employment_agency', 'energy_supplier', 'engineer', 'estate_agent', 'financial',
+                     'financial_advisor', 'forestry', 'foundation', 'geodesist', 'government', 'graphic_design', 'guide',
+                     'harbour_master', 'health_insurance', 'insurance', 'interior_design', 'it', 'lawyer', 'logistics', 'marketing',
+                     'moving_company', 'newspaper', 'ngo', 'notary', 'physician', 'political_party', 'private_investigator',
+                     'property_management', 'publisher', 'quango', 'religion', 'research', 'security', 'surveyor', 'tax_advisor',
+                     'taxi', 'telecommunication', 'therapist', 'translator', 'travel_agent', 'tutoring', 'union', 'university',
+                     'water_utility', 'web_design', 'wedding_planner']
         town_hall:
           subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']
         golf:
@@ -96,6 +106,8 @@ layer:
           subclass: ['castle', 'ruins']
         atm:
           subclass: ['atm']
+        fuel:
+          subclass: ['fuel', 'charging_station']
     subclass:
       description: |
           Original value of either the

@@ -321,7 +321,6 @@ tables:
     - *bridge
     - *ramp
     - *ford
-    - *oneway
     - *area
     - *service
     - *usage
@@ -399,7 +398,6 @@ tables:
     - *bridge
     - *ramp
     - *ford
-    - *oneway
     - *area
     - *service
     - *usage
