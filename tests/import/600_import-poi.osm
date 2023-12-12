@@ -28,4 +28,28 @@
     <tag k="amenity" v="parcel_locker"/>
     <tag k="operator" v="OpenMapTiles Parcel Locker"/>
   </node>
+  <node id="600007" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.8" lon="-80.8">
+    <tag k="amenity" v="charging_station"/>
+    <tag k="name" v="OpenMapTiles Charging Station"/>
+    <tag k="brand" v="OpenMapTiles Charging Station Brand"/>
+  </node>
+  <node id="600008" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.0" />
+  <node id="600009" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.0" />
+  <node id="600010" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.1" />
+  <node id="600011" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.1" />
+  </node>
+    <node id="6000012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.9" lon="-80.9">
+    <tag k="amenity" v="charging_station"/>
+    <tag k="name" v="OpenMapTiles Charging Station"/>
+    <tag k="operator" v="OpenMapTiles Charging Station Operator"/>
+  </node>
+  <way id="6000" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="600008" />
+    <nd ref="600009" />
+    <nd ref="600010" />
+    <nd ref="600011" />
+    <nd ref="600008" />
+    <tag k="amenity" v="charging_station"/>
+    <tag k="brand" v="OpenMapTiles Charging Station Brand"/>
+  </way>
 </osm>

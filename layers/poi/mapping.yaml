@@ -18,6 +18,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - biergarten
   - bus_station
   - cafe
+  - charging_station
   - cinema
   - clinic
   - college
