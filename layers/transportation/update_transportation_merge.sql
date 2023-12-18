@@ -144,6 +144,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     layer integer
 );
 
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS source_ids bigint[];
+
 -- Create osm_transportation_merge_linestring_gen_z10 as a copy of osm_transportation_merge_linestring_gen_z11 but
 -- drop the "source_ids" column. This can be done because z10 and z9 tables are only simplified and not merged,
 -- therefore relations to sources are direct via the id column.
@@ -458,6 +460,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
     expressway boolean,
     z_order integer
 );
+
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS source_ids bigint[];
 
 -- Create osm_transportation_merge_linestring_gen_z7 as a copy of osm_transportation_merge_linestring_gen_z8 but
 -- drop the "source_ids" column. This can be done because z7 to z5 tables are only simplified and not merged,

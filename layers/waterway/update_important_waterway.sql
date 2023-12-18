@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring (
     tags hstore
 );
 
+ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+
 -- Create osm_important_waterway_linestring_gen_z11 as a copy of osm_important_waterway_linestring but drop the
 -- "source_ids" column. This can be done because z10 and z9 tables are only simplified and not merged, therefore
 -- relations to sources are direct via the id column.
