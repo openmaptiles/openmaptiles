@@ -93,6 +93,9 @@ tables:
     - name: historic
       key: historic
       type: string
+    - name: seamark_type
+      key: seamark:type
+      type: string
     - name: area
       type: area
     mapping:
@@ -101,6 +104,7 @@ tables:
       boundary:
       - national_park
       - protected_area
+      - aboriginal_lands
       historic:
       - archaeological_site
       - battlefield

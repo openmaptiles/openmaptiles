@@ -5,13 +5,13 @@
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "minzoom": 10,
+      "minzoom": 4,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#7d7df8",
+        "line-color": "#66f",
         "line-width": {
           "stops": [
             [
@@ -25,8 +25,8 @@
           ]
         },
         "line-dasharray": [
-          2,
-          2
+          6,
+          6
         ]
       },
       "filter": [
@@ -5607,7 +5607,7 @@
           "stops": [
             [
               8,
-              " #787878"
+              "#787878"
             ],
             [
               14,

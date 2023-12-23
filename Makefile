@@ -25,13 +25,23 @@ export TPORT
 STYLE_FILE := build/style/style.json
 STYLE_HEADER_FILE := style/style-header.json
 
+# Support newer `docker compose` syntax in addition to `docker-compose`
+
+ifeq (, $(shell which docker-compose))
+  DOCKER_COMPOSE_COMMAND := docker compose
+  $(info Using docker compose V2 (docker compose))
+else
+  DOCKER_COMPOSE_COMMAND := docker-compose
+  $(info Using docker compose V1 (docker-compose))
+endif
+
 # Allow a custom docker-compose project name
 DC_PROJECT := $(or $(DC_PROJECT),$(shell (. .env; echo $${DC_PROJECT})))
 ifeq ($(DC_PROJECT),)
   DC_PROJECT := $(notdir $(shell pwd))
-  DOCKER_COMPOSE := docker-compose
+  DOCKER_COMPOSE := $(DOCKER_COMPOSE_COMMAND)
 else
-  DOCKER_COMPOSE := docker-compose --project-name $(DC_PROJECT)
+  DOCKER_COMPOSE := $(DOCKER_COMPOSE_COMMAND) --project-name $(DC_PROJECT)
 endif
 
 # Make some operations quieter (e.g. inside the test script)
@@ -489,7 +499,7 @@ start-tileserver: init-dirs build-style download-fonts
 	@echo "* "
 	@echo "***********************************************************"
 	@echo " "
-	docker pull maptiler/tileserver-gl
+	$(DOCKER_COMPOSE_COMMAND) pull tileserver-gl
 	@echo " "
 	@echo "***********************************************************"
 	@echo "* "
@@ -606,9 +616,9 @@ else
 	@echo "Refreshing docker images... Use NO_REFRESH=1 to skip."
 ifneq ($(USE_PRELOADED_IMAGE),)
 	POSTGIS_IMAGE=openmaptiles/postgis-preloaded \
-		docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
+		$(DOCKER_COMPOSE_COMMAND) pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres
 else
-	docker-compose pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres import-data
+	$(DOCKER_COMPOSE_COMMAND) pull --ignore-pull-failures $(QUIET_FLAG) openmaptiles-tools generate-vectortiles postgres import-data
 endif
 endif
 
@@ -633,7 +643,7 @@ test-perf-null: init-dirs
 
 .PHONY: build-test-pbf
 build-test-pbf: init-dirs
-	docker-compose run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
+	$(DOCKER_COMPOSE_COMMAND) run $(DC_OPTS) openmaptiles-tools /tileset/.github/workflows/build-test-data.sh
 
 .PHONY: debug
 debug:  ## Use this target when developing Makefile itself to verify loaded environment variables
@@ -675,11 +685,13 @@ test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-te
     	awk '1{print; fflush()} $$0~".*ERROR" {txt=$$0} END{ if(txt){print "\n*** ERROR detected, aborting:"; print txt; exit(1)} }'
 
 	@echo "Test SQL output for Import Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql' 2>&1 | \
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
 
 	@echo "Run UPDATE process on test data..."
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-diff'
 
 	@echo "Test SQL output for Update Test Data"
-	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql'
+	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql' 2>&1 | \
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'

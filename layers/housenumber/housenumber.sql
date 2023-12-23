@@ -14,7 +14,7 @@ SELECT
     -- etldoc: osm_housenumber_point -> layer_housenumber:z14_
     osm_id,
     geometry,
-    housenumber
+    display_housenumber(housenumber)
 FROM (
     SELECT
         osm_id,

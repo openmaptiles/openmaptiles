@@ -26,7 +26,7 @@ SELECT osm_id,
 FROM (
          SELECT osm_id,
                 geometry,
-                park_class(boundary, leisure, landuse, historic) AS class,
+                park_class(boundary, leisure, landuse, historic, seamark_type) AS class,
                 name,
                 name_en,
                 name_de,
@@ -42,7 +42,7 @@ FROM (
                          NULL AS tags,
                          NULL AS leisure,
                          NULL AS landuse,
-                         NULL AS boundary,
+                         CASE WHEN boundary='aboriginal_lands' THEN boundary END AS boundary,
                          NULL AS historic
                   FROM osm_park_polygon_dissolve_z4
                   WHERE zoom_level = 4
@@ -208,7 +208,7 @@ FROM (
                 name_de,
                 tags,
                 row_number() OVER (
-                    PARTITION BY LabelGrid(geometry_point, 100 * pixel_width)
+                    PARTITION BY LabelGrid(geometry_point, 100 * pixel_width), boundary
                     ORDER BY
                         (CASE WHEN boundary = 'national_park' THEN TRUE ELSE FALSE END) DESC,
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
@@ -226,6 +226,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z5
                   WHERE zoom_level = 5
@@ -244,6 +245,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z6
                   WHERE zoom_level = 6
@@ -262,6 +264,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z7
                   WHERE zoom_level = 7
@@ -280,6 +283,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z8
                   WHERE zoom_level = 8
@@ -298,6 +302,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z9
                   WHERE zoom_level = 9
@@ -316,6 +321,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z10
                   WHERE zoom_level = 10
@@ -334,6 +340,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z11
                   WHERE zoom_level = 11
@@ -352,6 +359,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z12
                   WHERE zoom_level = 12
@@ -370,6 +378,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon_gen_z13
                   WHERE zoom_level = 13
@@ -388,6 +397,7 @@ FROM (
                          landuse,
                          boundary,
                          historic,
+                         seamark_type,
                          area
                   FROM osm_park_polygon
                   WHERE zoom_level >= 14

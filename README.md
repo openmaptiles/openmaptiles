@@ -11,7 +11,8 @@ Please keep in mind that OpenMapTiles schema should display general topographic 
 - :link: Data for download: https://www.maptiler.com/data/
 - :link: Hosting https://www.maptiler.com/cloud/
 - :link: Create own layer https://github.com/openmaptiles/openmaptiles-skiing
-- :link: Discuss at the #openmaptiles channel at [OSM Slack](https://osmus-slack.herokuapp.com/)
+- :link: Practical usage of OpenMapTiles https://github.com/maptiler/foss4g-workshop
+- :link: Discuss at the #openmaptiles channel at [OSM Slack](https://slack.openstreetmap.us/)
 
 ## Styles
 
@@ -102,7 +103,7 @@ Now start up the database container.
 make start-db
 ```
 
-Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/lukasmartinelli/osm-lakelines). Natural Earth country boundaries are used in the few lowest zoom levels.
+Import external data from [OpenStreetMapData](http://osmdata.openstreetmap.de/), [Natural Earth](http://www.naturalearthdata.com/) and [OpenStreetMap Lake Labels](https://github.com/openmaptiles/osm-lakelines). Natural Earth country boundaries are used in the few lowest zoom levels.
 
 ```bash
 make import-data
