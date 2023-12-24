@@ -93,9 +93,9 @@ tables:
     - name: historic
       key: historic
       type: string
-    - name: seamark_type
-      key: seamark:type
-      type: string
+    - name: maritime
+      key: maritime
+      type: boolean
     - name: area
       type: area
     mapping:
