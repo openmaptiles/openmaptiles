@@ -43,7 +43,8 @@ FROM (
                          NULL AS leisure,
                          NULL AS landuse,
                          CASE WHEN boundary='aboriginal_lands' THEN boundary END AS boundary,
-                         NULL AS historic
+                         NULL AS historic,
+                         seamark_type
                   FROM osm_park_polygon_dissolve_z4
                   WHERE zoom_level = 4
                     AND geometry && bbox
@@ -58,7 +59,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z5
                   WHERE zoom_level = 5
                     AND geometry && bbox
@@ -73,7 +75,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z6
                   WHERE zoom_level = 6
                     AND geometry && bbox
@@ -88,7 +91,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z7
                   WHERE zoom_level = 7
                     AND geometry && bbox
@@ -103,7 +107,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z8
                   WHERE zoom_level = 8
                     AND geometry && bbox
@@ -118,7 +123,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z9
                   WHERE zoom_level = 9
                     AND geometry && bbox
@@ -133,7 +139,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z10
                   WHERE zoom_level = 10
                     AND geometry && bbox
@@ -148,7 +155,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z11
                   WHERE zoom_level = 11
                     AND geometry && bbox
@@ -163,7 +171,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z12
                   WHERE zoom_level = 12
                     AND geometry && bbox
@@ -178,7 +187,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon_gen_z13
                   WHERE zoom_level = 13
                     AND geometry && bbox
@@ -193,7 +203,8 @@ FROM (
                          leisure,
                          landuse,
                          boundary,
-                         historic
+                         historic,
+                         seamark_type
                   FROM osm_park_polygon
                   WHERE zoom_level >= 14
                     AND geometry && bbox
@@ -202,7 +213,7 @@ FROM (
          UNION ALL
          SELECT osm_id,
                 geometry_point AS geometry,
-                park_class(boundary, leisure, landuse, historic) AS class,
+                park_class(boundary, leisure, landuse, historic, seamark_type) AS class,
                 name,
                 name_en,
                 name_de,
