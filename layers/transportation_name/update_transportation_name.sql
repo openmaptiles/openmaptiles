@@ -1207,7 +1207,7 @@ BEGIN
     -- Add all Source-LineStrings affected by this update
     SELECT osm_id, NULL::INTEGER AS id, NULL::BIGINT[] AS source_ids, geometry,
            transportation_name_tags(
-               NULL::geometry, tags, name, name_en, name_de
+               NULL::geometry, tags, name
            ) AS tags, shipway AS subclass, layer, z_order
     FROM (
         -- Get Source-LineString-IDs of deleted or updated elements
@@ -1389,7 +1389,7 @@ BEGIN
     -- Add all Source-LineStrings affected by this update
     SELECT osm_id, NULL::INTEGER AS id, NULL::BIGINT[] AS source_ids, geometry,
            transportation_name_tags(
-               NULL::geometry, tags, name, name_en, name_de
+               NULL::geometry, tags, name
            ) AS tags, aerialway AS subclass, layer, z_order
     FROM (
         -- Get Source-LineString-IDs of deleted or updated elements
