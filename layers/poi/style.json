@@ -743,7 +743,27 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "coalesce",
+          [
+            "image",
+            [
+              "get",
+              "subclass"
+            ]
+          ],
+          [
+            "image",
+            [
+              "get",
+              "class"
+            ]
+          ],
+          [
+            "image",
+            ""
+          ]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
@@ -778,7 +798,8 @@
           "information",
           "cinema",
           "theatre",
-          "fire_station"
+          "fire_station",
+          "office"
         ],
         [
           "!=",
@@ -976,7 +997,8 @@
           "class",
           "car",
           "bicycle_parking",
-          "fuel"
+          "fuel",
+          "charging_station"
         ]
       ],
       "order": 170

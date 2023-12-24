@@ -32,15 +32,3 @@ $$
         'us-interstate');
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
-
-DO
-$$
-    BEGIN
-        BEGIN
-            ALTER TABLE osm_route_member
-                ADD COLUMN network_type route_network_type;
-        EXCEPTION
-            WHEN duplicate_column THEN RAISE NOTICE 'column network_type already exists in network_type.';
-        END;
-    END;
-$$;

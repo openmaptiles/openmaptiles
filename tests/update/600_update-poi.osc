@@ -15,5 +15,18 @@
       <tag k="brand" v="Different operator"/>
       <tag k="ref" v="PL001"/>
     </node>
+    <node id="600007" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.8" lon="-80.8">
+      <tag k="amenity" v="charging_station"/>
+      <tag k="brand" v="OpenMapTiles Charging Station Brand"/>
+    </node>
+    <way id="6000" timestamp="2020-01-02T00:00:00Z" version="1" visible="true">
+      <nd ref="600008" />
+      <nd ref="600009" />
+      <nd ref="600010" />
+      <nd ref="600011" />
+      <nd ref="600008" />
+      <tag k="amenity" v="charging_station"/>
+      <tag k="name" v="OpenMapTiles Charging Station"/>
+    </way>
   </modify>
 </osmChange>

@@ -165,4 +165,14 @@
     <tag k="ref" v="95"/>
     <tag k="description" v="I-95 Southbound"/>
   </relation>
+
+  <!-- Zoom-Level 5 Trunk National Network -->
+  <relation id="517" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5001" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="94"/>
+    <tag k="description" v="I-94"/>
+  </relation>
 </osm>

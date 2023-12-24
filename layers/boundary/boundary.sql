@@ -180,7 +180,7 @@ CREATE MATERIALIZED VIEW osm_border_disp_linestring_gen_z1 AS
 SELECT ST_Simplify(geometry, ZRes(2)) AS geometry, adm0_l, adm0_r, admin_level, TRUE AS disputed, name, claimed_by, maritime
 FROM osm_border_disp_linestring_gen_z2
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS osm_border_disp_linestring_gen_z2_idx ON osm_border_disp_linestring_gen_z2 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_border_disp_linestring_gen_z1_idx ON osm_border_disp_linestring_gen_z1 USING gist (geometry);
 
 -- ne_10m_admin_0_boundary_lines_land
 -- etldoc: ne_10m_admin_0_boundary_lines_land -> ne_10m_admin_0_boundary_lines_land_gen_z4
@@ -348,7 +348,8 @@ FROM ne_110m_admin_0_boundary_lines_land_gen_z0
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z1  -> boundary_z1
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z1 -> boundary_z1
 -- etldoc: osm_border_disp_linestring_gen_z1 -> boundary_z1
-CREATE OR REPLACE VIEW boundary_z1 AS
+DROP MATERIALIZED VIEW IF EXISTS boundary_z1 CASCADE;
+CREATE MATERIALIZED VIEW boundary_z1 AS
 (
 SELECT geometry,
        admin_level,
@@ -380,12 +381,14 @@ SELECT geometry,
        maritime
 FROM osm_border_disp_linestring_gen_z1
     );
+CREATE INDEX IF NOT EXISTS boundary_z1_idx ON boundary_z1 USING gist (geometry);
 
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z2 -> boundary_z2
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z2 -> boundary_z2
 -- etldoc: osm_border_disp_linestring_gen_z2 -> boundary_z2
-CREATE OR REPLACE VIEW boundary_z2 AS
+DROP MATERIALIZED VIEW IF EXISTS boundary_z2 CASCADE;
+CREATE MATERIALIZED VIEW boundary_z2 AS
 (
 SELECT geometry,
        admin_level,
@@ -417,11 +420,13 @@ SELECT geometry,
        maritime
 FROM osm_border_disp_linestring_gen_z2
     );
+CREATE INDEX IF NOT EXISTS boundary_z2_idx ON boundary_z2 USING gist (geometry);
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z3 -> boundary_z3
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z3 -> boundary_z3
 -- etldoc: osm_border_disp_linestring_gen_z3 -> boundary_z3
-CREATE OR REPLACE VIEW boundary_z3 AS
+DROP MATERIALIZED VIEW IF EXISTS boundary_z3 CASCADE;
+CREATE MATERIALIZED VIEW boundary_z3 AS
 (
 SELECT geometry,
        admin_level,
@@ -453,11 +458,13 @@ SELECT geometry,
        maritime
 FROM osm_border_disp_linestring_gen_z3
     );
+CREATE INDEX IF NOT EXISTS boundary_z3_idx ON boundary_z3 USING gist (geometry);
 
 -- etldoc: ne_10m_admin_0_boundary_lines_land_gen_z4 -> boundary_z4
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z4 -> boundary_z4
 -- etldoc: osm_border_linestring_gen_z4 -> boundary_z4
-CREATE OR REPLACE VIEW boundary_z4 AS
+DROP MATERIALIZED VIEW IF EXISTS boundary_z4 CASCADE;
+CREATE MATERIALIZED VIEW boundary_z4 AS
 (
 SELECT geometry,
        admin_level,
@@ -489,6 +496,7 @@ SELECT geometry,
        maritime
 FROM osm_border_linestring_gen_z4
     );
+CREATE INDEX IF NOT EXISTS boundary_z4_idx ON boundary_z4 USING gist (geometry);
 
 -- etldoc: osm_border_linestring_gen_z5 -> boundary_z5
 CREATE OR REPLACE VIEW boundary_z5 AS
