@@ -136,6 +136,10 @@ tables:
   # etldoc: imposm3 -> osm_boundary_polygon
   boundary_polygon:
     type: polygon
+    filters:
+      require:
+        type: [boundary]
+        boundary: [aboriginal_lands]
     columns:
     - name: osm_id
       type: id
