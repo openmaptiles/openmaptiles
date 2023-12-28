@@ -72,19 +72,24 @@ BEGIN
   -- Test 500
 
   -- Verify that road classifications show up at the right zoom level
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='motorway';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE osm_national_network(network);
   IF cnt < 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 motorway count expected >=1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 national network count expected >=1, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE highway='trunk';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z4 WHERE NOT osm_national_network(network);
   IF cnt <> 0 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 trunk count expected 0, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z4 not national network count expected 0, got ' || cnt);
   END IF;
 
-  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk';
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='motorway';
   IF cnt < 1 THEN
-    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk count expected >=1, got ' || cnt);
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 motorway count expected >=1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z5 WHERE highway='trunk' AND osm_national_network(network);
+  IF cnt < 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_linestring z5 trunk and national network count expected >=1, got ' || cnt);
   END IF;
 
   SELECT COUNT(*) INTO cnt FROM osm_transportation_merge_linestring_gen_z6 WHERE highway='primary';
@@ -160,6 +165,13 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(500, 'import', 'osm_transportation_name_linestring z12 route_rank expected 1, got ' || cnt);
   END IF;
 
+  -- Duplicate route concurrencies collapsed
+  SELECT COUNT(*) INTO cnt FROM transportation_route_member_coalesced
+    WHERE network='US:I' AND ref='95';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(500, 'import', 'transportation_route_member_coalesced 1 route membership expected, got ' || cnt);
+  END IF;
+
   -- Test 600
 
   -- verify that atms are imported with correct name which can come from tags like operator or network
@@ -182,6 +194,20 @@ BEGIN
       AND tags->'name' like 'OpenMapTiles Parcel Locker PL00%';
   IF cnt <> 1 THEN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point parcel_locker with name like "OpenMapTiles Parcel Locker PL00%" expected 1, got ' || cnt);
+  END IF;
+  
+  -- verify that charging stations are imported with correct name which can come from tags like brand or operator and can contain ref
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'charging_station'
+      AND tags->'name' = 'OpenMapTiles Charging Station';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point charging_station with name "OpenMapTiles Charging Station" expected 2, got ' || cnt);
+  END IF;
+  SELECT COUNT(*) INTO cnt FROM osm_poi_polygon
+    WHERE subclass = 'charging_station'
+      AND tags->'name' = 'OpenMapTiles Charging Station Brand';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_polygon charging_station with name "OpenMapTiles Charging Station Brand" expected 1, got ' || cnt);
   END IF;
 
 END;
