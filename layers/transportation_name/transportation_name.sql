@@ -6,8 +6,6 @@ CREATE OR REPLACE FUNCTION layer_transportation_name(bbox geometry, zoom_level i
             (
                 geometry   geometry,
                 name       text,
-                name_en    text,
-                name_de    text,
                 tags       hstore,
                 ref        text,
                 ref_length int,
@@ -29,8 +27,6 @@ AS
 $$
 SELECT geometry,
        tags->'name' AS name,
-       COALESCE(tags->'name:en', tags->'name') AS name_en,
-       COALESCE(tags->'name:de', tags->'name', tags->'name:en') AS name_de,
        tags,
        ref,
        NULLIF(LENGTH(ref), 0) AS ref_length,
