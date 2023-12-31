@@ -12,9 +12,9 @@ layer:
       Apart from the roads this is also one of the more important layers to create a beautiful map.
       We suggest you use different font styles and sizes to create a text hierarchy.
   fields:
-    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
-    name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the place. Language-specific values are in `name:xx`.
+    name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
     capital:
       description: |
           The **capital** field marks the
