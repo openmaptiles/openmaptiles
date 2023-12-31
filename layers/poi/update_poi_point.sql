@@ -43,11 +43,11 @@ BEGIN
     -- (using name for parcel lockers is discouraged, see osm wiki)
     UPDATE osm_poi_point
     SET (name, tags) = (
-        CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')),
-        tags || hstore('name', CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref')))
+        TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))),
+        tags || hstore('name', TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))))
     )
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_point.osm_ids))
-      AND subclass = 'parcel_locker'
+      AND subclass IN ('parcel_locker', 'charging_station')
       AND name = ''
       AND COALESCE(tags -> 'brand', tags -> 'operator') IS NOT NULL;
 
