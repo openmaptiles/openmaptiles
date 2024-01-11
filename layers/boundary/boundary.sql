@@ -650,7 +650,7 @@ CREATE OR REPLACE FUNCTION layer_boundary(bbox geometry, zoom_level int)
             )
 AS
 $$
-SELECT geometry, admin_level, adm0_l, adm0_r, disputed::int, disputed_name, claimed_by, maritime::int, NULL::text, NULL::text, ''::hstore
+SELECT geometry, admin_level, adm0_l, adm0_r, disputed::int, disputed_name, claimed_by, maritime::int, NULL::text, NULL::text, NULL::hstore
 FROM (
          -- etldoc: boundary_z0 ->  layer_boundary:z0
          SELECT *
