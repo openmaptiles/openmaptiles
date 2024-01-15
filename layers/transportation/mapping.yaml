@@ -491,6 +491,9 @@ tables:
     - name: colour
       key: colour
       type: string
+    filters:
+      reject:
+        unsigned: ["yes"]
     mapping:
       route:
       - road
