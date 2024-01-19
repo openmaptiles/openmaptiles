@@ -263,8 +263,6 @@ SELECT subclass,
 
 CREATE INDEX ON osm_landcover_gen_z8 USING GIST (geometry);
 
-
-
 -- etldoc: simplify_vw_z8 ->  simplify_vw_z7
 CREATE TABLE simplify_vw_z7 AS
 (
@@ -274,6 +272,7 @@ CREATE TABLE simplify_vw_z7 AS
              ST_SimplifyVW(geometry, power(zres(7),2)),
              0.001)) AS geometry
     FROM simplify_vw_z8
+    GROUP BY subclass
     WHERE ST_Area(geometry) > power(zres(6),2)
 );
 CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
