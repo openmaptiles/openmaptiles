@@ -50,8 +50,7 @@ CREATE TABLE osm_landcover_gen_z13 AS
         FROM simplify_vw_z13
         WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
@@ -87,8 +86,7 @@ CREATE TABLE osm_landcover_gen_z12 AS
         FROM simplify_vw_z12
         WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
@@ -124,8 +122,7 @@ CREATE TABLE osm_landcover_gen_z11 AS
         FROM simplify_vw_z11
         WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
@@ -161,8 +158,7 @@ CREATE TABLE osm_landcover_gen_z10 AS
         FROM simplify_vw_z10
         WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
@@ -198,8 +194,7 @@ CREATE TABLE osm_landcover_gen_z9 AS
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            ST_MakeValid(
@@ -211,8 +206,7 @@ CREATE TABLE osm_landcover_gen_z9 AS
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) >= 300
           AND subclass IN ('wood', 'forest')) union_geom_rest
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
@@ -253,8 +247,7 @@ SELECT subclass,
         FROM simplify_vw_z8
         WHERE subclass IN ('wood', 'forest')
         ) union_geom
-    GROUP BY subclass,
-             cid
+    GROUP BY subclass
     UNION ALL
     SELECT subclass,
            geometry
