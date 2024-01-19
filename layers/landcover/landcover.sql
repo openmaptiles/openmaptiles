@@ -263,49 +263,49 @@ SELECT geometry,
        landcover_class(subclass) AS class,
        subclass
 FROM (
-         -- etldoc:  landcover_z0 -> layer_landcover:z0
+         -- etldoc:  osm_landcover_gen_z0 -> layer_landcover:z0
          SELECT geometry, 
                 subclass
          FROM osm_landcover_gen_z0
          WHERE zoom_level = 0
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z1 -> layer_landcover:z1
+         -- etldoc:  osm_landcover_gen_z1 -> layer_landcover:z1
          SELECT geometry,
                 subclass
          FROM osm_landcover_gen_z1
          WHERE zoom_level = 1
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z2 -> layer_landcover:z2
+         -- etldoc:  osm_landcover_gen_z2 -> layer_landcover:z2
          SELECT geometry, 
                 subclass
          FROM osm_landcover_gen_z2
          WHERE zoom_level = 2
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z3 -> layer_landcover:z3
+         -- etldoc:  osm_landcover_gen_z3 -> layer_landcover:z3
          SELECT geometry,
                 subclass
          FROM osm_landcover_gen_z3
          WHERE zoom_level = 3
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z4 -> layer_landcover:z4
+         -- etldoc:  osm_landcover_gen_z4 -> layer_landcover:z4
          SELECT geometry,
                 subclass
          FROM osm_landcover_gen_z4
          WHERE zoom_level = 4
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z5 -> layer_landcover:z5
+         -- etldoc:  osm_landcover_gen_z5 -> layer_landcover:z5
          SELECT geometry, 
                 subclass
          FROM osm_landcover_gen_z5
          WHERE zoom_level = 5
            AND geometry && bbox
          UNION ALL
-         -- etldoc:  landcover_z6 -> layer_landcover:z6
+         -- etldoc:  osm_landcover_gen_z6 -> layer_landcover:z6
          SELECT geometry,
                 subclass
          FROM osm_landcover_gen_z6
