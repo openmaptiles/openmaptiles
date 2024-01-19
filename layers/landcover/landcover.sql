@@ -155,6 +155,8 @@ FROM ne_10m_antarctic_ice_shelves_polys_gen_z6
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_antarctic_ice_shelves_polys_gen_z5_idx ON ne_10m_antarctic_ice_shelves_polys_gen_z5 USING gist (geometry);
 
+
+
 -- etldoc: ne_110m_glaciated_areas_gen_z0 ->  landcover_z0
 CREATE OR REPLACE VIEW landcover_z0 AS
 (
@@ -247,6 +249,7 @@ SELECT
     subclass
 FROM ne_10m_antarctic_ice_shelves_polys_gen_z6
     );
+
 
 -- etldoc: layer_landcover[shape=record fillcolor=lightpink, style="rounded, filled", label="layer_landcover | <z0> z0 | <z1> z1 | <z2> z2 | <z3> z3 | <z4> z4 | <z5> z5 | <z6> z6 |<z7> z7 |<z8> z8 |<z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13|<z14_> z14+" ] ;
 

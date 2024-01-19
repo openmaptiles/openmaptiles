@@ -43,7 +43,7 @@ CREATE INDEX ON simplify_vw_z13 USING GIST (geometry);
 -- etldoc: simplify_vw_z13 ->  osm_landcover_gen_z13
 CREATE TABLE osm_landcover_gen_z13 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -80,7 +80,7 @@ CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 -- etldoc: simplify_vw_z12 ->  osm_landcover_gen_z12
 CREATE TABLE osm_landcover_gen_z12 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -117,7 +117,7 @@ CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 -- etldoc: simplify_vw_z11 ->  osm_landcover_gen_z11
 CREATE TABLE osm_landcover_gen_z11 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -154,7 +154,7 @@ CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 -- etldoc: simplify_vw_z10 ->  osm_landcover_gen_z10
 CREATE TABLE osm_landcover_gen_z10 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -191,7 +191,7 @@ CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 -- etldoc: simplify_vw_z9 ->  osm_landcover_gen_z9
 CREATE TABLE osm_landcover_gen_z9 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -204,7 +204,7 @@ CREATE TABLE osm_landcover_gen_z9 AS
     SELECT subclass,
            ST_MakeValid(
             (ST_Dump(
-             ST_Union(geometry))).geom) AS geometry
+             ST_Union(geometry,0.001))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -244,7 +244,7 @@ CREATE TABLE osm_landcover_gen_z8 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT subclass,
@@ -284,7 +284,7 @@ CREATE TABLE osm_landcover_gen_z7 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -319,7 +319,7 @@ CREATE TABLE osm_landcover_gen_z6 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -354,7 +354,7 @@ CREATE TABLE osm_landcover_gen_z5 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -389,7 +389,7 @@ CREATE TABLE osm_landcover_gen_z4 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -424,7 +424,7 @@ CREATE TABLE osm_landcover_gen_z3 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -459,7 +459,7 @@ CREATE TABLE osm_landcover_gen_z3 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -494,7 +494,7 @@ CREATE TABLE osm_landcover_gen_z2 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -529,7 +529,7 @@ CREATE TABLE osm_landcover_gen_z1 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
@@ -564,7 +564,7 @@ CREATE TABLE osm_landcover_gen_z0 AS
 SELECT subclass,
        ST_MakeValid(
         (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
+         ST_Union(geometry,0.001))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
