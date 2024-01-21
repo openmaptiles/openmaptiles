@@ -109,15 +109,37 @@ FROM (
              COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
              tags,
              'island' AS class,
-             island_rank(area) AS "rank",
+             area_rank(area) AS "rank",
              NULL::int AS capital,
              NULL::text AS iso_a2
          FROM osm_island_polygon
          WHERE geometry && bbox
-           AND ((zoom_level = 8 AND island_rank(area) <= 3)
-             OR (zoom_level = 9 AND island_rank(area) <= 4)
+           AND ((zoom_level = 8 AND area_rank(area) <= 3)
+             OR (zoom_level = 9 AND area_rank(area) <= 4)
              OR (zoom_level >= 10))
 
+         UNION ALL
+
+         SELECT
+             -- etldoc: osm_boundary_polygon  -> layer_place:z6_11
+             -- etldoc: osm_boundary_polygon  -> layer_place:z12_14
+             osm_id * 10 AS osm_id,
+             geometry_point,
+             name,
+             NULL::text AS name_en, -- deprecated
+             NULL::text AS name_de, -- deprecated
+             tags,
+             'aboriginal_lands' AS class,
+             area_rank(area) AS "rank",
+             NULL::int AS capital,
+             NULL::text AS iso_a2
+         FROM osm_boundary_polygon
+         WHERE geometry_point && bbox
+           AND ((zoom_level = 6 AND area_rank(area) <= 1)
+             OR (zoom_level = 7 AND area_rank(area) <= 2)
+             OR (zoom_level = 8 AND area_rank(area) <= 3)
+             OR (zoom_level = 9 AND area_rank(area) <= 4)
+             OR (zoom_level >= 10))
          UNION ALL
 
          SELECT
