@@ -48,6 +48,11 @@ WHERE length(ref) > 1
 CREATE OR REPLACE FUNCTION osm_route_member_network_type(network text, ref text) RETURNS route_network_type AS
 $$
 SELECT CASE
+           -- https://wiki.openstreetmap.org/wiki/WikiProject_Europe/E-road_network
+           WHEN network = 'e-road' THEN 'e-road'::route_network_type
+           -- https://wiki.openstreetmap.org/wiki/Asia/Asian_Highway_Network
+           WHEN network = 'AsianHighway' THEN 'a-road'::route_network_type
+           -- https://wiki.openstreetmap.org/wiki/United_States_roads_tagging
            WHEN network = 'US:I' THEN 'us-interstate'::route_network_type
            WHEN network = 'US:US' THEN 'us-highway'::route_network_type
            WHEN network LIKE 'US:__' THEN 'us-state'::route_network_type
@@ -70,10 +75,6 @@ SELECT CASE
            WHEN network = 'omt-ie-motorway' THEN 'ie-motorway'::route_network_type
            WHEN network = 'omt-ie-national' THEN 'ie-national'::route_network_type
            WHEN network = 'omt-ie-regional' THEN 'ie-regional'::route_network_type
-           -- https://wiki.openstreetmap.org/wiki/WikiProject_Europe/E-road_network
-           WHEN network = 'e-road' THEN 'e-road'::route_network_type
-           -- https://wiki.openstreetmap.org/wiki/Asia/Asian_Highway_Network
-           WHEN network = 'AsianHighway' THEN 'a-road'::route_network_type
             END;
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
