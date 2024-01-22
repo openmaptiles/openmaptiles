@@ -26,12 +26,11 @@ SELECT osm_id,
 FROM (
          SELECT osm_id,
                 geometry,
-                CASE WHEN boundary='aboriginal_lands' THEN 'aboriginal_lands'
-                     ELSE COALESCE(
-                          LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
-                          NULLIF(boundary, ''),
-                          NULLIF(leisure, '')
-                    ) END AS class,
+                COALESCE(
+                    LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
+                    NULLIF(boundary, ''),
+                    NULLIF(leisure, ''))
+                AS class,
                 name,
                 name_en,
                 name_de,
@@ -46,7 +45,7 @@ FROM (
                          NULL AS name_de,
                          NULL AS tags,
                          NULL AS leisure,
-                         CASE WHEN boundary='aboriginal_lands' THEN boundary END AS boundary,
+                         NULL AS boundary,
                          NULL AS protection_title
                   FROM osm_park_polygon_dissolve_z4
                   WHERE zoom_level = 4

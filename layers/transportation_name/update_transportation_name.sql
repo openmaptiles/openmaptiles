@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring(
     route_rank integer
 );
 
+ALTER TABLE osm_transportation_name_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+
 -- Create OneToMany-Relation-Table storing relations of a Merged-LineString in table
 -- osm_transportation_name_linestring to Source-LineStrings from tables osm_transportation_name_network,
 -- osm_shipway_linestring and osm_aerialway_linestring
