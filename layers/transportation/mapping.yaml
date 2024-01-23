@@ -483,6 +483,9 @@ tables:
     - name: colour
       key: colour
       type: string
+    - name: ref_colour
+      key: ref:colour
+      type: string
     mapping:
       route:
       - road
