@@ -32,3 +32,9 @@ $$
         'us-interstate');
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION create_route_hstore(network TEXT, ref TEXT, name TEXT)
+RETURNS hstore AS $$
+SELECT hstore(ARRAY['network', 'ref', 'name'], ARRAY[network, ref, name]);
+$$ LANGUAGE sql IMMUTABLE
+    PARALLEL SAFE;

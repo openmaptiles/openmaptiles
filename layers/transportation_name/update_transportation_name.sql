@@ -51,12 +51,12 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring(
     layer integer,
     indoor boolean,
     network route_network_type,
-    route_1 text,
-    route_2 text,
-    route_3 text,
-    route_4 text,
-    route_5 text,
-    route_6 text,
+    route_1 hstore,
+    route_2 hstore,
+    route_3 hstore,
+    route_4 hstore,
+    route_5 hstore,
+    route_6 hstore,
     z_order integer,
     route_rank integer
 );
@@ -276,12 +276,12 @@ CREATE TABLE IF NOT EXISTS osm_transportation_name_linestring_gen1 (
     subclass text,
     brunnel text,
     network route_network_type,
-    route_1 text,
-    route_2 text,
-    route_3 text,
-    route_4 text,
-    route_5 text,
-    route_6 text,
+    route_1 hstore,
+    route_2 hstore,
+    route_3 hstore,
+    route_4 hstore,
+    route_5 hstore,
+    route_6 hstore,
     z_order integer
 );
 
