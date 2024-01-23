@@ -55,26 +55,32 @@ SELECT geometry,
        route_1->'network' AS route_1_network,
        route_1->'ref' AS route_1_ref,
        route_1->'name' AS route_1_name,
+       route_1->'colour' AS route_1_colour,
 
        route_2->'network' AS route_2_network,
        route_2->'ref' AS route_2_ref,
        route_2->'name' AS route_2_name,
+       route_2->'colour' AS route_2_colour,
 
        route_3->'network' AS route_3_network,
        route_3->'ref' AS route_3_ref,
        route_3->'name' AS route_3_name,
+       route_3->'colour' AS route_3_colour,
 
        route_4->'network' AS route_4_network,
        route_4->'ref' AS route_4_ref,
        route_4->'name' AS route_4_name,
+       route_4->'colour' AS route_4_colour,
 
        route_5->'network' AS route_5_network,
        route_5->'ref' AS route_5_ref,
        route_5->'name' AS route_5_name,
+       route_5->'colour' AS route_5_colour,
 
        route_6->'network' AS route_6_network,
        route_6->'ref' AS route_6_ref,
        route_6->'name' AS route_6_name,
+       route_6->'colour' AS route_6_colour,
        highway_class(highway, '', subclass) AS class,
        CASE
            WHEN highway IS NOT NULL AND highway_class(highway, '', subclass) = 'path'

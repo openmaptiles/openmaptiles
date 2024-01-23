@@ -33,8 +33,8 @@ $$
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION create_route_hstore(network TEXT, ref TEXT, name TEXT)
+CREATE OR REPLACE FUNCTION create_route_hstore(network TEXT, ref TEXT, name TEXT, colour TEXT)
 RETURNS hstore AS $$
-SELECT hstore(ARRAY['network', 'ref', 'name'], ARRAY[network, ref, name]);
+SELECT hstore(ARRAY['network', 'ref', 'name', 'colour'], ARRAY[network, ref, name, colour]);
 $$ LANGUAGE sql IMMUTABLE
     PARALLEL SAFE;

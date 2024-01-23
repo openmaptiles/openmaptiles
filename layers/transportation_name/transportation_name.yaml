@@ -104,25 +104,31 @@ layer:
     route_1_network: 1st route concurrency network.
     route_1_ref: 1st route concurrency ref.
     route_1_name: 1st route concurrency name.
+    route_1_colour: 1st route concurrency colour.
     route_2_network: 2nd route concurrency network.
     route_2_ref: 2nd route concurrency ref.
     route_2_name: 2nd route concurrency name.
+    route_2_colour: 2nd route concurrency colour.
     route_3_network: 3rd route concurrency network.
     route_3_ref: 3rd route concurrency ref.
     route_3_name: 3rd route concurrency name.
+    route_3_colour: 3rd route concurrency colour.
     route_4_network: 4th route concurrency network.
     route_4_ref: 4th route concurrency ref.
     route_4_name: 4th route concurrency name.
+    route_4_colour: 4th route concurrency colour.
     route_5_network: 5th route concurrency network.
     route_5_ref: 5th route concurrency ref.
     route_5_name: 5th route concurrency name.
+    route_5_colour: 5th route concurrency colour.
     route_6_network: 6th route concurrency network.
     route_6_ref: 6th route concurrency ref.
     route_6_name: 6th route concurrency name.
+    route_6_colour: 6th route concurrency colour.
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1_network, route_1_ref, route_1_name, route_2_network, route_2_ref, route_2_name, route_3_network, route_3_ref, route_3_name, route_4_network, route_4_ref, route_4_name, route_5_network, route_5_ref, route_5_name, route_6_network, route_6_ref, route_6_name FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1_network, route_1_ref, route_1_name, route_1_colour, route_2_network, route_2_ref, route_2_name, route_2_colour, route_3_network, route_3_ref, route_3_name, route_3_colour, route_4_network, route_4_ref, route_4_name, route_4_colour, route_5_network, route_5_ref, route_5_name, route_5_colour, route_6_network, route_6_ref, route_6_name, route_6_colour FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./highway_classification.sql
   - ./update_transportation_name.sql
