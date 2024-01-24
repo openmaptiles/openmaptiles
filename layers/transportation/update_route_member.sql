@@ -171,7 +171,7 @@ BEGIN
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
                                                      type = EXCLUDED.type, name = EXCLUDED.name,
-                                                     osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour, ref_colour = EXCLUDED.ref_colour
+                                                     osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour, ref_colour = EXCLUDED.ref_colour,
                                                      concurrency_index = EXCLUDED.concurrency_index,
                                                      rank = EXCLUDED.rank;
 END;
