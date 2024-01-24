@@ -262,6 +262,7 @@ CREATE OR REPLACE FUNCTION layer_landcover(bbox geometry, zoom_level int)
             )
 AS
 $$
+PRINT osm_landcover_gen_z7
 SELECT geometry,
        landcover_class(subclass) AS class,
        subclass
