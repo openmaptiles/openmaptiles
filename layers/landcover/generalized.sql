@@ -82,7 +82,7 @@ CREATE TABLE osm_landcover_gen_z12 AS
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z12
-        WHERE ST_NPoints(geometry) < 300)) union_geom300b
+        WHERE ST_NPoints(geometry) < 300) union_geom300b
     GROUP BY subclass,
              cid
     UNION ALL
@@ -101,6 +101,7 @@ CREATE TABLE simplify_vw_z11 AS
 (
     SELECT subclass,
             ST_MakeValid(
+                ST_Union(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(11),2)),
              0.001))) AS geometry
