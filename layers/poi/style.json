@@ -75,7 +75,7 @@
           "artwork"
         ]
       ],
-      "order": 155
+      "order": 148
     },
     {
       "id": "poi_shop-z15",
@@ -139,7 +139,7 @@
           "supermarket"
         ]
       ],
-      "order": 156
+      "order": 149
     },
     {
       "id": "poi_waste",
@@ -197,7 +197,7 @@
           "toilets"
         ]
       ],
-      "order": 157
+      "order": 150
     },
     {
       "id": "poi_cemetery",
@@ -253,7 +253,7 @@
           "cemetery"
         ]
       ],
-      "order": 158
+      "order": 151
     },
     {
       "id": "poi_school",
@@ -312,7 +312,7 @@
           "school"
         ]
       ],
-      "order": 159
+      "order": 152
     },
     {
       "id": "poi_outdoor",
@@ -367,7 +367,7 @@
           "gate"
         ]
       ],
-      "order": 160
+      "order": 153
     },
     {
       "id": "poi_parking",
@@ -433,7 +433,7 @@
           "parking"
         ]
       ],
-      "order": 161
+      "order": 154
     },
     {
       "id": "poi_golf",
@@ -488,7 +488,7 @@
           "golf"
         ]
       ],
-      "order": 162
+      "order": 155
     },
     {
       "id": "poi_sport",
@@ -544,7 +544,7 @@
           "water_park"
         ]
       ],
-      "order": 163
+      "order": 156
     },
     {
       "id": "poi_ferry",
@@ -604,7 +604,7 @@
           "ferry_terminal"
         ]
       ],
-      "order": 164
+      "order": 157
     },
     {
       "id": "poi_food",
@@ -664,7 +664,7 @@
           "restaurant"
         ]
       ],
-      "order": 165
+      "order": 158
     },
     {
       "id": "poi_water",
@@ -719,7 +719,7 @@
           "ice_rink"
         ]
       ],
-      "order": 166
+      "order": 159
     },
     {
       "id": "poi_public",
@@ -807,7 +807,7 @@
           "books"
         ]
       ],
-      "order": 167
+      "order": 160
     },
     {
       "id": "poi_cultural",
@@ -876,7 +876,7 @@
           "gallery"
         ]
       ],
-      "order": 168
+      "order": 161
     },
     {
       "id": "poi_attraction",
@@ -931,7 +931,7 @@
           "attraction"
         ]
       ],
-      "order": 169
+      "order": 162
     },
     {
       "id": "poi_car",
@@ -1001,7 +1001,7 @@
           "charging_station"
         ]
       ],
-      "order": 170
+      "order": 163
     },
     {
       "id": "poi_health",
@@ -1059,7 +1059,7 @@
           "veterinary"
         ]
       ],
-      "order": 171
+      "order": 164
     },
     {
       "id": "poi_hospital",
@@ -1125,7 +1125,7 @@
           "hospital"
         ]
       ],
-      "order": 172
+      "order": 165
     },
     {
       "id": "poi_campsite",
@@ -1180,7 +1180,7 @@
           "campsite"
         ]
       ],
-      "order": 173
+      "order": 166
     },
     {
       "id": "poi_accommodation",
@@ -1247,7 +1247,7 @@
           "campsite"
         ]
       ],
-      "order": 174
+      "order": 167
     },
     {
       "id": "poi_place_of_worship",
@@ -1311,7 +1311,7 @@
           "place_of_worship"
         ]
       ],
-      "order": 175
+      "order": 168
     },
     {
       "id": "poi_busstop",
@@ -1372,7 +1372,7 @@
           "bus"
         ]
       ],
-      "order": 176
+      "order": 169
     },
     {
       "id": "poi_bus",
@@ -1432,7 +1432,7 @@
           "bus_stop"
         ]
       ],
-      "order": 177
+      "order": 170
     },
     {
       "id": "poi_harbor",
@@ -1482,7 +1482,7 @@
           "harbor"
         ]
       ],
-      "order": 178
+      "order": 171
     },
     {
       "id": "poi_mall",
@@ -1541,7 +1541,7 @@
           "mall"
         ]
       ],
-      "order": 179
+      "order": 172
     },
     {
       "id": "poi_train",
@@ -1600,7 +1600,7 @@
           "railway"
         ]
       ],
-      "order": 180
+      "order": 173
     },
     {
       "id": "park-local",
@@ -1660,7 +1660,7 @@
           "park"
         ]
       ],
-      "order": 194
+      "order": 187
     },
     {
       "id": "poi_zoo",
@@ -1720,7 +1720,7 @@
           "zoo"
         ]
       ],
-      "order": 196
+      "order": 188
     }
   ]
 }
