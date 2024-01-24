@@ -108,8 +108,7 @@ layer:
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
-schema:
-  query: CREATE TABLE osm_landcover_gen_z13 AS ( SELECT subclass, ST_MakeValid(ST_Union(ST_SnapToGrid(ST_SimplifyVW(geometry, power(zres(13),2))0.0001))) AS geometry FROM osm_landcover_polygonWHERE ST_Area(geometry) > power(zres(12),2) GROUP BY subclass ); CREATE INDEX ON osm_landcover_gen_z13 USING GIST (geometry);
+schema: CREATE TABLE osm_landcover_gen_z13 AS ( SELECT subclass, ST_MakeValid(ST_Union(ST_SnapToGrid(ST_SimplifyVW(geometry, power(zres(13),2))0.0001))) AS geometry FROM osm_landcover_polygonWHERE ST_Area(geometry) > power(zres(12),2) GROUP BY subclass ); CREATE INDEX ON osm_landcover_gen_z13 USING GIST (geometry);
 datasources:
   - type: imposm3
     mapping_file: ./mapping.yaml
