@@ -752,12 +752,12 @@ BEGIN
             CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
             CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
             CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-            create_route_hstore(rm1.network, rm1.ref, rm1.name, rm1.colour) AS route_1,
-            create_route_hstore(rm2.network, rm2.ref, rm2.name, rm2.colour) AS route_2,
-            create_route_hstore(rm3.network, rm3.ref, rm3.name, rm3.colour) AS route_3,
-            create_route_hstore(rm4.network, rm4.ref, rm4.name, rm4.colour) AS route_4,
-            create_route_hstore(rm5.network, rm5.ref, rm5.name, rm5.colour) AS route_5,
-            create_route_hstore(rm6.network, rm6.ref, rm6.name, rm6.colour) AS route_6,
+            create_route_hstore(rm1.network, rm1.ref, rm1.name, rm1.colour, rm1.ref_colour) AS route_1,
+            create_route_hstore(rm2.network, rm2.ref, rm2.name, rm2.colour, rm2.ref_colour) AS route_2,
+            create_route_hstore(rm3.network, rm3.ref, rm3.name, rm3.colour, rm3.ref_colour) AS route_3,
+            create_route_hstore(rm4.network, rm4.ref, rm4.name, rm4.colour, rm4.ref_colour) AS route_4,
+            create_route_hstore(rm5.network, rm5.ref, rm5.name, rm5.colour, rm5.ref_colour) AS route_5,
+            create_route_hstore(rm6.network, rm6.ref, rm6.name, rm6.colour, rm6.ref_colour) AS route_6,
 	    hl.z_order,
             LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
         FROM osm_highway_linestring hl
