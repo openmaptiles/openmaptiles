@@ -18,8 +18,11 @@ $$
         SELECT osm.osm_id, ne.scalerank
         FROM osm_marine_point AS osm
              LEFT JOIN ne_10m_geography_marine_polys AS ne ON
-              lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) IN (lower(osm.name), lower(osm.tags->'name:en'), lower(osm.tags->'name:es'))
-           OR substring(lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) FROM 1 FOR length(lower(osm.name))) = lower(osm.name)
+            (
+                lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) IN (lower(osm.name), lower(osm.tags->'name:en'), lower(osm.tags->'name:es'))
+                    OR substring(lower(trim(regexp_replace(ne.name, '\\s+', ' ', 'g'))) FROM 1 FOR length(lower(osm.name))) = lower(osm.name)
+            )
+            AND ST_DWithin(ne.geometry, osm.geometry, 50000)
     )
     UPDATE osm_marine_point AS osm
     SET "rank" = scalerank
