@@ -39,7 +39,7 @@ SELECT CASE
            WHEN network = '' THEN hstore('')
            ELSE hstore(
                ARRAY['network', 'ref', 'name', 'colour'],
-               ARRAY[network, NULLIF(ref, ''), name, NULLIF(COALESCE(colour, ref_colour), '')]
+               ARRAY[network, NULLIF(ref, ''), NULLIF(name, ''), NULLIF(COALESCE(colour, ref_colour), '')]
            )
        END;
 $$ LANGUAGE sql IMMUTABLE
