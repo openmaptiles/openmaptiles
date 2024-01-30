@@ -17,7 +17,9 @@ $$
                 'us-interstate', 'us-highway', 'us-state',
                 'ca-transcanada', 'ca-provincial-arterial', 'ca-provincial',
                 'gb-motorway', 'gb-trunk', 'gb-primary',
-                'ie-motorway', 'ie-national', 'ie-regional'
+                'ie-motorway', 'ie-national', 'ie-regional',
+                'e-road',
+                'a-road'
                 );
     END
 $$;
@@ -29,6 +31,11 @@ $$
         -- Canada
         'ca-transcanada', 'ca-provincial-arterial',
         -- United States
-        'us-interstate');
+        'us-interstate',
+        -- Europe
+        'e-road',
+        -- Asia
+        'a-road'
+    );
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
