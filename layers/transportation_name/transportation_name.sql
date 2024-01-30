@@ -47,7 +47,7 @@ SELECT geometry,
                THEN highway
            ELSE subclass
            END AS subclass,
-       brunnel,
+       NULLIF(brunnel, '') AS brunnel,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor
