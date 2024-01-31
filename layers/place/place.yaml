@@ -5,7 +5,6 @@ layer:
       - ne_10m_admin_1_states_provinces
       - ne_10m_admin_0_countries
       - ne_10m_populated_places
-  requires:
     layers:
       - boundary
   description: |
