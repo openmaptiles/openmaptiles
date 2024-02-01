@@ -270,49 +270,54 @@ FROM (
          -- etldoc:  osm_landcover_gen_z0 -> layer_landcover:z0
          SELECT geometry, 
                 subclass
-         FROM osm_landcover_gen_z0
+         FROM landcover_z0
          WHERE zoom_level = 0
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z1 -> layer_landcover:z1
          SELECT geometry,
                 subclass
-         FROM osm_landcover_gen_z1
+         FROM landcover_z1
          WHERE zoom_level = 1
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z2 -> layer_landcover:z2
          SELECT geometry, 
                 subclass
+<<<<<<< HEAD
          FROM osm_landcover_gen_z2
          WHERE zoom_level = 7
+=======
+         FROM landcover_z2
+         WHERE zoom_level = 2
+>>>>>>> parent of d15204f (removal of unused layers and modification of landcover test)
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z3 -> layer_landcover:z3
          SELECT geometry,
                 subclass
-         FROM osm_landcover_gen_z3
+         FROM landcover_z3
          WHERE zoom_level = 3
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z4 -> layer_landcover:z4
          SELECT geometry,
                 subclass
-         FROM osm_landcover_gen_z4
+         FROM landcover_z4
          WHERE zoom_level = 4
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z5 -> layer_landcover:z5
          SELECT geometry, 
                 subclass
-         FROM osm_landcover_gen_z5
+         FROM landcover_z5
          WHERE zoom_level = 5
            AND geometry && bbox
          UNION ALL
          -- etldoc:  osm_landcover_gen_z6 -> layer_landcover:z6
          SELECT geometry,
                 subclass
-         FROM osm_landcover_gen_z6
+         FROM landcover_z6
          WHERE zoom_level = 6
            AND geometry && bbox
          UNION ALL

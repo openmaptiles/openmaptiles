@@ -1,0 +1,67 @@
+layer:
+  id: "boundary"
+  requires:
+    tables:
+      - osm_border_linestring
+      - ne_10m_admin_0_countries
+      - ne_10m_admin_0_boundary_lines_land
+      - ne_10m_admin_1_states_provinces_lines
+      - ne_50m_admin_0_boundary_lines_land
+      - ne_110m_admin_0_boundary_lines_land
+  description: |
+      Contains administrative boundaries as linestrings.
+      Until z4 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which
+      OSM boundaries ([`boundary=administrative`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative))
+      are present from z5 to z14 (also for maritime boundaries with `admin_level <= 2` at z4).
+      OSM data contains several [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
+      but for most styles it makes sense to just style `admin_level=2` and `admin_level=4`.
+  fields:
+    admin_level: |
+        OSM [admin_level](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
+        indicating the level of importance of this boundary.
+        The `admin_level` corresponds to the lowest `admin_level`
+        the line participates in.
+        At low zoom levels the Natural Earth boundaries are mapped to the equivalent admin levels.
+    adm0_l: |
+        State name on the left of the border. For country boundaries only (`admin_level = 2`).
+    adm0_r: |
+        State name on the right of the border. For country boundaries only (`admin_level = 2`).
+    disputed:
+      description: |
+          Mark with `1` if the border is disputed.
+      values: [0, 1]
+    disputed_name:
+      description: |
+          Field containing name of the disputed area (extracted from border relation in OSM, without spaces).
+          For country boundaries only (`admin_level = 2`).
+          Value examples from Asian OSM pbf extract
+      values:
+      - AbuMusaIsland
+      - BaraHotiiValleys
+      - ChineseClaim
+      - Crimea
+      - Demchok
+      - Dokdo
+      - IndianClaim-North
+      - IndianClaimwesternKashmir
+      - PakistaniClaim
+      - SamduValleys
+      - TirpaniValleys
+    claimed_by:
+      description: |
+          ISO2 code of country, which wants to see the boundary line.
+          For country boundaries only (`admin_level = 2`).
+    maritime:
+      description: |
+          Mark with `1` if it is a maritime border.
+      values: [0, 1]
+  buffer_size: 4
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, admin_level, adm0_l, adm0_r, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./boundary_name.sql
+  - ./boundary.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

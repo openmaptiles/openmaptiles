@@ -1,10 +1,3 @@
-DROP TABLE IF EXISTS osm_landcover_gen_z0;
-DROP TABLE IF EXISTS osm_landcover_gen_z1;
-DROP TABLE IF EXISTS osm_landcover_gen_z2;
-DROP TABLE IF EXISTS osm_landcover_gen_z3;
-DROP TABLE IF EXISTS osm_landcover_gen_z4;
-DROP TABLE IF EXISTS osm_landcover_gen_z5;
-DROP TABLE IF EXISTS osm_landcover_gen_z6;
 DROP TABLE IF EXISTS osm_landcover_gen_z7;
 DROP TABLE IF EXISTS osm_landcover_gen_z8;
 DROP TABLE IF EXISTS osm_landcover_gen_z9;
@@ -12,13 +5,6 @@ DROP TABLE IF EXISTS osm_landcover_gen_z10;
 DROP TABLE IF EXISTS osm_landcover_gen_z11;
 DROP TABLE IF EXISTS osm_landcover_gen_z12;
 DROP TABLE IF EXISTS osm_landcover_gen_z13;
-DROP TABLE IF EXISTS simplify_vw_z0 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z1 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z2 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z3 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z4 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z5 CASCADE;
-DROP TABLE IF EXISTS simplify_vw_z6 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z7 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z8 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z9 CASCADE;
@@ -58,7 +44,6 @@ CREATE TABLE osm_landcover_gen_z13 AS
 CREATE INDEX ON osm_landcover_gen_z13 USING GIST (geometry);
 
 
-
 -- etldoc: simplify_vw_z13 ->  simplify_vw_z12
 CREATE TABLE simplify_vw_z12 AS
 (
@@ -95,7 +80,6 @@ CREATE TABLE osm_landcover_gen_z12 AS
 CREATE INDEX ON osm_landcover_gen_z12 USING GIST (geometry);
 
 
-
 -- etldoc: simplify_vw_z12 ->  simplify_vw_z11
 CREATE TABLE simplify_vw_z11 AS
 (
@@ -125,7 +109,6 @@ CREATE TABLE osm_landcover_gen_z11 AS
     );
 
 CREATE INDEX ON osm_landcover_gen_z11 USING GIST (geometry);
-
 
 
 -- etldoc: simplify_vw_z11 ->  simplify_vw_z10
@@ -163,7 +146,6 @@ CREATE TABLE osm_landcover_gen_z10 AS
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 
 
-
 -- etldoc: simplify_vw_z10 ->  simplify_vw_z9
 CREATE TABLE simplify_vw_z9 AS
 (
@@ -193,7 +175,6 @@ CREATE TABLE osm_landcover_gen_z9 AS
     );
 
 CREATE INDEX ON osm_landcover_gen_z9 USING GIST (geometry);
-
 
 
 -- etldoc: simplify_vw_z9 ->  simplify_vw_z8
@@ -232,7 +213,6 @@ SELECT subclass,
 CREATE INDEX ON osm_landcover_gen_z8 USING GIST (geometry);
 
 
-
 -- etldoc: simplify_vw_z8 ->  simplify_vw_z7
 CREATE TABLE simplify_vw_z7 AS
 (
@@ -268,6 +248,7 @@ GROUP BY subclass,
 
 CREATE INDEX ON osm_landcover_gen_z7 USING GIST (geometry);
 
+<<<<<<< HEAD
 
 
 -- etldoc: simplify_vw_z7 ->  simplify_vw_z6
@@ -572,6 +553,8 @@ DROP TABLE IF EXISTS simplify_vw_z3 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z4 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z5 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z6 CASCADE;
+=======
+>>>>>>> parent of d15204f (removal of unused layers and modification of landcover test)
 DROP TABLE IF EXISTS simplify_vw_z7 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z8 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z9 CASCADE;
