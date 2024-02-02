@@ -1,0 +1,203 @@
+{
+  "layers": [
+    {
+      "id": "aeroway_fill",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 11,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": {
+          "stops": [
+            [
+              6,
+              "rgba(223, 223, 228, 1)"
+            ],
+            [
+              12,
+              "rgba(232, 231, 223, 1)"
+            ]
+          ]
+        },
+        "fill-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ],
+      "order": 3
+    },
+    {
+      "id": "aeroway_runway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 11,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(178, 181, 209, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              3
+            ],
+            [
+              20,
+              48
+            ]
+          ]
+        },
+        "line-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "runway"
+        ]
+      ],
+      "order": 22
+    },
+    {
+      "id": "aeroway_taxiway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 11,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(178, 181, 209, 1)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              1
+            ],
+            [
+              20,
+              24
+            ]
+          ]
+        },
+        "line-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "taxiway"
+        ]
+      ],
+      "order": 23
+    },
+    {
+      "id": "airport_label",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 14,
+      "layout": {
+        "text-font": [
+          "Noto Sans Italic",
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              15,
+              9
+            ],
+            [
+              19,
+              15
+            ]
+          ]
+        },
+        "text-field": "{ref}",
+        "visibility": "visible",
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-color": "#333333",
+        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-halo-width": 1
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "runway",
+          "taxiway"
+        ]
+      ],
+      "order": 191
+    },
+    {
+      "id": "airport_gate",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 16.5,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              17,
+              9
+            ],
+            [
+              19,
+              15
+            ]
+          ]
+        },
+        "text-field": "{ref}",
+        "visibility": "visible"
+      },
+      "paint": {
+        "text-color": "rgba(135, 135, 135, 1)",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 1
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "gate"
+        ]
+      ],
+      "order": 192
+    }
+  ]
+}

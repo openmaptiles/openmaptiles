@@ -1,0 +1,184 @@
+name_field: &name
+  name: name
+  key: name
+  type: string
+name_en_field: &name_en
+  name: name_en
+  key: name:en
+  type: string
+name_de_field: &name_de
+  name: name_de
+  key: name:de
+  type: string
+rank_field: &rank
+  name: rank
+  key: rank
+  type: integer
+
+tables:
+
+  # etldoc: imposm3 -> osm_continent_point
+  continent_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - continent
+
+  # etldoc: imposm3 -> osm_country_point
+  country_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - *rank
+    - name: country_code_iso3166_1_alpha_2
+      key: country_code_iso3166_1_alpha_2
+      type: string
+    - name: iso3166_1_alpha_2
+      key: ISO3166-1:alpha2
+      type: string
+    - name: iso3166_1
+      key: ISO3166-1
+      type: string
+    - name: tags
+      type: hstore_tags
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - country
+
+  # etldoc: imposm3 -> osm_island_polygon
+  island_polygon:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: area
+      type: area
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - island
+
+  # etldoc: imposm3 -> osm_island_point
+  island_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - island
+
+  # etldoc: imposm3 -> osm_state_point
+  state_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: place
+      key: place
+      type: string
+    - name: is_in_country
+      key: is_in:country
+      type: string
+    - name: is_in_country_code
+      key: is_in:country_code
+      type: string
+    - name: ref
+      key: ref
+      type: string
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - state
+      - province
+
+  # etldoc: imposm3 -> osm_city_point
+  city_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: place
+      key: place
+      type: string
+    - key: population
+      name: population
+      type: integer
+    - key: capital
+      name: capital
+      type: string
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - city
+      - town
+      - village
+      - hamlet
+      - borough
+      - suburb
+      - quarter
+      - neighbourhood
+      - isolated_dwelling

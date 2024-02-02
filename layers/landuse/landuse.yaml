@@ -1,0 +1,57 @@
+layer:
+  id: "landuse"
+  requires:
+    tables:
+      - ne_50m_urban_areas
+  description: |
+      Landuse is used to describe use of land by humans. At lower zoom levels this is
+      from Natural Earth data for residential (urban) areas and at higher zoom levels mostly OSM `landuse` tags.
+  buffer_size: 4
+  fields:
+    class:
+      description: |
+          Use the **class** to assign special colors to areas.
+          Original value of either the
+          [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+          [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
+          [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
+          [`place`](http://wiki.openstreetmap.org/wiki/Key:place)
+          or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
+      values:
+      - railway
+      - cemetery
+      - military
+      - residential
+      - commercial
+      - industrial
+      - garages
+      - retail
+      - bus_station
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
+      - stadium
+      - pitch
+      - playground
+      - track
+      - theme_park
+      - zoo
+      - suburb
+      - quarter
+      - neighbourhood
+      - dam
+      - quarry
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./class.sql
+  - ./prep_landuse.sql
+  - ./landuse.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

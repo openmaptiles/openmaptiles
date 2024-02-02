@@ -1,0 +1,30 @@
+
+tables:
+
+  # etldoc: imposm3 -> osm_housenumber_point
+  housenumber_point:
+    type: geometry
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: housenumber
+      key: addr:housenumber
+      type: string
+    - name: street
+      key: addr:street
+      type: string
+    - name: block_number
+      key: addr:block_number
+      type: string
+    - name: has_name
+      key: name
+      type: string
+    type_mappings:
+      points:
+        addr:housenumber:
+        - __any__
+      polygons:
+        addr:housenumber:
+        - __any__

@@ -1,0 +1,369 @@
+{
+  "layers": [
+    {
+      "id": "landuse_classes",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "minzoom": 7,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "railway",
+          "#ebdbe8",
+          "residential",
+          "#e0dfdf",
+          "cemetery",
+          "#aacbaf",
+          "military",
+          "#fceaea",
+          "commercial",
+          "#f2dad9",
+          "industrial",
+          "#ebdbe8",
+          "garages",
+          "#dfddce",
+          "retail",
+          "#ffd6d1",
+          "bus_station",
+          "#e9e7e2",
+          "school",
+          "#ffffe5",
+          "university",
+          "#ffffe5",
+          "kindergarten",
+          "#ffffe5",
+          "college",
+          "#ffffe5",
+          "hospital",
+          "#ffffe5",
+          "stadium",
+          "#d5ffd9",
+          "pitch",
+          "#aae0cb",
+          "playground",
+          "#d5ffd9",
+          "track",
+          "#aae0cb",
+          "dam",
+          "#adadad",
+          "#000"
+        ],
+        "fill-opacity": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "railway",
+          "cemetery",
+          "military",
+          "residential",
+          "commercial",
+          "industrial",
+          "garages",
+          "retail",
+          "bus_station",
+          "school",
+          "university",
+          "kindergarten",
+          "college",
+          "hospital",
+          "stadium",
+          "pitch",
+          "playground",
+          "track",
+          "dam"
+        ],
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ]
+      ],
+      "order": 1
+    },
+    {
+      "id": "landuse_residential",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "minzoom": 6,
+      "maxzoom": 24,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": {
+          "stops": [
+            [
+              7,
+              "#d0d0d0"
+            ],
+            [
+              11,
+              "#dddddd"
+            ],
+            [
+              12,
+              "#e0dfdf"
+            ]
+          ]
+        }
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "residential",
+          "suburbs",
+          "neighbourhood"
+        ]
+      ],
+      "order": 2
+    },
+    {
+      "id": "landuse_class_pattern",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#000000",
+        "fill-opacity": 1,
+        "fill-pattern": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "military",
+          "military_red_hatch",
+          "cemetery",
+          "grave_yard_generic",
+          ""
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "military",
+          "cemetery"
+        ]
+      ],
+      "order": 25
+    },
+    {
+      "id": "landuse_class_outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "minzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "railway",
+          "#c6b3c3",
+          "military",
+          "#ff5555",
+          "residential",
+          "#b9b9b9",
+          "commercial",
+          "#f2dad9",
+          "industrial",
+          "#c6b3c3",
+          "retail",
+          "#d99c95",
+          "school",
+          "#A6A68C",
+          "university",
+          "#A6A68C",
+          "kindergarten",
+          "#A6A68C",
+          "college",
+          "#A6A68C",
+          "hospital",
+          "#A6A68C",
+          "stadium",
+          "#7ca680",
+          "pitch",
+          "#7aaa97",
+          "playground",
+          "#3c6640",
+          "track",
+          "#7aaa96",
+          "theme_park",
+          "#660033",
+          "zoo",
+          "#660033",
+          "dam",
+          "#444444",
+          "#000"
+        ],
+        "line-width": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "railway",
+          0.7,
+          "military",
+          2,
+          "residential",
+          0.5,
+          "commercial",
+          0.5,
+          "industrial",
+          0.5,
+          "retail",
+          0.5,
+          "school",
+          0.3,
+          "university",
+          0.3,
+          "kindergarten",
+          0.3,
+          "college",
+          0.3,
+          "hospital",
+          0.3,
+          "stadium",
+          0.3,
+          "pitch",
+          0.5,
+          "playground",
+          0.3,
+          "track",
+          0.5,
+          "theme_park",
+          1,
+          "zoo",
+          1,
+          "dam",
+          2,
+          1
+        ],
+        "line-offset": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "military",
+          1,
+          0
+        ],
+        "line-opacity": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "military",
+          0.24,
+          1
+        ]
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "railway",
+          "military",
+          "residential",
+          "commercial",
+          "industrial",
+          "retail",
+          "school",
+          "university",
+          "kindergarten",
+          "college",
+          "hospital",
+          "stadium",
+          "pitch",
+          "playground",
+          "track",
+          "theme_park",
+          "zoo",
+          "dam"
+        ]
+      ],
+      "order": 26
+    },
+    {
+      "id": "landuse_class_themepark",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "minzoom": 13,
+      "layout": {
+        "line-cap": "square",
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#660033",
+        "line-width": {
+          "stops": [
+            [
+              9,
+              3.5
+            ],
+            [
+              14,
+              5.5
+            ]
+          ]
+        },
+        "line-offset": 2,
+        "line-opacity": {
+          "stops": [
+            [
+              9,
+              0.1
+            ],
+            [
+              12,
+              0.3
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "theme_park",
+          "zoo"
+        ]
+      ],
+      "order": 27
+    }
+  ]
+}

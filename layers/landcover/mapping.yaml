@@ -1,0 +1,58 @@
+tables:
+  # etldoc: imposm3 -> osm_landcover_polygon
+  landcover_polygon:
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: area
+    - name: subclass
+      type: mapping_value
+    - name: mapping_key
+      type: mapping_key
+    mapping:
+      landuse:
+      - allotments
+      - farm
+      - farmland
+      - orchard
+      - plant_nursery
+      - vineyard
+      - grass
+      - grassland
+      - meadow
+      - forest
+      - village_green
+      - recreation_ground
+      natural:
+      - wood
+      - wetland
+      - fell
+      - grassland
+      - heath
+      - scrub
+      - shrubbery
+      - tundra
+      - glacier
+      - bare_rock
+      - scree
+      - beach
+      - sand
+      - dune
+      leisure:
+      - park
+      - garden
+      - golf_course
+      wetland:
+      - bog
+      - swamp
+      - wet_meadow
+      - marsh
+      - reedbed
+      - saltern
+      - tidalflat
+      - saltmarsh
+      - mangrove
+    type: polygon

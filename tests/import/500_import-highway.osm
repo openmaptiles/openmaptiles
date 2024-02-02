@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="500001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.00" />
+  <node id="500002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.00" />
+  <node id="500011" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.01" />
+  <node id="500012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.01" />
+  <node id="500021" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.02" />
+  <node id="500022" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.02" />
+  <node id="500031" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.03" />
+  <node id="500032" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.03" />
+  <node id="500041" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.04" />
+  <node id="500042" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.04" />
+  <node id="500051" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.05" />
+  <node id="500052" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.05" />
+  <node id="500061" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.06" />
+  <node id="500062" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.06" />
+  <node id="500071" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.07" />
+  <node id="500072" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.07" />
+  <node id="500081" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-90.07" />
+  <node id="500091" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.5" lon="-90.07" />
+  <node id="500101" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.08" />
+  <node id="500102" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.08" />
+  <node id="500111" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-90.08" />
+  <node id="500121" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.5" lon="-90.08" />
+  <node id="500131" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.09" />
+  <node id="500132" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.09" />
+  <node id="500141" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.0" lon="-90.10" />
+  <node id="500142" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="33.5" lon="-90.10" />
+
+  <way id="5000" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500001" />
+    <nd ref="500002" />
+    <tag k="highway" v="motorway"/>
+    <tag k="name" v="OpenMapTiles Motorway"/>
+  </way>
+  <way id="5001" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500011" />
+    <nd ref="500012" />
+    <tag k="highway" v="trunk"/>
+    <tag k="expressway" v="yes"/>
+    <tag k="name" v="OpenMapTiles Trunk"/>
+  </way>
+  <way id="5002" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500021" />
+    <nd ref="500022" />
+    <tag k="highway" v="primary"/>
+    <tag k="name" v="OpenMapTiles Primary"/>
+  </way>
+  <way id="5003" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500031" />
+    <nd ref="500032" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="toll" v="yes"/>
+    <tag k="layer" v="1"/>
+    <tag k="bicycle" v="no"/>
+    <tag k="horse" v="no"/>
+    <tag k="foot" v="no"/>
+  </way>
+  <way id="5004" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500041" />
+    <nd ref="500042" />
+    <tag k="highway" v="tertiary"/>
+    <tag k="name" v="OpenMapTiles Tertiary"/>
+  </way>
+  <way id="5005" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500051" />
+    <nd ref="500052" />
+    <tag k="highway" v="service"/>
+    <tag k="service" v="driveway"/>
+    <tag k="name" v="OpenMapTiles Service"/>
+  </way>
+  <way id="5006" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500061" />
+    <nd ref="500062" />
+    <tag k="highway" v="track"/>
+    <tag k="name" v="OpenMapTiles Track"/>
+  </way>
+
+  <!-- Test way stitching -->
+  <way id="5007" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500071" />
+    <nd ref="500072" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary 2"/>
+  </way>
+  <way id="5008" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500072" />
+    <nd ref="500081" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary 2"/>
+  </way>
+  <way id="5009" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500081" />
+    <nd ref="500091" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary 2"/>
+  </way>
+
+  <!-- Test disrupted way stitching -->
+  <way id="5010" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500101" />
+    <nd ref="500102" />
+    <tag k="highway" v="secondary"/>
+    <tag k="bicycle" v="yes"/>
+    <tag k="name" v="OpenMapTiles Secondary 3"/>
+  </way>
+  <way id="5011" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500102" />
+    <nd ref="500111" />
+    <tag k="highway" v="secondary"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="layer" v="1"/>
+    <tag k="toll" v="yes"/>
+    <tag k="name" v="OpenMapTiles Secondary 3 (Toll)"/>
+  </way>
+  <way id="5012" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500111" />
+    <nd ref="500121" />
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="OpenMapTiles Secondary 3"/>
+  </way>
+  <way id="5013" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500131" />
+    <nd ref="500132" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Path z13"/>
+  </way>
+  <way id="5014" version="1" timestamp="2019-01-01T00:00:00Z" visible="true">
+    <nd ref="500141" />
+    <nd ref="500142" />
+    <tag k="highway" v="path"/>
+    <tag k="name" v="OpenMapTiles Track z12"/>
+  </way>
+
+  <relation id="513" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5013" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="colour" v="red"/>
+  </relation>
+  <relation id="514" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5014" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="hiking"/>
+    <tag k="network" v="nwn"/>
+  </relation>
+
+  <!-- Route Concurrency de-duplication -->
+  <relation id="515" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5000" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="95"/>
+    <tag k="description" v="I-95 Northbound"/>
+  </relation>
+  <relation id="516" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5000" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="95"/>
+    <tag k="description" v="I-95 Southbound"/>
+  </relation>
+
+  <!-- Zoom-Level 5 Trunk National Network -->
+  <relation id="517" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" changeset="1" user="u" uid="1">
+    <member type="way" ref="5001" role=""/>
+    <tag k="type" v="route"/>
+    <tag k="route" v="road"/>
+    <tag k="network" v="US:I"/>
+    <tag k="ref" v="94"/>
+    <tag k="description" v="I-94"/>
+  </relation>
+</osm>

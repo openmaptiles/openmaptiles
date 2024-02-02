@@ -1,0 +1,27 @@
+layer:
+  id: "building"
+  description: |
+      All [OSM Buildings](http://wiki.openstreetmap.org/wiki/Buildings). All building tags are imported ([`building=*`](http://wiki.openstreetmap.org/wiki/Key:building)).
+      Only buildings with tag location:underground are excluded.
+  buffer_size: 4
+  datasource:
+    geometry_field: geometry
+    key_field: osm_id
+    key_field_as_attribute: no
+    srid: 900913
+    query: (SELECT osm_id, geometry, render_height, render_min_height, colour, hide_3d FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+  fields:
+    render_height: |
+        An approximated height from levels and height of the building or building:part.
+    render_min_height: |
+        An approximated height from minimum levels or minimum height of the bottom of the building or building:part.
+    colour: |
+        Colour
+    hide_3d: |
+        If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d.
+schema:
+  - ./update_building.sql
+  - ./building.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

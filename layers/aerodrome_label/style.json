@@ -1,0 +1,69 @@
+{
+  "layers": [
+    {
+      "id": "airport-label-major",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "aerodrome_label",
+      "minzoom": 8,
+      "maxzoom": 17,
+      "layout": {
+        "icon-size": 1,
+        "text-font": [
+          "Noto Sans Italic"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              8,
+              10
+            ],
+            [
+              14,
+              12
+            ]
+          ]
+        },
+        "icon-image": "aerodrome.12",
+        "text-field": {
+          "stops": [
+            [
+              8,
+              " "
+            ],
+            [
+              11,
+              "{name:latin}\n{name:nonlatin}"
+            ]
+          ]
+        },
+        "visibility": "visible",
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.6
+        ],
+        "text-padding": 2,
+        "text-optional": true,
+        "symbol-z-order": "auto",
+        "text-max-width": 9,
+        "icon-allow-overlap": false,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#5e3b9e",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-halo-width": 1
+      },
+      "filter": [
+        "all",
+        [
+          "has",
+          "iata"
+        ]
+      ],
+      "order": 190
+    }
+  ]
+}

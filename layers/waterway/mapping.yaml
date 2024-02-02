@@ -1,0 +1,67 @@
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+
+tables:
+  # etldoc: imposm3 -> osm_waterway_linestring
+  waterway_linestring:
+    type: linestring
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: waterway
+      key: waterway
+      type: string
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - *tunnel
+    - *bridge
+    - name: is_intermittent
+      key: intermittent
+      type: bool
+    mapping:
+      waterway:
+      - stream
+      - river
+      - canal
+      - drain
+      - ditch
+
+  # etldoc: imposm3 -> osm_waterway_relation
+  waterway_relation:
+    type: relation_member
+    columns:
+    - name: osm_id
+      type: id
+    - name: member
+      type: member_id
+    - name: role
+      type: member_role 
+    - name: geometry
+      type: geometry
+    - key: waterway
+      name: waterway
+      type: string
+    - key: name
+      name: name
+      type: string
+    - name: tags
+      type: hstore_tags
+    mapping:
+      waterway: [river]

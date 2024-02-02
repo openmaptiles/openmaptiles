@@ -1,0 +1,111 @@
+{
+  "layers": [
+    {
+      "id": "national_parks",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "park",
+      "minzoom": 8,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "rgba(154, 199, 136, 1)",
+        "line-width": {
+          "base": 1,
+          "stops": [
+            [
+              8,
+              1.2
+            ],
+            [
+              9,
+              1.5
+            ],
+            [
+              10,
+              3.6
+            ],
+            [
+              24,
+              3.6
+            ]
+          ]
+        },
+        "line-offset": 1,
+        "line-opacity": 0.8
+      },
+      "order": 20
+    },
+    {
+      "id": "national_parks_thin",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "park",
+      "minzoom": 10,
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "rgba(93, 156, 76, 1)",
+        "line-width": 1.5
+      },
+      "order": 21
+    },
+    {
+      "id": "park-national",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "park",
+      "minzoom": 7,
+      "maxzoom": 12,
+      "layout": {
+        "text-font": [
+          "Noto Sans Italic"
+        ],
+        "text-size": 12,
+        "text-field": "{name:latin}{name:nonlatin}",
+        "visibility": "visible",
+        "symbol-spacing": 150,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [
+              7,
+              "rgba(70, 164, 70, 1)"
+            ],
+            [
+              10,
+              "#008000"
+            ]
+          ]
+        },
+        "text-halo-blur": 0.1,
+        "text-halo-color": {
+          "stops": [
+            [
+              7,
+              "rgba(241, 255, 234, 1)"
+            ],
+            [
+              10,
+              "rgba(208, 250, 200, 1)"
+            ]
+          ]
+        },
+        "text-halo-width": 0.3
+      },
+      "filter": [
+        "all",
+        [
+          "<=",
+          "rank",
+          2
+        ]
+      ],
+      "order": 195
+    }
+  ]
+}

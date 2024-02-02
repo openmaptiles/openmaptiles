@@ -1,0 +1,74 @@
+{
+  "layers": [
+    {
+      "id": "water_name_line",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "water_name",
+      "minzoom": 0,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular",
+          "Noto Sans Bold"
+        ],
+        "text-size": 12,
+        "text-field": "{name:latin}\n{name:nonlatin}",
+        "visibility": "visible",
+        "text-max-width": 5,
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-color": "#5d60be",
+        "text-halo-color": "rgba(255,255,255,0.7)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
+      ],
+      "order": 152
+    },
+    {
+      "id": "water_name_point",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "water_name",
+      "minzoom": 16,
+      "maxzoom": 24,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": 11,
+        "text-field": "{name:latin}\n{name:nonlatin}",
+        "visibility": "visible",
+        "text-max-width": 5
+      },
+      "paint": {
+        "text-color": "rgba(76, 125, 173, 1)",
+        "text-halo-color": "rgba(255,255,255,0)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [
+          "!=",
+          "class",
+          "ocean"
+        ]
+      ],
+      "order": 153
+    }
+  ]
+}

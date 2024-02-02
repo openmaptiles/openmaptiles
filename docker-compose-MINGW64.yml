@@ -1,0 +1,11 @@
+# This version must match the MAKE_DC_VERSION in docker-compose.yml
+version: "3"
+
+volumes:
+  cache:
+
+services:
+
+  openmaptiles-tools:
+    volumes:
+      - cache:/cache

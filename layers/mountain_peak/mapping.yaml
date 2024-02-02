@@ -1,0 +1,60 @@
+tables:
+
+  # etldoc: imposm3 -> osm_peak_point
+  peak_point:
+    type: point
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: ele
+      key: ele
+      type: string
+    - name: wikipedia
+      key: wikipedia
+      type: string
+    mapping:
+      natural:
+      - peak
+      - volcano
+      - saddle
+
+  # etldoc: imposm3 -> osm_mountain_linestring
+  mountain_linestring:
+    type: linestring
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: wikipedia
+      key: wikipedia
+      type: string
+    mapping:
+      natural:
+      - ridge
+      - cliff
+      - arete

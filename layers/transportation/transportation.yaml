@@ -1,0 +1,220 @@
+layer:
+  id: "transportation"
+  requires:
+    tables:
+      - ne_10m_admin_0_countries
+  description: |
+      **transportation** contains roads, railways, aerial ways, and shipping
+       lines.
+      This layer is directly derived from the OSM road hierarchy.
+      At lower zoom levels major highways from Natural Earth are used.
+      It contains all roads from motorways to primary, secondary and
+      tertiary roads to residential roads and
+      foot paths. Styling the roads is the most essential part of the map.
+      The `transportation` layer also contains polygons for features like plazas.
+  buffer_size: 4
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
+  fields:
+    class:
+      description: |
+          Distinguish between more and less important roads or railways and roads under construction.
+          Class is derived from the value of the
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
+          [`construction`](http://wiki.openstreetmap.org/wiki/Key:construction),
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
+          [`route`](http://wiki.openstreetmap.org/wiki/Key:route) tag (for
+          shipping ways),
+          [`busway`](https://wiki.openstreetmap.org/wiki/Key:busway), or
+          [`man_made`](http://wiki.openstreetmap.org/wiki/Key:man_made).
+      values:
+        motorway:
+          highway: ['motorway', 'motorway_link']
+        trunk:
+          highway: ['trunk', 'trunk_link']
+        primary:
+          highway: ['primary', 'primary_link']
+        secondary:
+          highway: ['secondary', 'secondary_link']
+        tertiary:
+          highway: ['tertiary', 'tertiary_link']
+        minor:
+          highway: ['unclassified', 'residential', 'living_street', 'road']
+        path:
+          highway: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+          public_transport: 'platform'
+        service:
+          highway: service
+        track:
+          highway: track
+        raceway:
+          highway: raceway
+        busway:
+          highway: busway
+        bus_guideway:
+          highway: bus_guideway
+        ferry:
+          highway: shipway
+        motorway_construction:
+          __AND__:
+            highway: construction
+            construction: ['motorway', 'motorway_link']
+        trunk_construction:
+          __AND__:
+            highway: construction
+            construction: ['trunk', 'trunk_link']
+        primary_construction:
+          __AND__:
+            highway: construction
+            construction: ['primary', 'primary_link']
+        secondary_construction:
+          __AND__:
+            highway: construction
+            construction: ['secondary', 'secondary_link']
+        tertiary_construction:
+          __AND__:
+            highway: construction
+            construction: ['tertiary', 'tertiary_link']
+        minor_construction:
+          __AND__:
+            highway: construction
+            construction: ['', 'unclassified', 'residential', 'living_street', 'road']
+        path_construction:
+          __AND__:
+            - highway: construction
+            - __OR__:
+                construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+                public_transport: platform
+        service_construction:
+          __AND__:
+            highway: construction
+            construction: service
+        track_construction:
+          __AND__:
+            highway: construction
+            construction: track
+        raceway_construction:
+          __AND__:
+            highway: construction
+            construction: raceway
+    subclass:
+      description: |
+          Distinguish more specific classes of railway and path:
+          Subclass is value of the
+          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths), or
+          [`public_transport`](http://wiki.openstreetmap.org/wiki/Key:public_transport) (for platforms) tag.
+      values:
+      - rail
+      - narrow_gauge
+      - preserved
+      - funicular
+      - subway
+      - light_rail
+      - monorail
+      - tram
+      - pedestrian
+      - path
+      - footway
+      - cycleway
+      - steps
+      - bridleway
+      - corridor
+      - platform
+      - ferry (DEPRECATED - use class)
+    network:
+      description: |
+          The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+          See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
+          [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
+          [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads),
+          or [`ie-*`](http://wiki.openstreetmap.org/wiki/Ireland/Roads).
+    brunnel:
+      description: |
+          Mark whether way is a tunnel or bridge.
+      values:
+        - bridge
+        - tunnel
+        - ford
+    oneway:
+      description: |
+          Mark with `1` whether way is a oneway in the direction of the way,
+          with `-1` whether way is a oneway in the opposite direction of the way
+          or not a oneway with `0`.
+      values: [1, -1]
+    ramp:
+      description: |
+          Mark with `1` whether way is a ramp (link or steps)
+          or not with `0`.
+      values: [1]
+    service:
+      description: |
+          Original value of the [`service`](http://wiki.openstreetmap.org/wiki/Key:service) tag.
+      values:
+      - spur
+      - yard
+      - siding
+      - crossover
+      - driveway
+      - alley
+      - parking_aisle
+    access:
+      description: |
+          Access restrictions on this road.  Supported values of the
+          [`access`](http://wiki.openstreetmap.org/wiki/Key:access) tag are `no` and `private`,
+          which resolve to `no`.
+      values:
+      - no
+    toll:
+      description: |
+          Whether this is a toll road, based on the [`toll`](http://wiki.openstreetmap.org/wiki/Key:toll) tag.
+      values: [0, 1]
+    expressway:
+      description: |
+          Whether this is an expressway, based on the [`expressway`](http://wiki.openstreetmap.org/wiki/Key:expressway) tag.
+      values: [1]
+    layer:
+      description: |
+          Original value of the [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+    level:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of the [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+    indoor:
+      description: |
+          Experimental feature! Filled only for steps and footways. Original
+          value of the [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+      values:
+      - 1
+    bicycle:
+      description: |
+          Original value of the [`bicycle`](http://wiki.openstreetmap.org/wiki/Key:bicycle) tag (highways only).
+    foot:
+      description: |
+          Original value of the [`foot`](http://wiki.openstreetmap.org/wiki/Key:foot) tag (highways only).
+    horse:
+      description: |
+          Original value of the [`horse`](http://wiki.openstreetmap.org/wiki/Key:horse) tag (highways only).
+    mtb_scale:
+      description: |
+          Original value of the [`mtb:scale`](http://wiki.openstreetmap.org/wiki/Key:mtb:scale) tag (highways only).
+    surface:
+      description: |
+          Values of [`surface`](https://wiki.openstreetmap.org/wiki/Key:surface) tag devided into 2 groups `paved` (paved, asphalt, cobblestone, concrete, concrete:lanes, concrete:plates, metal, paving_stones, sett, unhewn_cobblestone, wood) and `unpaved` (unpaved, compacted, dirt, earth, fine_gravel, grass, grass_paver, gravel, gravel_turf, ground, ice, mud, pebblestone, salt, sand, snow, woodchips).
+      values:
+      - paved
+      - unpaved
+  datasource:
+    geometry_field: geometry
+    srid: 900913
+    query: (SELECT geometry, class, subclass, network, oneway, ramp, brunnel, service, access, toll, expressway, layer, level, indoor, bicycle, foot, horse, mtb_scale, surface FROM layer_transportation(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./network_type.sql
+  - ./class.sql
+  - ./highway_name.sql
+  - ./update_route_member.sql
+  - ./update_transportation_merge.sql
+  - ./transportation.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml

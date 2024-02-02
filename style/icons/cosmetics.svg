@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="14"
+   height="14"
+   viewBox="0 0 14 14"
+   fill="none"
+   version="1.1"
+   id="svg29177"
+   sodipodi:docname="cosmetics.svg"
+   inkscape:version="1.0.2 (e86c8708, 2021-01-15)">
+  <metadata
+     id="metadata29181">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1028"
+     inkscape:window-height="647"
+     id="namedview29179"
+     showgrid="false"
+     inkscape:zoom="39.357143"
+     inkscape:cx="7"
+     inkscape:cy="7"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg29177" />
+  <g
+     clip-path="url(#clip0)"
+     id="g29170">
+    <path
+       d="M14 2.5C14 3.66054 12.8807 4.60134 11.5 4.60134C10.1193 4.60134 9 3.66054 9 2.5C9 1.33946 10.1193 0.39866 11.5 0.39866C12.8807 0.39866 14 1.33946 14 2.5ZM8 2H10V3H8V2ZM3 0H4V1H3V0ZM1 5e-08H2V1H1V5e-08ZM1 4H2V5H1V4ZM3 4H4V5H3V4ZM4 2H5V3H4V2ZM2 2H3V3H2V2ZM0 2H1V3H0V2ZM6 5.42211L8 5.39866V2C8 1 8 1 7 1C6.0336 1.0168 6 1 6 2V5.42211ZM5 6C3 6 1.46875 9 1.46875 11C1.46875 12 4 14 5 14H9C10 14 12.4141 12 12.4141 11C12.4141 9 11 6 9 6H5Z"
+       fill="#AC39AC"
+       id="path29168" />
+  </g>
+  <defs
+     id="defs29175">
+    <clipPath
+       id="clip0">
+      <rect
+         width="14"
+         height="14"
+         fill="white"
+         id="rect29172" />
+    </clipPath>
+  </defs>
+</svg>

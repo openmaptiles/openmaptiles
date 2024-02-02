@@ -1,0 +1,117 @@
+generalized_tables:
+  # etldoc: osm_water_polygon_gen_z7 -> osm_water_polygon_gen_z6
+  water_polygon_gen_z6:
+    source: water_polygon_gen_z7
+    sql_filter: area>power(ZRES5,2)
+    tolerance: ZRES7
+
+  # etldoc: osm_water_polygon_gen_z8 -> osm_water_polygon_gen_z7
+  water_polygon_gen_z7:
+    source: water_polygon_gen_z8
+    sql_filter: area>power(ZRES6,2)
+    tolerance: ZRES8
+
+  # etldoc: osm_water_polygon_gen_z9 -> osm_water_polygon_gen_z8
+  water_polygon_gen_z8:
+    source: water_polygon_gen_z9
+    sql_filter: area>power(ZRES7,2)
+    tolerance: ZRES9
+
+  # etldoc: osm_water_polygon_gen_z10 -> osm_water_polygon_gen_z9
+  water_polygon_gen_z9:
+    source: water_polygon_gen_z10
+    sql_filter: area>power(ZRES8,2)
+    tolerance: ZRES10
+
+  # etldoc: osm_water_polygon_gen_z11 -> osm_water_polygon_gen_z10
+  water_polygon_gen_z10:
+    source: water_polygon_gen_z11
+    sql_filter: area>power(ZRES9,2)
+    tolerance: ZRES11
+
+  # etldoc: osm_water_polygon -> osm_water_polygon_gen_z11
+  water_polygon_gen_z11:
+    source: water_polygon
+    sql_filter: area>power(ZRES10,2)
+    tolerance: ZRES12
+
+tunnel_field: &tunnel
+  key: tunnel
+  name: is_tunnel
+  type: bool
+bridge_field: &bridge
+  key: bridge
+  name: is_bridge
+  type: bool
+
+tables:
+
+  # etldoc: imposm3 -> osm_water_polygon
+  water_polygon:
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: area
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: place
+      key: place
+      type: string
+    - name: natural
+      key: natural
+      type: string
+    - name: landuse
+      key: landuse
+      type: string
+    - name: waterway
+      key: waterway
+      type: string
+    - name: leisure
+      key: leisure
+      type: string
+    - name: water
+      key: water
+      type: string
+    - name: is_intermittent
+      key: intermittent
+      type: bool
+    - *tunnel
+    - *bridge
+    filters:
+      reject:
+        covered: ["yes"]
+    mapping:
+      landuse:
+      - reservoir
+      - basin
+      - salt_pond
+      leisure:
+      - swimming_pool
+      natural:
+      - water
+      - bay
+      - spring
+      waterway:
+      - dock
+      water:
+      - river
+      - stream
+      - canal
+      - ditch
+      - drain
+      - pond
+      - basin
+      - wastewater
+    type: polygon

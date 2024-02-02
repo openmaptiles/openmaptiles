@@ -1,0 +1,52 @@
+{
+  "layers": [
+    {
+      "id": "mountain_peak",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "mountain_peak",
+      "maxzoom": 16,
+      "layout": {
+        "text-size": 10,
+        "icon-image": "peak",
+        "text-field": {
+          "stops": [
+            [
+              6,
+              " "
+            ],
+            [
+              12,
+              "{name} {ele}m"
+            ]
+          ]
+        },
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.5
+        ],
+        "text-max-width": 6,
+        "text-line-height": 1.1,
+        "text-font": [
+          "Noto Sans Regular",
+          "Noto Sans Italic"
+        ]
+      },
+      "paint": {
+        "text-color": "#6e441e",
+        "text-halo-color": "rgba(255, 255, 255, .8)",
+        "text-halo-width": 1
+      },
+      "filter": [
+        "all",
+        [
+          "!=",
+          "class",
+          "cliff"
+        ]
+      ],
+      "order": 197
+    }
+  ]
+}

@@ -1,0 +1,476 @@
+{
+  "layers": [
+    {
+      "id": "landcover_classes",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "maxzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          "farmland",
+          "#eef0d5",
+          "wood",
+          "#add19e",
+          "rock",
+          "#eee5dc",
+          "grass",
+          "#cdebb0",
+          "sand",
+          "#f5e9c6",
+          "wetland",
+          "#add19e",
+          "#000"
+        ],
+        "fill-opacity": {
+          "stops": [
+            [
+              7,
+              0.5
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
+        "fill-antialias": false
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "farmland",
+          "wood",
+          "rock",
+          "grass",
+          "wetland",
+          "sand"
+        ]
+      ],
+      "order": 4
+    },
+    {
+      "id": "landcover_class_outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#c7c9ae",
+        "line-width": 0.5
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "farmland"
+        ]
+      ],
+      "order": 5
+    },
+    {
+      "id": "landcover_park",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#c8facc",
+        "fill-antialias": true
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "subclass",
+          "park"
+        ]
+      ],
+      "order": 6
+    },
+    {
+      "id": "landcover_subclasses",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "allotments",
+          "#c9e1bf",
+          "bare_rock",
+          "#eee5dc",
+          "beach",
+          "#fff1ba",
+          "bog",
+          "#d6d99f",
+          "dune",
+          "#f5e9c6",
+          "scrub",
+          "#c8d7ab",
+          "farm",
+          "#f5dcba",
+          "farmland",
+          "#eef0d5",
+          "forest",
+          "#add19e",
+          "grass",
+          "#cdebb0",
+          "grassland",
+          "#cdebb0",
+          "golf_course",
+          "#def6c0",
+          "heath",
+          "#d6d99f",
+          "mangrove",
+          "#c8d7ab",
+          "meadow",
+          "#cdebb0",
+          "orchard",
+          "#aedfa3",
+          "park",
+          "#c8facc",
+          "garden",
+          "#cdebb0",
+          "plant_nursery",
+          "#aedfa3",
+          "recreation_ground",
+          "#d5ffd9",
+          "reedbed",
+          "#cdebb0",
+          "saltmarsh",
+          "#cdebb0",
+          "sand",
+          "#f5e9c6",
+          "scree",
+          "#eee5dc",
+          "swamp",
+          "#add19e",
+          "tidalflat",
+          "#DED6CF",
+          "village_green",
+          "#cdebb0",
+          "vineyard",
+          "#aedfa3",
+          "wet_meadow",
+          "#cdebb0",
+          "wetland",
+          "#add19e",
+          "wood",
+          "#add19e",
+          "marsh",
+          "#ff0",
+          "#FFFFFF"
+        ],
+        "fill-antialias": true
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "subclass",
+          "allotments",
+          "bare_rock",
+          "beach",
+          "dune",
+          "scrub",
+          "farm",
+          "farmland",
+          "forest",
+          "garden",
+          "grass",
+          "grassland",
+          "golf_course",
+          "heath",
+          "meadow",
+          "orchard",
+          "plant_nursery",
+          "recreation_ground",
+          "reedbed",
+          "saltmarsh",
+          "sand",
+          "scree",
+          "swamp",
+          "tidalflat",
+          "tundra",
+          "village_green",
+          "vineyard",
+          "wet_meadow",
+          "wetland",
+          "wood"
+        ]
+      ],
+      "order": 7
+    },
+    {
+      "id": "landcover_subclass_patterns",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-opacity": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "beach",
+          0.4,
+          "forest",
+          0.4,
+          "bare_rock",
+          0.3,
+          "scrub",
+          0.6,
+          "garden",
+          0.6,
+          "scree",
+          0.3,
+          "wood",
+          0.4,
+          1
+        ],
+        "fill-pattern": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "allotments",
+          "allotments",
+          "bare_rock",
+          "rock_overlay",
+          "beach",
+          "beach",
+          "bog",
+          "wetland_bog",
+          "scrub",
+          "scrub",
+          "forest",
+          "leaftype_unknown",
+          "garden",
+          "plant_nursery",
+          "mangrove",
+          "wetland_mangrove",
+          "marsh",
+          "wetland_marsh",
+          "orchard",
+          "orchard",
+          "plant_nursery",
+          "plant_nursery",
+          "reedbed",
+          "wetland_reed",
+          "saltmarsh",
+          "wetland_marsh",
+          "scree",
+          "scree_overlay",
+          "swamp",
+          "wetland_swamp",
+          "vineyard",
+          "vineyard",
+          "wet_meadow",
+          "wetland_marsh",
+          "wetland",
+          "wetland",
+          "wood",
+          "leaftype_unknown",
+          ""
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "subclass",
+          "allotments",
+          "bare_rock",
+          "beach",
+          "bog",
+          "dune",
+          "scrub",
+          "farm",
+          "farmland",
+          "forest",
+          "garden",
+          "grass",
+          "grassland",
+          "golf_course",
+          "heath",
+          "mangrove",
+          "marsh",
+          "meadow",
+          "orchard",
+          "park",
+          "plant_nursery",
+          "recreation_ground",
+          "reedbed",
+          "saltern",
+          "saltmarsh",
+          "sand",
+          "scree",
+          "swamp",
+          "village_green",
+          "vineyard",
+          "wet_meadow",
+          "wetland",
+          "wood"
+        ]
+      ],
+      "order": 8
+    },
+    {
+      "id": "landcover_subclass_outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 15,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "allotments",
+          "#B1C6A8",
+          "farm",
+          "#d1b48c",
+          "farmland",
+          "#c7c9ae",
+          "recreation_ground",
+          "#3c6640",
+          "#000"
+        ],
+        "line-width": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "recreation_ground",
+          0.3,
+          0.5
+        ],
+        "line-opacity": 1
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "subclass",
+          "allotments",
+          "farm",
+          "farmland",
+          "recreation_ground"
+        ]
+      ],
+      "order": 9
+    },
+    {
+      "id": "landcover_ice",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 5,
+      "paint": {
+        "fill-color": "#ddecec",
+        "fill-antialias": false
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice"
+        ]
+      ],
+      "order": 10
+    },
+    {
+      "id": "landcover_ice_outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 5,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#9cf",
+        "line-width": {
+          "stops": [
+            [
+              5,
+              1
+            ],
+            [
+              10,
+              1.5
+            ]
+          ]
+        },
+        "line-dasharray": {
+          "stops": [
+            [
+              5,
+              [
+                1,
+                0
+              ]
+            ],
+            [
+              10,
+              [
+                4,
+                2
+              ]
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice"
+        ]
+      ],
+      "order": 11
+    }
+  ]
+}

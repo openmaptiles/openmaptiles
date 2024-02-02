@@ -1,0 +1,406 @@
+{
+  "layers": [
+    {
+      "id": "ferry_label",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 14,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": 10,
+        "text-field": "{name}",
+        "text-anchor": "center",
+        "text-offset": [
+          0,
+          0
+        ],
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-color": "#6666ff",
+        "text-halo-blur": 1,
+        "text-halo-color": "rgba(255, 255, 255, 0.34)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "subclass",
+          "ferry"
+        ]
+      ],
+      "order": 184
+    },
+    {
+      "id": "road_label",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 14,
+      "layout": {
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [
+              14,
+              9
+            ],
+            [
+              18,
+              13
+            ]
+          ]
+        },
+        "text-field": "{name}",
+        "text-anchor": "center",
+        "text-offset": [
+          0,
+          0
+        ],
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-color": "#000000",
+        "text-halo-color": "rgba(255, 255, 255, 0.97)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "!=",
+          "subclass",
+          "ferry"
+        ]
+      ],
+      "order": 185
+    },
+    {
+      "id": "highway-shield-tertiary",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
+      "layout": {
+        "icon-size": 1,
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              15,
+              11
+            ],
+            [
+              17,
+              12
+            ]
+          ]
+        },
+        "icon-image": "road_tertiary",
+        "text-field": "{ref}",
+        "visibility": "visible",
+        "icon-anchor": "center",
+        "icon-padding": 2,
+        "icon-text-fit": "both",
+        "symbol-spacing": 560,
+        "symbol-placement": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              "point"
+            ],
+            [
+              11,
+              "line"
+            ]
+          ]
+        },
+        "symbol-avoid-edges": true,
+        "icon-text-fit-padding": [
+          3,
+          4,
+          3,
+          4
+        ],
+        "icon-rotation-alignment": "viewport",
+        "text-rotation-alignment": "viewport"
+      },
+      "paint": {
+        "text-color": "#3b3b3b"
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "tertiary"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
+      "order": 186
+    },
+    {
+      "id": "highway-shield-secondary",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
+      "layout": {
+        "icon-size": 1,
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              15,
+              11
+            ],
+            [
+              17,
+              12
+            ]
+          ]
+        },
+        "icon-image": "road_secondary",
+        "text-field": "{ref}",
+        "visibility": "visible",
+        "icon-anchor": "center",
+        "icon-padding": 2,
+        "icon-text-fit": "both",
+        "symbol-spacing": 560,
+        "symbol-placement": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              "point"
+            ],
+            [
+              11,
+              "line"
+            ]
+          ]
+        },
+        "symbol-avoid-edges": true,
+        "icon-text-fit-padding": [
+          3,
+          4,
+          3,
+          4
+        ],
+        "icon-rotation-alignment": "viewport",
+        "text-rotation-alignment": "viewport"
+      },
+      "paint": {
+        "text-color": "#323b00"
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "secondary"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
+      "order": 187
+    },
+    {
+      "id": "highway-shield-primary",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
+      "layout": {
+        "icon-size": 1,
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              15,
+              11
+            ],
+            [
+              17,
+              12
+            ]
+          ]
+        },
+        "icon-image": "road_primary",
+        "text-field": "{ref}",
+        "visibility": "visible",
+        "icon-anchor": "center",
+        "icon-padding": 2,
+        "icon-text-fit": "both",
+        "symbol-spacing": 560,
+        "symbol-placement": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              "point"
+            ],
+            [
+              11,
+              "line"
+            ]
+          ]
+        },
+        "symbol-avoid-edges": true,
+        "icon-text-fit-padding": [
+          3,
+          4,
+          3,
+          4
+        ],
+        "icon-rotation-alignment": "viewport",
+        "text-rotation-alignment": "viewport"
+      },
+      "paint": {
+        "text-color": "#4c2e00"
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "primary"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
+      "order": 188
+    },
+    {
+      "id": "highway-shield-motorway",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
+      "layout": {
+        "icon-size": 1,
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              15,
+              11
+            ],
+            [
+              17,
+              12
+            ]
+          ]
+        },
+        "icon-image": "road_motorway",
+        "text-field": "{ref}",
+        "visibility": "visible",
+        "icon-anchor": "center",
+        "icon-padding": 2,
+        "icon-text-fit": "both",
+        "text-optional": false,
+        "symbol-spacing": 760,
+        "text-max-width": 10,
+        "symbol-placement": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              "point"
+            ],
+            [
+              11,
+              "line"
+            ]
+          ]
+        },
+        "text-keep-upright": true,
+        "symbol-avoid-edges": true,
+        "icon-text-fit-padding": [
+          3,
+          4,
+          3,
+          4
+        ],
+        "icon-rotation-alignment": "viewport",
+        "text-rotation-alignment": "viewport"
+      },
+      "paint": {
+        "text-color": "#620728"
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
+      "order": 189
+    }
+  ]
+}

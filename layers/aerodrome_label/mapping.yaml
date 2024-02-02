@@ -1,0 +1,46 @@
+tables:
+
+  # etldoc: imposm3 -> osm_aerodrome_label_point
+  aerodrome_label_point:
+    type: geometry
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: name_de
+      key: name:de
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: aerodrome_type
+      key: aerodrome:type
+      type: string
+    - name: aerodrome
+      key: aerodrome
+      type: string
+    - name: military
+      key: military
+      type: string
+    - name: iata
+      key: iata
+      type: string
+    - name: icao
+      key: icao
+      type: string
+    - name: ele
+      key: ele
+      type: string
+    type_mappings:
+      points:
+        aeroway:
+        - aerodrome
+      polygons:
+        aeroway:
+        - aerodrome

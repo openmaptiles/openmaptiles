@@ -1,0 +1,88 @@
+layer:
+  id: "landcover"
+  requires:
+    tables:
+      - ne_10m_antarctic_ice_shelves_polys
+      - ne_10m_glaciated_areas
+      - ne_50m_antarctic_ice_shelves_polys
+      - ne_50m_glaciated_areas
+      - ne_110m_glaciated_areas
+  description: |
+      Landcover is used to describe the physical material at the surface of the earth. At lower zoom levels this is
+      from Natural Earth data for glaciers and ice shelves and at higher zoom levels the landcover is [implied by OSM tags](http://wiki.openstreetmap.org/wiki/Landcover). The most common use case for this layer
+        is to style wood (`class=wood`) and grass (`class=grass`) areas.
+  buffer_size: 4
+  fields:
+    class:
+      description: |
+          Use the **class** to assign natural colors for **landcover**.
+      values:
+        farmland:
+          subclass: ['farmland', 'farm', 'orchard', 'vineyard', 'plant_nursery']
+        ice:
+          subclass: ['glacier', 'ice_shelf']
+        wood:
+          subclass: ['wood', 'forest']
+        rock:
+          subclass: ['bare_rock', 'scree']
+        grass:
+          subclass: ['fell', 'grassland', 'heath', 'scrub', 'shrubbery', 'tundra', 'grass', 'meadow', 'allotments', 'park', 'village_green', 'recreation_ground', 'garden', 'golf_course']
+        wetland:
+          subclass: ['wetland', 'bog', 'swamp', 'wet_meadow', 'marsh', 'reedbed', 'saltern', 'tidalflat', 'saltmarsh', 'mangrove']
+        sand:
+          subclass: ['beach', 'sand', 'dune']
+    subclass:
+      description: |
+          Use **subclass** to do more precise styling.
+          Original value of either the
+          [`natural`](http://wiki.openstreetmap.org/wiki/Key:natural),
+          [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+          [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+          or [`wetland`](http://wiki.openstreetmap.org/wiki/Key:wetland) tag.
+      values:
+      - allotments
+      - bare_rock
+      - beach
+      - bog
+      - dune
+      - scrub
+      - shrubbery
+      - farm
+      - farmland
+      - fell
+      - forest
+      - garden
+      - glacier
+      - grass
+      - grassland
+      - golf_course
+      - heath
+      - mangrove
+      - marsh
+      - meadow
+      - orchard
+      - park
+      - plant_nursery
+      - recreation_ground
+      - reedbed
+      - saltern
+      - saltmarsh
+      - sand
+      - scree
+      - swamp
+      - tidalflat
+      - tundra
+      - village_green
+      - vineyard
+      - wet_meadow
+      - wetland
+      - wood
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
+schema:
+  - ./generalized.sql
+  - ./landcover.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml
