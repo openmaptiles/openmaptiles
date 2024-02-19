@@ -22,7 +22,13 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "match",
+          ["get", "subclass"],
+          "chocolate",
+          "confectionery",
+          ["get", "subclass"]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
@@ -99,7 +105,13 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "match",
+          ["get", "subclass"],
+          "chocolate",
+          "confectionery",
+          ["get", "subclass"]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
