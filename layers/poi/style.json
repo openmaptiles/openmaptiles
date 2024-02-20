@@ -79,7 +79,8 @@
           "mall",
           "library",
           "artwork",
-          "arts_centre"
+          "arts_centre",
+          "gallery"
         ]
       ],
       "order": 155
@@ -883,8 +884,7 @@
           "!in",
           "subclass",
           "books",
-          "art",
-          "gallery"
+          "art"
         ]
       ],
       "order": 168
