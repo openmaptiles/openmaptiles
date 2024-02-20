@@ -296,7 +296,7 @@ echo "--------------------------------------------------------------------------
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) using PostGIS. "
 echo "      : Output MBTiles: $MBTILES_FILE  "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
-MBTILES_FILE=$MBTILES_FILE make generate-tiles-pg
+make generate-tiles-pg
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
