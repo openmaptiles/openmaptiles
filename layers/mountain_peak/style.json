@@ -6,6 +6,15 @@
       "source": "openmaptiles",
       "source-layer": "mountain_peak",
       "maxzoom": 16,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "class",
+          "cliff",
+          "volcano"
+        ]
+      ],
       "layout": {
         "text-size": 10,
         "icon-image": "peak",
@@ -38,15 +47,55 @@
         "text-halo-color": "rgba(255, 255, 255, .8)",
         "text-halo-width": 1
       },
+      "order": 197
+    },
+    {
+      "id": "mountain_peak_volcano",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "mountain_peak",
+      "maxzoom": 16,
       "filter": [
         "all",
         [
-          "!=",
+          "==",
           "class",
-          "cliff"
+          "volcano"
         ]
       ],
-      "order": 197
+      "layout": {
+        "text-size": 10,
+        "icon-image": "volcano",
+        "text-field": {
+          "stops": [
+            [
+              6,
+              " "
+            ],
+            [
+              12,
+              "{name} {ele}m"
+            ]
+          ]
+        },
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.5
+        ],
+        "text-max-width": 6,
+        "text-line-height": 1.1,
+        "text-font": [
+          "Noto Sans Regular",
+          "Noto Sans Italic"
+        ]
+      },
+      "paint": {
+        "text-color": "#d40000",
+        "text-halo-color": "rgba(255, 255, 255, .8)",
+        "text-halo-width": 1
+      },
+      "order": 198
     }
   ]
 }

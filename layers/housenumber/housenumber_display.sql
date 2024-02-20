@@ -15,6 +15,6 @@ RETURNS text AS $$
     WHEN raw_housenumber ~ '[^0-9;]' THEN display_housenumber_nonnumeric(raw_housenumber)
     ELSE
       (SELECT min(value)::text || '–' || max(value)::text
-       FROM unnest(string_to_array(raw_housenumber, ';')::int[]) AS value)
+       FROM unnest(array_remove(string_to_array(raw_housenumber, ';'), '')::int[]) AS value)
   END
 $$ LANGUAGE SQL IMMUTABLE;
