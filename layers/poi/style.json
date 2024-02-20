@@ -59,16 +59,7 @@
         "icon-allow-overlap": true
       },
       "paint": {
-        "text-color": [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          "ice_cream",
-          "#C77400",
-          "#939"
-        ],
+        "text-color": "#939",
         "icon-opacity": 1,
         "icon-halo-blur": 1,
         "text-halo-blur": 0.5,
@@ -144,16 +135,7 @@
         "icon-allow-overlap": true
       },
       "paint": {
-        "text-color": [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          "ice_cream",
-          "#C77400",
-          "#939"
-        ],
+        "text-color": "#939",
         "icon-opacity": 1,
         "icon-halo-blur": 1,
         "text-halo-blur": 0.5,
