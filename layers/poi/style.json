@@ -873,7 +873,6 @@
           "class",
           "cinema",
           "library",
-          "music",
           "museum",
           "castle",
           "monument",
@@ -883,7 +882,6 @@
           "!in",
           "subclass",
           "books",
-          "musical_instrument",
           "art",
           "gallery"
         ]
