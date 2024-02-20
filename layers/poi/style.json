@@ -27,6 +27,8 @@
           ["get", "subclass"],
           "chocolate",
           "confectionery",
+          "wine",
+          "alcohol",
           ["get", "subclass"]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
