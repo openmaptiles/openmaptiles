@@ -23,19 +23,29 @@
           ]
         },
         "icon-image": [
-          "match",
-          ["get", "subclass"],
-          "chocolate",
-          "confectionery",
-          "wine",
-          "alcohol",
-          "kiosk",
-          "newsagent",
-          "perfume",
-          "perfumery",
-          "wholesale",
-          "trade",
-          ["get", "subclass"]
+          "coalesce",
+          [
+            "image",
+            [
+              "match",
+              ["get", "subclass"],
+              "chocolate",
+              "confectionery",
+              "wine",
+              "alcohol",
+              "kiosk",
+              "newsagent",
+              "perfume",
+              "perfumery",
+              "wholesale",
+              "trade",
+              ["get", "subclass"]
+            ]
+          ],
+          [
+            "image",
+            "shop"
+          ]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
