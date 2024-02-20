@@ -33,6 +33,8 @@
           "newsagent",
           "perfume",
           "perfumery",
+          "wholesale",
+          "trade",
           ["get", "subclass"]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
