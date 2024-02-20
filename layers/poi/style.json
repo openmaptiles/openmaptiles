@@ -29,6 +29,8 @@
           "confectionery",
           "wine",
           "alcohol",
+          "kiosk",
+          "newsagent",
           ["get", "subclass"]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
