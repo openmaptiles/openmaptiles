@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS transportation_route_member_coalesced
     name              varchar,
     osmc_symbol       varchar,
     colour            varchar,
+    ref_colour        varchar,
     network_type      route_network_type,
     concurrency_index integer,
     rank              integer,
@@ -164,7 +165,8 @@ BEGIN
             type,
             name,
             osmc_symbol,
-            colour
+            colour,
+            ref_colour
         FROM osm_route_member
         WHERE full_update OR EXISTS(
             SELECT NULL
@@ -174,7 +176,7 @@ BEGIN
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
                                                      type = EXCLUDED.type, name = EXCLUDED.name,
-                                                     osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour,
+                                                     osmc_symbol = EXCLUDED.osmc_symbol, colour = EXCLUDED.colour, ref_colour = EXCLUDED.ref_colour,
                                                      concurrency_index = EXCLUDED.concurrency_index,
                                                      rank = EXCLUDED.rank;
 END;
