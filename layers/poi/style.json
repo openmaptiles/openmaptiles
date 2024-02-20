@@ -31,6 +31,8 @@
           "alcohol",
           "kiosk",
           "newsagent",
+          "perfume",
+          "perfumery",
           ["get", "subclass"]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
