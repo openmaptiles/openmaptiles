@@ -180,7 +180,7 @@ make generate-tiles-pg      # generate tiles
 ```
 Instead of calling `make download area=albania` you can add a .osm.pbf file in the `data` folder `openmaptiles/data/your_area_file.osm.pbf`
 
-Changing name of the output filename, you can change variable `MBTILES_FILE` in `.env` file or set up environment variable `MBTILES_FILE` before run ./quickstart.sh or `make generate-tiles-pg` (e.g. `MBTILES_FILENAME=monaco.mbtiles ./quickstart.sh monaco`)
+To change the name of the output filename, you can modify the variable `MBTILES_FILE` in the `.env` file or set up the environment variable `MBTILES_FILE` before running `./quickstart.sh` or `make generate-tiles-pg` (e.g., `MBTILES_FILENAME=monaco.mbtiles ./quickstart.sh monaco`).
 
 
 ## License
