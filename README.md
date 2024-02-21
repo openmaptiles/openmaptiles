@@ -160,7 +160,7 @@ make build-style
 Now you are ready to **generate the vector tiles**. By default, `./.env` specifies the entire planet BBOX for zooms 0-7, but running `generate-bbox-file` will analyze the data file and set the `BBOX` param to limit tile generation.
 
 ```
-make generate-bbox-file  # compute data bbox -- not needed for the whole planet
+make generate-bbox-file  # compute data bbox -- not needed for the whole planet or for downloaded area by `make download`
 make generate-tiles-pg   # generate tiles
 ```
 
@@ -175,10 +175,12 @@ make download area=albania  # download albania .osm.pbf file -- can be skipped i
 make import-osm             # import data into postgres
 make import-wikidata        # import Wikidata
 make import-sql             # create / import sql functions 
-make generate-bbox-file     # compute data bbox -- not needed for the whole planet
+make generate-bbox-file     # compute data bbox -- not needed for the whole planet or for downloaded area by `make download`
 make generate-tiles-pg      # generate tiles
 ```
 Instead of calling `make download area=albania` you can add a .osm.pbf file in the `data` folder `openmaptiles/data/your_area_file.osm.pbf`
+
+To change the name of the output filename, you can modify the variable `MBTILES_FILE` in the `.env` file or set up the environment variable `MBTILES_FILE` before running `./quickstart.sh` or `make generate-tiles-pg` (e.g., `MBTILES_FILENAME=monaco.mbtiles ./quickstart.sh monaco`).
 
 
 ## License
