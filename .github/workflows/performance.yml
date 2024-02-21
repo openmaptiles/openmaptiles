@@ -45,7 +45,7 @@ jobs:
 
       - name: Cache test data download
         id: cache-testdata
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ci_cache
           key: "v2-${{ env.TEST_DATA_URL }}"
@@ -58,7 +58,7 @@ jobs:
           curl --silent --show-error --location --output ci_cache/perf-test-areas-latest.osm.pbf "$TEST_DATA_URL"
 
       - name: Get code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           # Fetch the last two commits in case this is a PR,
           # and we need to profile the base branch first
@@ -76,10 +76,10 @@ jobs:
             # Take the first parent of the grafted commit (cannot use HEAD^1 with shallow clones)
             REV_HASH=$(git cat-file -p $REV_HASH | awk 'NR > 1 {if(/^parent/){print $2; exit}}')
           fi
-          echo "::set-output name=hash::$REV_HASH"
+          echo "hash=$REV_HASH" >> $GITHUB_OUTPUT
 
       - name: Set up caching for the performance results
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
@@ -287,14 +287,14 @@ jobs:
           fi
 
       - name: Save performance artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: performance_results
           path: artifacts
 
       - name: Save PR message artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: pr_message
           path: pr_message
