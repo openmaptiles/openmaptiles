@@ -295,14 +295,14 @@ endif
 
 .PHONY: build-sprite
 build-sprite: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spritezero build/style/sprite /style/icons && \
-		spritezero --retina build/style/sprite@2x /style/icons'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spreet /style/icons build/style/sprite && \
+		spreet --retina /style/icons build/style/sprite@2x'
 
 .PHONY: build-style
 build-style: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools recompose $(TILESET_FILE) $(STYLE_FILE) \
 		$(STYLE_HEADER_FILE) && \
-		spritezero build/style/sprite /style/icons && spritezero --retina build/style/sprite@2x /style/icons'
+		spreet /style/icons build/style/sprite && spreet --retina /style/icons build/style/sprite@2x'
 
 .PHONY: download-fonts
 download-fonts:
