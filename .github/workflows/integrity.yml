@@ -15,7 +15,7 @@ jobs:
     steps:
 
       - name: Checkout the changes
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Run quickstart for a small area
         env:
@@ -27,7 +27,7 @@ jobs:
           ./quickstart.sh $area
 
       - name: Save quickstart.log
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: quickstart.log
           path: quickstart.log

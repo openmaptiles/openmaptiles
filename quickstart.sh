@@ -163,12 +163,7 @@ else
     echo " "
 fi
 
-# override the output filename based on the area if the default `tiles.mbtiles` is found
-if [[ "$(source .env ; echo "$MBTILES_FILE")" = "tiles.mbtiles" ]]; then
-  MBTILES_FILENAME=${area}.mbtiles
-else
-  MBTILES_FILENAME=$(source .env ; echo "$MBTILES_FILE")
-fi
+MBTILES_FILE=${MBTILES_FILE:-$(source .env ; echo "$MBTILES_FILE")}
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -187,8 +182,8 @@ make init-dirs
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Removing old MBTILES if exists ( ./data/$MBTILES_FILENAME ) "
-rm -f "./data/$MBTILES_FILENAME"
+echo "====> : Removing old MBTILES if exists ( ./data/$MBTILES_FILE ) "
+rm -f "./data/$MBTILES_FILE"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -299,9 +294,9 @@ fi
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Start generating MBTiles (containing gzipped MVT PBF) using PostGIS. "
-echo "      : Output MBTiles: $MBTILES_FILENAME  "
+echo "      : Output MBTiles: $MBTILES_FILE  "
 echo "      : Source code: https://github.com/openmaptiles/openmaptiles-tools/blob/master/bin/generate-tiles "
-MBTILES_FILE=$MBTILES_FILENAME make generate-tiles-pg
+make generate-tiles-pg
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
@@ -332,7 +327,7 @@ docker images | grep openmaptiles
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : (disk space) We have created the new vectortiles ( ./data/$MBTILES_FILENAME ) "
+echo "====> : (disk space) We have created the new vectortiles ( ./data/$MBTILES_FILE ) "
 echo "      : Please respect the licenses (OdBL for OSM data) of the sources when distributing the MBTiles file."
 echo "      : Data directory content:"
 ls -la ./data
@@ -356,8 +351,11 @@ echo " Acknowledgments "
 echo " Generated vector tiles are produced work of OpenStreetMap data. "
 echo " Such tiles are reusable under CC-BY license granted by OpenMapTiles team: "
 echo "   https://github.com/openmaptiles/openmaptiles/#license "
-echo " Maps made with these vector tiles must display a visible credit: "
+echo "-------------------------------------------------------------------------------------"
+echo " "
+echo -e "\033[1m Maps made with these vector tiles must display a visible credit:\033[0m "
 echo "   © OpenMapTiles © OpenStreetMap contributors "
 echo " "
+echo "-------------------------------------------------------------------------------------"
 echo " Thanks to all free, open source software developers and Open Data Contributors!    "
 echo "-------------------------------------------------------------------------------------"

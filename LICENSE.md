@@ -1,4 +1,4 @@
-Copyright (c) 2023, MapTiler.com & OpenMapTiles contributors.  
+Copyright (c) 2024, MapTiler.com & OpenMapTiles contributors.  
 All rights reserved.  
 
 The vector tile schema has been developed by Klokan Technologies GmbH and
