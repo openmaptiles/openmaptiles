@@ -28,7 +28,10 @@
             "image",
             [
               "match",
-              ["get", "subclass"],
+              [
+                "get",
+                "subclass"
+              ],
               "chocolate",
               "confectionery",
               "wine",
@@ -39,7 +42,10 @@
               "perfumery",
               "wholesale",
               "trade",
-              ["get", "subclass"]
+              [
+                "get",
+                "subclass"
+              ]
             ]
           ],
           [
@@ -118,10 +124,16 @@
         },
         "icon-image": [
           "match",
-          ["get", "subclass"],
+          [
+            "get",
+            "subclass"
+          ],
           "chocolate",
           "confectionery",
-          ["get", "subclass"]
+          [
+            "get",
+            "subclass"
+          ]
         ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",

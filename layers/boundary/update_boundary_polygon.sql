@@ -47,43 +47,43 @@ $$
 BEGIN
     UPDATE osm_boundary_polygon
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z13
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z12
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z11
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z10
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z9
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z8
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z7
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z6
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
     UPDATE osm_boundary_polygon_gen_z5
     SET tags           = update_tags(tags, geometry),
-        geometry_point = st_centroid(geometry);
+        geometry_point = ST_PointOnSurface(geometry);
 
 END;
 $$ LANGUAGE plpgsql;
@@ -142,7 +142,7 @@ AS
 $$
 BEGIN
     NEW.tags = update_tags(NEW.tags, NEW.geometry);
-    NEW.geometry_point = st_centroid(NEW.geometry);
+    NEW.geometry_point = ST_PointOnSurface(NEW.geometry);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
