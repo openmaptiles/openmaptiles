@@ -31,7 +31,11 @@ $$
         -- Canada
         'ca-transcanada', 'ca-provincial-arterial',
         -- United States
-        'us-interstate',
+        'us-interstate', 'us-highway',
+        -- UK
+        'gb-motorway', 'gb-trunk',
+        -- Ireland
+        'ie-motorway', 'ie-national',
         -- Europe
         'e-road',
         -- Asia
