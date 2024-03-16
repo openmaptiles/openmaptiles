@@ -435,7 +435,7 @@ BEGIN
         SELECT id,
                geometry,
                tags, ref, highway, subclass,
-               CASE WHEN ST_Length(geometry) > 8000 THEN brunnel ELSE '' END AS brunnel,
+               visible_text(geometry, brunnel, 9) AS brunnel,
                network, route_1, route_2, route_3, route_4, route_5, route_6, z_order
         FROM osm_transportation_name_linestring
     ) osm_transportation_name_linestring_gen1_pre_merge
@@ -478,7 +478,7 @@ BEGIN
         SELECT id,
                (ST_Dump(geometry)).geom AS geometry,
                tags, ref, highway, subclass,
-               CASE WHEN ST_Length(geometry) > 14000 THEN brunnel ELSE '' END AS brunnel,
+               visible_text(geometry, brunnel, 8) AS brunnel,
                network, route_1, route_2, route_3, route_4, route_5, route_6, z_order
         FROM osm_transportation_name_linestring_gen1
     ) osm_transportation_name_linestring_gen2_pre_merge
@@ -521,7 +521,7 @@ BEGIN
         SELECT id,
                (ST_Dump(geometry)).geom AS geometry,
                tags, ref, highway, subclass,
-               CASE WHEN ST_Length(geometry) > 20000 THEN brunnel ELSE '' END AS brunnel,
+               visible_text(geometry, brunnel, 7) AS brunnel,
                network, route_1, route_2, route_3, route_4, route_5, route_6, z_order
         FROM osm_transportation_name_linestring_gen2
     ) osm_transportation_name_linestring_gen3_pre_merge
@@ -556,8 +556,9 @@ BEGIN
     -- etldoc: osm_transportation_name_linestring_gen3 -> osm_transportation_name_linestring_gen4
     INSERT INTO osm_transportation_name_linestring_gen4 (id, geometry, tags, ref, highway, subclass, brunnel, network,
                                                          route_1, route_2, route_3, route_4, route_5, route_6, z_order)
-    SELECT id, ST_Simplify(geometry, 500) AS geometry, tags, ref, highway, subclass, brunnel, network, route_1, route_2,
-           route_3, route_4, route_5, route_6, z_order
+    SELECT id, ST_Simplify(geometry, 500) AS geometry, tags, ref, highway, subclass,
+           visible_text(geometry, brunnel, 6) AS brunnel,
+           network, route_1, route_2, route_3, route_4, route_5, route_6, z_order
     FROM osm_transportation_name_linestring_gen3
     WHERE (
         full_update IS TRUE OR EXISTS (
@@ -567,8 +568,7 @@ BEGIN
                   transportation_name.name_changes_gen.id = osm_transportation_name_linestring_gen3.id
         )
     ) AND (
-        (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway') AND
-        ST_Length(geometry) > 20000
+        (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
     ) ON CONFLICT (id) DO UPDATE SET geometry = excluded.geometry, tags = excluded.tags, ref = excluded.ref,
                                      highway = excluded.highway, subclass = excluded.subclass,
                                      brunnel = excluded.brunnel, network = excluded.network, route_1 = excluded.route_1,

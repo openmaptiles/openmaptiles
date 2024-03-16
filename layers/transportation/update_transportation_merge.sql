@@ -42,6 +42,23 @@ SELECT
 $$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
+-- Determine whether a segment is long enough to have an attribute
+CREATE OR REPLACE FUNCTION visible_text(g geometry, attr text, zoom_level integer)
+    RETURNS text AS
+$$
+SELECT
+    CASE WHEN
+    -- Width of a tile in meters (111,842 is the length of one degree of latitude at the equator in meters)
+    -- 111,842 * 180 / 2^zoom_level
+    --  = 20131560 / POW(2, zoom_level)
+    -- Drop brunnel if length of way < 2% of tile width (less than 3 pixels)
+    ST_Length(g) *
+        COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
+        POW(2, zoom_level) / 20131560 > 0.02
+    THEN attr END
+$$ LANGUAGE SQL IMMUTABLE
+                PARALLEL SAFE;
+
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
 -- to allow for nice label rendering
