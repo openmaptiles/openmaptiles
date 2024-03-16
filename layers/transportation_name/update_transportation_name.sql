@@ -576,6 +576,7 @@ BEGIN
                   transportation_name.name_changes_gen.id = osm_transportation_name_linestring_gen4_pre_merge.id
         )
     ) AND (
+        ST_Length(geometry) > 20000 AND
         (highway = 'motorway' OR highway = 'construction' AND subclass = 'motorway')
     )
     GROUP BY tags, ref, highway, subclass, brunnel, network, route_1, route_2, route_3, route_4, route_5, route_6, z_order
