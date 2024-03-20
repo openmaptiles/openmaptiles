@@ -1,42 +1,60 @@
-
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run norwayTest.sh "
 
-#make clean
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : make clean complete "
+echo "====> : Run download area "
 
-#make 
+make download-geofabrik area=norway
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : make complete  "
-
-#make import-data 
+echo "... complete!"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : make import-data complete  "
+echo "====> : Run Cleanup and initiation"
 
-#make import-osm area=planet
+make clean
 
-echo " "
-echo "-------------------------------------------------------------------------------------"
-echo "====> : make import-osm complete  "
+make 
 
-#make import-wikidata 
+echo "... complete!"
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : make import-wikidata complete  "
+echo "====> : import natural earth data  "
+
+make import-data 
+
+echo "...complete!"
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : import osm  "
+
+make import-osm area=norway
+
+echo "... Complete!"
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : import wikidata  "
+
+make import-wikidata 
+
+echo "... Complete!"
+
+echo " "
+echo "-------------------------------------------------------------------------------------"
+echo "====> : import sql  "
 
 make import-sql
 
+echo "... Complete!"
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : make import sql complete  "
+echo "====> : generate tiles  "
 
 make generate-tiles-pg 
 
