@@ -1,37 +1,38 @@
+
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run norwayTest.sh "
 
-make clean
+#make clean
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : make clean complete "
 
-make 
+#make 
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : make complete  "
 
-make import-data 
+#make import-data 
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : make import-data complete  "
 
-make import-osm 
+#make import-osm area=planet
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : make import-osm complete  "
 
-make import-wikidata 
+#make import-wikidata 
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : make import-wikidata complete  "
 
-make import sql
+make import-sql
 
 echo " "
 echo "-------------------------------------------------------------------------------------"

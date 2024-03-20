@@ -8,32 +8,32 @@ layer:
       - ne_110m_rivers_lake_centerlines
       - ne_50m_rivers_lake_centerlines
   description: |
-      OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels (z9 and more)
-      and Natural Earth rivers and lake centerlines for low zoom levels (z3 - z8).
-      Linestrings without a name or which are too short are filtered
-      out at low zoom levels.
-      Till z11 there is `river` class only, in z12 there is also `canal` generated,
-      starting z13 there is no generalization according to `class` field applied.
-      Waterways do not have a `subclass` field.
+    OpenStreetMap [waterways](https://wiki.openstreetmap.org/wiki/Waterways) for higher zoom levels (z9 and more)
+    and Natural Earth rivers and lake centerlines for low zoom levels (z3 - z8).
+    Linestrings without a name or which are too short are filtered
+    out at low zoom levels.
+    Till z11 there is `river` class only, in z12 there is also `canal` generated,
+    starting z13 there is no generalization according to `class` field applied.
+    Waterways do not have a `subclass` field.
   buffer_size: 4
   fields:
     name: |
-        The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the waterway. Language-specific values are in `name:xx`.
-        The `name` field may be empty for NaturalEarth data or at lower zoom levels.
+      The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the waterway. Language-specific values are in `name:xx`.
+      The `name` field may be empty for NaturalEarth data or at lower zoom levels.
     name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
+    name_no: German name `name:no` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:no`.
     class:
       description: |
         The original value of the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
       values:
-      - stream
-      - river
-      - canal
-      - drain
-      - ditch
+        - stream
+        - river
+        - canal
+        - drain
+        - ditch
     brunnel:
       description: |
-          Mark whether way is a tunnel or bridge.
+        Mark whether way is a tunnel or bridge.
       values:
         - bridge
         - tunnel
@@ -43,7 +43,7 @@ layer:
       values: [0, 1]
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_no, {name_languages}, class, brunnel, intermittent FROM layer_waterway(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_waterway_linestring.sql
   - ./update_important_waterway.sql

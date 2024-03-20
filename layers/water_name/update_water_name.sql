@@ -11,7 +11,7 @@ SELECT wp.osm_id,
        ll.wkb_geometry AS geometry,
        name,
        name_en,
-       name_de,
+       name_no,
        update_tags(tags, ll.wkb_geometry) AS tags,
        ST_Area(wp.geometry) AS area,
        is_intermittent
@@ -44,7 +44,7 @@ SELECT wp.osm_id,
        ST_PointOnSurface(wp.geometry) AS geometry,
        wp.name,
        wp.name_en,
-       wp.name_de,
+       wp.name_no,
        CASE
            WHEN "natural" = 'bay' THEN 'bay'
            WHEN place = 'sea' THEN 'sea'
@@ -66,7 +66,7 @@ SELECT osm_id,
        geometry,
        name,
        name_en,
-       name_de,
+       name_no,
        class,
        tags,
        -- Percentage of the earth's surface covered by this feature (approximately)
@@ -120,7 +120,7 @@ BEGIN
         WHERE water_name.osm_ids.osm_id = osm_water_lakeline_view.osm_id
               AND water_name.osm_ids.is_old IS FALSE
     ) ON CONFLICT (osm_id) DO UPDATE SET geometry = excluded.geometry, name = excluded.name, name_en = excluded.name_en,
-                                         name_de = excluded.name_de, tags = excluded.tags, area = excluded.area,
+                                         name_no = excluded.name_no, tags = excluded.tags, area = excluded.area,
                                          is_intermittent = excluded.is_intermittent;
 
     DELETE FROM osm_water_point
@@ -139,7 +139,7 @@ BEGIN
         WHERE water_name.osm_ids.osm_id = osm_water_point_earth_view.osm_id
               AND water_name.osm_ids.is_old IS FALSE
     ) ON CONFLICT (osm_id) DO UPDATE SET geometry = excluded.geometry, name = excluded.name, name_en = excluded.name_en,
-                                         name_de = excluded.name_de, class = excluded.class, tags = excluded.tags,
+                                         name_no = excluded.name_no, class = excluded.class, tags = excluded.tags,
                                          earth_area = excluded.earth_area, is_intermittent = excluded.is_intermittent;
 
 END;

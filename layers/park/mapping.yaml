@@ -60,44 +60,43 @@ generalized_tables:
     tolerance: ZRES13
 
 tables:
-
   # etldoc: imposm3 -> osm_park_polygon
   park_polygon:
     type: polygon
     _resolve_wikidata: false
     columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: name
-      key: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
-    - name: tags
-      type: hstore_tags
-    - name: landuse
-      key: landuse
-      type: string
-    - name: leisure
-      key: leisure
-      type: string
-    - name: boundary
-      key: boundary
-      type: string
-    - name: protection_title
-      key: protection_title
-      type: string
-    - name: area
-      type: area
+      - name: osm_id
+        type: id
+      - name: geometry
+        type: validated_geometry
+      - name: name
+        key: name
+        type: string
+      - name: name_en
+        key: name:en
+        type: string
+      - name: name_no
+        key: name:no
+        type: string
+      - name: tags
+        type: hstore_tags
+      - name: landuse
+        key: landuse
+        type: string
+      - name: leisure
+        key: leisure
+        type: string
+      - name: boundary
+        key: boundary
+        type: string
+      - name: protection_title
+        key: protection_title
+        type: string
+      - name: area
+        type: area
     mapping:
       leisure:
-      - nature_reserve
+        - nature_reserve
       boundary:
-      - national_park
-      - protected_area
+        - national_park
+        - protected_area

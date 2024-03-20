@@ -1,14 +1,14 @@
 layer:
   id: "poi"
   description: |
-      [Points of interests](http://wiki.openstreetmap.org/wiki/Points_of_interest) containing
-      a of a variety of OpenStreetMap tags. Mostly contains amenities, sport, shop and tourist POIs.
+    [Points of interests](http://wiki.openstreetmap.org/wiki/Points_of_interest) containing
+    a of a variety of OpenStreetMap tags. Mostly contains amenities, sport, shop and tourist POIs.
   buffer_size: 64
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI. Language-specific values are in `name:xx`.
     name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
+    name_no: German name `name:no` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:no`.
     class:
       description: |
         More general classes of POIs. If there is no more general `class` for the `subclass`
@@ -17,148 +17,277 @@ layer:
         and `kindergarten`. Or use the class `shop` to style all shops.
       values:
         shop:
-          subclass: ['accessories', 'antiques', 'beauty', 'bed', 'boutique', 'camera', 'carpet', 'charity', 'chemist',
-                     'coffee', 'computer', 'convenience', 'confectionery', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
-                     'erotic', 'electronics', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
-                     'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'ice_cream', 'interior_decoration',
-                     'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone',
-                     'newsagent', 'optician', 'outdoor', 'paint', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
-                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency',
-                     'watches', 'weapons', 'wholesale']
+          subclass:
+            [
+              "accessories",
+              "antiques",
+              "beauty",
+              "bed",
+              "boutique",
+              "camera",
+              "carpet",
+              "charity",
+              "chemist",
+              "coffee",
+              "computer",
+              "convenience",
+              "confectionery",
+              "copyshop",
+              "cosmetics",
+              "garden_centre",
+              "doityourself",
+              "erotic",
+              "electronics",
+              "fabric",
+              "florist",
+              "frozen_food",
+              "furniture",
+              "video_games",
+              "video",
+              "general",
+              "gift",
+              "hardware",
+              "hearing_aids",
+              "hifi",
+              "ice_cream",
+              "interior_decoration",
+              "jewelry",
+              "kiosk",
+              "locksmith",
+              "lamps",
+              "mall",
+              "massage",
+              "motorcycle",
+              "mobile_phone",
+              "newsagent",
+              "optician",
+              "outdoor",
+              "paint",
+              "perfumery",
+              "perfume",
+              "pet",
+              "photo",
+              "second_hand",
+              "shoes",
+              "sports",
+              "stationery",
+              "tailor",
+              "tattoo",
+              "ticket",
+              "tobacco",
+              "toys",
+              "travel_agency",
+              "watches",
+              "weapons",
+              "wholesale",
+            ]
         office:
-          subclass: ['accountant', 'advertising_agency', 'architect', 'association', 'bail_bond_agent', 'charity',
-                     'company', 'construction_company', 'consulting', 'cooperative', 'courier', 'coworking', 'diplomatic',
-                     'educational_institution', 'employment_agency', 'energy_supplier', 'engineer', 'estate_agent', 'financial',
-                     'financial_advisor', 'forestry', 'foundation', 'geodesist', 'government', 'graphic_design', 'guide',
-                     'harbour_master', 'health_insurance', 'insurance', 'interior_design', 'it', 'lawyer', 'logistics', 'marketing',
-                     'moving_company', 'newspaper', 'ngo', 'notary', 'physician', 'political_party', 'private_investigator',
-                     'property_management', 'publisher', 'quango', 'religion', 'research', 'security', 'surveyor', 'tax_advisor',
-                     'taxi', 'telecommunication', 'therapist', 'translator', 'travel_agent', 'tutoring', 'union', 'university',
-                     'water_utility', 'web_design', 'wedding_planner']
+          subclass:
+            [
+              "accountant",
+              "advertising_agency",
+              "architect",
+              "association",
+              "bail_bond_agent",
+              "charity",
+              "company",
+              "construction_company",
+              "consulting",
+              "cooperative",
+              "courier",
+              "coworking",
+              "diplomatic",
+              "educational_institution",
+              "employment_agency",
+              "energy_supplier",
+              "engineer",
+              "estate_agent",
+              "financial",
+              "financial_advisor",
+              "forestry",
+              "foundation",
+              "geodesist",
+              "government",
+              "graphic_design",
+              "guide",
+              "harbour_master",
+              "health_insurance",
+              "insurance",
+              "interior_design",
+              "it",
+              "lawyer",
+              "logistics",
+              "marketing",
+              "moving_company",
+              "newspaper",
+              "ngo",
+              "notary",
+              "physician",
+              "political_party",
+              "private_investigator",
+              "property_management",
+              "publisher",
+              "quango",
+              "religion",
+              "research",
+              "security",
+              "surveyor",
+              "tax_advisor",
+              "taxi",
+              "telecommunication",
+              "therapist",
+              "translator",
+              "travel_agent",
+              "tutoring",
+              "union",
+              "university",
+              "water_utility",
+              "web_design",
+              "wedding_planner",
+            ]
         town_hall:
-          subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']
+          subclass:
+            ["townhall", "public_building", "courthouse", "community_centre"]
         golf:
-          subclass: ['golf', 'golf_course', 'miniature_golf']
+          subclass: ["golf", "golf_course", "miniature_golf"]
         fast_food:
-          subclass: ['fast_food', 'food_court']
+          subclass: ["fast_food", "food_court"]
         park:
-          subclass: ['park', 'bbq']
+          subclass: ["park", "bbq"]
         bus:
-          subclass: ['bus_stop', 'bus_station']
+          subclass: ["bus_stop", "bus_station"]
         railway:
           - __AND__:
-              subclass: 'station'
-              mapping_key: 'railway'
-          - subclass: ['halt', 'tram_stop', 'subway']
+              subclass: "station"
+              mapping_key: "railway"
+          - subclass: ["halt", "tram_stop", "subway"]
         aerialway:
           __AND__:
-            subclass: 'station'
-            mapping_key: 'aerialway'
+            subclass: "station"
+            mapping_key: "aerialway"
         entrance:
-          subclass: ['subway_entrance', 'train_station_entrance']
+          subclass: ["subway_entrance", "train_station_entrance"]
         campsite:
-          subclass: ['camp_site', 'caravan_site']
+          subclass: ["camp_site", "caravan_site"]
         laundry:
-          subclass: ['laundry', 'dry_cleaning']
+          subclass: ["laundry", "dry_cleaning"]
         grocery:
-          subclass: ['supermarket', 'deli', 'delicatessen', 'department_store', 'greengrocer', 'marketplace']
+          subclass:
+            [
+              "supermarket",
+              "deli",
+              "delicatessen",
+              "department_store",
+              "greengrocer",
+              "marketplace",
+            ]
         library:
-          subclass: ['books', 'library']
+          subclass: ["books", "library"]
         college:
-          subclass: ['university', 'college']
+          subclass: ["university", "college"]
         lodging:
-          subclass: ['hotel', 'motel', 'bed_and_breakfast', 'guest_house', 'hostel', 'chalet', 'alpine_hut', 'dormitory']
+          subclass:
+            [
+              "hotel",
+              "motel",
+              "bed_and_breakfast",
+              "guest_house",
+              "hostel",
+              "chalet",
+              "alpine_hut",
+              "dormitory",
+            ]
         ice_cream:
-          subclass: ['chocolate']
+          subclass: ["chocolate"]
         post:
-          subclass: ['post_box', 'post_office', 'parcel_locker']
+          subclass: ["post_box", "post_office", "parcel_locker"]
         cafe:
-          subclass: ['cafe']
+          subclass: ["cafe"]
         school:
-          subclass: ['school', 'kindergarten']
+          subclass: ["school", "kindergarten"]
         alcohol_shop:
-          subclass: ['alcohol', 'beverages', 'wine']
+          subclass: ["alcohol", "beverages", "wine"]
         bar:
-          subclass: ['bar', 'nightclub']
+          subclass: ["bar", "nightclub"]
         harbor:
-          subclass: ['marina', 'dock']
+          subclass: ["marina", "dock"]
         car:
-          subclass: ['car', 'car_repair', 'car_parts', 'taxi']
+          subclass: ["car", "car_repair", "car_parts", "taxi"]
         hospital:
-          subclass: ['hospital', 'nursing_home', 'clinic']
+          subclass: ["hospital", "nursing_home", "clinic"]
         cemetery:
-          subclass: ['grave_yard', 'cemetery']
+          subclass: ["grave_yard", "cemetery"]
         attraction:
-          subclass: ['attraction', 'viewpoint']
+          subclass: ["attraction", "viewpoint"]
         beer:
-          subclass: ['biergarten', 'pub']
+          subclass: ["biergarten", "pub"]
         music:
-          subclass: ['music', 'musical_instrument']
+          subclass: ["music", "musical_instrument"]
         stadium:
-          subclass: ['american_football', 'stadium', 'soccer']
+          subclass: ["american_football", "stadium", "soccer"]
         art_gallery:
-          subclass: ['art', 'artwork', 'gallery', 'arts_centre']
+          subclass: ["art", "artwork", "gallery", "arts_centre"]
         clothing_store:
-          subclass: ['bag', 'clothes']
+          subclass: ["bag", "clothes"]
         swimming:
-          subclass: ['swimming_area', 'swimming']
+          subclass: ["swimming_area", "swimming"]
         castle:
-          subclass: ['castle', 'ruins']
+          subclass: ["castle", "ruins"]
         atm:
-          subclass: ['atm']
+          subclass: ["atm"]
         fuel:
-          subclass: ['fuel', 'charging_station']
+          subclass: ["fuel", "charging_station"]
     subclass:
       description: |
-          Original value of either the
-          [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
-          [`barrier`](http://wiki.openstreetmap.org/wiki/Key:barrier),
-          [`historic`](http://wiki.openstreetmap.org/wiki/Key:historic),
-          [`information`](http://wiki.openstreetmap.org/wiki/Key:information),
-          [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
-          [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
-          [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
-          [`shop`](http://wiki.openstreetmap.org/wiki/Key:shop),
-          [`sport`](http://wiki.openstreetmap.org/wiki/Key:sport),
-          [`station`](http://wiki.openstreetmap.org/wiki/Key:station),
-          [`religion`](http://wiki.openstreetmap.org/wiki/Key:religion),
-          [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
-          [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
-          [`building`](http://wiki.openstreetmap.org/wiki/Key:building),
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
-          [`office`](https://wiki.openstreetmap.org/wiki/Key:office)
-          or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
-          tag.  Use this to do more precise styling.
+        Original value of either the
+        [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
+        [`barrier`](http://wiki.openstreetmap.org/wiki/Key:barrier),
+        [`historic`](http://wiki.openstreetmap.org/wiki/Key:historic),
+        [`information`](http://wiki.openstreetmap.org/wiki/Key:information),
+        [`landuse`](http://wiki.openstreetmap.org/wiki/Key:landuse),
+        [`leisure`](http://wiki.openstreetmap.org/wiki/Key:leisure),
+        [`railway`](http://wiki.openstreetmap.org/wiki/Key:railway),
+        [`shop`](http://wiki.openstreetmap.org/wiki/Key:shop),
+        [`sport`](http://wiki.openstreetmap.org/wiki/Key:sport),
+        [`station`](http://wiki.openstreetmap.org/wiki/Key:station),
+        [`religion`](http://wiki.openstreetmap.org/wiki/Key:religion),
+        [`tourism`](http://wiki.openstreetmap.org/wiki/Key:tourism),
+        [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
+        [`building`](http://wiki.openstreetmap.org/wiki/Key:building),
+        [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
+        [`office`](https://wiki.openstreetmap.org/wiki/Key:office)
+        or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
+        tag.  Use this to do more precise styling.
     rank: |
-        The POIs are ranked ascending according to their importance within a grid. The `rank` value shows the
-        local relative importance of a POI within it's cell in the grid. This can be used to reduce label density at *z14*.
-        Since all POIs already need to be contained at *z14* you can use `less than rank=10` epxression to limit
-        POIs. At some point like *z17* you can show all POIs.
+      The POIs are ranked ascending according to their importance within a grid. The `rank` value shows the
+      local relative importance of a POI within it's cell in the grid. This can be used to reduce label density at *z14*.
+      Since all POIs already need to be contained at *z14* you can use `less than rank=10` epxression to limit
+      POIs. At some point like *z17* you can show all POIs.
     agg_stop:
       description: |
-          Experimental feature! Indicates main platform of public transport
-          stops (buses, trams, and subways). Grouping of platforms is
-          implemented using
-          [`uic_ref`](http://wiki.openstreetmap.org/wiki/Key:uic_ref) tag that
-           is not used worldwide.
+        Experimental feature! Indicates main platform of public transport
+        stops (buses, trams, and subways). Grouping of platforms is
+        implemented using
+        [`uic_ref`](http://wiki.openstreetmap.org/wiki/Key:uic_ref) tag that
+         is not used worldwide.
       values: [1]
     level:
       description: |
-          Original value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+        Original value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
     layer:
       description: |
-          Original value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+        Original value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
     indoor:
       description: |
-          Original value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+        Original value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
-      - 1
+        - 1
   datasource:
     geometry_field: geometry
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, layer, level, indoor, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_no, {name_languages}, class, subclass, agg_stop, layer, level, indoor, rank FROM layer_poi(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./public_transport_stop_type.sql
   - ./class.sql

@@ -45,73 +45,72 @@ bridge_field: &bridge
   type: bool
 
 tables:
-
   # etldoc: imposm3 -> osm_water_polygon
   water_polygon:
     columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - key: name
-      name: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
-    - name: tags
-      type: hstore_tags
-    - name: place
-      key: place
-      type: string
-    - name: natural
-      key: natural
-      type: string
-    - name: landuse
-      key: landuse
-      type: string
-    - name: waterway
-      key: waterway
-      type: string
-    - name: leisure
-      key: leisure
-      type: string
-    - name: water
-      key: water
-      type: string
-    - name: is_intermittent
-      key: intermittent
-      type: bool
-    - *tunnel
-    - *bridge
+      - name: osm_id
+        type: id
+      - name: geometry
+        type: validated_geometry
+      - name: area
+        type: area
+      - key: name
+        name: name
+        type: string
+      - name: name_en
+        key: name:en
+        type: string
+      - name: name_no
+        key: name:no
+        type: string
+      - name: tags
+        type: hstore_tags
+      - name: place
+        key: place
+        type: string
+      - name: natural
+        key: natural
+        type: string
+      - name: landuse
+        key: landuse
+        type: string
+      - name: waterway
+        key: waterway
+        type: string
+      - name: leisure
+        key: leisure
+        type: string
+      - name: water
+        key: water
+        type: string
+      - name: is_intermittent
+        key: intermittent
+        type: bool
+      - *tunnel
+      - *bridge
     filters:
       reject:
         covered: ["yes"]
     mapping:
       landuse:
-      - reservoir
-      - basin
-      - salt_pond
+        - reservoir
+        - basin
+        - salt_pond
       leisure:
-      - swimming_pool
+        - swimming_pool
       natural:
-      - water
-      - bay
-      - spring
+        - water
+        - bay
+        - spring
       waterway:
-      - dock
+        - dock
       water:
-      - river
-      - stream
-      - canal
-      - ditch
-      - drain
-      - pond
-      - basin
-      - wastewater
+        - river
+        - stream
+        - canal
+        - ditch
+        - drain
+        - pond
+        - basin
+        - wastewater
     type: polygon

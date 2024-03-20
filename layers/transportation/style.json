@@ -7730,7 +7730,7 @@
           "path"
         ]
       ],
-      "order": 181
+      "order": 154
     },
     {
       "id": "road_oneway",
@@ -7780,7 +7780,7 @@
           "service"
         ]
       ],
-      "order": 182
+      "order": 156
     },
     {
       "id": "road_oneway_opposite",
@@ -7831,7 +7831,7 @@
           "service"
         ]
       ],
-      "order": 183
+      "order": 158
     }
   ]
 }

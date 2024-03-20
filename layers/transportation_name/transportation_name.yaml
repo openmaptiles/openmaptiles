@@ -5,102 +5,102 @@ layer:
     layers:
       - transportation
   description: |
-      This is the layer for labelling the highways. Only highways that are named `name=*` and are long enough
-      to place text upon appear. The OSM roads are stitched together if they contain the same name
-      to have better label placement than having many small linestrings.
-      For motorways you should use the `ref` field to label them while for other roads you should use `name`.
+    This is the layer for labelling the highways. Only highways that are named `name=*` and are long enough
+    to place text upon appear. The OSM roads are stitched together if they contain the same name
+    to have better label placement than having many small linestrings.
+    For motorways you should use the `ref` field to label them while for other roads you should use `name`.
   buffer_size: 8
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Highways#Names_and_references) value of the highway.
     name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
+    name_no: German name `name:no` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:no`.
     ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or its network.
     ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
     network:
       description: |
-          The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
-          See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
-          [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
-          or [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads).
+        The network type derived mainly from [`network`](http://wiki.openstreetmap.org/wiki/Key:network) tag of the road.
+        See more info about [`us-*`](http://wiki.openstreetmap.org/wiki/Road_signs_in_the_United_States),
+        [`ca-transcanada`](https://en.wikipedia.org/wiki/Trans-Canada_Highway),
+        or [`gb-*`](http://wiki.openstreetmap.org/wiki/United_Kingdom_Tagging_Guidelines#UK_roads).
       values:
-      - us-interstate
-      - us-highway
-      - us-state
-      - ca-transcanada
-      - ca-provincial-arterial
-      - ca-provincial
-      - gb-motorway
-      - gb-trunk
-      - gb-primary
-      - ie-motorway
-      - ie-national
-      - ie-regional
-      - road (default)
+        - us-interstate
+        - us-highway
+        - us-state
+        - ca-transcanada
+        - ca-provincial-arterial
+        - ca-provincial
+        - gb-motorway
+        - gb-trunk
+        - gb-primary
+        - ie-motorway
+        - ie-national
+        - ie-regional
+        - road (default)
     class:
       description: |
-          Distinguish between more and less important roads and roads under construction.
+        Distinguish between more and less important roads and roads under construction.
       values:
-      - motorway
-      - trunk
-      - primary
-      - secondary
-      - tertiary
-      - minor
-      - service
-      - track
-      - path
-      - raceway
-      - motorway_construction
-      - trunk_construction
-      - primary_construction
-      - secondary_construction
-      - tertiary_construction
-      - minor_construction
-      - service_construction
-      - track_construction
-      - path_construction
-      - raceway_construction
-      - rail
-      - transit
-      - motorway_junction
+        - motorway
+        - trunk
+        - primary
+        - secondary
+        - tertiary
+        - minor
+        - service
+        - track
+        - path
+        - raceway
+        - motorway_construction
+        - trunk_construction
+        - primary_construction
+        - secondary_construction
+        - tertiary_construction
+        - minor_construction
+        - service_construction
+        - track_construction
+        - path_construction
+        - raceway_construction
+        - rail
+        - transit
+        - motorway_junction
     subclass:
       description: |
-          Distinguish more specific classes of path:
-          Subclass is value of the
-          [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths),
-          and "junction" for [`motorway junctions`](http://wiki.openstreetmap.org/wiki/Tag:highway=motorway_junction).
+        Distinguish more specific classes of path:
+        Subclass is value of the
+        [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway) (for paths),
+        and "junction" for [`motorway junctions`](http://wiki.openstreetmap.org/wiki/Tag:highway=motorway_junction).
       values:
-      - pedestrian
-      - path
-      - footway
-      - cycleway
-      - steps
-      - bridleway
-      - corridor
-      - platform
-      - junction
+        - pedestrian
+        - path
+        - footway
+        - cycleway
+        - steps
+        - bridleway
+        - corridor
+        - platform
+        - junction
     brunnel:
       description: |
-          Mark whether way is a bridge, a tunnel or a ford.
+        Mark whether way is a bridge, a tunnel or a ford.
       values:
-      - bridge
-      - tunnel
-      - ford
+        - bridge
+        - tunnel
+        - ford
     level:
       description: |
-          Experimental feature! Filled only for steps and footways. Original
-          value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
+        Experimental feature! Filled only for steps and footways. Original
+        value of [`level`](http://wiki.openstreetmap.org/wiki/Key:level) tag.
     layer:
       description: |
-          Experimental feature! Filled only for steps and footways. Original
-          value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
+        Experimental feature! Filled only for steps and footways. Original
+        value of [`layer`](http://wiki.openstreetmap.org/wiki/Key:layer) tag.
     indoor:
       description: |
-          Experimental feature! Filled only for steps and footways. Original
-          value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
+        Experimental feature! Filled only for steps and footways. Original
+        value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
-      - 1
+        - 1
     route_1: 1st route concurrency.
     route_2: 2nd route concurrency.
     route_3: 3rd route concurrency.
@@ -110,7 +110,7 @@ layer:
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_no, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./highway_classification.sql
   - ./update_transportation_name.sql

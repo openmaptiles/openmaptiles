@@ -1,4 +1,3 @@
-
 # imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
 # Warning: this is not the official imposm3
 
@@ -396,8 +395,8 @@ def_poi_fields: &poi_fields
   - name: name_en
     key: name:en
     type: string
-  - name: name_de
-    key: name:de
+  - name: name_no
+    key: name:no
     type: string
   - name: tags
     type: hstore_tags

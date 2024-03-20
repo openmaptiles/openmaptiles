@@ -5,22 +5,22 @@ layer:
       - ne_10m_geography_marine_polys
       - lake_centerline
   description: |
-      Lake center lines for labelling lake bodies.
-      This is based of the [osm-lakelines](https://github.com/openmaptiles/osm-lakelines) project
-      which derives nice centerlines from OSM water bodies. Only the most important lakes contain labels.
+    Lake center lines for labelling lake bodies.
+    This is based of the [osm-lakelines](https://github.com/openmaptiles/osm-lakelines) project
+    which derives nice centerlines from OSM water bodies. Only the most important lakes contain labels.
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the water body. Language-specific values are in `name:xx`.
     name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
+    name_no: German name `name:no` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:no`.
     class:
       description: |
-          Distinguish between `lake`, `ocean`, `bay`, `strait`, and `sea`.
+        Distinguish between `lake`, `ocean`, `bay`, `strait`, and `sea`.
       values:
-      - lake
-      - bay
-      - strait
-      - sea
-      - ocean
+        - lake
+        - bay
+        - strait
+        - sea
+        - ocean
     intermittent:
       description: |
         Mark with `1` if it is an [intermittent](http://wiki.openstreetmap.org/wiki/Key:intermittent) lake.
@@ -32,7 +32,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, class, intermittent FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, name, name_en, name_no, {name_languages}, class, intermittent FROM layer_water_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./update_marine_point.sql
   - ./update_water_name.sql
