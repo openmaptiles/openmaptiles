@@ -172,7 +172,7 @@ ALTER TABLE osm_landcover_gen_z10
     SET STORAGE EXTERNAL;
 
 UPDATE osm_landcover_gen_z10
-    SET geometry ST_SetSRID(geometry, 4326);
+    SET geometry = ST_SetSRID(geometry, 4326);
 
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 
