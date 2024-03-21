@@ -267,7 +267,7 @@ CREATE TABLE simplify_vw_z7 AS
     SELECT subclass,
            ST_MakeValid(
             ST_SnapToGrid(
-             ST_SimplifyVW(ST_dump(ST_Union(geometry)).geom, power(zres(7),2)),
+             ST_SimplifyVW((ST_dump(ST_Union(geometry))).geom, power(zres(7),2)),
              0.001)) AS geometry
     FROM simplify_vw_z8
     WHERE ST_Area(geometry) > power(zres(6),2)
