@@ -182,7 +182,6 @@ CREATE TABLE simplify_vw_z9 AS
              0.001)) AS geometry
     FROM simplify_vw_z10
     WHERE ST_Area(geometry) > power(zres(8),2)
-    GROUP BY subclass
 );
 
 
@@ -193,7 +192,7 @@ ALTER TABLE simplify_vw_z9
 UPDATE simplify_vw_z9
     SET geometry = ST_SetSRID(geometry, 4326);
 UPDATE simplify_vw_z9
-    SET geometry = ST_Union(geometry);
+    SET geometry = ST_Union(geometry) GROUP BY sublcass;
 
 CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 
