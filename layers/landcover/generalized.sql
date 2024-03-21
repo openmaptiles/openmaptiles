@@ -192,7 +192,9 @@ ALTER TABLE simplify_vw_z9
 UPDATE simplify_vw_z9
     SET geometry = ST_SetSRID(geometry, 4326);
 UPDATE simplify_vw_z9
-    SET geometry = ST_Union(geometry) GROUP BY sublcass;
+    SET geometry = SELECT sublcass, ST_Union(geometry) as geometry 
+    FROM simplify_vw_z9
+    GROUP BY sublcass;
 
 CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 
