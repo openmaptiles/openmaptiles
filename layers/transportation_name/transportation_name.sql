@@ -204,7 +204,7 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 12
-           AND LineLabel(zoom_level, COALESCE(tags->'name', ref), geometry)
+           AND LineLabel(zoom_level, COALESCE(ref, tags->'name'), geometry)
            AND NOT highway_is_link(highway)
            AND
                CASE WHEN highway_class(highway, NULL::text, NULL::text) NOT IN ('path', 'minor') THEN TRUE
@@ -228,7 +228,7 @@ FROM (
                 indoor
          FROM osm_transportation_name_linestring
          WHERE zoom_level = 13
-           AND LineLabel(zoom_level, COALESCE(tags->'name', ref), geometry)
+           AND LineLabel(zoom_level, COALESCE(ref, tags->'name'), geometry)
            AND
                CASE WHEN highway <> 'path' THEN TRUE
                     WHEN highway = 'path' AND (
