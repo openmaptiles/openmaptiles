@@ -167,6 +167,12 @@ CREATE TABLE osm_landcover_gen_z10 AS
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
     );
+ALTER TABLE osm_landcover_gen_z10
+    ALTER COLUMN geometry
+    SET STORAGE EXTERNAL;
+
+UPDATE osm_landcover_gen_z10
+    SET geometry ST_SETSRID(geometry, 4326);
 
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 
