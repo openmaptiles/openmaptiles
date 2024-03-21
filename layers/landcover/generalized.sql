@@ -115,7 +115,7 @@ CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 -- etldoc: simplify_vw_z11 ->  osm_landcover_gen_z11
 CREATE TABLE osm_landcover_gen_z11 AS
 (
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, ST_MakeValid(ST_dump(ST_Union(geometry)).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
@@ -183,18 +183,6 @@ CREATE TABLE simplify_vw_z9 AS
     FROM simplify_vw_z10
     WHERE ST_Area(geometry) > power(zres(8),2)
 );
-
-
-ALTER TABLE simplify_vw_z9
-    ALTER COLUMN geometry
-    SET STORAGE EXTERNAL;
-
-UPDATE simplify_vw_z9
-    SET geometry = ST_SetSRID(geometry, 4326);
-UPDATE simplify_vw_z9
-    SET geometry = SELECT sublcass, ST_Union(geometry) as geometry 
-    FROM simplify_vw_z9
-    GROUP BY sublcass;
 
 CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 
@@ -279,10 +267,11 @@ CREATE TABLE simplify_vw_z7 AS
     SELECT subclass,
            ST_MakeValid(
             ST_SnapToGrid(
-             ST_SimplifyVW(geometry, power(zres(7),2)),
+             ST_SimplifyVW(ST_dump(ST_Union(geometry)).geom, power(zres(7),2)),
              0.001)) AS geometry
     FROM simplify_vw_z8
     WHERE ST_Area(geometry) > power(zres(6),2)
+    GROUP BY sublcass
 );
 CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
 
