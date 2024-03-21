@@ -115,7 +115,7 @@ CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 -- etldoc: simplify_vw_z11 ->  osm_landcover_gen_z11
 CREATE TABLE osm_landcover_gen_z11 AS
 (
-    SELECT subclass, ST_MakeValid(ST_dump(ST_Union(geometry)).geom) AS geometry
+    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
