@@ -6,7 +6,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run download area "
 
-make download-geofabrik area=norway
+#make download-geofabrik area=norway
 
 echo "... complete!"
 
@@ -24,7 +24,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import natural earth data  "
 
-make import-data 
+#make import-data 
 
 echo "...complete!"
 
@@ -32,7 +32,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import osm  "
 
-make import-osm area=norway
+#make import-osm area=norway
 
 echo "... Complete!"
 
