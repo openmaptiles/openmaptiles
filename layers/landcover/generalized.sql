@@ -146,6 +146,14 @@ CREATE TABLE simplify_vw_z10 AS
     FROM simplify_vw_z11
     WHERE ST_Area(geometry) > power(zres(9),2)
 );
+
+ALTER TABLE simplify_vw_z10
+    ALTER COLUMN geometry
+    SET STORAGE EXTERNAL;
+
+UPDATE simplify_vw_z10
+    SET geometry = ST_SetSRID(geometry, 4326);
+
 CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 
 -- etldoc: simplify_vw_z10 ->  osm_landcover_gen_z10
@@ -167,12 +175,6 @@ CREATE TABLE osm_landcover_gen_z10 AS
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
        OR (subclass NOT IN ('wood', 'forest'))
     );
-ALTER TABLE osm_landcover_gen_z10
-    ALTER COLUMN geometry
-    SET STORAGE EXTERNAL;
-
-UPDATE osm_landcover_gen_z10
-    SET geometry = ST_SetSRID(geometry, 4326);
 
 CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 
