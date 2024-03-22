@@ -6,7 +6,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run download area "
 
-make download-geofabrik area=planet
+#make download-geofabrik area=planet
 
 echo "... complete!"
 
