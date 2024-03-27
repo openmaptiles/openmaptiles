@@ -4529,9 +4529,7 @@
         "all",
         [
           "==",
-          [
-            "geometry-type"
-          ],
+          "$type",
           "LineString"
         ],
         [
@@ -4633,9 +4631,7 @@
         "all",
         [
           "==",
-          [
-            "geometry-type"
-          ],
+          "$type",
           "LineString"
         ],
         [
