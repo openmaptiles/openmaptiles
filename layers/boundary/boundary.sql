@@ -170,6 +170,21 @@ WHERE featurecla <> 'Lease limit'
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
 CREATE INDEX IF NOT EXISTS ne_10m_admin_0_boundary_lines_land_gen_z4_idx ON ne_10m_admin_0_boundary_lines_land_gen_z4 USING gist (geometry);
 
+-- etldoc: ne_10m_admin_0_boundary_lines_land -> ne_10m_admin_0_boundary_lines_land_disputed
+DROP MATERIALIZED VIEW IF EXISTS ne_10m_admin_0_boundary_lines_land_disputed CASCADE;
+CREATE MATERIALIZED VIEW ne_10m_admin_0_boundary_lines_land_disputed AS
+(
+SELECT geometry,
+       2 AS admin_level,
+       (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
+       NULL::text AS disputed_name,
+       NULL::text AS claimed_by,
+       FALSE AS maritime
+FROM ne_10m_admin_0_boundary_lines_land
+WHERE featurecla LIKE 'Disputed%' AND adm0_left = 'South Sudan' AND adm0_right = 'Kenya'
+    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+CREATE INDEX IF NOT EXISTS ne_10m_admin_0_boundary_lines_land_disputed_idx ON ne_10m_admin_0_boundary_lines_land_disputed USING gist (geometry);
+
 -- ne_10m_admin_1_states_provinces_lines
 -- etldoc: ne_10m_admin_1_states_provinces_lines -> ne_10m_admin_1_states_provinces_lines_gen_z4
 DROP MATERIALIZED VIEW IF EXISTS ne_10m_admin_1_states_provinces_lines_gen_z4 CASCADE;
@@ -319,6 +334,7 @@ FROM ne_110m_admin_0_boundary_lines_land_gen_z0
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z1  -> boundary_z1
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z1 -> boundary_z1
+-- etldoc: ne_10m_admin_0_boundary_lines_land_disputed -> boundary_z1
 -- etldoc: osm_border_disp_linestring_gen_z1 -> boundary_z1
 DROP MATERIALIZED VIEW IF EXISTS boundary_z1 CASCADE;
 CREATE MATERIALIZED VIEW boundary_z1 AS
@@ -342,12 +358,23 @@ SELECT geometry,
        claimed_by,
        maritime
 FROM ne_10m_admin_1_states_provinces_lines_gen_z1
+UNION ALL
+SELECT geometry,
+       admin_level,
+       NULL::text AS adm0_l,
+       NULL::text AS adm0_r,
+       disputed,
+       disputed_name,
+       claimed_by,
+       maritime
+FROM ne_10m_admin_0_boundary_lines_land_disputed
     );
 CREATE INDEX IF NOT EXISTS boundary_z1_idx ON boundary_z1 USING gist (geometry);
 
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z2 -> boundary_z2
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z2 -> boundary_z2
+-- etldoc: ne_10m_admin_0_boundary_lines_land_disputed -> boundary_z2
 -- etldoc: osm_border_disp_linestring_gen_z2 -> boundary_z2
 DROP MATERIALIZED VIEW IF EXISTS boundary_z2 CASCADE;
 CREATE MATERIALIZED VIEW boundary_z2 AS
@@ -371,11 +398,22 @@ SELECT geometry,
        claimed_by,
        maritime
 FROM ne_10m_admin_1_states_provinces_lines_gen_z2
+UNION ALL
+SELECT geometry,
+       admin_level,
+       NULL::text AS adm0_l,
+       NULL::text AS adm0_r,
+       disputed,
+       disputed_name,
+       claimed_by,
+       maritime
+FROM ne_10m_admin_0_boundary_lines_land_disputed
     );
 CREATE INDEX IF NOT EXISTS boundary_z2_idx ON boundary_z2 USING gist (geometry);
 
 -- etldoc: ne_50m_admin_0_boundary_lines_land_gen_z3 -> boundary_z3
 -- etldoc: ne_10m_admin_1_states_provinces_lines_gen_z3 -> boundary_z3
+-- etldoc: ne_10m_admin_0_boundary_lines_land_disputed -> boundary_z3
 -- etldoc: osm_border_disp_linestring_gen_z3 -> boundary_z3
 DROP MATERIALIZED VIEW IF EXISTS boundary_z3 CASCADE;
 CREATE MATERIALIZED VIEW boundary_z3 AS
@@ -399,6 +437,16 @@ SELECT geometry,
        claimed_by,
        maritime
 FROM ne_10m_admin_1_states_provinces_lines_gen_z3
+UNION ALL
+SELECT geometry,
+       admin_level,
+       NULL::text AS adm0_l,
+       NULL::text AS adm0_r,
+       disputed,
+       disputed_name,
+       claimed_by,
+       maritime
+FROM ne_10m_admin_0_boundary_lines_land_disputed
     );
 CREATE INDEX IF NOT EXISTS boundary_z3_idx ON boundary_z3 USING gist (geometry);
 
