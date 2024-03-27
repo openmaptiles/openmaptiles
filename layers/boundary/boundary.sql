@@ -162,7 +162,7 @@ CREATE MATERIALIZED VIEW ne_10m_admin_0_boundary_lines_land_gen_z4 AS
 SELECT ST_Simplify(geometry, ZRes(6)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne10m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
+       NULL::text AS disputed_name,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_10m_admin_0_boundary_lines_land
@@ -254,7 +254,7 @@ CREATE MATERIALIZED VIEW ne_50m_admin_0_boundary_lines_land_gen_z3 AS
 SELECT ST_Simplify(geometry, ZRes(5)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne50m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
+       NULL::text AS disputed_name,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_50m_admin_0_boundary_lines_land
@@ -297,7 +297,7 @@ CREATE MATERIALIZED VIEW ne_110m_admin_0_boundary_lines_land_gen_z0 AS
 SELECT ST_Simplify(geometry, ZRes(2)) as geometry,
        2 AS admin_level,
        (CASE WHEN featurecla LIKE 'Disputed%' THEN TRUE ELSE FALSE END) AS disputed,
-       (CASE WHEN featurecla LIKE 'Disputed%' THEN 'ne110m_' || ogc_fid ELSE NULL::text END) AS disputed_name,
+       NULL::text AS disputed_name,
        NULL::text AS claimed_by,
        FALSE AS maritime
 FROM ne_110m_admin_0_boundary_lines_land
