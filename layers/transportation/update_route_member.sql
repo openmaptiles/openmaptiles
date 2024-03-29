@@ -110,35 +110,6 @@ BEGIN
     USING transportation_name.network_changes c
     WHERE c.is_old IS TRUE AND transportation_route_member_coalesced.member = c.osm_id;
 
-    -- Create GBR/IRE relations (so we can use it in the same way as other relations)
-    -- etldoc:  gbr_route_members_view ->  transportation_route_member_coalesced
-    INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
-    SELECT member, network, coalesce(ref, '') AS ref,
-           osm_route_member_network_type(network, coalesce(ref, '')) AS network_type,
-           1 AS concurrency_index, 0 AS osm_id
-    FROM gbr_route_members_view
-    WHERE full_update OR EXISTS(
-        SELECT NULL
-        FROM transportation_name.network_changes c
-        WHERE c.is_old IS FALSE AND c.osm_id = gbr_route_members_view.member
-    )
-    GROUP BY member, network, coalesce(ref, '')
-    ON CONFLICT (member, network, ref) DO NOTHING;
-
-    -- etldoc:  ire_route_members_view ->  transportation_route_member_coalesced
-    INSERT INTO transportation_route_member_coalesced (member, network, ref, network_type, concurrency_index, osm_id)
-    SELECT member, network, coalesce(ref, '') AS ref,
-           osm_route_member_network_type(network, coalesce(ref, '')) AS network_type,
-           1 AS concurrency_index, 0 AS osm_id
-    FROM ire_route_members_view
-    WHERE full_update OR EXISTS(
-        SELECT NULL
-        FROM transportation_name.network_changes c
-        WHERE c.is_old IS FALSE AND c.osm_id = ire_route_members_view.member
-    )
-    GROUP BY member, network, coalesce(ref, '')
-    ON CONFLICT (member, network, ref) DO NOTHING;
-
     -- etldoc: osm_route_member ->  transportation_route_member_coalesced
     INSERT INTO transportation_route_member_coalesced
     SELECT
@@ -155,11 +126,13 @@ BEGIN
       END AS rank
     FROM (
         -- etldoc:  osm_route_member ->  osm_route_member
+        -- etldoc:  gbr_route_members_view ->  osm_route_member
+        -- etldoc:  ire_route_members_view ->  osm_route_member
         -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
-        SELECT DISTINCT ON (member, COALESCE(network, ''), COALESCE(ref, ''))
-            member,
-            COALESCE(network, '') AS network,
-            COALESCE(ref, '') AS ref,
+        SELECT DISTINCT ON (member, COALESCE(rel.network, ''), COALESCE(rel.ref, ''))
+            rel.member,
+            COALESCE(NULLIF(rel.network,''), gb_way.network, ir_way.network, '') AS network,
+            COALESCE(rel.ref, '') AS ref,
             osm_id,
             role,
             type,
@@ -167,11 +140,13 @@ BEGIN
             osmc_symbol,
             colour,
             ref_colour
-        FROM osm_route_member
+        FROM osm_route_member rel
+        LEFT JOIN gbr_route_members_view gb_way ON (gb_way.member=rel.member)
+        LEFT JOIN ire_route_members_view ir_way ON (ir_way.member=rel.member)
         WHERE full_update OR EXISTS(
             SELECT NULL
             FROM transportation_name.network_changes c
-            WHERE c.is_old IS FALSE AND c.osm_id = osm_route_member.member
+            WHERE c.is_old IS FALSE AND c.osm_id = rel.member
         )
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
