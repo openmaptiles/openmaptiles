@@ -72,8 +72,8 @@ SELECT osm_id,
        NULLIF(mtb_scale, '') AS mtb_scale,
        NULLIF(surface, '') AS surface
 FROM (
-         -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
-         SELECT osm_id,
+         -- etldoc: osm_transportation_merge_linestring_gen_z4_merge -> layer_transportation:z4
+         SELECT NULL::bigint AS osm_id,
                 geometry,
                 highway,
                 construction,
@@ -100,13 +100,13 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
-         FROM osm_transportation_merge_linestring_gen_z4
+                NULL::int AS z_order
+         FROM osm_transportation_merge_linestring_gen_z4_merge
          WHERE zoom_level = 4
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen_z5 -> layer_transportation:z5
-         SELECT osm_id,
+         -- etldoc: osm_transportation_merge_linestring_gen_z5_merge -> layer_transportation:z5
+         SELECT NULL::bigint AS osm_id,
                 geometry,
                 highway,
                 construction,
@@ -133,13 +133,13 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
-         FROM osm_transportation_merge_linestring_gen_z5
+                NULL::int AS z_order
+         FROM osm_transportation_merge_linestring_gen_z5_merge
          WHERE zoom_level = 5
          UNION ALL
 
-         -- etldoc: osm_transportation_merge_linestring_gen_z6 -> layer_transportation:z6
-         SELECT osm_id,
+         -- etldoc: osm_transportation_merge_linestring_gen_z6_merge -> layer_transportation:z6
+         SELECT NULL::bigint AS osm_id,
                 geometry,
                 highway,
                 construction,
@@ -166,8 +166,8 @@ FROM (
                 NULL AS horse,
                 NULL AS mtb_scale,
                 NULL AS surface,
-                z_order
-         FROM osm_transportation_merge_linestring_gen_z6
+                NULL::int AS z_order
+         FROM osm_transportation_merge_linestring_gen_z6_merge
          WHERE zoom_level = 6
          UNION ALL
 

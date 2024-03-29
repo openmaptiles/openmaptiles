@@ -848,6 +848,95 @@ TRUNCATE osm_transportation_merge_linestring_gen_z4;
 
 SELECT insert_transportation_merge_linestring_gen_z7(TRUE);
 
+-- Drop tables for merging tables for zooms 4, 5 and 6
+DROP TABLE IF EXISTS osm_transportation_merge_linestring_gen_z6_merge;
+DROP TABLE IF EXISTS osm_transportation_merge_linestring_gen_z5_merge;
+DROP TABLE IF EXISTS osm_transportation_merge_linestring_gen_z4_merge;
+
+-- Merging roads by less attributes leads to longer, not segmented roads.
+-- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z6_merge
+CREATE TABLE osm_transportation_merge_linestring_gen_z6_merge AS (
+    WITH roads_z6 AS (
+        SELECT ST_Node(ST_Collect(geometry)) AS geometry,
+                highway, NULLIF(network, '') as network,
+                construction,
+                is_bridge, 
+                is_tunnel, 
+                is_ford 
+        FROM osm_transportation_merge_linestring_gen_z6
+        GROUP BY highway, construction, network, is_bridge, is_tunnel, is_ford
+        )
+    
+    SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
+            highway,
+            network,
+            construction,
+            is_bridge,
+            is_tunnel,
+            is_ford 
+    FROM roads_z6
+    GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
+);
+CREATE INDEX ON osm_transportation_merge_linestring_gen_z6_merge USING gist(geometry);
+
+-- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z5_merge
+
+CREATE TABLE osm_transportation_merge_linestring_gen_z5_merge AS (
+    WITH roads_z5 AS (
+        SELECT ST_Node(ST_Collect(ST_Simplify(geometry, ZRes(7)))) AS geometry,
+                highway, NULLIF(network, '') as network,
+                construction,
+                is_bridge, 
+                is_tunnel, 
+                is_ford 
+        FROM osm_transportation_merge_linestring_gen_z6
+        WHERE highway = 'motorway'
+            OR construction = 'motorway'
+            -- Allow trunk roads that are part of a nation's most important route network to show at z5
+            OR (highway = 'trunk' AND osm_national_network(network))
+        GROUP BY highway, construction, network, is_bridge, is_tunnel, is_ford
+        )
+    
+    SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
+            highway,
+            network,
+            construction,
+            is_bridge,
+            is_tunnel,
+            is_ford 
+    FROM roads_z5
+    GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
+);
+CREATE INDEX ON osm_transportation_merge_linestring_gen_z5_merge USING gist(geometry);
+
+-- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z4_merge
+
+CREATE TABLE osm_transportation_merge_linestring_gen_z4_merge AS (
+    WITH roads_z4 AS (
+        SELECT ST_Node(ST_Collect(ST_Simplify(geometry, ZRes(7)))) AS geometry,
+                highway, NULLIF(network, '') as network,
+                construction,
+                is_bridge, 
+                is_tunnel, 
+                is_ford 
+        FROM osm_transportation_merge_linestring_gen_z6
+        WHERE highway = 'motorway' OR construction = 'motorway'
+        GROUP BY highway, construction, network, is_bridge, is_tunnel, is_ford
+        )
+    
+    SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
+            highway,
+            network,
+            construction,
+            is_bridge,
+            is_tunnel,
+            is_ford 
+    FROM roads_z4
+    GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford
+);
+CREATE INDEX ON osm_transportation_merge_linestring_gen_z4_merge USING gist(geometry);
+
+
 -- Indexes for queries originating from insert_transportation_merge_linestring_gen_z7() function
 CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z7_update_partial_idx
     ON osm_transportation_merge_linestring_gen_z7 (id)
