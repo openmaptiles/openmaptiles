@@ -825,6 +825,8 @@ BEGIN
                   transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
         )) AND
         (highway = 'motorway' OR construction = 'motorway'
+        ) OR 
+        (osm_national_network(network) AND network != 'gb-trunk'
         ) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000
