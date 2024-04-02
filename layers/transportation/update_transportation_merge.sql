@@ -824,7 +824,7 @@ BEGIN
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
                   transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
         )) AND
-        (highway = 'motorway' AND osm_national_network(network)
+        (highway = 'motorway' OR construction = 'motorway'
         ) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000
