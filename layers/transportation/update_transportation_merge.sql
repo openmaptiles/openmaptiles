@@ -66,7 +66,8 @@ $$ LANGUAGE SQL IMMUTABLE
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_network
 -- etldoc: transportation_route_member_coalesced ->  osm_transportation_name_network
-CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
+DROP TABLE IF EXISTS osm_transportation_name_network;
+CREATE TABLE osm_transportation_name_network AS
 SELECT
     geometry,
     osm_id,
