@@ -16,7 +16,7 @@ echo "====> : Run Cleanup and initiation"
 
 #make clean
 
-#make 
+make 
 
 echo "... complete!"
 
