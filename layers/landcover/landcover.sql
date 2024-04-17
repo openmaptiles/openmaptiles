@@ -82,6 +82,10 @@ FROM (
          FROM osm_landcover_gen_z6
          WHERE zoom_level = 6
            AND geometry && bbox
+       AS zoom_levels;
+$$ LANGUAGE SQL STABLE
+                -- STRICT
+                PARALLEL SAFE;
          --UNION ALL
          ---- etldoc:  osm_landcover_gen_z7 -> layer_landcover:z7
          --SELECT geometry, 
@@ -138,7 +142,7 @@ FROM (
          --FROM osm_landcover_polygon
          --WHERE zoom_level >= 14
          --  AND geometry && bbox
-     ) AS zoom_levels;
-$$ LANGUAGE SQL STABLE
-                -- STRICT
-                PARALLEL SAFE;
+     --) AS zoom_levels;
+--$$ LANGUAGE SQL STABLE
+--                -- STRICT
+--                PARALLEL SAFE;
