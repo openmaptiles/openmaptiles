@@ -14,9 +14,9 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run Cleanup and initiation"
 
-make clean
+#make clean
 
-make 
+#make 
 
 echo "... complete!"
 
@@ -24,7 +24,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import natural earth data  "
 
-make import-data 
+#make import-data 
 
 echo "...complete!"
 
@@ -32,7 +32,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import osm  "
 
-make import-osm area=planet
+#make import-osm area=planet
 
 echo "... Complete!"
 
@@ -40,7 +40,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import wikidata  "
 
-make import-wikidata 
+#make import-wikidata 
 
 echo "... Complete!"
 
