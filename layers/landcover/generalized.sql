@@ -79,23 +79,23 @@ CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 -- etldoc: simplify_vw_z12 ->  osm_landcover_gen_z12
 --CREATE TABLE osm_landcover_gen_z12 AS
 --(
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
-    FROM (
-        SELECT subclass,
-               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
-        FROM simplify_vw_z12
-        WHERE ST_NPoints(geometry) < 300
-          AND subclass IN ('wood', 'forest')) union_geom300
-    GROUP BY subclass,
-             cid
-    UNION ALL
-    SELECT subclass,
-           geometry
-    FROM simplify_vw_z12
-    WHERE (ST_NPoints(geometry) >= 300  AND subclass IN ('wood', 'forest'))
-       OR (subclass NOT IN ('wood', 'forest'))
-    );
-
+--    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+--    FROM (
+--        SELECT subclass,
+--               ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
+--        FROM simplify_vw_z12
+--        WHERE ST_NPoints(geometry) < 300
+--          AND subclass IN ('wood', 'forest')) union_geom300
+--    GROUP BY subclass,
+--             cid
+--    UNION ALL
+--    SELECT subclass,
+--           geometry
+--    FROM simplify_vw_z12
+--    WHERE (ST_NPoints(geometry) >= 300  AND subclass IN ('wood', 'forest'))
+--       OR (subclass NOT IN ('wood', 'forest'))
+--    );
+--
 --CREATE INDEX ON osm_landcover_gen_z12 USING GIST (geometry);
 
 
@@ -279,16 +279,16 @@ CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
 --CREATE TABLE osm_landcover_gen_z7 AS
 --(
 --SELECT subclass,
-       ST_MakeValid(
-        (ST_Dump(
-         ST_Union(geometry))).geom) AS geometry
-    FROM
-        (
-        SELECT  subclass,
-                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
-                geometry
-        FROM simplify_vw_z7
-        ) union_geom
+--       ST_MakeValid(
+--        (ST_Dump(
+--         ST_Union(geometry))).geom) AS geometry
+--    FROM
+--        (
+--        SELECT  subclass,
+--                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
+--                geometry
+--        FROM simplify_vw_z7
+--        ) union_geom
 --GROUP BY subclass,
 --         cid
 --    );
