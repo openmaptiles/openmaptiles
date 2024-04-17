@@ -868,10 +868,12 @@ BEGIN
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
                   transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
         )) AND
-        (highway = 'motorway' OR construction = 'motorway'
+        -- All motorways without network (e.g. EU, Asia, South America)
+        ((highway = 'motorway' OR construction = 'motorway') AND (network is NULL or network = '')
         ) OR 
-        (osm_national_network(network) AND network != 'gb-trunk'
-        ) AND
+        -- All roads in network included in osm_national_network except gb-trunk and us-highway
+		( (osm_national_network(network) AND network NOT IN ('gb-trunk', 'us-highway')
+        )) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
