@@ -32,7 +32,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import osm  "
 
-make import-osm area=planet
+#make import-osm area=planet
 
 echo "... Complete!"
 
@@ -40,7 +40,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import wikidata  "
 
-make import-wikidata 
+#make import-wikidata 
 
 echo "... Complete!"
 
