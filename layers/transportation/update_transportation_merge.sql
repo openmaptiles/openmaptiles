@@ -465,7 +465,7 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_i
 
 -- etldoc: osm_transportation_merge_linestring_gen_z9 -> osm_transportation_merge_linestring_gen_z8
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
-    geometry geometry('LineString'),
+    geometry geometry,
     id SERIAL,
     osm_id bigint,
     source_ids int[],
@@ -684,25 +684,68 @@ BEGIN
 
     -- etldoc: osm_transportation_merge_linestring_gen_z8 -> osm_transportation_merge_linestring_gen_z7
     INSERT INTO osm_transportation_merge_linestring_gen_z7
-    SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
-        id,
-        osm_id,
-        highway,
-        network,
-        construction,
-        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
-        visible_brunnel(geometry, is_bridge, 8) AS is_bridge,
-        visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
-        visible_brunnel(geometry, is_ford, 8) AS is_ford,
-        expressway,
-        z_order
-    FROM osm_transportation_merge_linestring_gen_z8
+    WITH roads_z8 AS (
+        SELECT  id,
+                osm_id,
+                ST_SnapToGrid(
+                    ST_Node(
+                        ST_Collect(
+                            ST_Simplify(geometry, ZRes(9))
+                            )
+                        ), ZRes(9)
+                    ) AS geometry,
+                highway, 
+                NULLIF(network, '') as network,
+                construction,
+                is_bridge, 
+                is_tunnel, 
+                is_ford,
+                expressway,
+                z_order
+        FROM osm_transportation_merge_linestring_gen_z8
+        GROUP BY id, osm_id, highway, construction, network, is_bridge, is_tunnel, is_ford, expressway, z_order
+        ),
+    roads_z8_merge AS (
+        SELECT  id,
+                osm_id,
+                ST_LineMerge(
+                    ST_Union(geometry)
+                    ) AS geometry,
+                highway,
+                network,
+                construction,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                expressway,
+                z_order
+    FROM roads_z8
+    GROUP BY id, osm_id, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, z_order
+    )
+
+    SELECT  CASE
+             WHEN ST_StartPoint(geometry) = ST_EndPoint(geometry) 
+                 THEN ST_RemovePoint(geometry, ST_NPoints(geometry) - 1)
+             ELSE geometry
+            END AS geometry,  
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+            visible_brunnel(geometry, is_bridge, 8) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 8) AS is_ford,
+            expressway,
+            z_order
+    FROM roads_z8_merge
         -- Current view: motorway/trunk/primary
     WHERE
         (full_update IS TRUE OR EXISTS(
             SELECT NULL FROM transportation.changes_z4_z5_z6_z7
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
-                  transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z8.id
+                  transportation.changes_z4_z5_z6_z7.id = roads_z8_merge.id
         )) AND
         (ST_Length(geometry) > 50)
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
@@ -825,10 +868,12 @@ BEGIN
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
                   transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
         )) AND
-        (highway = 'motorway' OR construction = 'motorway'
+        -- All motorways without network (e.g. EU, Asia, South America)
+        ((highway = 'motorway' OR construction = 'motorway') AND (network is NULL or network = '')
         ) OR 
-        (osm_national_network(network) AND network != 'gb-trunk'
-        ) AND
+        -- All roads in network included in osm_national_network except gb-trunk and us-highway
+		( (osm_national_network(network) AND network NOT IN ('gb-trunk', 'us-highway')
+        )) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
