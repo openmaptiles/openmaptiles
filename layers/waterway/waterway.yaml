@@ -26,11 +26,9 @@ layer:
       description: |
         The original value of the [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway) tag.
       values:
-        - stream
         - river
         - canal
         - drain
-        - ditch
     brunnel:
       description: |
         Mark whether way is a tunnel or bridge.

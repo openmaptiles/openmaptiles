@@ -86,7 +86,7 @@
           "borough"
         ]
       ],
-      "order": 178
+      "order": 130
     },
     {
       "id": "place_village",
@@ -129,7 +129,7 @@
           "village"
         ]
       ],
-      "order": 184
+      "order": 131
     },
     {
       "id": "place_town",
@@ -177,7 +177,7 @@
           "town"
         ]
       ],
-      "order": 186
+      "order": 132
     },
     {
       "id": "place_state",
@@ -228,7 +228,7 @@
           3
         ]
       ],
-      "order": 188
+      "order": 133
     },
     {
       "id": "place_city",
@@ -311,7 +311,7 @@
           1
         ]
       ],
-      "order": 190
+      "order": 134
     },
     {
       "id": "place_capital",
@@ -396,7 +396,7 @@
           2
         ]
       ],
-      "order": 192
+      "order": 135
     },
     {
       "id": "country_other",
@@ -449,7 +449,7 @@
           "iso_a2"
         ]
       ],
-      "order": 194
+      "order": 136
     },
     {
       "id": "country_3",
@@ -518,7 +518,7 @@
           "iso_a2"
         ]
       ],
-      "order": 196
+      "order": 137
     },
     {
       "id": "country_2",
@@ -587,7 +587,7 @@
           "iso_a2"
         ]
       ],
-      "order": 198
+      "order": 138
     },
     {
       "id": "country_1",
@@ -656,7 +656,7 @@
           "iso_a2"
         ]
       ],
-      "order": 200
+      "order": 139
     }
   ]
 }

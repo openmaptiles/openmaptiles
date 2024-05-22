@@ -12,8 +12,8 @@ CREATE OR REPLACE FUNCTION layer_city(bbox geometry, zoom_level int, pixel_width
                 name_no  text,
                 tags     hstore,
                 place    city_place,
-                "rank"   int,
-                capital  int
+                "rank"   int--,
+                --capital  int
             )
 AS
 $$
@@ -26,8 +26,8 @@ FROM (
                 COALESCE(NULLIF(name_no, ''), name, name_en) AS name_no,
                 tags,
                 place,
-                "rank",
-                normalize_capital_level(capital) AS capital
+                "rank"--,
+                --normalize_capital_level(capital) AS capital
          FROM osm_city_point
          WHERE geometry && bbox
            AND ((zoom_level = 2 AND "rank" = 1)
@@ -41,8 +41,8 @@ FROM (
                 COALESCE(NULLIF(name_no, ''), name, name_en) AS name_no,
                 tags,
                 place,
-                COALESCE("rank", gridrank + 10),
-                normalize_capital_level(capital) AS capital
+                COALESCE("rank", gridrank + 10)--,
+                --normalize_capital_level(capital) AS capital
          FROM (
                   SELECT osm_id,
                          geometry,
@@ -52,7 +52,7 @@ FROM (
                          tags,
                          place,
                          "rank",
-                         capital,
+                         --capital,
                          row_number() OVER (
                              PARTITION BY LabelGrid(geometry, 128 * pixel_width)
                              ORDER BY "rank" ASC NULLS LAST,

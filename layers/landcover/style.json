@@ -58,7 +58,7 @@
           "sand"
         ]
       ],
-      "order": 1
+      "order": 2
     },
     {
       "id": "landcover_class_outline",
@@ -80,7 +80,7 @@
           "farmland"
         ]
       ],
-      "order": 2
+      "order": 5
     },
     {
       "id": "landcover_park",
@@ -103,7 +103,7 @@
           "park"
         ]
       ],
-      "order": 3
+      "order": 8
     },
     {
       "id": "landcover_subclasses",
@@ -225,7 +225,7 @@
           "wood"
         ]
       ],
-      "order": 4
+      "order": 11
     },
     {
       "id": "landcover_subclass_patterns",
@@ -346,7 +346,7 @@
           "wood"
         ]
       ],
-      "order": 5
+      "order": 14
     },
     {
       "id": "landcover_subclass_outline",
@@ -397,7 +397,7 @@
           "recreation_ground"
         ]
       ],
-      "order": 6
+      "order": 17
     },
     {
       "id": "landcover_ice",
@@ -418,7 +418,7 @@
           "ice"
         ]
       ],
-      "order": 7
+      "order": 20
     },
     {
       "id": "landcover_ice_outline",
@@ -470,7 +470,7 @@
           "ice"
         ]
       ],
-      "order": 8
+      "order": 23
     }
   ]
 }

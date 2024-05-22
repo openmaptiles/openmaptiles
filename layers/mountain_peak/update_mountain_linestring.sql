@@ -16,6 +16,7 @@ $$
     SET tags = update_tags(tags, geometry)
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM mountain_linestring.osm_ids))
       AND COALESCE(tags -> 'name:latin', tags -> 'name:nonlatin', tags -> 'name_int') IS NULL
+      AND COALESCE(tags -> 'name:latin', tags -> 'name_int') IS NULL
       AND tags != update_tags(tags, geometry)
 $$ LANGUAGE SQL;
 

@@ -1,4 +1,33 @@
 generalized_tables:
+  # etldoc: osm_water_polygon_gen_z1 -> osm_water_polygon_gen_z0
+  water_polygon_gen_z0:
+    source: water_polygon_gen_z1
+    tolerance: ZRES1
+  # etldoc: osm_water_polygon_gen_z2 -> osm_water_polygon_gen_z1
+  water_polygon_gen_z1:
+    source: water_polygon_gen_z2
+    sql_filter: area>power(ZRES0,2)
+    tolerance: ZRES2
+  # etldoc: osm_water_polygon_gen_z3 -> osm_water_polygon_gen_z2
+  water_polygon_gen_z2:
+    source: water_polygon_gen_z3
+    sql_filter: area>power(ZRES1,2)
+    tolerance: ZRES3
+  # etldoc: osm_water_polygon_gen_z4 -> osm_water_polygon_gen_z3
+  water_polygon_gen_z3:
+    source: water_polygon_gen_z4
+    sql_filter: area>power(ZRES2,2)
+    tolerance: ZRES4
+  # etldoc: osm_water_polygon_gen_z5 -> osm_water_polygon_gen_z4
+  water_polygon_gen_z4:
+    source: water_polygon_gen_z5
+    sql_filter: area>power(ZRES3,2)
+    tolerance: ZRES5
+  # etldoc: osm_water_polygon_gen_z6 -> osm_water_polygon_gen_z5
+  water_polygon_gen_z5:
+    source: water_polygon_gen_z6
+    sql_filter: area>power(ZRES4,2)
+    tolerance: ZRES6
   # etldoc: osm_water_polygon_gen_z7 -> osm_water_polygon_gen_z6
   water_polygon_gen_z6:
     source: water_polygon_gen_z7

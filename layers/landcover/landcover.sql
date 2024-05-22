@@ -124,20 +124,20 @@ FROM (
          FROM osm_landcover_gen_z12
          WHERE zoom_level = 12
            AND geometry && bbox
-         UNION ALL
-         -- etldoc:  osm_landcover_gen_z13 -> layer_landcover:z13
-         SELECT geometry, 
-                subclass
-         FROM osm_landcover_gen_z13
-         WHERE zoom_level = 13
-           AND geometry && bbox
-         UNION ALL
-         -- etldoc:  osm_landcover_polygon -> layer_landcover:z14_
-         SELECT geometry, 
-                subclass
-         FROM osm_landcover_polygon
-         WHERE zoom_level >= 14
-           AND geometry && bbox
+         --UNION ALL
+         ---- etldoc:  osm_landcover_gen_z13 -> layer_landcover:z13
+         --SELECT geometry, 
+         --       subclass
+         --FROM osm_landcover_gen_z13
+         --WHERE zoom_level = 13
+         --  AND geometry && bbox
+         --UNION ALL
+         ---- etldoc:  osm_landcover_polygon -> layer_landcover:z14_
+         --SELECT geometry, 
+         --       subclass
+         --FROM osm_landcover_polygon
+         --WHERE zoom_level >= 14
+         --  AND geometry && bbox
      ) AS zoom_levels;
 $$ LANGUAGE SQL STABLE
                 -- STRICT

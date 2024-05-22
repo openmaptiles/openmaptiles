@@ -1,21 +1,21 @@
 tileset:
   layers:
-    #- layers/water/water.yaml
-    #- layers/waterway/waterway.yaml
-    - layers/landcover/landcover.yaml
-    #- layers/landuse/landuse.yaml
-    #- layers/mountain_peak/mountain_peak.yaml
-    #- layers/park/park.yaml
-    #- layers/boundary/boundary.yaml
-    #- layers/aeroway/aeroway.yaml
-    #- layers/transportation/transportation.yaml
-    #- layers/building/building.yaml
-    #- layers/water_name/water_name.yaml
-    #- layers/transportation_name/transportation_name.yaml
-    #- layers/place/place.yaml
-    #- layers/housenumber/housenumber.yaml
-    #- layers/poi/poi.yaml
-    #- layers/aerodrome_label/aerodrome_label.yaml
+    - layers/water/water.yaml # water -ocean, lakes and big rivers, remove natural earth sections. same as landcover
+    - layers/waterway/waterway.yaml # waterway - rivers and centerlines on lakes.
+    - layers/landcover/landcover.yaml # landcover - woods, sand, glacier, rock ... natural areas.
+    - layers/landuse/landuse.yaml # modified areas - parks, farmland, grass, golf cources ....
+    #- layers/mountain_peak/mountain_peak.yaml                # needed?
+    #- layers/park/park.yaml                                  # national parks - nice to have concider if needed?
+    #- layers/boundary/boundary.yaml                          # no longer needed,
+    - layers/aeroway/aeroway.yaml # air-port area. concider to move into landuse?
+    - layers/transportation/transportation.yaml # roads, trainlines, ferry routes.
+    - layers/building/building.yaml # building.
+    - layers/water_name/water_name.yaml # names for ocean, lakes, rivers,
+    - layers/transportation_name/transportation_name.yaml # names for roads, possible to merge with transportation?
+    - layers/place/place.yaml # names of countries, cities and towns
+    #- layers/housenumber/housenumber.yaml                    # skip?
+    #- layers/poi/poi.yaml                                    # skip?
+    - layers/aerodrome_label/aerodrome_label.yaml # name of airports.
   name: OpenMapTiles
   version: 3.14.0
   id: openmaptiles

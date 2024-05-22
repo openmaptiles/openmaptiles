@@ -1,39 +1,54 @@
--- ne_50m_urban_areas
--- etldoc: ne_50m_urban_areas ->  ne_50m_urban_areas_gen_z5
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_urban_areas_gen_z5 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_urban_areas_gen_z5 AS
+-- etldoc: osm_landuse_polygon_gen_z4 ->  osm_landuse_polygon_gen_z4_union
+-- etldoc: osm_residential_gen_z4 ->  osm_landuse_polygon_gen_z4_union
+CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z4_union AS
 (
-SELECT
-       NULL::bigint AS osm_id,
-       ST_Simplify(geometry, ZRes(7)) as geometry,
-       'residential'::text AS landuse,
-       NULL::text AS amenity,
-       NULL::text AS leisure,
-       NULL::text AS tourism,
-       NULL::text AS place,
-       NULL::text AS waterway,
-       scalerank
-FROM ne_50m_urban_areas
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_urban_areas_gen_z5_idx ON ne_50m_urban_areas_gen_z5 USING gist (geometry);
+       SELECT osm_id,
+                geometry,
+                landuse,
+                amenity,
+                leisure,
+                tourism,
+                place,
+                waterway
+         FROM osm_landuse_polygon_gen_z4
+		 WHERE landuse <> 'residential'
+       UNION ALL
+       SELECT NULL::bigint AS osm_id,
+              geometry,
+              'residential' AS landuse,
+              '' AS amenity,
+              '' AS leisure,
+              '' AS tourism,
+              '' AS place,
+              '' AS waterway
+         FROM osm_residential_gen_z4
+);
 
--- etldoc: ne_50m_urban_areas_gen_z5 ->  ne_50m_urban_areas_gen_z4
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_urban_areas_gen_z4 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_urban_areas_gen_z4 AS
+-- etldoc: osm_landuse_polygon_gen_z5 ->  osm_landuse_polygon_gen_z5_union
+-- etldoc: osm_residential_gen_z5 ->  osm_landuse_polygon_gen_z5_union
+CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z5_union AS
 (
-SELECT
-       osm_id,
-       ST_Simplify(geometry, ZRes(6)) as geometry,
-       landuse,
-       amenity,
-       leisure,
-       tourism,
-       place,
-       waterway
-FROM ne_50m_urban_areas_gen_z5
-WHERE scalerank <= 2
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_urban_areas_gen_z4_idx ON ne_50m_urban_areas_gen_z4 USING gist (geometry);
+       SELECT osm_id,
+                geometry,
+                landuse,
+                amenity,
+                leisure,
+                tourism,
+                place,
+                waterway
+         FROM osm_landuse_polygon_gen_z5
+		 WHERE landuse <> 'residential'
+       UNION ALL
+       SELECT NULL::bigint AS osm_id,
+              geometry,
+              'residential' AS landuse,
+              '' AS amenity,
+              '' AS leisure,
+              '' AS tourism,
+              '' AS place,
+              '' AS waterway
+         FROM osm_residential_gen_z5
+);
 
 -- etldoc: osm_landuse_polygon_gen_z6 ->  osm_landuse_polygon_gen_z6_union
 -- etldoc: osm_residential_gen_z6 ->  osm_landuse_polygon_gen_z6_union
@@ -250,7 +265,7 @@ FROM (
                 tourism,
                 place,
                 waterway
-         FROM ne_50m_urban_areas_gen_z4
+         FROM osm_landuse_polygon_gen_z4_union
          WHERE zoom_level = 4
          UNION ALL
          -- etldoc: ne_50m_urban_areas_gen_z5 -> layer_landuse:z5
@@ -262,7 +277,7 @@ FROM (
                 tourism,
                 place,
                 waterway
-         FROM ne_50m_urban_areas_gen_z5
+         FROM osm_landuse_polygon_gen_z5_union
          WHERE zoom_level = 5
          UNION ALL
          -- etldoc: osm_landuse_polygon_gen_z6_union -> layer_landuse:z6

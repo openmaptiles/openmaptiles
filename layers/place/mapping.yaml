@@ -163,8 +163,8 @@ tables:
       - key: population
         name: population
         type: integer
-      - key: capital
-        name: capital
+      #- key: capital
+      #  name: capital
         type: string
       - *rank
     filters:

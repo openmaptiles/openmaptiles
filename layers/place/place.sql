@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION layer_place(bbox geometry, zoom_level int, pixel_widt
                 tags     hstore,
                 class    text,
                 "rank"   int,
-                capital  int,
+                --capital  int,
                 iso_a2   text
             )
 AS
@@ -29,7 +29,7 @@ FROM (
              tags,
              'continent' AS class,
              1 AS "rank",
-             NULL::int AS capital,
+             --NULL::int AS capital,
              NULL::text AS iso_a2
          FROM osm_continent_point
          WHERE geometry && bbox
@@ -50,7 +50,7 @@ FROM (
              tags,
              'country' AS class,
              "rank",
-             NULL::int AS capital,
+             --NULL::int AS capital,
              iso3166_1_alpha_2 AS iso_a2
          FROM osm_country_point
          WHERE geometry && bbox
@@ -72,7 +72,7 @@ FROM (
              tags,
              place::text AS class,
              "rank",
-             NULL::int AS capital,
+             --NULL::int AS capital,
              NULL::text AS iso_a2
          FROM osm_state_point
          WHERE geometry && bbox
@@ -91,7 +91,7 @@ FROM (
              tags,
              'island' AS class,
              7 AS "rank",
-             NULL::int AS capital,
+             --NULL::int AS capital,
              NULL::text AS iso_a2
          FROM osm_island_point
          WHERE zoom_level >= 12
@@ -110,7 +110,7 @@ FROM (
              tags,
              'island' AS class,
              area_rank(area) AS "rank",
-             NULL::int AS capital,
+             --NULL::int AS capital,
              NULL::text AS iso_a2
          FROM osm_island_polygon
          WHERE geometry && bbox
@@ -120,27 +120,27 @@ FROM (
 
          UNION ALL
 
-         SELECT
-             -- etldoc: osm_boundary_polygon  -> layer_place:z6_11
-             -- etldoc: osm_boundary_polygon  -> layer_place:z12_14
-             osm_id * 10 AS osm_id,
-             geometry_point,
-             name,
-             NULL::text AS name_en, -- deprecated
-             NULL::text AS name_no, -- deprecated
-             tags,
-             'aboriginal_lands' AS class,
-             area_rank(area) AS "rank",
-             NULL::int AS capital,
-             NULL::text AS iso_a2
-         FROM osm_boundary_polygon
-         WHERE geometry_point && bbox
-           AND ((zoom_level = 6 AND area_rank(area) <= 1)
-             OR (zoom_level = 7 AND area_rank(area) <= 2)
-             OR (zoom_level = 8 AND area_rank(area) <= 3)
-             OR (zoom_level = 9 AND area_rank(area) <= 4)
-             OR (zoom_level >= 10))
-         UNION ALL
+         --SELECT
+         --    -- etldoc: osm_boundary_polygon  -> layer_place:z6_11
+         --    -- etldoc: osm_boundary_polygon  -> layer_place:z12_14
+         --    osm_id * 10 AS osm_id,
+         --    geometry_point,
+         --    name,
+         --    NULL::text AS name_en, -- deprecated
+         --    NULL::text AS name_no, -- deprecated
+         --    tags,
+         --    'aboriginal_lands' AS class,
+         --    area_rank(area) AS "rank",
+         --    NULL::int AS capital,
+         --    NULL::text AS iso_a2
+         --FROM osm_boundary_polygon
+         --WHERE geometry_point && bbox
+         --  AND ((zoom_level = 6 AND area_rank(area) <= 1)
+         --    OR (zoom_level = 7 AND area_rank(area) <= 2)
+         --    OR (zoom_level = 8 AND area_rank(area) <= 3)
+         --    OR (zoom_level = 9 AND area_rank(area) <= 4)
+         --    OR (zoom_level >= 10))
+         --UNION ALL
 
          SELECT
              -- etldoc: layer_city          -> layer_place:z0_3
@@ -155,7 +155,7 @@ FROM (
              tags,
              place::text AS class,
              "rank",
-             capital,
+             --capital,
              NULL::text AS iso_a2
          FROM layer_city(bbox, zoom_level, pixel_width)
          ORDER BY "rank" ASC
