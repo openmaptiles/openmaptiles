@@ -90,7 +90,7 @@
           "Polygon"
         ]
       ],
-      "order": 3
+      "order": 5
     },
     {
       "id": "landuse_residential",
@@ -131,7 +131,7 @@
           "neighbourhood"
         ]
       ],
-      "order": 6
+      "order": 11
     },
     {
       "id": "landuse_class_pattern",
@@ -167,7 +167,7 @@
           "cemetery"
         ]
       ],
-      "order": 9
+      "order": 17
     },
     {
       "id": "landuse_class_outline",
@@ -313,7 +313,7 @@
           "dam"
         ]
       ],
-      "order": 15
+      "order": 29
     },
     {
       "id": "landuse_class_themepark",
@@ -363,7 +363,7 @@
           "zoo"
         ]
       ],
-      "order": 18
+      "order": 35
     }
   ]
 }

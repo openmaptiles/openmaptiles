@@ -1,17 +1,17 @@
 echo " "
 echo "-------------------------------------------------------------------------------------"
-echo "====> : Run norwayTest.sh "
+echo "====> : Run planetTest.sh "
 
 echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run download area "
 
-make download-geofabrik area=finland
-make destroy-db
-make stop-db
-make clean-unnecessary-docker
-make remove-docker-images
-make refresh-docker-images
+#make download-geofabrik area=planet
+#make destroy-db
+#make stop-db
+#make clean-unnecessary-docker
+#make remove-docker-images
+#make refresh-docker-images
 
 echo "... complete!"
 
@@ -37,7 +37,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import osm  "
 
-make import-osm area=finland
+make import-osm area=planet
 
 echo "... Complete!"
 
@@ -61,7 +61,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : generate tiles  "
 
-make generate-bbox-file area=finland
+make generate-bbox-file area=planet
 
 make generate-tiles-pg 
 

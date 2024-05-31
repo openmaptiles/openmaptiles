@@ -135,7 +135,7 @@ tables:
         - dock
       water:
         - river
-        - stream
+        #- stream
         - canal
         - ditch
         - drain

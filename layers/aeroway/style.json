@@ -30,7 +30,7 @@
         "$type",
         "Polygon"
       ],
-      "order": 12
+      "order": 23
     },
     {
       "id": "aeroway_runway",
@@ -72,7 +72,7 @@
           "runway"
         ]
       ],
-      "order": 21
+      "order": 41
     },
     {
       "id": "aeroway_taxiway",
@@ -114,7 +114,7 @@
           "taxiway"
         ]
       ],
-      "order": 24
+      "order": 47
     },
     {
       "id": "airport_label",
@@ -157,7 +157,7 @@
           "taxiway"
         ]
       ],
-      "order": 26
+      "order": 51
     },
     {
       "id": "airport_gate",
@@ -197,7 +197,7 @@
           "gate"
         ]
       ],
-      "order": 28
+      "order": 55
     }
   ]
 }
