@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS osm_landcover_gen_z9;
 DROP TABLE IF EXISTS osm_landcover_gen_z10;
 DROP TABLE IF EXISTS osm_landcover_gen_z11;
 DROP TABLE IF EXISTS osm_landcover_gen_z12;
---DROP TABLE IF EXISTS osm_landcover_gen_z13;
+DROP TABLE IF EXISTS osm_landcover_gen_z13;
 DROP TABLE IF EXISTS simplify_vw_z0 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z1 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z2 CASCADE;
@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS simplify_vw_z9 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z10 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z11 CASCADE;
 DROP TABLE IF EXISTS simplify_vw_z12 CASCADE;
---DROP TABLE IF EXISTS simplify_vw_z13 CASCADE;
+DROP TABLE IF EXISTS simplify_vw_z13 CASCADE;
 
 -- etldoc: osm_landcover_polygon ->  simplify_vw_z13
 CREATE TABLE simplify_vw_z13 AS
