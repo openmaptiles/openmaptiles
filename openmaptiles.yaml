@@ -1,6 +1,6 @@
 tileset:
   layers:
-    #- layers/water/water.yaml # water -ocean, lakes and big rivers, remove natural earth sections. same as landcover
+    - layers/water/water.yaml # water -ocean, lakes and big rivers, remove natural earth sections. same as landcover
     - layers/waterway/waterway.yaml # waterway - rivers and centerlines on lakes.
     - layers/landcover/landcover.yaml # landcover - woods, sand, glacier, rock ... natural areas.
     ##- layers/landuse/landuse.yaml # modified areas - parks, farmland, grass, golf cources ....
