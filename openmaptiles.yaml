@@ -15,7 +15,7 @@ tileset:
     ##- layers/place/place.yaml # names of countries, cities and towns
     #- layers/housenumber/housenumber.yaml                    # skip?
     #- layers/poi/poi.yaml                                    # skip?
-    ##- layers/aerodrome_label/aerodrome_label.yaml # name of airports.
+    - layers/aerodrome_label/aerodrome_label.yaml # name of airports.
   name: OpenMapTiles
   version: 3.14.0
   id: openmaptiles
