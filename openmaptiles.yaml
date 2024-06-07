@@ -11,7 +11,7 @@ tileset:
     #- layers/transportation/transportation.yaml # roads, trainlines, ferry routes.
     #- layers/building/building.yaml # building.
     - layers/water_name/water_name.yaml # names for ocean, lakes, rivers,
-    #- layers/transportation_name/transportation_name.yaml # names for roads, possible to merge with transportation?
+    # - layers/transportation_name/transportation_name.yaml # names for roads, possible to merge with transportation?
     - layers/place/place.yaml # names of countries, cities and towns
     #- layers/housenumber/housenumber.yaml                    # skip?
     #- layers/poi/poi.yaml                                    # skip?
