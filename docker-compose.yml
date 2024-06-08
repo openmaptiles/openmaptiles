@@ -37,7 +37,7 @@ services:
 
   openmaptiles-tools: &openmaptiles-tools
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    #shm_size: 512m
+    shm_size: 2g
     env_file: .env
     environment:
       # Must match the version of this file (first line)
