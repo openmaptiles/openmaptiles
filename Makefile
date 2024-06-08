@@ -289,7 +289,7 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'generate-sql $(TILESET_FILE) --dir ./build/sql \
 		&& generate-sqltomvt $(TILESET_FILE) \
-							 --shm-size=1g
+							 --shm-size=1g \
 							 --key --gzip --postgis-ver 3.0.1 \
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
