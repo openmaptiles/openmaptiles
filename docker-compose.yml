@@ -96,6 +96,10 @@ services:
     volumes:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 16000000000 # ~16gb
     networks:
       - postgres
     env_file: .env
