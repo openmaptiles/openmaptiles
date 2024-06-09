@@ -1,5 +1,5 @@
 # This version must match the MAKE_DC_VERSION value below
-version: "3"
+version: "3.7"
 
 volumes:
   pgdata:
@@ -14,13 +14,9 @@ services:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
     # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
     # Use "shm_size: 512m" if you want to prevent a possible 'No space left on device' during 'make generate-tiles-pg'
-    #shm_size: 16g
+    shm_size: 60g
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - type: tmpfs
-        target: /dev/shm
-        tmpfs:
-          size: 16000000000 # ~16gb
     networks:
       - postgres
     ports:
@@ -41,12 +37,11 @@ services:
 
   openmaptiles-tools: &openmaptiles-tools
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
-    shm_size: "2g"
     env_file: .env
     environment:
       # Must match the version of this file (first line)
       # download-osm will use it when generating a composer file
-      MAKE_DC_VERSION: "3"
+      MAKE_DC_VERSION: "3.7"
       # Allow DIFF_MODE, MIN_ZOOM, and MAX_ZOOM to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
       MIN_ZOOM: ${MIN_ZOOM}
@@ -72,10 +67,6 @@ services:
       - ./build:/mapping
       - ./cache:/cache
       - ./style:/style
-      - type: tmpfs
-        target: /dev/shm
-        tmpfs:
-          size: 16000000000 # ~16gb
 
   update-osm:
     <<: *openmaptiles-tools
