@@ -6,7 +6,7 @@ DROP TRIGGER IF EXISTS trigger_store_transportation_highway_linestring ON osm_hi
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
 SELECT ST_Buffer(geometry, 10000)
 FROM ne_10m_admin_0_countries
-WHERE iso_a2 IN ('GB', 'IM', 'JE', 'GG');
+WHERE iso_a2 = 'GB';
 
 -- etldoc: ne_10m_admin_0_countries ->  ne_10m_admin_0_ie_buffer
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_ie_buffer AS
