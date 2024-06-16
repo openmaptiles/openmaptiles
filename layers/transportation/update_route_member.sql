@@ -4,7 +4,7 @@ DROP TRIGGER IF EXISTS trigger_store_transportation_highway_linestring ON osm_hi
 
 -- etldoc: ne_10m_admin_0_countries ->  ne_10m_admin_0_gb_buffer
 CREATE TABLE IF NOT EXISTS ne_10m_admin_0_gb_buffer AS
-SELECT ST_Buffer(geometry, 10000)
+SELECT ST_Union(ST_Buffer(geometry, 10000)) AS geometry
 FROM ne_10m_admin_0_countries
 WHERE iso_a2 IN ('GB', 'IM', 'JE', 'GG');
 
@@ -26,7 +26,7 @@ SELECT osm_id AS member,
             WHEN highway IN ('primary','secondary') THEN 'omt-gb-primary' END AS network
 FROM osm_highway_linestring
 WHERE length(ref) > 1
-  AND ST_Intersects(geometry, (SELECT geometry FROM ne_10m_admin_0_gb_buffer))
+  AND ST_Intersects(geometry, (SELECT * FROM ne_10m_admin_0_gb_buffer))
   AND highway IN ('motorway', 'trunk', 'primary', 'secondary')
 ;
 
