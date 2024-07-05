@@ -6,8 +6,8 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : Run download area "
 
-#make download-geofabrik area=planet
-#make destroy-db
+#make download-geofabrik area=norway
+make destroy-db
 #make stop-db
 #make clean-unnecessary-docker
 #make remove-docker-images
@@ -37,7 +37,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : import osm  "
 
-make import-osm area=planet
+make import-osm area=norway
 
 echo "... Complete!"
 
@@ -61,7 +61,7 @@ echo " "
 echo "-------------------------------------------------------------------------------------"
 echo "====> : generate tiles  "
 
-make generate-bbox-file area=planet
+make generate-bbox-file area=norway
 
 make generate-tiles-pg 
 

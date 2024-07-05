@@ -34,7 +34,7 @@
           "ferry"
         ]
       ],
-      "order": 152
+      "order": 153
     },
     {
       "id": "road_label",
@@ -81,7 +81,7 @@
           "ferry"
         ]
       ],
-      "order": 153
+      "order": 154
     },
     {
       "id": "highway-shield-tertiary",
@@ -160,7 +160,7 @@
           "ref"
         ]
       ],
-      "order": 154
+      "order": 155
     },
     {
       "id": "highway-shield-secondary",
@@ -239,7 +239,7 @@
           "ref"
         ]
       ],
-      "order": 155
+      "order": 156
     },
     {
       "id": "highway-shield-primary",
@@ -318,7 +318,7 @@
           "ref"
         ]
       ],
-      "order": 156
+      "order": 157
     },
     {
       "id": "highway-shield-motorway",
@@ -400,7 +400,7 @@
           "ref"
         ]
       ],
-      "order": 157
+      "order": 158
     }
   ]
 }
