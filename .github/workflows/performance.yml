@@ -163,8 +163,8 @@ jobs:
             # Get database total size, in MB
             # Once Makefile has a few more improvements, we can use this approach instead:
             # echo $'\\set QUIET on \\a \\x off \\t \\\\ select pg_database_size(current_database())/1024/1024;' | make -s psql
-            DB_SIZE_MB=$(docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
-            docker-compose run --rm -u $(id -u):$(id -g) openmaptiles-tools pg_dump --schema-only > "${PROFILE_DIR}/schema.sql"
+            DB_SIZE_MB=$(docker compose run --rm -u $(id -u):$(id -g) openmaptiles-tools psql.sh -qtAc 'select pg_database_size(current_database())/1024/1024;')
+            docker compose run --rm -u $(id -u):$(id -g) openmaptiles-tools pg_dump --schema-only > "${PROFILE_DIR}/schema.sql"
             echo "$DB_SIZE_MB" > "${PROFILE_DIR}/db_size.tsv"
           }
 
@@ -183,14 +183,14 @@ jobs:
               git reset --hard ${CURRENT_SHA}^1
             fi
 
-            docker-compose pull
+            docker compose pull
             PROFILE_DIR=../perf_cache
             create_db
             if [ ! -f ../ci_cache/wikidata-cache.json ]; then
               cp cache/wikidata-cache.json ../ci_cache/wikidata-cache.json
             fi
 
-            (set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            (set -x; profile test-perf docker compose run --rm -T openmaptiles-tools \
               test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
               --record /tileset/results.json)
             echo "Done generating base perf results, moving them to ../perf_cache"
@@ -205,7 +205,7 @@ jobs:
             echo "Found cached performance results"
           fi
 
-          docker-compose pull
+          docker compose pull
           pushd ../perf_cache
           echo "Should be in perf_cache"
           pwd
@@ -231,7 +231,7 @@ jobs:
             echo "Copying existing perf_cache results to current dir"
             pwd
             cp ../perf_cache/results.json .
-            OUTPUT="$(set -x; profile test-perf docker-compose run --rm -T openmaptiles-tools \
+            OUTPUT="$(set -x; profile test-perf docker compose run --rm -T openmaptiles-tools \
                         test-perf openmaptiles.yaml $TEST_PERF_PARAMS \
                         --compare /tileset/results.json --record /tileset/pr-results.json)"
             rm results.json
