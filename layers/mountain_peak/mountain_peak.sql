@@ -72,8 +72,10 @@ FROM (
                     )::int AS "rank"
          FROM peak_point
          WHERE geometry && bbox
-           AND ele IS NOT NULL
-           AND ele ~ E'^-?\\d{1,4}(\\D|$)'
+           AND (
+            (ele IS NOT NULL AND ele ~ E'^-?\\d{1,4}(\\D|$)')
+            OR name <> ''
+           )
      ) AS ranked_peaks
 WHERE zoom_level >= 7
   AND (rank <= 5 OR zoom_level >= 14)
