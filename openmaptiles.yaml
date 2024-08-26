@@ -2,27 +2,27 @@ tileset:
   layers:
     - layers/water/water.yaml # water -ocean, lakes and big rivers, remove natural earth sections. same as landcover
     - layers/waterway/waterway.yaml # waterway - rivers and centerlines on lakes.
-    #- layers/landcover/landcover.yaml # landcover - woods, sand, glacier, rock ... natural areas.
-    #- layers/landuse/landuse.yaml # modified areas - parks, farmland, grass, golf cources ....
-    ##- layers/mountain_peak/mountain_peak.yaml                # needed?
+    - layers/landcover/landcover.yaml # landcover - woods, sand, glacier, rock ... natural areas.
+    - layers/landuse/landuse.yaml # modified areas - parks, farmland, grass, golf cources ....
+    #- layers/mountain_peak/mountain_peak.yaml                # needed?
     #- layers/park/park.yaml                                  # national parks - nice to have concider if needed?
     #- layers/boundary/boundary.yaml                          # no longer needed,
-    #- layers/aeroway/aeroway.yaml # air-port area. concider to move into landuse?
-    #- layers/transportation/transportation.yaml # roads, trainlines, ferry routes.
-    #- layers/building/building.yaml # building.
-    #- layers/water_name/water_name.yaml # names for ocean, lakes, rivers,
-    # - layers/transportation_name/transportation_name.yaml # names for roads, possible to merge with transportation?
-    #- layers/place/place.yaml # names of countries, cities and towns
+    - layers/aeroway/aeroway.yaml # air-port area. concider to move into landuse?
+    - layers/transportation/transportation.yaml # roads, trainlines, ferry routes.
+    - layers/building/building.yaml # building.
+    - layers/water_name/water_name.yaml # names for ocean, lakes, rivers,
+    - layers/transportation_name/transportation_name.yaml # names for roads, possible to merge with transportation?
+    - layers/place/place.yaml # names of countries, cities and towns
     #- layers/housenumber/housenumber.yaml                    # skip?
     #- layers/poi/poi.yaml                                    # skip?
-    #- layers/aerodrome_label/aerodrome_label.yaml # name of airports.
+    - layers/aerodrome_label/aerodrome_label.yaml # name of airports.
   name: OpenMapTiles
   version: 3.14.0
   id: openmaptiles
   description: "A tileset showcasing all layers in OpenMapTiles. https://openmaptiles.org"
   attribution: '<a href="https://www.openmaptiles.org/" target="_blank">&copy; OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
   center: [0, 0, 1]
-  bounds: [-180.0, -85.0511, 180.0, 85.0511]
+  bounds: [-11.36801, 57.55323, 35.52711, 81.05195]
   maxzoom: 13
   minzoom: 0
   pixel_scale: 256
