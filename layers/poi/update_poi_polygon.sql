@@ -36,6 +36,19 @@ $$
       AND funicular = 'yes'
       AND subclass = 'station';
 
+    -- Parcel locker and charging_station without name 
+    -- use either brand or operator and add ref if present
+    -- (using name for parcel lockers is discouraged, see osm wiki)
+    UPDATE osm_poi_polygon
+    SET (name, tags) = (
+        TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))),
+        tags || hstore('name', TRIM(CONCAT(COALESCE(tags -> 'brand', tags -> 'operator'), concat(' ', tags -> 'ref'))))
+    )
+    WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_polygon.osm_ids))
+      AND subclass IN ('parcel_locker', 'charging_station')
+      AND name = ''
+      AND COALESCE(tags -> 'brand', tags -> 'operator') IS NOT NULL;
+
     UPDATE osm_poi_polygon
     SET tags = update_tags(tags, geometry)
     WHERE (full_update OR osm_id IN (SELECT osm_id FROM poi_polygon.osm_ids))

@@ -4529,37 +4529,21 @@
         "all",
         [
           "==",
-          [
-            "geometry-type"
-          ],
+          "$type",
           "LineString"
         ],
         [
           "all",
           [
-            "match",
-            [
-              "get",
-              "brunnel"
-            ],
-            [
-              "bridge",
-              "tunnel"
-            ],
-            false,
-            true
+            "in",
+            "brunnel",
+            "bridge",
+            "tunnel"
           ],
           [
-            "match",
-            [
-              "get",
-              "class"
-            ],
-            [
-              "minor"
-            ],
-            true,
-            false
+            "in",
+            "class",
+            "minor"
           ]
         ]
       ],
@@ -4633,37 +4617,21 @@
         "all",
         [
           "==",
-          [
-            "geometry-type"
-          ],
+          "$type",
           "LineString"
         ],
         [
           "all",
           [
-            "match",
-            [
-              "get",
-              "brunnel"
-            ],
-            [
-              "bridge",
-              "tunnel"
-            ],
-            false,
-            true
+            "in",
+            "brunnel",
+            "bridge",
+            "tunnel"
           ],
           [
-            "match",
-            [
-              "get",
-              "class"
-            ],
-            [
-              "minor_construction"
-            ],
-            true,
-            false
+            "in",
+            "class",
+            "minor_construction"
           ]
         ]
       ],
@@ -5607,7 +5575,7 @@
           "stops": [
             [
               8,
-              " #787878"
+              "#787878"
             ],
             [
               14,

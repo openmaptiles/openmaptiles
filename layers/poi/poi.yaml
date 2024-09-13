@@ -6,9 +6,9 @@ layer:
   buffer_size: 64
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
-    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
-    name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI. Language-specific values are in `name:xx`.
+    name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
     class:
       description: |
         More general classes of POIs. If there is no more general `class` for the `subclass`
@@ -17,14 +17,24 @@ layer:
         and `kindergarten`. Or use the class `shop` to style all shops.
       values:
         shop:
-          subclass: ['accessories', 'antiques', 'beauty', 'bed', 'boutique', 'camera', 'carpet', 'charity', 'chemist',
-                     'coffee', 'computer', 'convenience', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
+          subclass: ['accessories', 'antiques', 'beauty', 'bed', 'boutique', 'camera', 'carpet', 'charity', 'chemist', 'chocolate', 
+                     'coffee', 'computer', 'convenience', 'confectionery', 'copyshop', 'cosmetics', 'garden_centre', 'doityourself',
                      'erotic', 'electronics', 'fabric', 'florist', 'frozen_food', 'furniture', 'video_games', 'video',
-                     'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'ice_cream', 'interior_decoration',
-                     'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone', 
-                     'newsagent', 'optician', 'outdoor', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
-                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency', 
+                     'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'interior_decoration',
+                     'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone',
+                     'newsagent', 'optician', 'outdoor', 'paint', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
+                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency',
                      'watches', 'weapons', 'wholesale']
+        office:
+          subclass: ['accountant', 'advertising_agency', 'architect', 'association', 'bail_bond_agent', 'charity',
+                     'company', 'construction_company', 'consulting', 'cooperative', 'courier', 'coworking', 'diplomatic',
+                     'educational_institution', 'employment_agency', 'energy_supplier', 'engineer', 'estate_agent', 'financial',
+                     'financial_advisor', 'forestry', 'foundation', 'geodesist', 'government', 'graphic_design', 'guide',
+                     'harbour_master', 'health_insurance', 'insurance', 'interior_design', 'it', 'lawyer', 'logistics', 'marketing',
+                     'moving_company', 'newspaper', 'ngo', 'notary', 'physician', 'political_party', 'private_investigator',
+                     'property_management', 'publisher', 'quango', 'religion', 'research', 'security', 'surveyor', 'tax_advisor',
+                     'taxi', 'telecommunication', 'therapist', 'translator', 'travel_agent', 'tutoring', 'union', 'university',
+                     'water_utility', 'web_design', 'wedding_planner']
         town_hall:
           subclass: ['townhall', 'public_building', 'courthouse', 'community_centre']
         golf:
@@ -59,7 +69,7 @@ layer:
         lodging:
           subclass: ['hotel', 'motel', 'bed_and_breakfast', 'guest_house', 'hostel', 'chalet', 'alpine_hut', 'dormitory']
         ice_cream:
-          subclass: ['chocolate', 'confectionery']
+          subclass: ['ice_cream']
         post:
           subclass: ['post_box', 'post_office', 'parcel_locker']
         cafe:
@@ -96,6 +106,8 @@ layer:
           subclass: ['castle', 'ruins']
         atm:
           subclass: ['atm']
+        fuel:
+          subclass: ['fuel', 'charging_station']
     subclass:
       description: |
           Original value of either the

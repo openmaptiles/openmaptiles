@@ -15,7 +15,7 @@ jobs:
     steps:
 
       - name: Checkout the changes
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Run quickstart for a small area
         env:
@@ -27,7 +27,7 @@ jobs:
           ./quickstart.sh $area
 
       - name: Save quickstart.log
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: quickstart.log
           path: quickstart.log
@@ -52,13 +52,13 @@ jobs:
           # Download 2+ month old data
           export old_date=$(date --date="$(date +%Y-%m-15) -2 month" +'%y%m01')
           echo Downloading $old_date extract of $area
-          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$old_date.osm.pbf"
+          docker compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "wget -O data/$area.osm.pbf http://download.geofabrik.de/$area-$old_date.osm.pbf"
           # Initial import and tile generation
           ./quickstart.sh $area
           sleep 2
           echo Downloading updates
           # Loop to recover from potential "ERROR 429: Too Many Requests"
-          docker-compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "
+          docker compose run --rm --user=$(id -u):$(id -g) openmaptiles-tools sh -c "
             while ! osmupdate --keep-tempfiles --base-url=$(sed -n 's/ *\"replication_url\": //p' data/$area.repl.json) data/$area.osm.pbf data/changes.osc.gz ; do 
               sleep 2;
               echo Sleeping...;

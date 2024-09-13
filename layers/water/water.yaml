@@ -40,7 +40,7 @@ layer:
         river:
           water: ['river', 'stream', 'canal', 'ditch', 'drain']
         pond:
-          water: ['pond', 'basin', 'wastewater']
+          water: ['pond', 'basin', 'wastewater', 'salt_pond']
         lake:
         ocean:
         swimming_pool:

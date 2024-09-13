@@ -22,7 +22,37 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "coalesce",
+          [
+            "image",
+            [
+              "match",
+              [
+                "get",
+                "subclass"
+              ],
+              "chocolate",
+              "confectionery",
+              "wine",
+              "alcohol",
+              "kiosk",
+              "newsagent",
+              "perfume",
+              "perfumery",
+              "wholesale",
+              "trade",
+              [
+                "get",
+                "subclass"
+              ]
+            ]
+          ],
+          [
+            "image",
+            "shop"
+          ]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
@@ -35,16 +65,7 @@
         "icon-allow-overlap": true
       },
       "paint": {
-        "text-color": [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          "ice_cream",
-          "#C77400",
-          "#939"
-        ],
+        "text-color": "#939",
         "icon-opacity": 1,
         "icon-halo-blur": 1,
         "text-halo-blur": 0.5,
@@ -72,7 +93,9 @@
           "subclass",
           "mall",
           "library",
-          "artwork"
+          "artwork",
+          "arts_centre",
+          "gallery"
         ]
       ],
       "order": 155
@@ -99,7 +122,19 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "chocolate",
+          "confectionery",
+          [
+            "get",
+            "subclass"
+          ]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
@@ -112,16 +147,7 @@
         "icon-allow-overlap": true
       },
       "paint": {
-        "text-color": [
-          "match",
-          [
-            "get",
-            "class"
-          ],
-          "ice_cream",
-          "#C77400",
-          "#939"
-        ],
+        "text-color": "#939",
         "icon-opacity": 1,
         "icon-halo-blur": 1,
         "text-halo-blur": 0.5,
@@ -743,7 +769,27 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
+        "icon-image": [
+          "coalesce",
+          [
+            "image",
+            [
+              "get",
+              "subclass"
+            ]
+          ],
+          [
+            "image",
+            [
+              "get",
+              "class"
+            ]
+          ],
+          [
+            "image",
+            ""
+          ]
+        ],
         "text-field": "{name:latin}\n{name:nonlatin}",
         "visibility": "visible",
         "text-anchor": "top",
@@ -778,7 +824,8 @@
           "information",
           "cinema",
           "theatre",
-          "fire_station"
+          "fire_station",
+          "office"
         ],
         [
           "!=",
@@ -840,7 +887,6 @@
           "class",
           "cinema",
           "library",
-          "music",
           "museum",
           "castle",
           "monument",
@@ -850,9 +896,7 @@
           "!in",
           "subclass",
           "books",
-          "musical_instrument",
-          "art",
-          "gallery"
+          "art"
         ]
       ],
       "order": 168
@@ -976,7 +1020,8 @@
           "class",
           "car",
           "bicycle_parking",
-          "fuel"
+          "fuel",
+          "charging_station"
         ]
       ],
       "order": 170
