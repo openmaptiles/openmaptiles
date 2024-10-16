@@ -14,7 +14,7 @@ services:
     command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
     # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
     # Use "shm_size: 512m" if you want to prevent a possible 'No space left on device' during 'make generate-tiles-pg'
-    shm_size: 60g
+    shm_size: 1g
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
@@ -29,6 +29,7 @@ services:
       POSTGRES_USER: ${PGUSER:-openmaptiles}
       POSTGRES_PASSWORD: ${PGPASSWORD:-openmaptiles}
       PGPORT: ${PGPORT:-5432}
+      TILE_TIMEOUT: 3600000
 
   import-data:
     image: "openmaptiles/import-data:${TOOLS_VERSION}"
