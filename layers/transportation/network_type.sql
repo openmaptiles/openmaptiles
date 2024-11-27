@@ -44,13 +44,19 @@ $$
 $$ LANGUAGE sql IMMUTABLE
                 PARALLEL SAFE;
 
-CREATE OR REPLACE FUNCTION create_route_hstore(network TEXT, ref TEXT, name TEXT, colour TEXT, ref_colour TEXT)
+CREATE OR REPLACE FUNCTION create_route_hstore(network TEXT, cycle_network TEXT, route TEXT, ref TEXT, name TEXT, colour TEXT, ref_colour TEXT)
 RETURNS hstore AS $$
 SELECT CASE
            WHEN network = '' THEN hstore('')
            ELSE hstore(
-               ARRAY['network', 'ref', 'name', 'colour'],
-               ARRAY[network, NULLIF(ref, ''), NULLIF(name, ''), COALESCE(NULLIF(colour, ''), NULLIF(ref_colour, ''))]
+               ARRAY['network', 'route', 'ref', 'name', 'colour'],
+               ARRAY[
+                   CASE WHEN route = 'bicycle' THEN NULLIF(cycle_network, '') ELSE NULLIF(network, '') END,
+                   NULLIF(route, ''),
+                   NULLIF(ref, ''),
+                   NULLIF(name, ''),
+                   COALESCE(NULLIF(colour, ''), NULLIF(ref_colour, ''))
+               ]
            )
        END;
 $$ LANGUAGE sql IMMUTABLE
