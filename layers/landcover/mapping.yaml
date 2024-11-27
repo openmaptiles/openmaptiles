@@ -18,6 +18,7 @@ tables:
       - farm
       - farmland
       - orchard
+      - flowerbed
       - plant_nursery
       - vineyard
       - grass
