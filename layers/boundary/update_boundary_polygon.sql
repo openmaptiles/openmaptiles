@@ -100,42 +100,6 @@ CREATE INDEX IF NOT EXISTS osm_boundary_polygon_gen_z7_point_geom_idx ON osm_bou
 CREATE INDEX IF NOT EXISTS osm_boundary_polygon_gen_z6_point_geom_idx ON osm_boundary_polygon_gen_z6 USING gist (geometry_point);
 CREATE INDEX IF NOT EXISTS osm_boundary_polygon_gen_z5_point_geom_idx ON osm_boundary_polygon_gen_z5 USING gist (geometry_point);
 
-CREATE SCHEMA IF NOT EXISTS boundary_polygon;
-
-CREATE TABLE IF NOT EXISTS boundary_polygon.updates
-(
-    id serial PRIMARY KEY,
-    t  text,
-    UNIQUE (t)
-);
-
-CREATE OR REPLACE FUNCTION boundary_polygon.flag() RETURNS trigger AS
-$$
-BEGIN
-    INSERT INTO boundary_polygon.updates(t) VALUES ('y') ON CONFLICT(t) DO NOTHING;
-    RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION boundary_polygon.refresh() RETURNS trigger AS
-$$
-DECLARE
-    t TIMESTAMP WITH TIME ZONE := clock_timestamp();
-BEGIN
-    RAISE LOG 'Refresh boundary_polygon';
-
-    -- Analyze tracking and source tables before performing update
-    ANALYZE osm_boundary_polygon_gen_z5;
-    REFRESH MATERIALIZED VIEW osm_boundary_polygon_gen_z5;
-
-    -- noinspection SqlWithoutWhere
-    DELETE FROM boundary_polygon.updates;
-
-    RAISE LOG 'Refresh boundary_polygon done in %', age(clock_timestamp(), t);
-    RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION update_osm_boundary_polygon_row()
     RETURNS trigger
 AS
@@ -206,16 +170,3 @@ CREATE TRIGGER update_row
     ON osm_boundary_polygon_gen_z5
     FOR EACH ROW
 EXECUTE PROCEDURE update_osm_boundary_polygon_row();
-
-CREATE TRIGGER trigger_flag
-    AFTER INSERT OR UPDATE OR DELETE
-    ON osm_boundary_polygon
-    FOR EACH STATEMENT
-EXECUTE PROCEDURE boundary_polygon.flag();
-
-CREATE CONSTRAINT TRIGGER trigger_refresh
-    AFTER INSERT
-    ON boundary_polygon.updates
-    INITIALLY DEFERRED
-    FOR EACH ROW
-EXECUTE PROCEDURE boundary_polygon.refresh();
