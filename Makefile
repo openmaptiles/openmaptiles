@@ -596,7 +596,7 @@ psql-list-tables: init-dirs
 .PHONY: vacuum-db
 vacuum-db: init-dirs
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM (ANALYZE, VERBOSE);'
 
 .PHONY: analyze-db
 analyze-db: init-dirs
