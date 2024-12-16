@@ -29,8 +29,6 @@ DROP TRIGGER IF EXISTS update_row ON osm_boundary_polygon_gen_z8;
 DROP TRIGGER IF EXISTS update_row ON osm_boundary_polygon_gen_z7;
 DROP TRIGGER IF EXISTS update_row ON osm_boundary_polygon_gen_z6;
 DROP TRIGGER IF EXISTS update_row ON osm_boundary_polygon_gen_z5;
-DROP TRIGGER IF EXISTS trigger_flag ON osm_boundary_polygon;
-DROP TRIGGER IF EXISTS trigger_refresh ON boundary_polygon.updates;
 
 -- etldoc:  osm_boundary_polygon ->  osm_boundary_polygon
 -- etldoc:  osm_boundary_polygon_gen_z13 ->  osm_boundary_polygon_gen_z13
