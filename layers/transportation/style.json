@@ -4535,29 +4535,15 @@
         [
           "all",
           [
-            "match",
-            [
-              "get",
-              "brunnel"
-            ],
-            [
-              "bridge",
-              "tunnel"
-            ],
-            false,
-            true
+            "!in",
+            "brunnel",
+            "bridge",
+            "tunnel"
           ],
           [
-            "match",
-            [
-              "get",
-              "class"
-            ],
-            [
-              "minor"
-            ],
-            true,
-            false
+            "in",
+            "class",
+            "minor"
           ]
         ]
       ],
@@ -4637,29 +4623,15 @@
         [
           "all",
           [
-            "match",
-            [
-              "get",
-              "brunnel"
-            ],
-            [
-              "bridge",
-              "tunnel"
-            ],
-            false,
-            true
+            "!in",
+            "brunnel",
+            "bridge",
+            "tunnel"
           ],
           [
-            "match",
-            [
-              "get",
-              "class"
-            ],
-            [
-              "minor_construction"
-            ],
-            true,
-            false
+            "in",
+            "class",
+            "minor_construction"
           ]
         ]
       ],
