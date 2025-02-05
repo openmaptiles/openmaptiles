@@ -65,186 +65,192 @@ SELECT  ne_id,
 FROM geom_match
 );
 
--- ne_10m_ocean
--- etldoc:  ne_10m_ocean ->  ne_10m_ocean_gen_z5
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_ocean_gen_z5 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_ocean_gen_z5 AS
-(
-SELECT  NULL::integer AS id,
-       (ST_Dump(ST_Simplify(geometry, ZRes(7)))).geom AS geometry,
-       'ocean'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_10m_ocean
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_ocean_gen_z5_idx ON ne_10m_ocean_gen_z5 USING gist (geometry);
+-- -- ne_10m_ocean
+-- -- etldoc:  ne_10m_ocean ->  ne_10m_ocean_gen_z5
+-- DROP MATERIALIZED VIEW IF EXISTS ne_10m_ocean_gen_z5 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_10m_ocean_gen_z5 AS
+-- (
+-- SELECT  NULL::integer AS id,
+--        (ST_Dump(ST_Simplify(geometry, ZRes(7)))).geom AS geometry,
+--        'ocean'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_10m_ocean
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_10m_ocean_gen_z5_idx ON ne_10m_ocean_gen_z5 USING gist (geometry);
+-- 
+-- -- ne_10m_lakes
+-- -- etldoc:  ne_10m_lakes ->  ne_10m_lakes_gen_z5
+-- DROP MATERIALIZED VIEW IF EXISTS ne_10m_lakes_gen_z5 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_10m_lakes_gen_z5 AS
+-- (
+-- SELECT COALESCE(osm.osm_id, ne_id) AS id,
+--         -- Union fixing e.g. Lake Huron and Georgian Bay duplicity 
+--        (ST_Dump(ST_MakeValid(ST_Simplify(ST_Union(geometry), ZRes(7))))).geom AS geometry,
+--        'lake'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_10m_lakes
+-- LEFT JOIN match_osm_ne_id osm USING (ne_id)
+-- GROUP BY COALESCE(osm.osm_id, ne_id), is_intermittent, is_bridge, is_tunnel
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z5_idx ON ne_10m_lakes_gen_z5 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_10m_lakes_gen_z5 ->  ne_10m_lakes_gen_z4
+-- DROP MATERIALIZED VIEW IF EXISTS ne_10m_lakes_gen_z4 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_10m_lakes_gen_z4 AS
+-- (
+-- SELECT id,
+--        (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(6))))).geom AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_10m_lakes_gen_z5
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z4_idx ON ne_10m_lakes_gen_z4 USING gist (geometry);
+-- 
+-- -- ne_50m_ocean
+-- -- etldoc:  ne_50m_ocean ->  ne_50m_ocean_gen_z4
+-- DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z4 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z4 AS
+-- (
+-- SELECT NULL::integer AS id,
+--        (ST_Dump(ST_Simplify(geometry, ZRes(6)))).geom AS geometry,
+--        'ocean'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_50m_ocean
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z4_idx ON ne_50m_ocean_gen_z4 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_50m_ocean_gen_z4 ->  ne_50m_ocean_gen_z3
+-- DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z3 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z3 AS
+-- (
+-- SELECT id,
+--        ST_Simplify(geometry, ZRes(5)) AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_ocean_gen_z4
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z3_idx ON ne_50m_ocean_gen_z3 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_50m_ocean_gen_z3 ->  ne_50m_ocean_gen_z2
+-- DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z2 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z2 AS
+-- (
+-- SELECT id,
+--        ST_Simplify(geometry, ZRes(4)) AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_ocean_gen_z3
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z2_idx ON ne_50m_ocean_gen_z2 USING gist (geometry);
+-- 
+-- -- ne_50m_lakes
+-- -- etldoc:  ne_50m_lakes ->  ne_50m_lakes_gen_z3
+-- DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z3 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z3 AS
+-- (
+-- SELECT COALESCE(osm.osm_id, ne_id) AS id,
+--        (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(5))))).geom AS geometry,
+--        'lake'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_50m_lakes
+-- LEFT JOIN match_osm_ne_id osm USING (ne_id)
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z3_idx ON ne_50m_lakes_gen_z3 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_50m_lakes_gen_z3 ->  ne_50m_lakes_gen_z2
+-- DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z2 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z2 AS
+-- (
+-- SELECT id,
+--        (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(4))))).geom AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_lakes_gen_z3
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z2_idx ON ne_50m_lakes_gen_z2 USING gist (geometry);
+-- 
+-- --ne_110m_ocean
+-- -- etldoc:  ne_110m_ocean ->  ne_110m_ocean_gen_z1
+-- DROP MATERIALIZED VIEW IF EXISTS ne_110m_ocean_gen_z1 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_110m_ocean_gen_z1 AS
+-- (
+-- SELECT NULL::integer AS id,
+--        ST_Simplify(geometry, ZRes(3)) AS geometry,
+--        'ocean'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_110m_ocean
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z1_idx ON ne_110m_ocean_gen_z1 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_110m_ocean_gen_z1 ->  ne_110m_ocean_gen_z0
+-- DROP MATERIALIZED VIEW IF EXISTS ne_110m_ocean_gen_z0 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_110m_ocean_gen_z0 AS
+-- (
+-- SELECT id,
+--        ST_Simplify(geometry, ZRes(2)) AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_ocean_gen_z1
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z0_idx ON ne_110m_ocean_gen_z0 USING gist (geometry);
+-- 
+-- 
+-- -- ne_110m_lakes
+-- -- etldoc:  ne_110m_lakes ->  ne_110m_lakes_gen_z1
+-- DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z1 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z1 AS
+-- (
+-- SELECT COALESCE(osm.osm_id, ne_id) AS id,
+--        (ST_Dump(ST_Simplify(geometry, ZRes(3)))).geom AS geometry,
+--        'lake'::text AS class,
+--        NULL::boolean AS is_intermittent,
+--        NULL::boolean AS is_bridge,
+--        NULL::boolean AS is_tunnel
+-- FROM ne_110m_lakes
+-- LEFT JOIN match_osm_ne_id osm USING (ne_id)
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z1_idx ON ne_110m_lakes_gen_z1 USING gist (geometry);
+-- 
+-- -- etldoc:  ne_110m_lakes_gen_z1 ->  ne_110m_lakes_gen_z0
+-- DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z0 CASCADE;
+-- CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z0 AS
+-- (
+-- SELECT id,
+--        (ST_Dump(ST_Simplify(geometry, ZRes(2)))).geom AS geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_lakes_gen_z1
+--     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
+-- CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z0_idx ON ne_110m_lakes_gen_z0 USING gist (geometry);
 
--- ne_10m_lakes
--- etldoc:  ne_10m_lakes ->  ne_10m_lakes_gen_z5
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_lakes_gen_z5 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_lakes_gen_z5 AS
-(
-SELECT COALESCE(osm.osm_id, ne_id) AS id,
-        -- Union fixing e.g. Lake Huron and Georgian Bay duplicity 
-       (ST_Dump(ST_MakeValid(ST_Simplify(ST_Union(geometry), ZRes(7))))).geom AS geometry,
-       'lake'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_10m_lakes
-LEFT JOIN match_osm_ne_id osm USING (ne_id)
-GROUP BY COALESCE(osm.osm_id, ne_id), is_intermittent, is_bridge, is_tunnel
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z5_idx ON ne_10m_lakes_gen_z5 USING gist (geometry);
-
--- etldoc:  ne_10m_lakes_gen_z5 ->  ne_10m_lakes_gen_z4
-DROP MATERIALIZED VIEW IF EXISTS ne_10m_lakes_gen_z4 CASCADE;
-CREATE MATERIALIZED VIEW ne_10m_lakes_gen_z4 AS
-(
-SELECT id,
-       (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(6))))).geom AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_10m_lakes_gen_z5
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_10m_lakes_gen_z4_idx ON ne_10m_lakes_gen_z4 USING gist (geometry);
-
--- ne_50m_ocean
--- etldoc:  ne_50m_ocean ->  ne_50m_ocean_gen_z4
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z4 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z4 AS
-(
-SELECT NULL::integer AS id,
-       (ST_Dump(ST_Simplify(geometry, ZRes(6)))).geom AS geometry,
-       'ocean'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_50m_ocean
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z4_idx ON ne_50m_ocean_gen_z4 USING gist (geometry);
-
--- etldoc:  ne_50m_ocean_gen_z4 ->  ne_50m_ocean_gen_z3
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z3 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z3 AS
-(
-SELECT id,
-       ST_Simplify(geometry, ZRes(5)) AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_ocean_gen_z4
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z3_idx ON ne_50m_ocean_gen_z3 USING gist (geometry);
-
--- etldoc:  ne_50m_ocean_gen_z3 ->  ne_50m_ocean_gen_z2
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_ocean_gen_z2 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_ocean_gen_z2 AS
-(
-SELECT id,
-       ST_Simplify(geometry, ZRes(4)) AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_ocean_gen_z3
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_ocean_gen_z2_idx ON ne_50m_ocean_gen_z2 USING gist (geometry);
-
--- ne_50m_lakes
--- etldoc:  ne_50m_lakes ->  ne_50m_lakes_gen_z3
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z3 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z3 AS
-(
-SELECT COALESCE(osm.osm_id, ne_id) AS id,
-       (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(5))))).geom AS geometry,
-       'lake'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_50m_lakes
-LEFT JOIN match_osm_ne_id osm USING (ne_id)
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z3_idx ON ne_50m_lakes_gen_z3 USING gist (geometry);
-
--- etldoc:  ne_50m_lakes_gen_z3 ->  ne_50m_lakes_gen_z2
-DROP MATERIALIZED VIEW IF EXISTS ne_50m_lakes_gen_z2 CASCADE;
-CREATE MATERIALIZED VIEW ne_50m_lakes_gen_z2 AS
-(
-SELECT id,
-       (ST_Dump(ST_MakeValid(ST_Simplify(geometry, ZRes(4))))).geom AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_lakes_gen_z3
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_50m_lakes_gen_z2_idx ON ne_50m_lakes_gen_z2 USING gist (geometry);
-
---ne_110m_ocean
--- etldoc:  ne_110m_ocean ->  ne_110m_ocean_gen_z1
-DROP MATERIALIZED VIEW IF EXISTS ne_110m_ocean_gen_z1 CASCADE;
-CREATE MATERIALIZED VIEW ne_110m_ocean_gen_z1 AS
-(
-SELECT NULL::integer AS id,
-       ST_Simplify(geometry, ZRes(3)) AS geometry,
-       'ocean'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_110m_ocean
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z1_idx ON ne_110m_ocean_gen_z1 USING gist (geometry);
-
--- etldoc:  ne_110m_ocean_gen_z1 ->  ne_110m_ocean_gen_z0
-DROP MATERIALIZED VIEW IF EXISTS ne_110m_ocean_gen_z0 CASCADE;
-CREATE MATERIALIZED VIEW ne_110m_ocean_gen_z0 AS
-(
-SELECT id,
-       ST_Simplify(geometry, ZRes(2)) AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_ocean_gen_z1
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_110m_ocean_gen_z0_idx ON ne_110m_ocean_gen_z0 USING gist (geometry);
-
-
--- ne_110m_lakes
--- etldoc:  ne_110m_lakes ->  ne_110m_lakes_gen_z1
-DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z1 CASCADE;
-CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z1 AS
-(
-SELECT COALESCE(osm.osm_id, ne_id) AS id,
-       (ST_Dump(ST_Simplify(geometry, ZRes(3)))).geom AS geometry,
-       'lake'::text AS class,
-       NULL::boolean AS is_intermittent,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel
-FROM ne_110m_lakes
-LEFT JOIN match_osm_ne_id osm USING (ne_id)
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z1_idx ON ne_110m_lakes_gen_z1 USING gist (geometry);
-
--- etldoc:  ne_110m_lakes_gen_z1 ->  ne_110m_lakes_gen_z0
-DROP MATERIALIZED VIEW IF EXISTS ne_110m_lakes_gen_z0 CASCADE;
-CREATE MATERIALIZED VIEW ne_110m_lakes_gen_z0 AS
-(
-SELECT id,
-       (ST_Dump(ST_Simplify(geometry, ZRes(2)))).geom AS geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_lakes_gen_z1
-    ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
-CREATE INDEX IF NOT EXISTS ne_110m_lakes_gen_z0_idx ON ne_110m_lakes_gen_z0 USING gist (geometry);
-
+DROP MATERIALIZED VIEW IF EXISTS water_z0;
+DROP MATERIALIZED VIEW IF EXISTS water_z1;
+DROP MATERIALIZED VIEW IF EXISTS water_z2;
+DROP MATERIALIZED VIEW IF EXISTS water_z3;
+DROP MATERIALIZED VIEW IF EXISTS water_z4;
+DROP MATERIALIZED VIEW IF EXISTS water_z5;
 DROP MATERIALIZED VIEW IF EXISTS water_z6;
 DROP MATERIALIZED VIEW IF EXISTS water_z7;
 DROP MATERIALIZED VIEW IF EXISTS water_z8;
@@ -253,132 +259,276 @@ DROP MATERIALIZED VIEW IF EXISTS water_z10;
 DROP MATERIALIZED VIEW IF EXISTS water_z11;
 DROP MATERIALIZED VIEW IF EXISTS water_z12;
 
-CREATE OR REPLACE VIEW water_z0 AS
-(
--- etldoc:  ne_110m_ocean_gen_z0 ->  water_z0
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_ocean_gen_z0
-UNION ALL
--- etldoc:  ne_110m_lakes_gen_z0 ->  water_z0
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_lakes_gen_z0
-    );
+-- CREATE OR REPLACE VIEW water_z0 AS
+-- (
+-- -- etldoc:  ne_110m_ocean_gen_z0 ->  water_z0
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_ocean_gen_z0
+-- UNION ALL
+-- -- etldoc:  ne_110m_lakes_gen_z0 ->  water_z0
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_lakes_gen_z0
+--     );
+-- 
+-- CREATE OR REPLACE VIEW water_z1 AS
+-- (
+-- -- etldoc:  ne_110m_ocean_gen_z1 ->  water_z1
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_ocean_gen_z1
+-- UNION ALL
+-- -- etldoc:  ne_110m_lakes_gen_z1 ->  water_z1
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_110m_lakes_gen_z1
+--     );
+-- 
+-- CREATE OR REPLACE VIEW water_z2 AS
+-- (
+-- -- etldoc:  ne_50m_ocean_gen_z2 ->  water_z2
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_ocean_gen_z2
+-- UNION ALL
+-- -- etldoc:  ne_50m_lakes_gen_z2 ->  water_z2
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_lakes_gen_z2
+--     );
+-- 
+-- CREATE OR REPLACE VIEW water_z3 AS
+-- (
+-- -- etldoc:  ne_50m_ocean_gen_z3 ->  water_z3
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_ocean_gen_z3
+-- UNION ALL
+-- -- etldoc:  ne_50m_lakes_gen_z3 ->  water_z3
+-- SELECT id, 
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_lakes_gen_z3
+--     );
+-- 
+-- CREATE OR REPLACE VIEW water_z4 AS
+-- (
+-- -- etldoc:  ne_50m_ocean_gen_z4 ->  water_z4
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_50m_ocean_gen_z4
+-- UNION ALL
+-- -- etldoc:  ne_10m_lakes_gen_z4 ->  water_z4
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_10m_lakes_gen_z4
+--     );
+-- 
+-- 
+-- CREATE OR REPLACE VIEW water_z5 AS
+-- (
+-- -- etldoc:  ne_10m_ocean_gen_z5 ->  water_z5
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_10m_ocean_gen_z5
+-- UNION ALL
+-- -- etldoc:  ne_10m_lakes_gen_z5 ->  water_z5
+-- SELECT id,
+--        geometry,
+--        class,
+--        is_intermittent,
+--        is_bridge,
+--        is_tunnel
+-- FROM ne_10m_lakes_gen_z5
+--     );
 
-CREATE OR REPLACE VIEW water_z1 AS
-(
--- etldoc:  ne_110m_ocean_gen_z1 ->  water_z1
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_ocean_gen_z1
-UNION ALL
--- etldoc:  ne_110m_lakes_gen_z1 ->  water_z1
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_110m_lakes_gen_z1
-    );
-
-CREATE OR REPLACE VIEW water_z2 AS
-(
--- etldoc:  ne_50m_ocean_gen_z2 ->  water_z2
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_ocean_gen_z2
-UNION ALL
--- etldoc:  ne_50m_lakes_gen_z2 ->  water_z2
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_lakes_gen_z2
-    );
-
-CREATE OR REPLACE VIEW water_z3 AS
-(
--- etldoc:  ne_50m_ocean_gen_z3 ->  water_z3
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_ocean_gen_z3
-UNION ALL
--- etldoc:  ne_50m_lakes_gen_z3 ->  water_z3
-SELECT id, 
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_lakes_gen_z3
-    );
-
-CREATE OR REPLACE VIEW water_z4 AS
-(
--- etldoc:  ne_50m_ocean_gen_z4 ->  water_z4
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_50m_ocean_gen_z4
-UNION ALL
--- etldoc:  ne_10m_lakes_gen_z4 ->  water_z4
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_10m_lakes_gen_z4
-    );
 
 
-CREATE OR REPLACE VIEW water_z5 AS
+CREATE MATERIALIZED VIEW water_z0 AS
 (
--- etldoc:  ne_10m_ocean_gen_z5 ->  water_z5
-SELECT id,
-       geometry,
-       class,
-       is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_10m_ocean_gen_z5
+-- etldoc:  osm_ocean_polygon_gen_z0 ->  water_z0
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z0
 UNION ALL
--- etldoc:  ne_10m_lakes_gen_z5 ->  water_z5
-SELECT id,
-       geometry,
-       class,
+-- etldoc:  osm_water_polygon_gen_z1 ->  water_z0
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
        is_intermittent,
-       is_bridge,
-       is_tunnel
-FROM ne_10m_lakes_gen_z5
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z1
+WHERE "natural" != 'bay'
     );
+CREATE INDEX ON water_z0 USING gist(geometry);
+
+CREATE MATERIALIZED VIEW water_z1 AS
+(
+-- etldoc:  osm_ocean_polygon_gen_z1 ->  water_z1
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z1
+UNION ALL
+-- etldoc:  osm_water_polygon_gen_z1 ->  water_z0
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
+       is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z1
+WHERE "natural" != 'bay'
+    );
+CREATE INDEX ON water_z1 USING gist(geometry);
+
+CREATE MATERIALIZED VIEW water_z2 AS
+(
+-- etldoc:  osm_ocean_polygon_gen_z2 ->  water_z2
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z2
+UNION ALL
+-- etldoc:  osm_water_polygon_gen_z2 ->  water_z1
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
+       is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z2
+WHERE "natural" != 'bay'
+    );
+CREATE INDEX ON water_z2 USING gist(geometry);
+
+
+CREATE MATERIALIZED VIEW water_z3 AS
+(
+-- etldoc:  osm_ocean_polygon_gen_z3 ->  water_z3
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z3
+UNION ALL
+-- etldoc:  osm_water_polygon_gen_z3 ->  water_z2
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
+       is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z3
+WHERE "natural" != 'bay'
+    );
+CREATE INDEX ON water_z3 USING gist(geometry);
+
+
+CREATE MATERIALIZED VIEW water_z4 AS
+(
+-- etldoc:  osm_ocean_polygon_gen_z4 ->  water_z4
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z4
+UNION ALL
+-- etldoc:  osm_water_polygon_gen_z4 ->  water_z3
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
+       is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z4
+WHERE "natural" != 'bay'
+    );
+CREATE INDEX ON water_z4 USING gist(geometry);
+
+
+CREATE MATERIALIZED VIEW water_z5 AS
+(
+-- etldoc:  osm_ocean_polygon_gen_z5 ->  water_z5
+SELECT NULL::integer AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       'ocean'::text AS class,
+       NULL::boolean AS is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_ocean_polygon_gen_z5
+UNION ALL
+-- etldoc:  osm_water_polygon_gen_z5 ->  water_z4
+SELECT osm_id AS id,
+       (ST_Dump(geometry)).geom AS geometry,
+       water_class(waterway, water, leisure) AS class,
+       is_intermittent,
+       NULL::boolean AS is_bridge,
+       NULL::boolean AS is_tunnel
+FROM osm_water_polygon_gen_z5
+WHERE "natural" != 'bay'
+    );
+CREATE INDEX ON water_z5 USING gist(geometry);
+
 
 CREATE MATERIALIZED VIEW water_z6 AS
 (

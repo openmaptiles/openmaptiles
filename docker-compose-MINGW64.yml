@@ -5,7 +5,6 @@ volumes:
   cache:
 
 services:
-
   openmaptiles-tools:
     volumes:
       - cache:/cache
