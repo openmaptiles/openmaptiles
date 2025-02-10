@@ -2,58 +2,58 @@ tables:
   # etldoc: imposm3 -> osm_landcover_polygon
   landcover_polygon:
     columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - name: subclass
-      type: mapping_value
-    - name: mapping_key
-      type: mapping_key
+      - name: osm_id
+        type: id
+      - name: geometry
+        type: validated_geometry
+      - name: area
+        type: area
+      - name: subclass
+        type: mapping_value
+      - name: mapping_key
+        type: mapping_key
     mapping:
       landuse:
-      - allotments
-      - farm
-      - farmland
-      - orchard
-      - flowerbed
-      - plant_nursery
-      - vineyard
-      - grass
-      - grassland
-      - meadow
-      - forest
-      - village_green
-      - recreation_ground
+        - allotments
+        - farm
+        - farmland
+        - orchard
+        - flowerbed
+        - plant_nursery
+        - vineyard
+        - grass
+        - grassland
+        - meadow
+        - forest
+        - village_green
+        - recreation_ground
       natural:
-      - wood
-      - wetland
-      - fell
-      - grassland
-      - heath
-      - scrub
-      - shrubbery
-      - tundra
-      - glacier
-      - bare_rock
-      - scree
-      - beach
-      - sand
-      - dune
+        - wood
+        - wetland
+        - fell
+        - grassland
+        - heath
+        - scrub
+        - shrubbery
+        - tundra
+        - glacier
+        - bare_rock
+        - scree
+        - beach
+        - sand
+        - dune
       leisure:
-      - park
-      - garden
-      - golf_course
+        - park
+        - garden
+        - golf_course
       wetland:
-      - bog
-      - swamp
-      - wet_meadow
-      - marsh
-      - reedbed
-      - saltern
-      - tidalflat
-      - saltmarsh
-      - mangrove
+        - bog
+        - swamp
+        - wet_meadow
+        - marsh
+        - reedbed
+        - saltern
+        - tidalflat
+        - saltmarsh
+        - mangrove
     type: polygon
