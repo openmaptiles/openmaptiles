@@ -549,18 +549,21 @@ CREATE TRIGGER trigger_important_waterway_linestring_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_important_waterway_linestring
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.important_waterway_linestring_store();
 
 CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_waterway_linestring
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_waterway_linestring
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh
