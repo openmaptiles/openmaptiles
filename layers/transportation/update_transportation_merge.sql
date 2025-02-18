@@ -78,6 +78,8 @@ SELECT
     brunnel,
     "level",
     sac_scale,
+    operator,
+    informal,
     layer,
     indoor,
     network_type,
@@ -99,6 +101,8 @@ FROM (
         NULLIF(hl.construction, '') AS subclass,
         brunnel(hl.is_bridge, hl.is_tunnel, hl.is_ford) AS brunnel,
         sac_scale,
+        operator,
+        informal,
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
         CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
@@ -157,6 +161,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     horse character varying,
     mtb_scale character varying,
     sac_scale character varying,
+    operator character varying,
+    informal character varying,
     access text,
     toll boolean,
     layer integer
@@ -197,8 +203,8 @@ TRUNCATE osm_transportation_merge_linestring_gen_z11_source_ids;
 -- each group via ST_ClusterDBSCAN
 INSERT INTO osm_transportation_merge_linestring_gen_z11 (geometry, source_ids, highway, network, construction,
                                                          is_bridge, is_tunnel, is_ford, expressway, z_order,
-                                                         bicycle, foot, horse, mtb_scale, sac_scale, access, toll,
-                                                         layer)
+                                                         bicycle, foot, horse, mtb_scale, sac_scale, operator,
+                                                         informal, access, toll, layer)
 SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
        -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
        -- merge. https://postgis.net/docs/ST_Union.html
@@ -223,6 +229,8 @@ SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
        horse,
        mtb_scale,
        sac_scale,
+       operator,
+       informal,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
@@ -260,6 +268,8 @@ FROM (
                horse,
                mtb_scale,
                sac_scale,
+               operator,
+               informal,
                access,
                toll,
                visible_layer(geometry, layer, 11) AS layer
@@ -267,7 +277,7 @@ FROM (
     ) osm_highway_linestring_normalized_brunnel_z11
 ) q
 GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
-         bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer;
+         bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer;
 
 -- Geometry Index
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
@@ -376,6 +386,8 @@ BEGIN
         horse,
         mtb_scale,
         sac_scale,
+        operator,
+        informal,
         access,
         toll,
         visible_layer(geometry, layer, 11) AS layer
@@ -395,6 +407,7 @@ BEGIN
                                    expressway = excluded.expressway, z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
+                                   operator = excluded.operator, informal = excluded.informal,
                                    access = excluded.access, toll = excluded.toll, layer = excluded.layer;
 
     -- Remove entries which have been deleted from source table
@@ -427,6 +440,8 @@ BEGIN
         horse,
         mtb_scale,
         sac_scale,
+        operator,
+        informal,
         access,
         toll,
         visible_layer(geometry, layer, 10) AS layer
@@ -442,6 +457,7 @@ BEGIN
                                    expressway = excluded.expressway, z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
+                                   operator = excluded.operator, informal = excluded.informal,
                                    access = excluded.access, toll = excluded.toll, layer = excluded.layer;
 
     -- noinspection SqlWithoutWhere
