@@ -109,12 +109,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE
     ON osm_poi_polygon
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE poi_polygon.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE
     ON osm_poi_polygon
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE poi_polygon.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh
