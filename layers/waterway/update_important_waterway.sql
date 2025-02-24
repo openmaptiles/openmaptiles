@@ -24,7 +24,10 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring (
     name varchar,
     name_en varchar,
     name_de varchar,
-    tags hstore
+    tags hstore,
+    is_bridge boolean,
+    is_tunnel boolean,
+    is_intermittent boolean
 );
 
 ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
@@ -187,13 +190,16 @@ BEGIN
     );
 
     -- etldoc: osm_important_waterway_linestring -> osm_important_waterway_linestring_gen_z11
-    INSERT INTO osm_important_waterway_linestring_gen_z11 (geometry, id, name, name_en, name_de, tags)
+    INSERT INTO osm_important_waterway_linestring_gen_z11 (geometry, id, name, name_en, name_de, tags, is_bridge, is_tunnel, is_intermittent)
     SELECT ST_Simplify(geometry, ZRes(12)) AS geometry,
         id,
         name,
         name_en,
         name_de,
-        tags
+        tags,
+        is_bridge, 
+        is_tunnel, 
+        is_intermittent
     FROM osm_important_waterway_linestring
     WHERE (
         full_update OR
@@ -219,13 +225,16 @@ BEGIN
     );
 
     -- etldoc: osm_important_waterway_linestring_gen_z11 -> osm_important_waterway_linestring_gen_z10
-    INSERT INTO osm_important_waterway_linestring_gen_z10 (geometry, id, name, name_en, name_de, tags)
+    INSERT INTO osm_important_waterway_linestring_gen_z10 (geometry, id, name, name_en, name_de, tags, is_bridge, is_tunnel, is_intermittent)
     SELECT ST_Simplify(geometry, ZRes(11)) AS geometry,
         id,
         name,
         name_en,
         name_de,
-        tags
+        tags,
+        is_bridge, 
+        is_tunnel, 
+        is_intermittent
     FROM osm_important_waterway_linestring_gen_z11
     WHERE (
         full_update OR
@@ -251,13 +260,16 @@ BEGIN
     );
 
     -- etldoc: osm_important_waterway_linestring_gen_z10 -> osm_important_waterway_linestring_gen_z9
-    INSERT INTO osm_important_waterway_linestring_gen_z9 (geometry, id, name, name_en, name_de, tags)
+    INSERT INTO osm_important_waterway_linestring_gen_z9 (geometry, id, name, name_en, name_de, tags, is_bridge, is_tunnel, is_intermittent)
     SELECT ST_Simplify(geometry, ZRes(10)) AS geometry,
         id,
         name,
         name_en,
         name_de,
-        tags
+        tags,
+        is_bridge, 
+        is_tunnel, 
+        is_intermittent
     FROM osm_important_waterway_linestring_gen_z10
     WHERE (
         full_update OR

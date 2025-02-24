@@ -1,7 +1,7 @@
 tileset:
   layers:
     - layers/water/water.yaml
-    #- layers/waterway/waterway.yaml
+    - layers/waterway/waterway.yaml
     #- layers/landcover/landcover.yaml
     #- layers/landuse/landuse.yaml
     #- layers/mountain_peak/mountain_peak.yaml
@@ -10,7 +10,7 @@ tileset:
     #- layers/aeroway/aeroway.yaml
     #- layers/transportation/transportation.yaml
     #- layers/building/building.yaml
-    #- layers/water_name/water_name.yaml
+    - layers/water_name/water_name.yaml
     #- layers/transportation_name/transportation_name.yaml
     #- layers/place/place.yaml
     #- layers/housenumber/housenumber.yaml
@@ -27,85 +27,8 @@ tileset:
   minzoom: 0
   pixel_scale: 256
   languages:
-    - am # Amharic
-    - ar # Arabic
-    - az # Azerbaijani, Latin
-    - be # Belorussian
-    - bg # Bulgarian
-    - bn # Bengali
-    - br # Breton, Latin
-    - bs # Bosnian, Latin
-    - ca # Catalan, Latin
-    - co # Corsican, Latin
-    - cs # Czech, Latin
-    - cy # Welsh, Latin
-    - da # Danish, Latin
-    - de # German, Latin
-    - el # Greek
     - en # English, Latin
-    - eo # Esperanto, Latin
-    - es # Spanish, Latin
-    - et # Estonian, Latin
-    - eu # Basque, Latin
-    - fa # Persian
-    - fi # Finnish, Latin
-    - fr # French, Latin
-    - fy # Western Frisian, Latin
-    - ga # Irish, Latin
-    - gd # Scottish Gaelic, Latin
-    - he # Hebrew
-    - hi # Hindi
-    - hr # Croatian, Latin
-    - hu # Hungarian, Latin
-    - hy # Armenian
-    - id # Indonesian, Latin
-    - is # Icelandic, Latin
-    - it # Italian, Latin
-    - ja # Japanese
-    - ja_kana # Japanese Kana form
-    - ja_rm # romanization of Japanese, Latin
-    - ja-Latn # romanisation of Japanese, Latin since 2018
-    - ja-Hira # Japanese Hiragana form
-    - ka # Georgian
-    - kk # Kazakh
-    - kn # Kannada
-    - ko # Korean
-    - ko-Latn # romanization of Korean, Latin
-    - ku # Kurdish, Latin
-    - la # Latin, Latin
-    - lb # Luxembourgish, Latin
-    - lt # Lithuanian, Latin
-    - lv # Latvian, Latin
-    - mk # Macedonian
-    - mt # Maltese, Latin
-    - ml # Malayalam
-    - nl # Dutch, Latin
     - "no" # Norwegian, Latin
-    - oc # Occitan (post 1500), Latin
-    - pa # Punjabi
-    - pnb # Western Punjabi
-    - pl # Polish, Latin
-    - pt # Portuguese, Latin
-    - rm # Romansh, Latin
-    - ro # Romania, Latin
-    - ru # Russian
-    - sk # Slovak, Latin
-    - sl # Slovene, Latin
-    - sq # Albanian, Latin
-    - sr # Serbian, Cyrillic
-    - sr-Latn # Serbian, Latin
-    - sv # Swedish, Latin
-    - ta # Tamil
-    - te # Telugu
-    - th # Thai
-    - tok # Toki Pona
-    - tr # Turkish, Latin
-    - uk # Ukrainian
-    - ur # Urdu
-    - vi # Vietnamese, Latin
-    - zh # Chinese
-    - zh-Hant # Traditional Chinese
-    - zh-Hans # Simplified Chinese
   defaults:
     srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
     datasource:

@@ -229,9 +229,9 @@ SELECT geometry,
        name_en,
        name_de,
        tags,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel,
-       NULL::boolean AS is_intermittent
+       is_bridge,
+       is_tunnel,
+       is_intermittent
 FROM osm_important_waterway_linestring_gen_z9
     );
 
@@ -244,9 +244,9 @@ SELECT geometry,
        name_en,
        name_de,
        tags,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel,
-       NULL::boolean AS is_intermittent
+       is_bridge,
+       is_tunnel,
+       is_intermittent
 FROM osm_important_waterway_linestring_gen_z10
     );
 
@@ -259,11 +259,18 @@ SELECT geometry,
        name_en,
        name_de,
        tags,
-       NULL::boolean AS is_bridge,
-       NULL::boolean AS is_tunnel,
-       NULL::boolean AS is_intermittent
+       is_bridge,
+       is_tunnel,
+       is_intermittent
 FROM osm_important_waterway_linestring_gen_z11
     );
+
+-- ST_MakeValid(
+--             ST_SnapToGrid(
+--              ST_SimplifyVW(geometry, power(zres(10),2)),
+--              0.001)) AS geometry
+
+
 
 -- etldoc: osm_waterway_linestring ->  waterway_z12
 CREATE OR REPLACE VIEW waterway_z12 AS
