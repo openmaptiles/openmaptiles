@@ -144,6 +144,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     id SERIAL,
     osm_id bigint,
     source_ids bigint[],
+    new_source_ids bigint[],
+    old_source_ids bigint[],
     highway character varying,
     network character varying,
     construction character varying,
@@ -163,6 +165,13 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
 );
 
 ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
+
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_n_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z11 ((new_source_ids IS NOT NULL));
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_o_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z11 ((old_source_ids IS NOT NULL));
 
 -- Create osm_transportation_merge_linestring_gen_z10 as a copy of osm_transportation_merge_linestring_gen_z11 but
 -- drop the "source_ids" column. This can be done because z10 and z9 tables are only simplified and not merged,
@@ -170,6 +179,8 @@ ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z10
     (LIKE osm_transportation_merge_linestring_gen_z11);
 ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS new_source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS old_source_ids;
 
 -- Create osm_transportation_merge_linestring_gen_z9 as a copy of osm_transportation_merge_linestring_gen_z10
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z9
@@ -469,6 +480,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
     id SERIAL,
     osm_id bigint,
     source_ids int[],
+    new_source_ids bigint[],
+    old_source_ids bigint[],
     highway character varying,
     network character varying,
     construction character varying,
@@ -480,6 +493,13 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
 );
 
 ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS new_source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS old_source_ids bigint[];
+
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_n_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z8 ((new_source_ids IS NOT NULL));
+CREATE INDEX IF NOT EXISTS  osm_transportation_merge_linestring_gen_z8_o_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z8 ((old_source_ids IS NOT NULL));
 
 -- Create osm_transportation_merge_linestring_gen_z7 as a copy of osm_transportation_merge_linestring_gen_z8 but
 -- drop the "source_ids" column. This can be done because z7 to z5 tables are only simplified and not merged,
@@ -487,6 +507,8 @@ ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS 
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z7
     (LIKE osm_transportation_merge_linestring_gen_z8);
 ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS new_source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS old_source_ids;
 
 -- Create osm_transportation_merge_linestring_gen_z6 as a copy of osm_transportation_merge_linestring_gen_z7
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z6
@@ -1116,11 +1138,6 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
-    -- intersected
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
-
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z11(geometry, new_source_ids, old_source_ids, highway,
@@ -1180,9 +1197,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 DROP COLUMN IF EXISTS new_source_ids;
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 DROP COLUMN IF EXISTS old_source_ids;
+    -- Restore temporary Merged-LineString to Source-LineStrings-ID columns
+    UPDATE osm_transportation_merge_linestring_gen_z11 SET new_source_ids = NULL WHERE new_source_ids IS NOT NULL;
+    UPDATE osm_transportation_merge_linestring_gen_z11 SET old_source_ids = NULL WHERE old_source_ids IS NOT NULL;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.changes_z11;
@@ -1414,9 +1431,6 @@ BEGIN
 
     -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
     -- intersected
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS new_source_ids INT[];
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS old_source_ids INT[];
-
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z8(geometry, new_source_ids, old_source_ids, highway,
@@ -1466,10 +1480,10 @@ BEGIN
     -- Cleanup
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop temporary Merged-LineString to Source-LineStrings-ID columns
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 DROP COLUMN IF EXISTS new_source_ids;
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 DROP COLUMN IF EXISTS old_source_ids;
+    -- Restore temporary Merged-LineString to Source-LineStrings-ID columns
 
+    UPDATE osm_transportation_merge_linestring_gen_z8 SET new_source_ids = NULL WHERE new_source_ids IS NOT NULL;
+    UPDATE osm_transportation_merge_linestring_gen_z8 SET old_source_ids = NULL WHERE old_source_ids IS NOT NULL;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.changes_z9;
     -- noinspection SqlWithoutWhere
