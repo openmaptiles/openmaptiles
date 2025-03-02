@@ -193,6 +193,14 @@ sac_scale_field: &sac_scale
   key: sac_scale
   name: sac_scale
   type: string
+operator_field: &operator
+  key: operator
+  name: operator
+  type: string
+informal_field: &informal
+  key: informal
+  name: informal
+  type: string
 surface_field: &surface
   key: surface
   name: surface
@@ -249,6 +257,8 @@ tables:
     - *horse
     - *mtb_scale
     - *sac_scale
+    - *operator
+    - *informal
     - *surface
     - *expressway
     mapping:
