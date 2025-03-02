@@ -30,6 +30,7 @@ CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
                 foot       text,
                 horse      text,
                 mtb_scale  text,
+                official   int,
                 surface    text
             )
 AS
@@ -70,6 +71,14 @@ SELECT osm_id,
        NULLIF(foot, '') AS foot,
        NULLIF(horse, '') AS horse,
        NULLIF(mtb_scale, '') AS mtb_scale,
+       CASE WHEN highway IN ('path', 'footway', 'cycleway', 'bridleway')
+            THEN
+                CASE WHEN informal = 'yes' THEN 0
+                     WHEN informal = 'no' OR operator != '' THEN 1
+                     ELSE NULL
+                END
+            ELSE NULL
+       END AS official,
        NULLIF(surface, '') AS surface
 FROM (
          -- etldoc: osm_transportation_merge_linestring_gen_z4 -> layer_transportation:z4
@@ -99,6 +108,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z4
@@ -132,6 +143,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z5
@@ -165,6 +178,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z6
@@ -198,6 +213,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z7
@@ -231,6 +248,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z8
@@ -264,6 +283,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
+                operator,
+                informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z9
@@ -297,6 +318,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
+                operator,
+                informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z10
@@ -330,6 +353,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
+                operator,
+                informal,
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z11
@@ -368,6 +393,8 @@ FROM (
                 foot,
                 horse,
                 mtb_scale,
+                hl.operator,
+                hl.informal,
                 surface_value(COALESCE(NULLIF(surface, ''), tracktype)) AS "surface",
                 hl.z_order
          FROM osm_highway_linestring hl
@@ -420,6 +447,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z8
@@ -456,6 +485,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z9
@@ -492,6 +523,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z10
@@ -527,6 +560,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z11
@@ -562,6 +597,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z12
@@ -598,6 +635,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring
@@ -634,6 +673,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring_gen_z12
@@ -668,6 +709,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring
@@ -701,6 +744,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z4
@@ -734,6 +779,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z5
@@ -767,6 +814,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z6
@@ -800,6 +849,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z7
@@ -833,6 +884,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z8
@@ -866,6 +919,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z9
@@ -899,6 +954,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z10
@@ -932,6 +989,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z11
@@ -965,6 +1024,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring_gen_z12
@@ -999,6 +1060,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_shipway_linestring
@@ -1040,6 +1103,8 @@ FROM (
                 NULL AS foot,
                 NULL AS horse,
                 NULL AS mtb_scale,
+                NULL AS operator,
+                NULL AS informal,
                 NULL AS surface,
                 z_order
          FROM osm_highway_polygon
