@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring (
     id SERIAL,
     geometry geometry('LineString'),
     source_ids bigint[],
+    new_source_ids bigint[],
+    old_source_ids bigint[],
     name varchar,
     name_en varchar,
     name_de varchar,
@@ -28,6 +30,15 @@ CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring (
 );
 
 ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS source_ids bigint[];
+-- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
+-- intersected
+ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
+
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_n_source_ids_not_null_idx 
+    ON osm_important_waterway_linestring ((new_source_ids IS NOT NULL));
+CREATE INDEX IF NOT EXISTS osm_important_waterway_linestring_o_source_ids_not_null_idx 
+    ON osm_important_waterway_linestring ((old_source_ids IS NOT NULL));
 
 -- Create osm_important_waterway_linestring_gen_z11 as a copy of osm_important_waterway_linestring but drop the
 -- "source_ids" column. This can be done because z10 and z9 tables are only simplified and not merged, therefore
@@ -35,6 +46,8 @@ ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS source_id
 CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen_z11
 (LIKE osm_important_waterway_linestring);
 ALTER TABLE osm_important_waterway_linestring_gen_z11 DROP COLUMN IF EXISTS source_ids;
+ALTER TABLE osm_important_waterway_linestring_gen_z11 DROP COLUMN IF EXISTS new_source_ids;
+ALTER TABLE osm_important_waterway_linestring_gen_z11 DROP COLUMN IF EXISTS old_source_ids;
 
 -- Create osm_important_waterway_linestring_gen_z10 as a copy of osm_important_waterway_linestring_gen_z11
 CREATE TABLE IF NOT EXISTS osm_important_waterway_linestring_gen_z10
@@ -478,10 +491,6 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
-    -- intersected
-    ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
-    ALTER TABLE osm_important_waterway_linestring ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
 
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
@@ -527,9 +536,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
-    ALTER TABLE osm_important_waterway_linestring DROP COLUMN IF EXISTS new_source_ids;
-    ALTER TABLE osm_important_waterway_linestring DROP COLUMN IF EXISTS old_source_ids;
+    -- Restore temporary Merged-LineString to Source-LineStrings-ID columns
+    UPDATE osm_important_waterway_linestring SET new_source_ids = NULL WHERE new_source_ids IS NOT NULL;
+    UPDATE osm_important_waterway_linestring SET old_source_ids = NULL WHERE old_source_ids IS NOT NULL;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM waterway_important.changes;
@@ -549,18 +558,21 @@ CREATE TRIGGER trigger_important_waterway_linestring_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_important_waterway_linestring
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.important_waterway_linestring_store();
 
 CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_waterway_linestring
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_waterway_linestring
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE waterway_important.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh

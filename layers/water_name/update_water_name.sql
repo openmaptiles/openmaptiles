@@ -197,12 +197,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_water_polygon
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE water_name.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_water_polygon
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE water_name.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh
