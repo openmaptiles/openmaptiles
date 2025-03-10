@@ -115,7 +115,7 @@ make refresh-docker-images
 
 
 #####  backup log from here ...
-exec &> >(tee -a "$log_file")
+#exec &> >(tee -a "$log_file")
 
 echo " "
 echo "====================================================================================="

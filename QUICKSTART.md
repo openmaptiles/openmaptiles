@@ -1,38 +1,39 @@
 ## Quickstart - for small extracts
 
 ### Req:
-* CPU: AMD64 ( = Intel 64 bit)
-    *  The base docker debian images are x86_64 based, so the ARM, MIPS currently not supported!
-* Operating system
-    * Linux is suggested
-        * The development and the testing platform is Linux.
-    * If you are using FreeBSD, Solaris, Windows, ...
-        * Please give a feedback, share your experience, write a tutorial
-* bash
-* git
-* make
-* bc
-* md5sum
-* docker         >=1.12.3
-    * https://www.docker.com/products/overview
-* docker-compose >=1.7.1
-    * https://docs.docker.com/compose/install/
-* disk space ( >= ~15Gb  )
-    * for small extracts  >= ~15Gb
-    * for big extracts ( continents, planet) 250 Gb
-    * And depends on
-        * OpenStreetMap data size
-        * Zoom level
-    * Best on SSD for postserve but completely usable on HDD
-    * Takes 24hrs to import on a reasonable machine, and is immediately available with postserve
-* memory ( >= 3Gb )
-    * for small extracts 3Gb-8Gb RAM
-    * for big extracts ( Europe, Planet) > 8-32 Gb
-* internet connections
-    * for downloading docker images
-    * for downloading OpenStreetMap data from Geofabrik
 
-Important:  The ./quickstart.sh is for small extracts - not optimal for a Planet rendering !!
+- CPU: AMD64 ( = Intel 64 bit)
+  - The base docker debian images are x86_64 based, so the ARM, MIPS currently not supported!
+- Operating system
+  - Linux is suggested
+    - The development and the testing platform is Linux.
+  - If you are using FreeBSD, Solaris, Windows, ...
+    - Please give a feedback, share your experience, write a tutorial
+- bash
+- git
+- make
+- bc
+- md5sum
+- docker >=1.12.3
+  - https://www.docker.com/products/overview
+- docker-compose >=1.7.1
+  - https://docs.docker.com/compose/install/
+- disk space ( >= ~15Gb )
+  - for small extracts >= ~15Gb
+  - for big extracts ( continents, planet) 250 Gb
+  - And depends on
+    - OpenStreetMap data size
+    - Zoom level
+  - Best on SSD for postserve but completely usable on HDD
+  - Takes 24hrs to import on a reasonable machine, and is immediately available with postserve
+- memory ( >= 3Gb )
+  - for small extracts 3Gb-8Gb RAM
+  - for big extracts ( Europe, Planet) > 8-32 Gb
+- internet connections
+  - for downloading docker images
+  - for downloading OpenStreetMap data from Geofabrik
+
+Important: The ./quickstart.sh is for small extracts - not optimal for a Planet rendering !!
 
 ### First experiment - with `albania` ( small extracts! )
 
@@ -43,25 +44,27 @@ cd openmaptiles
 ```
 
 If you have problems with the quickstart
-* check the ./quickstart.log!
-* doublecheck the system requirements!
-* check the current issues: https://github.com/openmaptiles/openmaptiles/issues
-* create new issues:
-    * create a new gist: https://gist.github.com/ from your ./quickstart.log
-    * doublecheck: don't reveal any sensitive information about your system
-    * create a new issue: https://github.com/openmaptiles/openmaptiles/issues
-        * describe the problems
-        * add any pertinent information about your environment
-        * link your (quickstart.log) gist!
+
+- check the ./quickstart.log!
+- doublecheck the system requirements!
+- check the current issues: https://github.com/openmaptiles/openmaptiles/issues
+- create new issues:
+  - create a new gist: https://gist.github.com/ from your ./quickstart.log
+  - doublecheck: don't reveal any sensitive information about your system
+  - create a new issue: https://github.com/openmaptiles/openmaptiles/issues
+    - describe the problems
+    - add any pertinent information about your environment
+    - link your (quickstart.log) gist!
 
 ### Check other extracts
 
 IF the previous step is working,
 THEN you can test other available quickstart extracts ( based on [Geofabrik extracts](http://download.geofabrik.de/index.html) ) !
- * We are using https://github.com/julien-noblet/download-geofabrik tool
- * The current extract list, and more information  ->  `make list-geofabrik` or `make list-bbbike`
 
-This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" ]
+- We are using https://github.com/julien-noblet/download-geofabrik tool
+- The current extract list, and more information -> `make list-geofabrik` or `make list-bbbike`
+
+This is generating `.mbtiles` for your area : [ MIN_ZOOM: "0" - MAX_ZOOM: "7" ]
 
 ```bash
 ./quickstart.sh africa                       # Africa
@@ -362,8 +365,10 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh wyoming                      # Wyoming, US
 ./quickstart.sh yukon                        # Yukon, Canada
 ```
+
 ### Using your own OSM data
-Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an *.osm.pbf (e.g. `mydata.osm.pbf`) inside.
+
+Mbtiles can be generated from an arbitrary osm.pbf (e.g. for a region that is not covered by an existing extract) by making the `data/` directory and placing an \*.osm.pbf (e.g. `mydata.osm.pbf`) inside.
 
 ```
 mkdir -p data
@@ -373,43 +378,47 @@ make generate-bbox-file area=mydata
 ```
 
 ### Check postserve
-*  ` docker-compose up -d postserve`
-and the generated maps are going to be available in browser on [localhost:8090/tiles/0/0/0.pbf](http://localhost:8090/tiles/0/0/0.pbf).
+
+- ` docker-compose up -d postserve`
+  and the generated maps are going to be available in browser on [localhost:8090/tiles/0/0/0.pbf](http://localhost:8090/tiles/0/0/0.pbf).
 
 ### Check tileserver
 
 start:
-*  ` make start-tileserver`
-and the generated maps are going to be available in webbrowser on [localhost:8080](http://localhost:8080/).
+
+- ` make start-tileserver`
+  and the generated maps are going to be available in webbrowser on [localhost:8080](http://localhost:8080/).
 
 This is only a quick preview, because your mbtiles only generated to zoom level 7 !
-
 
 ### Set which zooms to generate
 
 modify the settings in the `.env` file, the defaults:
-* `MIN_ZOOM=0`
-* `MAX_ZOOM=7`
+
+- `MIN_ZOOM=0`
+- `MAX_ZOOM=7`
 
 Hints:
-* Small increments! Never starts with the `MAX_ZOOM = 14`
-* The suggested  `MAX_ZOOM = 14`  - use only with small extracts
+
+- Small increments! Never starts with the `MAX_ZOOM = 14`
+- The suggested `MAX_ZOOM = 14` - use only with small extracts
 
 ### Set the bounding box to generate
 
 By default, tile generation is done for the full extent of the area.
 If you want to generate a tiles for a smaller extent, modify the settings in the `.env` file, the default:
-* `BBOX=-180.0,-85.0511,180.0,85.0511`
+
+- `BBOX=-180.0,-85.0511,180.0,85.0511`
 
 Delete the `./data/<area>.bbox` file, and re-start `./quickstart.sh <area>`
 
 Hint:
-* The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
+
+- The [boundingbox.klokantech.com](https://boundingbox.klokantech.com/) site can be used to find a bounding box (CSV format) using a map.
 
 ### Check other commands
 
 `make help`
-
 
 the current output:
 

@@ -1,4 +1,40 @@
 generalized_tables:
+  # etldoc: osm_water_polygon_gen_z1 -> osm_water_polygon_gen_z0
+  water_polygon_gen_z0:
+    source: water_polygon_gen_z1
+    sql_filter: area>power(ZRES0,2)
+    tolerance: ZRES1
+
+  # etldoc: osm_water_polygon_gen_z2 -> osm_water_polygon_gen_z1
+  water_polygon_gen_z1:
+    source: water_polygon_gen_z2
+    sql_filter: area>power(ZRES0,2)
+    tolerance: ZRES2
+
+  # etldoc: osm_water_polygon_gen_z3 -> osm_water_polygon_gen_z2
+  water_polygon_gen_z2:
+    source: water_polygon_gen_z3
+    sql_filter: area>power(ZRES1,2)
+    tolerance: ZRES3
+
+  # etldoc: osm_water_polygon_gen_z4 -> osm_water_polygon_gen_z3
+  water_polygon_gen_z3:
+    source: water_polygon_gen_z4
+    sql_filter: area>power(ZRES2,2)
+    tolerance: ZRES4
+
+  # etldoc: osm_water_polygon_gen_z5 -> osm_water_polygon_gen_z4
+  water_polygon_gen_z4:
+    source: water_polygon_gen_z5
+    sql_filter: area>power(ZRES3,2)
+    tolerance: ZRES5
+
+  # etldoc: osm_water_polygon_gen_z6 -> osm_water_polygon_gen_z5
+  water_polygon_gen_z5:
+    source: water_polygon_gen_z6
+    sql_filter: area>power(ZRES4,2)
+    tolerance: ZRES6
+
   # etldoc: osm_water_polygon_gen_z7 -> osm_water_polygon_gen_z6
   water_polygon_gen_z6:
     source: water_polygon_gen_z7
@@ -45,73 +81,72 @@ bridge_field: &bridge
   type: bool
 
 tables:
-
   # etldoc: imposm3 -> osm_water_polygon
   water_polygon:
     columns:
-    - name: osm_id
-      type: id
-    - name: geometry
-      type: validated_geometry
-    - name: area
-      type: area
-    - key: name
-      name: name
-      type: string
-    - name: name_en
-      key: name:en
-      type: string
-    - name: name_de
-      key: name:de
-      type: string
-    - name: tags
-      type: hstore_tags
-    - name: place
-      key: place
-      type: string
-    - name: natural
-      key: natural
-      type: string
-    - name: landuse
-      key: landuse
-      type: string
-    - name: waterway
-      key: waterway
-      type: string
-    - name: leisure
-      key: leisure
-      type: string
-    - name: water
-      key: water
-      type: string
-    - name: is_intermittent
-      key: intermittent
-      type: bool
-    - *tunnel
-    - *bridge
+      - name: osm_id
+        type: id
+      - name: geometry
+        type: validated_geometry
+      - name: area
+        type: area
+      - key: name
+        name: name
+        type: string
+      - name: name_en
+        key: name:en
+        type: string
+      - name: name_de
+        key: name:de
+        type: string
+      - name: tags
+        type: hstore_tags
+      - name: place
+        key: place
+        type: string
+      - name: natural
+        key: natural
+        type: string
+      - name: landuse
+        key: landuse
+        type: string
+      - name: waterway
+        key: waterway
+        type: string
+      - name: leisure
+        key: leisure
+        type: string
+      - name: water
+        key: water
+        type: string
+      - name: is_intermittent
+        key: intermittent
+        type: bool
+      - *tunnel
+      - *bridge
     filters:
       reject:
         covered: ["yes"]
     mapping:
       landuse:
-      - reservoir
-      - basin
-      - salt_pond
+        - reservoir
+        - basin
+        - salt_pond
       leisure:
-      - swimming_pool
+        - swimming_pool
       natural:
-      - water
-      - bay
-      - spring
+        - water
+        - bay
+        - spring
       waterway:
-      - dock
+        - dock
       water:
-      - river
-      - stream
-      - canal
-      - ditch
-      - drain
-      - pond
-      - basin
-      - wastewater
+        - river
+        - stream
+        - canal
+        - ditch
+        - drain
+        - pond
+        - basin
+        - wastewater
     type: polygon
