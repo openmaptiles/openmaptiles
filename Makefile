@@ -45,7 +45,7 @@ else
 endif
 
 # Make some operations quieter (e.g. inside the test script)
-ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET})))),)
+ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET}))),)
   QUIET_FLAG :=
 else
   QUIET_FLAG := --quiet
