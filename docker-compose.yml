@@ -1,5 +1,5 @@
 # This version must match the MAKE_DC_VERSION value below
-version: "3"
+#version: "3.7"
 
 volumes:
   pgdata:
@@ -9,13 +9,16 @@ networks:
     driver: bridge
 
 services:
-
   postgres:
     image: "${POSTGIS_IMAGE:-openmaptiles/postgis}:${TOOLS_VERSION}"
+    #command: postgres -c "config_file=./etc/postgresql/postgresql.conf"
+    command: postgres -c "shared_buffers=16GB" -c "autovacuum=on" -c "work_mem=1500MB" -c "maintenance_work_mem=4096kB" -c "effective_cache_size=20GB" -c "random_page_cost=1.1" -c "effective_cache_size=40GB" -c "dynamic_shared_memory_type=posix" -c "max_wal_size=1GB" -c "min_wal_size=80MB" -c "wal_buffers=16MB" -c "effective_io_concurrency=30" -c "max_connections=300"
     # Use "command: postgres -c jit=off" for PostgreSQL 11+ because of slow large MVT query processing
     # Use "shm_size: 512m" if you want to prevent a possible 'No space left on device' during 'make generate-tiles-pg'
+    shm_size: 3g
     volumes:
       - pgdata:/var/lib/postgresql/data
+      #- ./etc/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     networks:
       - postgres
     ports:
@@ -27,6 +30,7 @@ services:
       POSTGRES_USER: ${PGUSER:-openmaptiles}
       POSTGRES_PASSWORD: ${PGPASSWORD:-openmaptiles}
       PGPORT: ${PGPORT:-5432}
+      #TILE_TIMEOUT: 3600000
 
   import-data:
     image: "openmaptiles/import-data:${TOOLS_VERSION}"
@@ -40,7 +44,7 @@ services:
     environment:
       # Must match the version of this file (first line)
       # download-osm will use it when generating a composer file
-      MAKE_DC_VERSION: "3"
+      MAKE_DC_VERSION: "3.7"
       # Allow DIFF_MODE, MIN_ZOOM, and MAX_ZOOM to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
       MIN_ZOOM: ${MIN_ZOOM}
@@ -56,6 +60,7 @@ services:
       PGPASSWORD: ${PGPASSWORD:-openmaptiles}
       PGPORT: ${PGPORT:-5432}
       MBTILES_FILE: ${MBTILES_FILE}
+      #UV_THREADPOOL_SIZE:
     networks:
       - postgres
     volumes:
@@ -94,7 +99,10 @@ services:
     volumes:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
-    networks:
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 16000000000 # ~16gb
       - postgres
     env_file: .env
     environment:
@@ -109,6 +117,7 @@ services:
       PGUSER: ${PGUSER:-openmaptiles}
       PGPASSWORD: ${PGPASSWORD:-openmaptiles}
       PGPORT: ${PGPORT:-5432}
+      #UV_THREADPOOL_SIZE: ${UV_THREADPOOL_SIZE}
 
   postserve:
     image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
@@ -122,6 +131,7 @@ services:
       - "${PPORT:-8090}:${PPORT:-8090}"
     volumes:
       - .:/tileset
+      #- ./etc/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
 
   maputnik_editor:
     image: "maputnik/editor"
