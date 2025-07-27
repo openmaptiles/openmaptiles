@@ -1,7 +1,7 @@
 {
   "layers": [
     {
-      "id": "aeroway_fill",
+      "id": "Aeroway",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "aeroway",
@@ -14,11 +14,11 @@
           "stops": [
             [
               6,
-              "rgba(223, 223, 228, 1)"
+              "hsl(240, 8%, 88%)"
             ],
             [
               12,
-              "rgba(232, 231, 223, 1)"
+              "hsl(53, 16%, 89%)"
             ]
           ]
         },
@@ -30,10 +30,10 @@
         "$type",
         "Polygon"
       ],
-      "order": 3
+      "order": 12
     },
     {
-      "id": "aeroway_runway",
+      "id": "Runway",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "aeroway",
@@ -42,7 +42,8 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(178, 181, 209, 1)",
+        "line-color": "hsl(234, 25%, 76%)",
+        "line-opacity": 1,
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -55,8 +56,7 @@
               48
             ]
           ]
-        },
-        "line-opacity": 1
+        }
       },
       "metadata": {},
       "filter": [
@@ -72,10 +72,10 @@
           "runway"
         ]
       ],
-      "order": 22
+      "order": 57
     },
     {
-      "id": "aeroway_taxiway",
+      "id": "Taxiway",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "aeroway",
@@ -84,7 +84,8 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(178, 181, 209, 1)",
+        "line-color": "hsl(234, 25%, 76%)",
+        "line-opacity": 1,
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -97,8 +98,7 @@
               24
             ]
           ]
-        },
-        "line-opacity": 1
+        }
       },
       "metadata": {},
       "filter": [
@@ -114,18 +114,37 @@
           "taxiway"
         ]
       ],
-      "order": 23
+      "order": 58
     },
     {
-      "id": "airport_label",
+      "id": "Airport labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 14,
       "layout": {
+        "symbol-placement": "line",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
-          "Noto Sans Italic",
-          "Noto Sans Regular"
+          "Open Sans Italic",
+          "Noto Sans Italic"
         ],
         "text-size": {
           "stops": [
@@ -139,13 +158,11 @@
             ]
           ]
         },
-        "text-field": "{ref}",
-        "visibility": "visible",
-        "symbol-placement": "line"
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#333333",
-        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-color": "hsl(0, 0%, 20%)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
       "filter": [
@@ -157,16 +174,18 @@
           "taxiway"
         ]
       ],
-      "order": 191
+      "order": 233
     },
     {
-      "id": "airport_gate",
+      "id": "Airport gate labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 16.5,
       "layout": {
+        "text-field": "{ref}",
         "text-font": [
+          "Open Sans Semi Bold",
           "Noto Sans Regular"
         ],
         "text-size": {
@@ -181,12 +200,11 @@
             ]
           ]
         },
-        "text-field": "{ref}",
         "visibility": "visible"
       },
       "paint": {
-        "text-color": "rgba(135, 135, 135, 1)",
-        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-color": "hsl(0, 0%, 53%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "filter": [
@@ -197,7 +215,7 @@
           "gate"
         ]
       ],
-      "order": 192
+      "order": 234
     }
   ]
 }

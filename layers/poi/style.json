@@ -1,774 +1,13 @@
 {
   "layers": [
     {
-      "id": "poi_shop-z17",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 17,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": [
-          "coalesce",
-          [
-            "image",
-            [
-              "match",
-              [
-                "get",
-                "subclass"
-              ],
-              "chocolate",
-              "confectionery",
-              "wine",
-              "alcohol",
-              "kiosk",
-              "newsagent",
-              "perfume",
-              "perfumery",
-              "wholesale",
-              "trade",
-              [
-                "get",
-                "subclass"
-              ]
-            ]
-          ],
-          [
-            "image",
-            "shop"
-          ]
-        ],
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.1
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": true
-      },
-      "paint": {
-        "text-color": "#939",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "shop",
-          "clothing_store",
-          "library",
-          "art_gallery",
-          "music",
-          "alcohol_shop",
-          "bakery"
-        ],
-        [
-          "!in",
-          "subclass",
-          "mall",
-          "library",
-          "artwork",
-          "arts_centre",
-          "gallery"
-        ]
-      ],
-      "order": 155
-    },
-    {
-      "id": "poi_shop-z15",
+      "id": "Shop",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
       "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": [
-          "match",
-          [
-            "get",
-            "subclass"
-          ],
-          "chocolate",
-          "confectionery",
-          [
-            "get",
-            "subclass"
-          ]
-        ],
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.1
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": true
-      },
-      "paint": {
-        "text-color": "#939",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "subclass",
-          "supermarket"
-        ]
-      ],
-      "order": 156
-    },
-    {
-      "id": "poi_waste",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 18,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          0.8
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#734a08",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "recycling",
-          "waste_basket",
-          "drinking_water",
-          "toilets"
-        ]
-      ],
-      "order": 157
-    },
-    {
-      "id": "poi_cemetery",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 14,
-      "layout": {
-        "icon-size": 1,
-        "text-font": [
-          "Noto Sans Regular"
-        ],
-        "text-size": 11,
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "icon-anchor": "bottom",
-        "icon-offset": [
-          0,
-          0
-        ],
-        "text-anchor": "center",
-        "text-offset": [
-          0,
-          0
-        ],
-        "text-padding": 2,
-        "icon-text-fit": "none",
-        "text-max-width": 14,
         "icon-allow-overlap": false,
-        "icon-pitch-alignment": "viewport"
-      },
-      "paint": {
-        "text-color": "#2d4931",
-        "icon-translate": [
-          0,
-          0
-        ],
-        "text-translate": [
-          0,
-          5
-        ],
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.8,
-        "icon-translate-anchor": "map",
-        "text-translate-anchor": "viewport"
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "cemetery"
-        ]
-      ],
-      "order": 158
-    },
-    {
-      "id": "poi_school",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "icon-size": 1,
-        "text-font": [
-          "Noto Sans Italic",
-          "Noto Sans Regular"
-        ],
-        "text-size": 11,
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "icon-anchor": "bottom",
-        "icon-offset": [
-          0,
-          0
-        ],
-        "text-anchor": "center",
-        "text-offset": [
-          0,
-          0
-        ],
-        "text-padding": 2,
-        "icon-text-fit": "none",
-        "text-max-width": 9,
-        "icon-allow-overlap": false,
-        "icon-pitch-alignment": "viewport"
-      },
-      "paint": {
-        "text-color": "#4d4d00",
-        "icon-translate": [
-          0,
-          0
-        ],
-        "text-translate": [
-          0,
-          5
-        ],
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.8,
-        "icon-translate-anchor": "map",
-        "text-translate-anchor": "viewport"
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "college",
-          "school"
-        ]
-      ],
-      "order": 159
-    },
-    {
-      "id": "poi_outdoor",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#008c0d",
-        "icon-opacity": 1,
-        "text-halo-blur": 0,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "playground",
-          "stile",
-          "garden",
-          "gate"
-        ]
-      ],
-      "order": 160
-    },
-    {
-      "id": "poi_parking",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 15,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": {
-          "stops": [
-            [
-              15,
-              ""
-            ],
-            [
-              16,
-              "{name:latin}\n{name:nonlatin}"
-            ]
-          ]
-        },
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          0.9
-        ],
-        "text-padding": 2,
-        "text-max-width": 6,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#0066ff",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "parking"
-        ]
-      ],
-      "order": 161
-    },
-    {
-      "id": "poi_golf",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "golf",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#008c0d",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "golf"
-        ]
-      ],
-      "order": 162
-    },
-    {
-      "id": "poi_sport",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Italic"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#008c0d",
-        "icon-opacity": 1,
-        "icon-halo-blur": 0,
-        "text-halo-blur": 1,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 0.2
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "stadium",
-          "swimming_pool",
-          "sports_centre",
-          "water_park"
-        ]
-      ],
-      "order": 163
-    },
-    {
-      "id": "poi_ferry",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 15,
-      "layout": {
-        "text-font": [
-          "Noto Sans Regular"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "ferry",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          0.7
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#5e3b9e",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "subclass",
-          "ferry_terminal"
-        ],
-        [
-          "==",
-          "class",
-          "ferry_terminal"
-        ]
-      ],
-      "order": 164
-    },
-    {
-      "id": "poi_food",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#C77400",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ice_cream",
-          "cafe",
-          "beer",
-          "bar",
-          "fast_food",
-          "restaurant"
-        ]
-      ],
-      "order": 165
-    },
-    {
-      "id": "poi_water",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#4d80b3",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ice_rink"
-        ]
-      ],
-      "order": 166
-    },
-    {
-      "id": "poi_public",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
         "icon-image": [
           "coalesce",
           [
@@ -787,64 +26,38 @@
           ],
           [
             "image",
-            ""
+            "dot"
           ]
         ],
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
         "text-anchor": "top",
-        "text-offset": [
-          0,
-          0.8
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
         ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#734a08",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "town_hall",
-          "post",
-          "library",
-          "police",
-          "information",
-          "cinema",
-          "theatre",
-          "fire_station",
-          "office"
-        ],
-        [
-          "!=",
-          "subclass",
-          "books"
-        ]
-      ],
-      "order": 167
-    },
-    {
-      "id": "poi_cultural",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 15,
-      "layout": {
         "text-font": [
+          "Open Sans Semi Bold",
           "Noto Sans Bold"
         ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1
+        ],
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -857,26 +70,784 @@
             ]
           ]
         },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-color": "hsl(0, 0%, 0%)",
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": [
+          "step",
+          [
+            "zoom"
+          ],
+          0,
+          15,
+          [
+            "match",
+            [
+              "get",
+              "subclass"
+            ],
+            [
+              "supermarket"
+            ],
+            1,
+            0
+          ],
+          16,
+          [
+            "match",
+            [
+              "get",
+              "subclass"
+            ],
+            [
+              "supermarket"
+            ],
+            1,
+            0
+          ],
+          17,
+          1
+        ],
+        "text-color": "hsl(300, 50%, 40%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1,
+        "text-opacity": [
+          "step",
+          [
+            "zoom"
+          ],
+          0,
+          15,
+          [
+            "match",
+            [
+              "get",
+              "subclass"
+            ],
+            [
+              "supermarket"
+            ],
+            1,
+            0
+          ],
+          16,
+          [
+            "match",
+            [
+              "get",
+              "subclass"
+            ],
+            [
+              "supermarket"
+            ],
+            1,
+            0
+          ],
+          17,
+          1
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "any",
+        [
+          "in",
+          "class",
+          "alcohol_shop",
+          "bakery",
+          "bicycle",
+          "butcher",
+          "clothing_store",
+          "grocery",
+          "hairdresser",
+          "music",
+          "seafood",
+          "shop"
+        ],
+        [
+          "in",
+          "subclass",
+          "books",
+          "supermarket"
+        ]
+      ],
+      "order": 201
+    },
+    {
+      "id": "Waste",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 18,
+      "layout": {
+        "icon-allow-overlap": false,
         "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
         "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
         "text-offset": [
           0,
           0.8
         ],
         "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#734a08",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": 1,
+        "text-color": "hsl(37, 87%, 24%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "recycling",
+          "waste_basket",
+          "drinking_water",
+          "toilets"
+        ]
+      ],
+      "order": 202
+    },
+    {
+      "id": "Mortuary",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 14,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-offset": [
+          0,
+          0
+        ],
+        "icon-pitch-alignment": "viewport",
+        "icon-text-fit": "none",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "center",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Bold Italic",
+          "Noto Sans Regular"
+        ],
+        "text-max-width": 14,
+        "text-offset": [
+          0,
+          0
+        ],
+        "text-padding": 2,
+        "text-size": 11,
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-translate": [
+          0,
+          0
+        ],
+        "icon-translate-anchor": "map",
+        "text-color": "hsl(129, 24%, 23%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.8,
+        "text-translate": [
+          0,
+          5
+        ],
+        "text-translate-anchor": "viewport"
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "cemetery"
+        ]
+      ],
+      "order": 203
+    },
+    {
+      "id": "Education",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-offset": [
+          0,
+          0
+        ],
+        "icon-pitch-alignment": "viewport",
+        "icon-text-fit": "none",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "center",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold Italic",
+          "Noto Sans Regular"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0
+        ],
+        "text-padding": 2,
+        "text-size": 11,
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-translate-anchor": "map",
+        "text-color": "hsl(60, 100%, 15%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.8,
+        "text-translate": [
+          0,
+          5
+        ],
+        "text-translate-anchor": "viewport"
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "college",
+          "kindergarten",
+          "school",
+          "university"
+        ]
+      ],
+      "order": 204
+    },
+    {
+      "id": "Outdoor",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-opacity": 1,
+        "text-color": "hsl(126, 100%, 27%)",
+        "text-halo-blur": 0,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "pitch",
+          "playground",
+          "stile",
+          "garden",
+          "gate"
+        ]
+      ],
+      "order": 205
+    },
+    {
+      "id": "Sport",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold Italic",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 0,
+        "icon-opacity": 1,
+        "text-color": "hsl(126, 100%, 27%)",
+        "text-halo-blur": 1,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.2
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "golf",
+          "stadium",
+          "swimming_pool",
+          "sports_centre",
+          "water_park"
+        ]
+      ],
+      "order": 206
+    },
+    {
+      "id": "Ferry",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 15,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "ferry",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Regular",
+          "Noto Sans Regular"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.7
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(261, 46%, 43%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "subclass",
+          "ferry_terminal"
+        ],
+        [
+          "==",
+          "class",
+          "ferry_terminal"
+        ]
+      ],
+      "order": 207
+    },
+    {
+      "id": "Food",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(35, 100%, 39%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice_cream",
+          "cafe",
+          "beer",
+          "bar",
+          "fast_food",
+          "restaurant"
+        ]
+      ],
+      "order": 208
+    },
+    {
+      "id": "Public",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(37, 87%, 24%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "atm",
+          "town_hall",
+          "post",
+          "library",
+          "police",
+          "information",
+          "cinema",
+          "theatre",
+          "fire_station"
+        ],
+        [
+          "!=",
+          "subclass",
+          "books"
+        ]
+      ],
+      "order": 209
+    },
+    {
+      "id": "Cultural",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 15,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(37, 87%, 24%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -890,27 +861,57 @@
           "museum",
           "castle",
           "monument",
-          "art_gallery"
+          "art_gallery",
+          "arts_centre",
+          "gallery"
         ],
         [
           "!in",
           "subclass",
           "books",
+          "musical_instrument",
           "art"
         ]
       ],
-      "order": 168
+      "order": 210
     },
     {
-      "id": "poi_attraction",
+      "id": "Attraction",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
       "layout": {
+        "icon-allow-overlap": false,
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "center",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Semi Bold",
           "Noto Sans Bold"
         ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -923,26 +924,350 @@
             ]
           ]
         },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-opacity": 1,
+        "text-color": "hsl(330, 100%, 20%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "==",
+        "class",
+        "attraction"
+      ],
+      "order": 211
+    },
+    {
+      "id": "Transport",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 17,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-ignore-placement": false,
         "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
         "text-anchor": "top",
+        "text-field": {
+          "stops": [
+            [
+              15,
+              ""
+            ],
+            [
+              16,
+              "{name}"
+            ]
+          ]
+        },
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
         "text-offset": [
           0,
           1.2
         ],
         "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#660033",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": [
+          "step",
+          [
+            "zoom"
+          ],
+          0,
+          15,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "parking"
+            ],
+            1,
+            0
+          ],
+          16,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "parking"
+            ],
+            1,
+            0
+          ],
+          17,
+          1
+        ],
+        "text-color": "hsl(216, 100%, 50%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [
+          "in",
+          "class",
+          "bicycle_parking",
+          "car",
+          "fuel",
+          "parking"
+        ]
+      ],
+      "order": 212
+    },
+    {
+      "id": "Health",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{class}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Regular",
+          "Noto Sans Regular"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              14,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-color": "hsla(0, 0%, 0%, 0.98)",
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": [
+          "step",
+          [
+            "zoom"
+          ],
+          0,
+          14,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "hospital"
+            ],
+            1,
+            0
+          ],
+          16,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "hospital",
+              "pharmacy"
+            ],
+            1,
+            0
+          ],
+          17,
+          1
+        ],
+        "text-color": "hsl(0, 100%, 37%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1,
+        "text-opacity": [
+          "step",
+          [
+            "zoom"
+          ],
+          0,
+          14,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "hospital"
+            ],
+            1,
+            0
+          ],
+          16,
+          [
+            "match",
+            [
+              "get",
+              "class"
+            ],
+            [
+              "hospital",
+              "pharmacy"
+            ],
+            1,
+            0
+          ],
+          17,
+          1,
+          22,
+          1
+        ]
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "hospital",
+          "pharmacy",
+          "dentist",
+          "veterinary"
+        ]
+      ],
+      "order": 213
+    },
+    {
+      "id": "Campsite",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 16,
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "camping",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(216, 100%, 50%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -951,283 +1276,28 @@
         [
           "==",
           "class",
-          "attraction"
-        ]
-      ],
-      "order": 169
-    },
-    {
-      "id": "poi_car",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 17,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": {
-          "stops": [
-            [
-              15,
-              ""
-            ],
-            [
-              16,
-              "{name:latin}\n{name:nonlatin}"
-            ]
-          ]
-        },
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false,
-        "icon-ignore-placement": false
-      },
-      "paint": {
-        "text-color": "#0066ff",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "car",
-          "bicycle_parking",
-          "fuel",
-          "charging_station"
-        ]
-      ],
-      "order": 170
-    },
-    {
-      "id": "poi_health",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Regular",
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              14,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#BF0000",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "pharmacy",
-          "dentist",
-          "veterinary"
-        ]
-      ],
-      "order": 171
-    },
-    {
-      "id": "poi_hospital",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 14,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              14,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "{subclass}",
-        "text-field": {
-          "stops": [
-            [
-              14,
-              ""
-            ],
-            [
-              16,
-              "{name:latin}\n{name:nonlatin}"
-            ]
-          ]
-        },
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#BF0000",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "hospital"
-        ]
-      ],
-      "order": 172
-    },
-    {
-      "id": "poi_campsite",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 16,
-      "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "icon-image": "camping",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
-      },
-      "paint": {
-        "text-color": "#0066ff",
-        "icon-opacity": 1,
-        "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
-        "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
-        "text-halo-width": 1
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
           "campsite"
         ]
       ],
-      "order": 173
+      "order": 214
     },
     {
-      "id": "poi_accommodation",
+      "id": "Accommodation",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
       "layout": {
-        "text-font": [
-          "Noto Sans Bold"
-        ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
+        "icon-allow-overlap": false,
         "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
         "text-field": {
           "stops": [
             [
@@ -1236,53 +1306,96 @@
             ],
             [
               18,
-              "{name:latin}\n{name:nonlatin}"
+              "{name}"
             ]
           ]
         },
-        "visibility": "visible",
-        "text-anchor": "top",
+        "text-font": [
+          "Open Sans Semi Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
         "text-offset": [
           0,
           0.6
         ],
         "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#0066ff",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": 1,
+        "text-color": "hsl(216, 100%, 50%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
       "filter": [
         "all",
         [
-          "in",
+          "==",
           "class",
-          "lodging",
-          "campsite"
+          "lodging"
         ]
       ],
-      "order": 174
+      "order": 215
     },
     {
-      "id": "poi_place_of_worship",
+      "id": "Place of worship",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
       "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
         "icon-size": 1,
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-allow-overlap": false,
+        "text-anchor": "top",
+        "text-field": {
+          "stops": [
+            [
+              15,
+              ""
+            ],
+            [
+              16,
+              "{name}"
+            ]
+          ]
+        },
         "text-font": [
+          "Open Sans Semi Bold",
           "Noto Sans Bold"
         ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -1295,34 +1408,12 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
-        "text-field": {
-          "stops": [
-            [
-              15,
-              ""
-            ],
-            [
-              16,
-              "{name:latin}\n{name:nonlatin}"
-            ]
-          ]
-        },
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false,
-        "text-allow-overlap": false
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "rgba(56, 56, 71, 1)",
+        "text-color": "hsl(240, 12%, 25%)",
         "text-halo-blur": 0.5,
-        "text-halo-color": "#ffffff",
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -1334,19 +1425,47 @@
           "place_of_worship"
         ]
       ],
-      "order": 175
+      "order": 216
     },
     {
-      "id": "poi_busstop",
+      "id": "Bus stop",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
       "layout": {
+        "icon-allow-overlap": false,
+        "icon-anchor": "bottom",
+        "icon-image": "bus_stop.12",
+        "icon-keep-upright": true,
+        "icon-pitch-alignment": "viewport",
         "icon-size": 1,
+        "icon-text-fit": "none",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Regular",
           "Noto Sans Regular"
         ],
+        "text-max-width": 14,
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -1359,31 +1478,17 @@
             ]
           ]
         },
-        "icon-image": "bus_stop.12",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "icon-anchor": "bottom",
-        "text-anchor": "top",
-        "text-padding": 2,
-        "icon-text-fit": "none",
-        "text-max-width": 14,
-        "icon-keep-upright": true,
-        "icon-allow-overlap": false,
-        "icon-pitch-alignment": "viewport"
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#0066ff",
-        "icon-translate": [
-          0,
-          0
-        ],
+        "icon-translate-anchor": "map",
+        "text-color": "hsl(216, 100%, 50%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.8,
         "text-translate": [
           0,
           4
         ],
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.8,
-        "icon-translate-anchor": "map",
         "text-translate-anchor": "viewport"
       },
       "metadata": {},
@@ -1395,50 +1500,67 @@
           "bus"
         ]
       ],
-      "order": 176
+      "order": 217
     },
     {
-      "id": "poi_bus",
+      "id": "Bus station",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
       "layout": {
-        "icon-size": 1,
-        "text-font": [
-          "Noto Sans Bold",
-          "Noto Sans Regular"
-        ],
-        "text-size": 11,
-        "icon-image": "{subclass}",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "icon-allow-overlap": false,
         "icon-anchor": "bottom",
+        "icon-image": "{subclass}",
+        "icon-keep-upright": true,
         "icon-offset": [
           0,
           0
         ],
-        "text-anchor": "center",
-        "text-padding": 2,
+        "icon-pitch-alignment": "viewport",
+        "icon-size": 1,
         "icon-text-fit": "none",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "center",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Bold",
+          "Noto Sans Bold"
+        ],
         "text-max-width": 14,
-        "icon-keep-upright": true,
-        "icon-allow-overlap": false,
-        "icon-pitch-alignment": "viewport"
+        "text-padding": 2,
+        "text-size": 11,
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#0066ff",
         "icon-translate": [
           0,
-          0
+          -8
         ],
+        "icon-translate-anchor": "map",
+        "text-color": "hsl(216, 100%, 50%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.8,
         "text-translate": [
           0,
           5
         ],
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.8,
-        "icon-translate-anchor": "map",
         "text-translate-anchor": "viewport"
       },
       "metadata": {},
@@ -1455,18 +1577,41 @@
           "bus_stop"
         ]
       ],
-      "order": 177
+      "order": 218
     },
     {
-      "id": "poi_harbor",
+      "id": "Harbor",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
       "layout": {
-        "text-font": [
-          "Noto Sans Bold"
+        "icon-allow-overlap": false,
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
         ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semi Bold Italic",
+          "Noto Sans Italic"
+        ],
+        "text-max-width": 6,
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -1479,21 +1624,16 @@
             ]
           ]
         },
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-padding": 2,
-        "text-max-width": 6,
-        "icon-allow-overlap": false
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#576ddf",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.1,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.2,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": 1,
+        "text-color": "hsl(230, 68%, 61%)",
+        "text-halo-blur": 0.1,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 0.3
       },
       "metadata": {},
@@ -1505,18 +1645,45 @@
           "harbor"
         ]
       ],
-      "order": 178
+      "order": 219
     },
     {
-      "id": "poi_mall",
+      "id": "Mall",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
       "layout": {
+        "icon-allow-overlap": false,
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Semi Bold Italic",
           "Noto Sans Italic"
         ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          1.1
+        ],
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -1529,25 +1696,16 @@
             ]
           ]
         },
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.1
-        ],
-        "text-padding": 2,
-        "text-max-width": 9,
-        "icon-allow-overlap": false
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#d11700",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": 1,
+        "text-color": "hsl(7, 100%, 41%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -1564,54 +1722,67 @@
           "mall"
         ]
       ],
-      "order": 179
+      "order": 220
     },
     {
-      "id": "poi_train",
+      "id": "Train",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "minzoom": 10,
+      "minzoom": 12,
       "layout": {
-        "icon-size": 1,
-        "text-font": [
-          "Noto Sans Bold",
-          "Noto Sans Regular"
-        ],
-        "text-size": 11,
-        "icon-image": "square_train",
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "icon-allow-overlap": false,
         "icon-anchor": "bottom",
+        "icon-image": "square_train",
         "icon-offset": [
           0,
           0
         ],
+        "icon-pitch-alignment": "viewport",
+        "icon-size": 1,
+        "icon-text-fit": "none",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-allow-overlap": false,
         "text-anchor": "center",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Bold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 14,
         "text-offset": [
           0,
           0.5
         ],
         "text-padding": 2,
-        "icon-text-fit": "none",
-        "text-max-width": 12,
-        "icon-allow-overlap": false,
-        "text-allow-overlap": false,
-        "icon-pitch-alignment": "viewport"
+        "text-size": 11,
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#4957ad",
-        "icon-translate": [
-          0,
-          0
-        ],
+        "icon-translate-anchor": "map",
+        "text-color": "hsl(232, 41%, 48%)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.8,
         "text-translate": [
           0,
           1
         ],
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 0.8,
-        "icon-translate-anchor": "map",
         "text-translate-anchor": "viewport"
       },
       "metadata": {},
@@ -1623,33 +1794,39 @@
           "railway"
         ]
       ],
-      "order": 180
+      "order": 221
     },
     {
-      "id": "park-local",
+      "id": "Local park",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
       "layout": {
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "symbol-spacing": 150,
+        "text-allow-overlap": false,
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Semi Bold Italic",
           "Noto Sans Italic"
         ],
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              13
-            ]
-          ]
-        },
-        "text-field": "{name:latin}{name:nonlatin}",
-        "visibility": "visible",
-        "symbol-spacing": 150,
         "text-max-width": {
           "stops": [
             [
@@ -1662,12 +1839,24 @@
             ]
           ]
         },
-        "text-allow-overlap": false
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              13
+            ]
+          ]
+        },
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#0c8416",
+        "text-color": "hsl(125, 83%, 28%)",
         "text-halo-blur": 0.5,
-        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "filter": [
@@ -1683,18 +1872,46 @@
           "park"
         ]
       ],
-      "order": 194
+      "order": 236
     },
     {
-      "id": "poi_zoo",
+      "id": "Zoo",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "minzoom": 11,
+      "minzoom": 12,
       "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Bold",
           "Noto Sans Bold"
         ],
+        "text-max-width": 6,
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -1707,26 +1924,16 @@
             ]
           ]
         },
-        "icon-image": "{subclass}",
-        "text-field": "{name}",
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          1.2
-        ],
-        "text-padding": 2,
-        "text-max-width": 6,
-        "icon-allow-overlap": true
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#660033",
-        "icon-opacity": 1,
         "icon-halo-blur": 1,
-        "text-halo-blur": 0.5,
-        "icon-halo-color": "rgba(255, 255, 255, 1)",
+        "icon-halo-color": "hsl(0, 0%, 100%)",
         "icon-halo-width": 0.5,
-        "text-halo-color": "#ffffff",
+        "icon-opacity": 1,
+        "text-color": "hsl(330, 100%, 20%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -1743,7 +1950,7 @@
           "zoo"
         ]
       ],
-      "order": 196
+      "order": 238
     }
   ]
 }

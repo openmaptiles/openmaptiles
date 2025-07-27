@@ -1,7 +1,7 @@
 {
   "layers": [
     {
-      "id": "national_parks",
+      "id": "National parks",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "park",
@@ -10,7 +10,9 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(154, 199, 136, 1)",
+        "line-color": "hsl(103, 36%, 66%)",
+        "line-offset": 1,
+        "line-opacity": 0.8,
         "line-width": {
           "base": 1,
           "stops": [
@@ -31,54 +33,70 @@
               3.6
             ]
           ]
-        },
-        "line-offset": 1,
-        "line-opacity": 0.8
+        }
       },
-      "order": 20
+      "order": 55
     },
     {
-      "id": "national_parks_thin",
+      "id": "National park outline",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "park",
-      "minzoom": 10,
+      "minzoom": 14,
       "layout": {
-        "visibility": "none"
+        "visibility": "visible"
       },
       "paint": {
-        "line-color": "rgba(93, 156, 76, 1)",
+        "line-color": "hsl(107, 34%, 45%)",
         "line-width": 1.5
       },
-      "order": 21
+      "order": 56
     },
     {
-      "id": "park-national",
+      "id": "National park labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "park",
       "minzoom": 7,
       "maxzoom": 12,
       "layout": {
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "symbol-spacing": 150,
+        "text-allow-overlap": false,
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
+          "Open Sans Semi Bold Italic",
           "Noto Sans Italic"
         ],
         "text-size": 12,
-        "text-field": "{name:latin}{name:nonlatin}",
-        "visibility": "visible",
-        "symbol-spacing": 150,
-        "text-allow-overlap": false
+        "visibility": "visible"
       },
       "paint": {
         "text-color": {
           "stops": [
             [
               7,
-              "rgba(70, 164, 70, 1)"
+              "hsl(120, 40%, 46%)"
             ],
             [
               10,
-              "#008000"
+              "hsl(120, 100%, 25%)"
             ]
           ]
         },
@@ -87,11 +105,11 @@
           "stops": [
             [
               7,
-              "rgba(241, 255, 234, 1)"
+              "hsl(100, 100%, 96%)"
             ],
             [
               10,
-              "rgba(208, 250, 200, 1)"
+              "hsl(110, 83%, 88%)"
             ]
           ]
         },
@@ -105,7 +123,7 @@
           2
         ]
       ],
-      "order": 195
+      "order": 237
     }
   ]
 }
