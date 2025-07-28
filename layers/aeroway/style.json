@@ -185,7 +185,7 @@
       "layout": {
         "text-field": "{ref}",
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-size": {

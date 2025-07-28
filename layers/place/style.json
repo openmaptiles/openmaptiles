@@ -27,7 +27,7 @@
           ]
         ],
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-max-width": 10,
@@ -121,7 +121,7 @@
         ],
         "text-field": "{name}",
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-max-width": 8,
@@ -183,7 +183,7 @@
           ]
         ],
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-max-width": 8,
@@ -336,7 +336,7 @@
           ]
         ],
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-max-width": 8,
@@ -428,7 +428,7 @@
         "text-anchor": "bottom",
         "text-field": "{name:en}",
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Regular"
         ],
         "text-max-width": 8,
@@ -501,7 +501,7 @@
         ],
         "text-field": "{name:en}",
         "text-font": [
-          "Open Sans Semi Bold",
+          "Open Sans Semibold",
           "Noto Sans Bold"
         ],
         "text-max-width": 6.25,
