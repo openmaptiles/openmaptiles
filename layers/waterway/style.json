@@ -1,7 +1,7 @@
 {
   "layers": [
     {
-      "id": "waterway_tunnel",
+      "id": "River tunnel",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -11,7 +11,11 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          2,
+          4
+        ],
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -24,11 +28,7 @@
               6
             ]
           ]
-        },
-        "line-dasharray": [
-          2,
-          4
-        ]
+        }
       },
       "filter": [
         "all",
@@ -38,10 +38,10 @@
           "tunnel"
         ]
       ],
-      "order": 12
+      "order": 48
     },
     {
-      "id": "waterway_river",
+      "id": "River",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -50,7 +50,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -84,10 +84,10 @@
           1
         ]
       ],
-      "order": 13
+      "order": 49
     },
     {
-      "id": "waterway_river_intermittent",
+      "id": "River intermittent",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -95,7 +95,11 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          3,
+          2
+        ],
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -108,11 +112,7 @@
               6
             ]
           ]
-        },
-        "line-dasharray": [
-          3,
-          2
-        ]
+        }
       },
       "metadata": {},
       "filter": [
@@ -133,10 +133,10 @@
           1
         ]
       ],
-      "order": 14
+      "order": 50
     },
     {
-      "id": "waterway_other",
+      "id": "Other waterway",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -145,7 +145,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -179,10 +179,10 @@
           1
         ]
       ],
-      "order": 15
+      "order": 51
     },
     {
-      "id": "waterway_other_intermittent",
+      "id": "Other waterway intermittent",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -191,7 +191,11 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          4,
+          3
+        ],
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -204,11 +208,7 @@
               6
             ]
           ]
-        },
-        "line-dasharray": [
-          4,
-          3
-        ]
+        }
       },
       "metadata": {},
       "filter": [
@@ -229,10 +229,10 @@
           1
         ]
       ],
-      "order": 16
+      "order": 52
     },
     {
-      "id": "waterway-bridge-case",
+      "id": "River bridge outline",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -241,20 +241,7 @@
         "line-join": "miter"
       },
       "paint": {
-        "line-color": "#bbbbbb",
-        "line-width": {
-          "base": 1.6,
-          "stops": [
-            [
-              12,
-              0.5
-            ],
-            [
-              20,
-              5
-            ]
-          ]
-        },
+        "line-color": "hsl(0, 0%, 73%)",
         "line-gap-width": {
           "base": 1.3,
           "stops": [
@@ -267,6 +254,19 @@
               6
             ]
           ]
+        },
+        "line-width": {
+          "base": 1.6,
+          "stops": [
+            [
+              12,
+              0.5
+            ],
+            [
+              20,
+              5
+            ]
+          ]
         }
       },
       "filter": [
@@ -282,10 +282,10 @@
           "bridge"
         ]
       ],
-      "order": 111
+      "order": 152
     },
     {
-      "id": "waterway-bridge",
+      "id": "River bridge",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
@@ -294,7 +294,7 @@
         "line-join": "round"
       },
       "paint": {
-        "line-color": "rgba(134, 204, 250, 1)",
+        "line-color": "hsl(204, 92%, 75%)",
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -322,19 +322,33 @@
           "bridge"
         ]
       ],
-      "order": 112
+      "order": 153
     },
     {
-      "id": "water_way_name",
+      "id": "River labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "waterway",
-      "minzoom": 0,
+      "minzoom": 3,
       "layout": {
-        "text-font": [
-          "Noto Sans Regular",
-          "Noto Sans Bold"
+        "symbol-placement": "line",
+        "symbol-spacing": 400,
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
         ],
+        "text-font": [
+          "Open Sans Regular",
+          "Noto Sans Regular"
+        ],
+        "text-max-width": 5,
         "text-size": {
           "stops": [
             [
@@ -347,15 +361,11 @@
             ]
           ]
         },
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "symbol-spacing": 400,
-        "text-max-width": 5,
-        "symbol-placement": "line"
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#4d80b3",
-        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-color": "hsl(210, 40%, 50%)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -367,7 +377,7 @@
           "LineString"
         ]
       ],
-      "order": 151
+      "order": 197
     }
   ]
 }
