@@ -959,18 +959,17 @@
           ]
         ],
         "text-anchor": "top",
-        "text-field": {
-          "stops": [
-            [
-              15,
-              ""
-            ],
-            [
-              16,
-              "{name}"
-            ]
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
           ]
-        },
+        ],
         "text-font": [
           "Open Sans Semibold",
           "Noto Sans Bold"
@@ -1298,18 +1297,17 @@
           ]
         ],
         "text-anchor": "top",
-        "text-field": {
-          "stops": [
-            [
-              17,
-              ""
-            ],
-            [
-              18,
-              "{name}"
-            ]
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
           ]
-        },
+        ],
         "text-font": [
           "Open Sans Semibold",
           "Noto Sans Bold"
@@ -1319,6 +1317,7 @@
           0,
           0.6
         ],
+        "text-optional": true,
         "text-padding": 2,
         "text-size": {
           "stops": [
@@ -1374,18 +1373,17 @@
         ],
         "text-allow-overlap": false,
         "text-anchor": "top",
-        "text-field": {
-          "stops": [
-            [
-              15,
-              ""
-            ],
-            [
-              16,
-              "{name}"
-            ]
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
           ]
-        },
+        ],
         "text-font": [
           "Open Sans Semibold",
           "Noto Sans Bold"
