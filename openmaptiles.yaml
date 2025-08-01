@@ -27,6 +27,7 @@ tileset:
   minzoom: 0
   pixel_scale: 256
   languages:
+    - af # Afrikaans
     - am # Amharic
     - ar # Arabic
     - az # Azerbaijani, Latin
