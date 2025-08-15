@@ -1,17 +1,49 @@
 {
   "layers": [
     {
-      "id": "airport-label-major",
+      "id": "Major airport labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "aerodrome_label",
       "minzoom": 8,
       "maxzoom": 17,
       "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "aerodrome.12",
         "icon-size": 1,
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "symbol-z-order": "auto",
+        "text-allow-overlap": false,
+        "text-anchor": "top",
+        "text-field": {
+          "stops": [
+            [
+              8,
+              " "
+            ],
+            [
+              11,
+              "{name}"
+            ]
+          ]
+        },
         "text-font": [
+          "Open Sans Italic",
           "Noto Sans Italic"
         ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.6
+        ],
+        "text-optional": true,
+        "text-padding": 2,
         "text-size": {
           "stops": [
             [
@@ -24,36 +56,12 @@
             ]
           ]
         },
-        "icon-image": "aerodrome.12",
-        "text-field": {
-          "stops": [
-            [
-              8,
-              " "
-            ],
-            [
-              11,
-              "{name:latin}\n{name:nonlatin}"
-            ]
-          ]
-        },
-        "visibility": "visible",
-        "text-anchor": "top",
-        "text-offset": [
-          0,
-          0.6
-        ],
-        "text-padding": 2,
-        "text-optional": true,
-        "symbol-z-order": "auto",
-        "text-max-width": 9,
-        "icon-allow-overlap": false,
-        "text-allow-overlap": false
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#5e3b9e",
+        "text-color": "hsl(261, 46%, 43%)",
         "text-halo-blur": 0.5,
-        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
       "filter": [
@@ -63,7 +71,7 @@
           "iata"
         ]
       ],
-      "order": 190
+      "order": 232
     }
   ]
 }

@@ -9,13 +9,17 @@ layer:
       - ne_50m_admin_0_boundary_lines_land
       - ne_110m_admin_0_boundary_lines_land
   description: |
-      Contains administrative boundaries as linestrings.
+      Contains administrative boundaries as linestrings and aboriginal lands as polygons.
       Until z4 [Natural Earth data](http://www.naturalearthdata.com/downloads/) is used after which
       OSM boundaries ([`boundary=administrative`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative))
       are present from z5 to z14 (also for maritime boundaries with `admin_level <= 2` at z4).
       OSM data contains several [`admin_level`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
       but for most styles it makes sense to just style `admin_level=2` and `admin_level=4`.
   fields:
+    class:
+      description: |
+        Use the **class** to differentiate between different kinds of boundaries.  The class for `boundary=aboriginal_lands` is `aboriginal_lands`.
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value (area features only).
     admin_level: |
         OSM [admin_level](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative#admin_level)
         indicating the level of importance of this boundary.
@@ -58,8 +62,9 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, adm0_l, adm0_r, disputed, disputed_name, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, adm0_l, adm0_r, disputed, disputed_name, claimed_by, maritime, class, name, {name_languages} FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
+  - ./update_boundary_polygon.sql
   - ./boundary_name.sql
   - ./boundary.sql
 datasources:

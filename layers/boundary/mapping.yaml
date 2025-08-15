@@ -4,6 +4,67 @@ generalized_tables:
     source: border_linestring
     sql_filter: ST_GeometryType(geometry) = 'ST_LineString' AND (disputed OR dispute OR border_status = 'disputed' OR disputed_by <> '') AND admin_level = 2
 
+  # etldoc: osm_boundary_polygon_gen_z5 -> osm_boundary_polygon_gen_z4
+  boundary_polygon_gen_z4:
+    source: boundary_polygon_gen_z5
+    sql_filter: area>power(ZRES3,2)
+    tolerance: ZRES4
+
+  # etldoc: osm_boundary_polygon_gen_z6 -> osm_boundary_polygon_gen_z5
+  boundary_polygon_gen_z5:
+    source: boundary_polygon_gen_z6
+    sql_filter: area>power(ZRES4,2)
+    tolerance: ZRES5
+
+  # etldoc: osm_boundary_polygon_gen_z7 -> osm_boundary_polygon_gen_z6
+  boundary_polygon_gen_z6:
+    source: boundary_polygon_gen_z7
+    sql_filter: area>power(ZRES5,2)
+    tolerance: ZRES6
+
+  # etldoc: osm_boundary_polygon_gen_z8 -> osm_boundary_polygon_gen_z7
+  boundary_polygon_gen_z7:
+    source: boundary_polygon_gen_z8
+    sql_filter: area>power(ZRES6,2)
+    tolerance: ZRES7
+
+  # etldoc: osm_boundary_polygon_gen_z9 -> osm_boundary_polygon_gen_z8
+  boundary_polygon_gen_z8:
+    source: boundary_polygon_gen_z9
+    sql_filter: area>power(ZRES7,2)
+    tolerance: ZRES8
+
+  # etldoc: osm_boundary_polygon_gen_z10 -> osm_boundary_polygon_gen_z9
+  boundary_polygon_gen_z9:
+    source: boundary_polygon_gen_z10
+    sql_filter: area>power(ZRES8,2)
+    tolerance: ZRES9
+
+  # etldoc: osm_boundary_polygon_gen_z11 -> osm_boundary_polygon_gen_z10
+  boundary_polygon_gen_z10:
+    source: boundary_polygon_gen_z11
+    sql_filter: area>power(ZRES9,2)
+    tolerance: ZRES10
+
+  # etldoc: osm_boundary_polygon_gen_z12 -> osm_boundary_polygon_gen_z11
+  boundary_polygon_gen_z11:
+    source: boundary_polygon_gen_z12
+    sql_filter: area>power(ZRES10,2)
+    tolerance: ZRES11
+
+  # etldoc: osm_boundary_polygon_gen_z13 -> osm_boundary_polygon_gen_z12
+  boundary_polygon_gen_z12:
+    source: boundary_polygon_gen_z13
+    sql_filter: area>power(ZRES11,2)
+    tolerance: ZRES12
+
+  # etldoc: osm_boundary_polygon -> osm_boundary_polygon_gen_z13
+  boundary_polygon_gen_z13:
+    source: boundary_polygon
+    sql_filter: area>power(ZRES12,2) AND ST_IsValid(geometry)
+    tolerance: ZRES13
+
+
 tables:
   # etldoc: imposm3 -> osm_border_linestring
   border_linestring:
@@ -71,3 +132,29 @@ tables:
       - dispute
       boundary_type:
       - maritime
+
+  # etldoc: imposm3 -> osm_boundary_polygon
+  boundary_polygon:
+    type: polygon
+    filters:
+      require:
+        type: [boundary]
+        boundary: [aboriginal_lands]
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: name
+      key: name
+      type: string
+    - name: tags
+      type: hstore_tags
+    - name: boundary
+      key: boundary
+      type: string
+    - name: area
+      type: area
+    mapping:
+      boundary:
+      - aboriginal_lands

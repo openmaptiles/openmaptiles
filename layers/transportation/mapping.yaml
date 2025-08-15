@@ -102,10 +102,6 @@ name_de_field: &name_de
   name: name_de
   key: name:de
   type: string
-short_name_field: &short_name
-  key: short_name
-  name: short_name
-  type: string
 tunnel_field: &tunnel
   key: tunnel
   name: is_tunnel
@@ -236,7 +232,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -316,7 +311,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -354,7 +348,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -393,7 +386,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -490,6 +482,9 @@ tables:
       type: string
     - name: colour
       key: colour
+      type: string
+    - name: ref_colour
+      key: ref:colour
       type: string
     mapping:
       route:

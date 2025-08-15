@@ -62,7 +62,7 @@ SELECT osm_id,
        NULLIF(service, '') AS service,
        access,
        CASE WHEN toll = TRUE THEN 1 END AS toll,
-       CASE WHEN highway NOT IN ('', 'motorway') AND expressway = TRUE THEN 1 END AS expressway,
+       CASE WHEN highway NOT IN ('', 'motorway') AND NOT is_ramp AND expressway = TRUE THEN 1 END AS expressway,
        NULLIF(layer, 0) AS layer,
        "level",
        CASE WHEN indoor = TRUE THEN 1 END AS indoor,
@@ -372,7 +372,7 @@ FROM (
                 hl.z_order
          FROM osm_highway_linestring hl
          LEFT OUTER JOIN osm_transportation_name_network n ON hl.osm_id = n.osm_id
-         WHERE NOT is_area
+         WHERE zoom_level > 11 AND NOT is_area
            AND
                CASE WHEN zoom_level = 12 THEN
                          CASE WHEN transportation_filter_z12(hl.highway, hl.construction) THEN TRUE

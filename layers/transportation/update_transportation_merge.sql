@@ -42,6 +42,23 @@ SELECT
 $$ LANGUAGE SQL IMMUTABLE
                 PARALLEL SAFE;
 
+-- Determine whether a segment is long enough to have an attribute
+CREATE OR REPLACE FUNCTION visible_text(g geometry, attr text, zoom_level integer)
+    RETURNS text AS
+$$
+SELECT
+    CASE WHEN
+    -- Width of a tile in meters (111,842 is the length of one degree of latitude at the equator in meters)
+    -- 111,842 * 180 / 2^zoom_level
+    --  = 20131560 / POW(2, zoom_level)
+    -- Drop brunnel if length of way < 2% of tile width (less than 3 pixels)
+    ST_Length(g) *
+        COS(RADIANS(ST_Y(ST_Centroid(ST_Transform(g, 4326))))) *
+        POW(2, zoom_level) / 20131560 > 0.02
+    THEN attr END
+$$ LANGUAGE SQL IMMUTABLE
+                PARALLEL SAFE;
+
 -- Instead of using relations to find out the road names we
 -- stitch together the touching ways with the same name
 -- to allow for nice label rendering
@@ -49,7 +66,8 @@ $$ LANGUAGE SQL IMMUTABLE
 
 -- etldoc: osm_highway_linestring ->  osm_transportation_name_network
 -- etldoc: transportation_route_member_coalesced ->  osm_transportation_name_network
-CREATE TABLE IF NOT EXISTS osm_transportation_name_network AS
+DROP TABLE IF EXISTS osm_transportation_name_network;
+CREATE TABLE osm_transportation_name_network AS
 SELECT
     geometry,
     osm_id,
@@ -84,12 +102,12 @@ FROM (
         CASE WHEN highway IN ('footway', 'steps') THEN layer END AS layer,
         CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
         CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
-        NULLIF(rm1.network, '') || '=' || COALESCE(rm1.ref, '') AS route_1,
-        NULLIF(rm2.network, '') || '=' || COALESCE(rm2.ref, '') AS route_2,
-        NULLIF(rm3.network, '') || '=' || COALESCE(rm3.ref, '') AS route_3,
-        NULLIF(rm4.network, '') || '=' || COALESCE(rm4.ref, '') AS route_4,
-        NULLIF(rm5.network, '') || '=' || COALESCE(rm5.ref, '') AS route_5,
-        NULLIF(rm6.network, '') || '=' || COALESCE(rm6.ref, '') AS route_6,
+        create_route_hstore(rm1.network, rm1.ref, rm1.name, rm1.colour, rm1.ref_colour) AS route_1,
+        create_route_hstore(rm2.network, rm2.ref, rm2.name, rm2.colour, rm2.ref_colour) AS route_2,
+        create_route_hstore(rm3.network, rm3.ref, rm3.name, rm3.colour, rm3.ref_colour) AS route_3,
+        create_route_hstore(rm4.network, rm4.ref, rm4.name, rm4.colour, rm4.ref_colour) AS route_4,
+        create_route_hstore(rm5.network, rm5.ref, rm5.name, rm5.colour, rm5.ref_colour) AS route_5,
+        create_route_hstore(rm6.network, rm6.ref, rm6.name, rm6.colour, rm6.ref_colour) AS route_6,
         hl.z_order,
         LEAST(rm1.rank, rm2.rank, rm3.rank, rm4.rank, rm5.rank, rm6.rank) AS route_rank
     FROM osm_highway_linestring hl
@@ -126,6 +144,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     id SERIAL,
     osm_id bigint,
     source_ids bigint[],
+    new_source_ids bigint[],
+    old_source_ids bigint[],
     highway character varying,
     network character varying,
     construction character varying,
@@ -144,12 +164,23 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     layer integer
 );
 
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
+
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_n_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z11 ((new_source_ids IS NOT NULL));
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_o_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z11 ((old_source_ids IS NOT NULL));
+
 -- Create osm_transportation_merge_linestring_gen_z10 as a copy of osm_transportation_merge_linestring_gen_z11 but
 -- drop the "source_ids" column. This can be done because z10 and z9 tables are only simplified and not merged,
 -- therefore relations to sources are direct via the id column.
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z10
     (LIKE osm_transportation_merge_linestring_gen_z11);
 ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS new_source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z10 DROP COLUMN IF EXISTS old_source_ids;
 
 -- Create osm_transportation_merge_linestring_gen_z9 as a copy of osm_transportation_merge_linestring_gen_z10
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z9
@@ -445,10 +476,12 @@ CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z9_geometry_i
 
 -- etldoc: osm_transportation_merge_linestring_gen_z9 -> osm_transportation_merge_linestring_gen_z8
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
-    geometry geometry('LineString'),
+    geometry geometry,
     id SERIAL,
     osm_id bigint,
     source_ids int[],
+    new_source_ids bigint[],
+    old_source_ids bigint[],
     highway character varying,
     network character varying,
     construction character varying,
@@ -459,12 +492,23 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
     z_order integer
 );
 
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS new_source_ids bigint[];
+ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS old_source_ids bigint[];
+
+CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_n_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z8 ((new_source_ids IS NOT NULL));
+CREATE INDEX IF NOT EXISTS  osm_transportation_merge_linestring_gen_z8_o_source_ids_not_null_idx 
+    ON osm_transportation_merge_linestring_gen_z8 ((old_source_ids IS NOT NULL));
+
 -- Create osm_transportation_merge_linestring_gen_z7 as a copy of osm_transportation_merge_linestring_gen_z8 but
 -- drop the "source_ids" column. This can be done because z7 to z5 tables are only simplified and not merged,
 -- therefore relations to sources are direct via the id column.
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z7
     (LIKE osm_transportation_merge_linestring_gen_z8);
 ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS new_source_ids;
+ALTER TABLE osm_transportation_merge_linestring_gen_z7 DROP COLUMN IF EXISTS old_source_ids;
 
 -- Create osm_transportation_merge_linestring_gen_z6 as a copy of osm_transportation_merge_linestring_gen_z7
 CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z6
@@ -662,25 +706,68 @@ BEGIN
 
     -- etldoc: osm_transportation_merge_linestring_gen_z8 -> osm_transportation_merge_linestring_gen_z7
     INSERT INTO osm_transportation_merge_linestring_gen_z7
-    SELECT ST_Simplify(geometry, ZRes(9)) AS geometry,
-        id,
-        osm_id,
-        highway,
-        network,
-        construction,
-        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
-        visible_brunnel(geometry, is_bridge, 8) AS is_bridge,
-        visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
-        visible_brunnel(geometry, is_ford, 8) AS is_ford,
-        expressway,
-        z_order
-    FROM osm_transportation_merge_linestring_gen_z8
+    WITH roads_z8 AS (
+        SELECT  id,
+                osm_id,
+                ST_SnapToGrid(
+                    ST_Node(
+                        ST_Collect(
+                            ST_Simplify(geometry, ZRes(9))
+                            )
+                        ), ZRes(9)
+                    ) AS geometry,
+                highway, 
+                NULLIF(network, '') as network,
+                construction,
+                is_bridge, 
+                is_tunnel, 
+                is_ford,
+                expressway,
+                z_order
+        FROM osm_transportation_merge_linestring_gen_z8
+        GROUP BY id, osm_id, highway, construction, network, is_bridge, is_tunnel, is_ford, expressway, z_order
+        ),
+    roads_z8_merge AS (
+        SELECT  id,
+                osm_id,
+                ST_LineMerge(
+                    ST_Union(geometry)
+                    ) AS geometry,
+                highway,
+                network,
+                construction,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                expressway,
+                z_order
+    FROM roads_z8
+    GROUP BY id, osm_id, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, z_order
+    )
+
+    SELECT  CASE
+             WHEN ST_StartPoint(geometry) = ST_EndPoint(geometry) 
+                 THEN ST_RemovePoint(geometry, ST_NPoints(geometry) - 1)
+             ELSE geometry
+            END AS geometry,  
+            id,
+            osm_id,
+            highway,
+            network,
+            construction,
+            -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+            visible_brunnel(geometry, is_bridge, 8) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 8) AS is_ford,
+            expressway,
+            z_order
+    FROM roads_z8_merge
         -- Current view: motorway/trunk/primary
     WHERE
         (full_update IS TRUE OR EXISTS(
             SELECT NULL FROM transportation.changes_z4_z5_z6_z7
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
-                  transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z8.id
+                  transportation.changes_z4_z5_z6_z7.id = roads_z8_merge.id
         )) AND
         (ST_Length(geometry) > 50)
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
@@ -803,7 +890,12 @@ BEGIN
             WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
                   transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
         )) AND
-        osm_national_network(network) AND
+        -- All motorways without network (e.g. EU, Asia, South America)
+        ((highway = 'motorway' OR construction = 'motorway') AND (network is NULL or network = '')
+        ) OR 
+        -- All roads in network included in osm_national_network except gb-trunk and us-highway
+		( (osm_national_network(network) AND network NOT IN ('gb-trunk', 'us-highway')
+        )) AND
         -- Current view: national-importance motorways and trunks
         ST_Length(geometry) > 1000
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
@@ -1046,11 +1138,6 @@ BEGIN
     CREATE INDEX ON clustered_linestrings_to_merge (cluster_group, cluster);
     ANALYZE clustered_linestrings_to_merge;
 
-    -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
-    -- intersected
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS new_source_ids BIGINT[];
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 ADD COLUMN IF NOT EXISTS old_source_ids BIGINT[];
-
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z11(geometry, new_source_ids, old_source_ids, highway,
@@ -1110,9 +1197,9 @@ BEGIN
     -- Cleanup remaining table
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop  temporary Merged-LineString to Source-LineStrings-ID columns
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 DROP COLUMN IF EXISTS new_source_ids;
-    ALTER TABLE osm_transportation_merge_linestring_gen_z11 DROP COLUMN IF EXISTS old_source_ids;
+    -- Restore temporary Merged-LineString to Source-LineStrings-ID columns
+    UPDATE osm_transportation_merge_linestring_gen_z11 SET new_source_ids = NULL WHERE new_source_ids IS NOT NULL;
+    UPDATE osm_transportation_merge_linestring_gen_z11 SET old_source_ids = NULL WHERE old_source_ids IS NOT NULL;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.changes_z11;
@@ -1344,9 +1431,6 @@ BEGIN
 
     -- Create temporary Merged-LineString to Source-LineStrings-ID columns to store relations before they have been
     -- intersected
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS new_source_ids INT[];
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 ADD COLUMN IF NOT EXISTS old_source_ids INT[];
-
     WITH inserted_linestrings AS (
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z8(geometry, new_source_ids, old_source_ids, highway,
@@ -1396,10 +1480,10 @@ BEGIN
     -- Cleanup
     DROP TABLE clustered_linestrings_to_merge;
 
-    -- Drop temporary Merged-LineString to Source-LineStrings-ID columns
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 DROP COLUMN IF EXISTS new_source_ids;
-    ALTER TABLE osm_transportation_merge_linestring_gen_z8 DROP COLUMN IF EXISTS old_source_ids;
+    -- Restore temporary Merged-LineString to Source-LineStrings-ID columns
 
+    UPDATE osm_transportation_merge_linestring_gen_z8 SET new_source_ids = NULL WHERE new_source_ids IS NOT NULL;
+    UPDATE osm_transportation_merge_linestring_gen_z8 SET old_source_ids = NULL WHERE old_source_ids IS NOT NULL;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.changes_z9;
     -- noinspection SqlWithoutWhere

@@ -45,7 +45,7 @@ else
 endif
 
 # Make some operations quieter (e.g. inside the test script)
-ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET})))),)
+ifeq ($(or $(QUIET),$(shell (. .env; echo $${QUIET}))),)
   QUIET_FLAG :=
 else
   QUIET_FLAG := --quiet
@@ -289,20 +289,20 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
 		'generate-sql $(TILESET_FILE) --dir ./build/sql \
 		&& generate-sqltomvt $(TILESET_FILE) \
-							 --key --gzip --postgis-ver 3.0.1 \
+							 --key --gzip --postgis-ver 3.3.4 \
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
 
 .PHONY: build-sprite
 build-sprite: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spritezero build/style/sprite /style/icons && \
-		spritezero --retina build/style/sprite@2x /style/icons'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spreet /style/icons build/style/sprite && \
+		spreet --retina /style/icons build/style/sprite@2x'
 
 .PHONY: build-style
 build-style: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools recompose $(TILESET_FILE) $(STYLE_FILE) \
 		$(STYLE_HEADER_FILE) && \
-		spritezero build/style/sprite /style/icons && spritezero --retina build/style/sprite@2x /style/icons'
+		spreet /style/icons build/style/sprite && spreet --retina /style/icons build/style/sprite@2x'
 
 .PHONY: download-fonts
 download-fonts:
@@ -596,7 +596,7 @@ psql-list-tables: init-dirs
 .PHONY: vacuum-db
 vacuum-db: init-dirs
 	@echo "Start - postgresql: VACUUM ANALYZE VERBOSE;"
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM ANALYZE VERBOSE;'
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'VACUUM (ANALYZE, VERBOSE);'
 
 .PHONY: analyze-db
 analyze-db: init-dirs
