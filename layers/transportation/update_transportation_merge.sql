@@ -159,6 +159,8 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     horse character varying,
     mtb_scale character varying,
     sac_scale character varying,
+    operator character varying,
+    informal character varying,
     access text,
     toll boolean,
     layer integer
@@ -208,8 +210,8 @@ TRUNCATE osm_transportation_merge_linestring_gen_z11_source_ids;
 -- each group via ST_ClusterDBSCAN
 INSERT INTO osm_transportation_merge_linestring_gen_z11 (geometry, source_ids, highway, network, construction,
                                                          is_bridge, is_tunnel, is_ford, expressway, z_order,
-                                                         bicycle, foot, horse, mtb_scale, sac_scale, access, toll,
-                                                         layer)
+                                                         bicycle, foot, horse, mtb_scale, sac_scale, operator,
+                                                         informal, access, toll, layer)
 SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
        -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
        -- merge. https://postgis.net/docs/ST_Union.html
@@ -234,6 +236,8 @@ SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
        horse,
        mtb_scale,
        sac_scale,
+       operator,
+       informal,
        CASE
            WHEN access IN ('private', 'no') THEN 'no'
            ELSE NULL::text END AS access,
@@ -245,14 +249,14 @@ FROM (
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
                PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle,
-                            foot, horse, mtb_scale, sac_scale, access, toll, layer
+                            foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
                ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle,
-                        foot, horse, mtb_scale, sac_scale, access, toll, layer
+                        foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) as cluster_group
     FROM (
         -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
@@ -271,6 +275,8 @@ FROM (
                horse,
                mtb_scale,
                sac_scale,
+               operator,
+               informal,
                access,
                toll,
                visible_layer(geometry, layer, 11) AS layer
@@ -278,7 +284,7 @@ FROM (
     ) osm_highway_linestring_normalized_brunnel_z11
 ) q
 GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
-         bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer;
+         bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer;
 
 -- Geometry Index
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z11_geometry_idx
@@ -387,6 +393,8 @@ BEGIN
         horse,
         mtb_scale,
         sac_scale,
+        operator,
+        informal,
         access,
         toll,
         visible_layer(geometry, layer, 11) AS layer
@@ -406,6 +414,7 @@ BEGIN
                                    expressway = excluded.expressway, z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
+                                   operator = excluded.operator, informal = excluded.informal,
                                    access = excluded.access, toll = excluded.toll, layer = excluded.layer;
 
     -- Remove entries which have been deleted from source table
@@ -438,6 +447,8 @@ BEGIN
         horse,
         mtb_scale,
         sac_scale,
+        operator,
+        informal,
         access,
         toll,
         visible_layer(geometry, layer, 10) AS layer
@@ -453,6 +464,7 @@ BEGIN
                                    expressway = excluded.expressway, z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
+                                   operator = excluded.operator, informal = excluded.informal,
                                    access = excluded.access, toll = excluded.toll, layer = excluded.layer;
 
     -- noinspection SqlWithoutWhere
@@ -1061,7 +1073,7 @@ BEGIN
            visible_brunnel(geometry, is_bridge, 11) AS is_bridge,
            visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
            visible_brunnel(geometry, is_ford, 11) AS is_ford,
-           expressway, bicycle, foot, horse, mtb_scale, sac_scale,
+           expressway, bicycle, foot, horse, mtb_scale, sac_scale, operator, informal,
            CASE WHEN access IN ('private', 'no') THEN 'no' ELSE NULL::text END AS access, toll,
            visible_layer(geometry, layer, 11) AS layer, z_order
     -- Table containing the IDs of all Source-LineStrings affected by this update
@@ -1092,7 +1104,8 @@ BEGIN
            visible_brunnel(m.geometry, m.is_bridge, 11) AS is_bridge,
            visible_brunnel(m.geometry, m.is_tunnel, 11) AS is_tunnel,
            visible_brunnel(m.geometry, m.is_ford, 11) AS is_ford,
-           m.expressway, m.bicycle, m.foot, m.horse, m.mtb_scale, m.sac_scale, m.access, m.toll,
+           m.expressway, m.bicycle, m.foot, m.horse, m.mtb_scale, m.sac_scale,
+           m.operator, m.informal, m.access, m.toll,
            visible_layer(m.geometry, m.layer, 11) AS layer, m.z_order
     FROM linestrings_to_merge
     JOIN osm_transportation_merge_linestring_gen_z11 m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry));
@@ -1120,14 +1133,14 @@ BEGIN
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
                PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot,
-               horse, mtb_scale, sac_scale, access, toll, layer
+               horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
                ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot, horse,
-               mtb_scale, sac_scale, access, toll, layer
+               mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) as cluster_group
     FROM linestrings_to_merge;
 
@@ -1143,7 +1156,7 @@ BEGIN
         INSERT INTO osm_transportation_merge_linestring_gen_z11(geometry, new_source_ids, old_source_ids, highway,
                                                                 network, construction, is_bridge, is_tunnel, is_ford,
                                                                 expressway, z_order, bicycle, foot, horse, mtb_scale,
-                                                                sac_scale, access, toll, layer)
+                                                                sac_scale, operator, informal, access, toll, layer)
         SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
                -- merge. https://postgis.net/docs/ST_Union.html
@@ -1167,12 +1180,14 @@ BEGIN
                horse,
                mtb_scale,
                sac_scale,
+               operator,
+               informal,
                access,
                toll,
                layer
         FROM clustered_linestrings_to_merge
         GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
-                 bicycle, foot, horse, mtb_scale, sac_scale, access, toll, layer
+                 bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
         RETURNING id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources.
