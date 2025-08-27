@@ -76,6 +76,10 @@ def_poi_mapping_barrier: &poi_mapping_barrier
   - stile
   - toll_booth
 
+# natural values , see http://taginfo.openstreetmap.org/keys/natural#values
+def_poi_mapping_natural: &poi_mapping_natural
+  - beach
+  
 # building values , see http://taginfo.openstreetmap.org/keys/building#values
 def_poi_mapping_building: &poi_mapping_building
   - dormitory
@@ -89,7 +93,7 @@ def_poi_mapping_historic: &poi_mapping_historic
   - monument
   - castle
   - ruins
-
+  
 # landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
 def_poi_mapping_landuse: &poi_mapping_landuse
   - basin
@@ -449,6 +453,7 @@ def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
   amenity: *poi_mapping_amenity
   barrier: *poi_mapping_barrier
+  natural: *poi_mapping_natural
   building: *poi_mapping_building
   highway: *poi_mapping_highway
   historic: *poi_mapping_historic
