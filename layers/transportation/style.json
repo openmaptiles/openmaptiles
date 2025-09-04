@@ -2400,6 +2400,37 @@
       "order": 100
     },
     {
+      "id": "Parking area",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(0, 0%, 88%)"
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ],
+        [
+          "!has",
+          "brunnel"
+        ],
+        [
+          "==",
+          "class",
+          "parking"
+        ]
+      ],
+      "order": 101
+    },
+    {
       "id": "Pedestrian area",
       "type": "fill",
       "source": "openmaptiles",
@@ -2426,10 +2457,11 @@
           "!in",
           "class",
           "bridge",
-          "pier"
+          "pier",
+          "parking"
         ]
       ],
-      "order": 101
+      "order": 102
     },
     {
       "id": "Service road link outline",
