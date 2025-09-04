@@ -1042,14 +1042,46 @@ FROM (
                 NULL AS mtb_scale,
                 NULL AS surface,
                 z_order
-         FROM osm_highway_polygon
-              -- We do not want underground pedestrian areas for now
-         WHERE zoom_level >= 13
-           AND (
-                 man_made IN ('bridge', 'pier')
-                 OR (is_area AND COALESCE(layer, 0) >= 0)
-             )
-     ) AS zoom_levels
+        FROM osm_highway_polygon
+             -- We do not want underground pedestrian areas for now
+        WHERE zoom_level >= 13
+          AND (
+                man_made IN ('bridge', 'pier')
+                OR (is_area AND COALESCE(layer, 0) >= 0)
+            )
+        UNION ALL
+        -- etldoc: osm_parking_polygon ->  layer_transportation:z14_
+        SELECT osm_id,
+               geometry,
+               NULL AS highway,
+               NULL AS construction,
+               NULL AS network,
+               NULL AS railway,
+               NULL AS aerialway,
+               NULL AS shipway,
+               NULL AS public_transport,
+               NULL AS service,
+               NULL::text AS access,
+               NULL::boolean AS toll,
+               FALSE AS is_bridge,
+               FALSE AS is_tunnel,
+               FALSE AS is_ford,
+               NULL::boolean AS expressway,
+               FALSE AS is_ramp,
+               FALSE::int AS is_oneway,
+               'parking' AS man_made,
+               layer,
+               level,
+               indoor,
+               NULL AS bicycle,
+               NULL AS foot,
+               NULL AS horse,
+               NULL AS mtb_scale,
+               NULL AS surface,
+               z_order
+        FROM osm_parking_polygon
+        WHERE zoom_level >= 13
+    ) AS zoom_levels
 WHERE geometry && bbox
 ORDER BY z_order ASC;
 $$ LANGUAGE SQL STABLE

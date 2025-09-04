@@ -434,6 +434,23 @@ tables:
       - bridge
       - pier
 
+# etldoc: imposm3 -> osm_parking_polygon
+  parking_polygon:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: z_order
+      type: wayzorder
+    - *layer
+    - *level
+    - *indoor
+    mapping:
+      amenity:
+      - parking
+
   # etldoc: imposm3 -> highway_point
   highway_point:
     type: point
