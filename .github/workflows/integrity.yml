@@ -19,12 +19,12 @@ jobs:
 
       - name: Run quickstart for a small area
         env:
-          area: monaco
+          area: europe/monaco
           QUIET: 1
         run: |
           echo MIN_ZOOM=0 >> .env
           echo MAX_ZOOM=14 >> .env
-          ./quickstart.sh $area
+          ./quickstart.sh geofabrik $area
 
       - name: Save quickstart.log
         uses: actions/upload-artifact@v4

@@ -1,6 +1,3 @@
-# This version must match the MAKE_DC_VERSION value below
-version: "3"
-
 volumes:
   pgdata:
 
@@ -39,8 +36,6 @@ services:
     env_file: .env
     environment:
       # Must match the version of this file (first line)
-      # download-osm will use it when generating a composer file
-      MAKE_DC_VERSION: "3"
       # Allow DIFF_MODE, MIN_ZOOM, and MAX_ZOOM to be overwritten from shell
       DIFF_MODE: ${DIFF_MODE}
       MIN_ZOOM: ${MIN_ZOOM}
