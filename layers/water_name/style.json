@@ -1,25 +1,35 @@
 {
   "layers": [
     {
-      "id": "water_name_line",
+      "id": "Lakeline labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "water_name",
       "minzoom": 0,
       "layout": {
-        "text-font": [
-          "Noto Sans Regular",
-          "Noto Sans Bold"
+        "symbol-placement": "line",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
         ],
-        "text-size": 12,
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
+        "text-font": [
+          "Open Sans Regular",
+          "Noto Sans Regular"
+        ],
         "text-max-width": 5,
-        "symbol-placement": "line"
+        "text-size": 12,
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#5d60be",
-        "text-halo-color": "rgba(255,255,255,0.7)",
+        "text-color": "hsl(238, 43%, 55%)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.7)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -31,27 +41,37 @@
           "LineString"
         ]
       ],
-      "order": 152
+      "order": 198
     },
     {
-      "id": "water_name_point",
+      "id": "Water labels",
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "water_name",
-      "minzoom": 16,
-      "maxzoom": 24,
+      "minzoom": 15,
       "layout": {
-        "text-font": [
-          "Noto Sans Regular"
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
         ],
+        "text-font": [
+          "Open Sans Regular",
+          "Open Sans Light"
+        ],
+        "text-max-width": 5,
         "text-size": 11,
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "text-max-width": 5
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "rgba(76, 125, 173, 1)",
-        "text-halo-color": "rgba(255,255,255,0)",
+        "text-color": "hsl(210, 39%, 49%)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
       "metadata": {},
@@ -68,7 +88,7 @@
           "ocean"
         ]
       ],
-      "order": 153
+      "order": 199
     }
   ]
 }

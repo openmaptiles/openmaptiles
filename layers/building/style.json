@@ -1,12 +1,11 @@
 {
   "layers": [
     {
-      "id": "building",
+      "id": "Building",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "building",
-      "minzoom": 12,
-      "maxzoom": 24,
+      "minzoom": 13,
       "layout": {
         "visibility": "visible"
       },
@@ -15,11 +14,11 @@
           "stops": [
             [
               13,
-              "rgba(222, 213, 207, 1)"
+              "hsl(24, 19%, 84%)"
             ],
             [
               16,
-              "#d9d0c9"
+              "hsl(26, 17%, 82%)"
             ]
           ]
         },
@@ -28,17 +27,17 @@
           "stops": [
             [
               13,
-              "#9A918A"
+              "hsl(26, 7%, 57%)"
             ],
             [
               16,
-              "rgba(166, 157, 150, 1)"
+              "hsl(26, 8%, 62%)"
             ]
           ]
         }
       },
       "metadata": {},
-      "order": 19
+      "order": 62
     }
   ]
 }

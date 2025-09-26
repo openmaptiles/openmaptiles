@@ -27,6 +27,7 @@ tileset:
   minzoom: 0
   pixel_scale: 256
   languages:
+    - af # Afrikaans
     - am # Amharic
     - ar # Arabic
     - az # Azerbaijani, Latin
@@ -98,6 +99,7 @@ tileset:
     - ta # Tamil
     - te # Telugu
     - th # Thai
+    - tok # Toki Pona
     - tr # Turkish, Latin
     - uk # Ukrainian
     - ur # Urdu
