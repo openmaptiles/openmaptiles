@@ -119,7 +119,17 @@
             "rank"
           ]
         ],
-        "text-field": "{name}",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
         "text-font": [
           "Open Sans Semibold",
           "Noto Sans Regular"

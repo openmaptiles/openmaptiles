@@ -20,6 +20,8 @@ FROM osm_water_polygon AS wp
 WHERE wp.name <> ''
   AND ST_IsValid(wp.geometry);
 
+DROP TABLE IF EXISTS osm_water_lakeline CASCADE;
+
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline
 CREATE TABLE IF NOT EXISTS osm_water_lakeline AS
@@ -74,6 +76,8 @@ SELECT osm_id,
        area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as earth_area,
        is_intermittent
 FROM osm_water_point_view;
+
+DROP TABLE IF EXISTS osm_water_point CASCADE;
 
 -- etldoc:  osm_water_point_earth_view ->  osm_water_point
 CREATE TABLE IF NOT EXISTS osm_water_point AS
