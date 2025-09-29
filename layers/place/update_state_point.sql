@@ -110,12 +110,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE
     ON osm_state_point
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE place_state.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE
     ON osm_state_point
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE place_state.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh

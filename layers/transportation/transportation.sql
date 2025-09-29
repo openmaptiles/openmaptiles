@@ -372,7 +372,7 @@ FROM (
                 hl.z_order
          FROM osm_highway_linestring hl
          LEFT OUTER JOIN osm_transportation_name_network n ON hl.osm_id = n.osm_id
-         WHERE NOT is_area
+         WHERE zoom_level > 11 AND NOT is_area
            AND
                CASE WHEN zoom_level = 12 THEN
                          CASE WHEN transportation_filter_z12(hl.highway, hl.construction) THEN TRUE
