@@ -42,7 +42,6 @@ FROM (
                          NULL AS tags,
                          NULL AS leisure,
                          NULL AS landuse,
-                         CASE WHEN boundary='aboriginal_lands' THEN boundary END AS boundary,
                          NULL AS historic,
                          maritime
                   FROM osm_park_polygon_dissolve_z4
