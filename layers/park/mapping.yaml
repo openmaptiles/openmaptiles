@@ -95,7 +95,7 @@ tables:
       type: string
     - name: maritime
       key: maritime
-      type: boolean
+      type: bool
     - name: area
       type: area
     mapping:
