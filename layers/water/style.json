@@ -1,7 +1,7 @@
 {
   "layers": [
     {
-      "id": "water_intermittent",
+      "id": "Water intermittent",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "water",
@@ -9,7 +9,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "fill-color": "rgba(172, 218, 251, 1)",
+        "fill-color": "hsl(205, 91%, 83%)",
         "fill-opacity": 0.85
       },
       "metadata": {},
@@ -21,10 +21,10 @@
           1
         ]
       ],
-      "order": 17
+      "order": 53
     },
     {
-      "id": "water",
+      "id": "Water",
       "type": "fill",
       "source": "openmaptiles",
       "source-layer": "water",
@@ -32,7 +32,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "fill-color": "#aad3df"
+        "fill-color": "hsl(194, 45%, 77%)"
       },
       "metadata": {},
       "filter": [
@@ -48,7 +48,7 @@
           "tunnel"
         ]
       ],
-      "order": 18
+      "order": 54
     }
   ]
 }

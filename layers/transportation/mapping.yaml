@@ -102,10 +102,6 @@ name_de_field: &name_de
   name: name_de
   key: name:de
   type: string
-short_name_field: &short_name
-  key: short_name
-  name: short_name
-  type: string
 tunnel_field: &tunnel
   key: tunnel
   name: is_tunnel
@@ -197,6 +193,14 @@ sac_scale_field: &sac_scale
   key: sac_scale
   name: sac_scale
   type: string
+operator_field: &operator
+  key: operator
+  name: operator
+  type: string
+informal_field: &informal
+  key: informal
+  name: informal
+  type: string
 surface_field: &surface
   key: surface
   name: surface
@@ -236,7 +240,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -254,6 +257,8 @@ tables:
     - *horse
     - *mtb_scale
     - *sac_scale
+    - *operator
+    - *informal
     - *surface
     - *expressway
     mapping:
@@ -316,7 +321,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -354,7 +358,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -393,7 +396,6 @@ tables:
     - *name_de
     - name: tags
       type: hstore_tags
-    - *short_name
     - *tunnel
     - *bridge
     - *ramp
@@ -490,6 +492,9 @@ tables:
       type: string
     - name: colour
       key: colour
+      type: string
+    - name: ref_colour
+      key: ref:colour
       type: string
     mapping:
       route:

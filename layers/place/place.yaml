@@ -5,6 +5,8 @@ layer:
       - ne_10m_admin_1_states_provinces
       - ne_10m_admin_0_countries
       - ne_10m_populated_places
+    layers:
+      - boundary
   description: |
       The place layer consists out of [countries](http://wiki.openstreetmap.org/wiki/Tag:place%3Dcountry),
       [states](http://wiki.openstreetmap.org/wiki/Tag:place%3Dstate), [cities](http://wiki.openstreetmap.org/wiki/Key:place)
@@ -12,9 +14,9 @@ layer:
       Apart from the roads this is also one of the more important layers to create a beautiful map.
       We suggest you use different font styles and sizes to create a text hierarchy.
   fields:
-    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the POI.
-    name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the place. Language-specific values are in `name:xx`.
+    name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
     capital:
       description: |
           The **capital** field marks the
@@ -28,7 +30,9 @@ layer:
           Distinguish between continents, countries, states, islands and
           places like settlements or smaller entities.
           Use **class** to separately style the different places and build
-          a text hierarchy according to their importance.
+          a text hierarchy according to their importance. For places derived 
+          from boundaries, the original value of the 
+          [`boundary`](http://wiki.openstreetmap.org/wiki/Key:boundary) tag.
       values:
       - continent
       - country
@@ -44,6 +48,7 @@ layer:
       - neighbourhood
       - isolated_dwelling
       - island
+      - aboriginal_lands
     iso_a2:
       description: |
           Two-letter country code [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2). Available only for `class=country`.
@@ -75,7 +80,7 @@ schema:
   - ./types.sql
   - ./capital.sql
   - ./city.sql
-  - ./island_rank.sql
+  - ./area_rank.sql
   - ./update_continent_point.sql
   - ./update_country_point.sql
   - ./update_island_polygon.sql

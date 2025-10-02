@@ -1,7 +1,7 @@
 {
   "layers": [
     {
-      "id": "boundary_3",
+      "id": "Other border",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -11,7 +11,23 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#845283",
+        "line-color": "hsl(301, 23%, 42%)",
+        "line-dasharray": [
+          5,
+          3
+        ],
+        "line-opacity": {
+          "stops": [
+            [
+              3,
+              0.5
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
         "line-width": {
           "base": 1,
           "stops": [
@@ -28,23 +44,7 @@
               1.6
             ]
           ]
-        },
-        "line-opacity": {
-          "stops": [
-            [
-              3,
-              0.5
-            ],
-            [
-              10,
-              1
-            ]
-          ]
-        },
-        "line-dasharray": [
-          5,
-          3
-        ]
+        }
       },
       "metadata": {},
       "filter": [
@@ -61,10 +61,10 @@
           0
         ]
       ],
-      "order": 146
+      "order": 194
     },
     {
-      "id": "boundary_2",
+      "id": "Country border",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -75,7 +75,8 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a37da1",
+        "line-color": "hsl(303, 17%, 56%)",
+        "line-opacity": 1,
         "line-width": {
           "base": 1,
           "stops": [
@@ -92,8 +93,7 @@
               3
             ]
           ]
-        },
-        "line-opacity": 1
+        }
       },
       "metadata": {},
       "filter": [
@@ -105,19 +105,14 @@
         ],
         [
           "==",
-          "maritime",
-          0
-        ],
-        [
-          "==",
           "disputed",
           0
         ]
       ],
-      "order": 147
+      "order": 195
     },
     {
-      "id": "boundary_2_disputed",
+      "id": "Disputed border",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "boundary",
@@ -128,121 +123,12 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a37da1",
-        "line-width": {
-          "base": 1,
-          "stops": [
-            [
-              3,
-              0.3
-            ],
-            [
-              5,
-              1.2
-            ],
-            [
-              12,
-              3
-            ]
-          ]
-        },
-        "line-opacity": 1,
+        "line-color": "hsl(246, 17%, 56%)",
         "line-dasharray": [
           4,
           3
-        ]
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "admin_level",
-          2
         ],
-        [
-          "==",
-          "disputed",
-          1
-        ],
-        [
-          "==",
-          "maritime",
-          0
-        ]
-      ],
-      "order": 148
-    },
-    {
-      "id": "boundary_2_disputed_maritime",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "boundary",
-      "minzoom": 0,
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "rgba(129, 125, 163, 1)",
-        "line-width": {
-          "base": 1,
-          "stops": [
-            [
-              3,
-              0.5
-            ],
-            [
-              5,
-              1.2
-            ],
-            [
-              12,
-              3
-            ]
-          ]
-        },
         "line-opacity": 1,
-        "line-dasharray": [
-          4,
-          3
-        ]
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "admin_level",
-          2
-        ],
-        [
-          "==",
-          "disputed",
-          1
-        ],
-        [
-          "==",
-          "maritime",
-          1
-        ]
-      ],
-      "order": 149
-    },
-    {
-      "id": "boundary_2_maritime",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "boundary",
-      "minzoom": 4,
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "#a37da1",
         "line-width": {
           "base": 1,
           "stops": [
@@ -259,8 +145,7 @@
               3
             ]
           ]
-        },
-        "line-opacity": 1
+        }
       },
       "metadata": {},
       "filter": [
@@ -273,15 +158,10 @@
         [
           "==",
           "disputed",
-          0
-        ],
-        [
-          "==",
-          "maritime",
           1
         ]
       ],
-      "order": 150
+      "order": 196
     }
   ]
 }

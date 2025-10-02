@@ -20,6 +20,8 @@ FROM osm_water_polygon AS wp
 WHERE wp.name <> ''
   AND ST_IsValid(wp.geometry);
 
+DROP TABLE IF EXISTS osm_water_lakeline CASCADE;
+
 -- etldoc:  osm_water_polygon ->  osm_water_lakeline
 -- etldoc:  lake_centerline  ->  osm_water_lakeline
 CREATE TABLE IF NOT EXISTS osm_water_lakeline AS
@@ -58,7 +60,8 @@ FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
 WHERE ll.osm_id IS NULL
   AND wp.name <> ''
-  AND ST_IsValid(wp.geometry);
+  AND ST_IsValid(wp.geometry)
+  AND (wp.leisure IS NULL OR wp.leisure != 'swimming_pool');
 
 -- etldoc:  osm_water_point_view ->  osm_water_point_earth_view
 CREATE OR REPLACE VIEW osm_water_point_earth_view AS
@@ -74,6 +77,8 @@ SELECT osm_id,
        area / (405279708033600 * COS(ST_Y(ST_Transform(geometry,4326))*PI()/180)) as earth_area,
        is_intermittent
 FROM osm_water_point_view;
+
+DROP TABLE IF EXISTS osm_water_point CASCADE;
 
 -- etldoc:  osm_water_point_earth_view ->  osm_water_point
 CREATE TABLE IF NOT EXISTS osm_water_point AS
@@ -197,12 +202,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_water_polygon
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE water_name.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE OR DELETE
     ON osm_water_polygon
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE water_name.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh

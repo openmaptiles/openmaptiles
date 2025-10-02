@@ -13,8 +13,8 @@ layer:
   srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   fields:
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Highways#Names_and_references) value of the highway.
-    name_en: English name `name:en` if available, otherwise `name`.
-    name_de: German name `name:de` if available, otherwise `name` or `name:en`.
+    name_en: English name `name:en` if available, otherwise `name`. This is deprecated and will be removed in a future release in favor of `name:en`.
+    name_de: German name `name:de` if available, otherwise `name` or `name:en`. This is deprecated and will be removed in a future release in favor of `name:de`.
     ref: The OSM [`ref`](http://wiki.openstreetmap.org/wiki/Key:ref) tag of the motorway or its network.
     ref_length: Length of the `ref` field. Useful for having a shield icon as background for labeling motorways.
     network:
@@ -101,16 +101,34 @@ layer:
           value of [`indoor`](http://wiki.openstreetmap.org/wiki/Key:indoor) tag.
       values:
       - 1
-    route_1: 1st route concurrency.
-    route_2: 2nd route concurrency.
-    route_3: 3rd route concurrency.
-    route_4: 4th route concurrency.
-    route_5: 5th route concurrency.
-    route_6: 6th route concurrency.
+    route_1_network: 1st route concurrency network.
+    route_1_ref: 1st route concurrency ref.
+    route_1_name: 1st route concurrency name.
+    route_1_colour: 1st route concurrency colour.
+    route_2_network: 2nd route concurrency network.
+    route_2_ref: 2nd route concurrency ref.
+    route_2_name: 2nd route concurrency name.
+    route_2_colour: 2nd route concurrency colour.
+    route_3_network: 3rd route concurrency network.
+    route_3_ref: 3rd route concurrency ref.
+    route_3_name: 3rd route concurrency name.
+    route_3_colour: 3rd route concurrency colour.
+    route_4_network: 4th route concurrency network.
+    route_4_ref: 4th route concurrency ref.
+    route_4_name: 4th route concurrency name.
+    route_4_colour: 4th route concurrency colour.
+    route_5_network: 5th route concurrency network.
+    route_5_ref: 5th route concurrency ref.
+    route_5_name: 5th route concurrency name.
+    route_5_colour: 5th route concurrency colour.
+    route_6_network: 6th route concurrency network.
+    route_6_ref: 6th route concurrency ref.
+    route_6_name: 6th route concurrency name.
+    route_6_colour: 6th route concurrency colour.
   datasource:
     geometry_field: geometry
     srid: 900913
-    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1, route_2, route_3, route_4, route_5, route_6 FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, name, name_en, name_de, {name_languages}, ref, ref_length, network::text, class::text, subclass, brunnel, layer, level, indoor, route_1_network, route_1_ref, route_1_name, route_1_colour, route_2_network, route_2_ref, route_2_name, route_2_colour, route_3_network, route_3_ref, route_3_name, route_3_colour, route_4_network, route_4_ref, route_4_name, route_4_colour, route_5_network, route_5_ref, route_5_name, route_5_colour, route_6_network, route_6_ref, route_6_name, route_6_colour FROM layer_transportation_name(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./highway_classification.sql
   - ./update_transportation_name.sql
