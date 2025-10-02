@@ -11,9 +11,9 @@ layer:
     class:
       description: |
         Use the **class** to differentiate between different kinds of features in the `parks` layer.
-        The class for `boundary=protected_area` parks is the lower-case of the
-        [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
-        value with blanks replaced by `_`.
+        For `boundary=protected_area` parks, the class is determined by the [`protected_area`](http://wiki.openstreetmap.org/wiki/key:protected_area)
+        tag value, falling back to the [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
+        value if not present, and defaulting to `protected_area` if neither is available.
         `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
         `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
         The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
