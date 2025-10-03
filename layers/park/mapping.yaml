@@ -90,6 +90,15 @@ tables:
     - name: boundary
       key: boundary
       type: string
+    - name: protected_area
+      key: protected_area
+      type: string
+    - name: protect_class
+      key: protect_class
+      type: string
+    - name: protection_title
+      key: protection_title
+      type: string
     - name: historic
       key: historic
       type: string
