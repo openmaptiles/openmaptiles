@@ -26,7 +26,7 @@ SELECT osm_id,
 FROM (
          SELECT osm_id,
                 geometry,
-                park_class(boundary, leisure, landuse, historic, maritime) AS class,
+                park_class(boundary, leisure, landuse, historic, maritime, tags) AS class,
                 name,
                 name_en,
                 name_de,
@@ -42,8 +42,9 @@ FROM (
                          NULL AS tags,
                          NULL AS leisure,
                          NULL AS landuse,
+                         NULL AS boundary,
                          NULL AS historic,
-                         maritime
+                         NULL AS maritime
                   FROM osm_park_polygon_dissolve_z4
                   WHERE zoom_level = 4
                     AND geometry && bbox
@@ -212,7 +213,7 @@ FROM (
          UNION ALL
          SELECT osm_id,
                 geometry_point AS geometry,
-                park_class(boundary, leisure, landuse, historic, maritime) AS class,
+                park_class(boundary, leisure, landuse, historic, maritime, tags) AS class,
                 name,
                 name_en,
                 name_de,
