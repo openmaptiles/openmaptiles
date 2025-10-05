@@ -130,7 +130,7 @@ BEGIN
             -- Base: direct from osm_route_member
             SELECT
                 rel.member,
-                COALESCE(NULLIF(rel.network, ''), '') AS network,
+                COALESCE(rel.network, '') AS network,
                 COALESCE(rel.ref, '') AS ref,
                 rel.osm_id,
                 rel.role,
@@ -157,7 +157,7 @@ BEGIN
             SELECT
                 gb_way.member,
                 gb_way.network,
-                gb_way.ref,
+                COALESCE(gb_way.ref, '') AS ref,
                 gb_way.member AS osm_id,
                 NULL AS role,
                 NULL AS type,
@@ -173,7 +173,7 @@ BEGIN
             SELECT
                 ir_way.member,
                 ir_way.network,
-                ir_way.ref,
+                COALESCE(ir_way.ref, '') AS ref,
                 ir_way.member AS osm_id,
                 NULL AS role,
                 NULL AS type,
