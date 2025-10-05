@@ -125,25 +125,70 @@ BEGIN
         -- etldoc:  gbr_route_members_view ->  osm_route_member
         -- etldoc:  ire_route_members_view ->  osm_route_member
         -- see http://wiki.openstreetmap.org/wiki/Relation:route#Road_routes
-        SELECT DISTINCT ON (member, COALESCE(rel.network, ''), COALESCE(rel.ref, ''))
-            rel.member,
-            COALESCE(NULLIF(rel.network,''), gb_way.network, ir_way.network, '') AS network,
-            COALESCE(rel.ref, '') AS ref,
-            osm_id,
-            role,
-            type,
-            name,
-            osmc_symbol,
-            colour,
-            ref_colour
-        FROM osm_route_member rel
-        LEFT JOIN gbr_route_members_view gb_way ON (gb_way.member=rel.member)
-        LEFT JOIN ire_route_members_view ir_way ON (ir_way.member=rel.member)
-        WHERE full_update OR EXISTS(
-            SELECT NULL
-            FROM transportation_name.network_changes c
-            WHERE c.is_old IS FALSE AND c.osm_id = rel.member
-        )
+        SELECT DISTINCT ON (member, network, ref) *
+        FROM (
+            -- Base: direct from osm_route_member
+            SELECT
+                rel.member,
+                COALESCE(NULLIF(rel.network, ''), '') AS network,
+                COALESCE(rel.ref, '') AS ref,
+                rel.osm_id,
+                rel.role,
+                rel.type,
+                rel.name,
+                rel.osmc_symbol,
+                rel.colour,
+                rel.ref_colour
+            FROM osm_route_member rel
+            WHERE 
+                (full_update OR EXISTS(
+                    SELECT 1
+                    FROM transportation_name.network_changes c
+                    WHERE c.is_old IS FALSE AND c.osm_id = rel.member
+                ))
+                AND (
+                    COALESCE(NULLIF(rel.network, ''), '') <> ''
+                    OR COALESCE(NULLIF(rel.name, ''), '') <> ''
+                )
+
+            UNION ALL
+
+            -- GBR: United Kingdom special processing
+            SELECT
+                gb_way.member,
+                gb_way.network,
+                gb_way.ref,
+                gb_way.member AS osm_id,
+                NULL AS role,
+                NULL AS type,
+                NULL AS name,
+                NULL AS osmc_symbol,
+                NULL AS colour,
+                NULL AS ref_colour
+            FROM gbr_route_members_view gb_way
+
+            UNION ALL
+
+            -- IRE: Ireland special processing
+            SELECT
+                ir_way.member,
+                ir_way.network,
+                ir_way.ref,
+                ir_way.member AS osm_id,
+                NULL AS role,
+                NULL AS type,
+                NULL AS name,
+                NULL AS osmc_symbol,
+                NULL AS colour,
+                NULL AS ref_colour
+            FROM ire_route_members_view ir_way
+            JOIN ire_route_members_view ir_way ON (ir_way.member = rel.member)
+            WHERE full_update OR EXISTS(
+                SELECT 1
+                FROM transportation_name.network_changes c
+                WHERE c.is_old IS FALSE AND c.osm_id = rel.member
+            )
+        ) all_route_members
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
                                                      type = EXCLUDED.type, name = EXCLUDED.name,
