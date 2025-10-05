@@ -182,12 +182,12 @@ BEGIN
                 NULL AS colour,
                 NULL AS ref_colour
             FROM ire_route_members_view ir_way
-            JOIN ire_route_members_view ir_way ON (ir_way.member = rel.member)
-            WHERE full_update OR EXISTS(
-                SELECT 1
-                FROM transportation_name.network_changes c
-                WHERE c.is_old IS FALSE AND c.osm_id = rel.member
-            )
+            WHERE 
+                full_update OR EXISTS(
+                    SELECT 1
+                    FROM transportation_name.network_changes c
+                    WHERE c.is_old IS FALSE AND c.osm_id = ir_way.member
+                )
         ) all_route_members
     ) osm_route_member_filtered
     ON CONFLICT (member, network, ref) DO UPDATE SET osm_id = EXCLUDED.osm_id, role = EXCLUDED.role,
