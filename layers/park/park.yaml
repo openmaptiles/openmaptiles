@@ -1,18 +1,19 @@
 layer:
   id: "park"
   description: |
-    The park layer in OpenMapTiles contains natural and protected areas from OpenStreetMap, 
-    such as parks tagged with [`boundary=national_park`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
-    [`boundary=protected_area`](https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
-    or [`leisure=nature_reserve`](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve).
+      The park layer contains large area features from OpenStreetMap tagged with
+      [`boundary=national_park`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dnational_park),
+      [`boundary=protected_area`](http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area),
+      [`leisure=nature_reserve`](http://wiki.openstreetmap.org/wiki/Tag:leisure%3Dnature_reserve),
+      or select values of [`historic=*`](http://wiki.openstreetmap.org/wiki/Key:historic).
   buffer_size: 4
   fields:
     class:
       description: |
         Use the **class** to differentiate between different kinds of features in the `parks` layer.
-        The class for `boundary=protected_area` parks is the lower-case of the
-        [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
-        value with blanks replaced by `_`.
+        For `boundary=protected_area` parks, the class is determined by the [`protected_area`](http://wiki.openstreetmap.org/wiki/key:protected_area)
+        tag value, falling back to the [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title)
+        value if not present, and defaulting to `protected_area` if neither is available.
         `national_park` is the class of `protection_title=National Park` and `boundary=national_park`.
         `nature_reserve` is the class of `protection_title=Nature Reserve` and `leisure=nature_reserve`.
         The class for other [`protection_title`](http://wiki.openstreetmap.org/wiki/key:protection_title) 
@@ -25,6 +26,7 @@ layer:
     geometry_field: geometry
     query: (SELECT geometry, class, name, name_en, name_de, {name_languages}, rank FROM layer_park(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
+  - ./class.sql
   - ./update_park_polygon.sql
   - ./park.sql
 datasources:
