@@ -200,6 +200,7 @@ Hints for developers:
   make generate-tiles                  # generate vector tiles based on .env settings using Mapnik (obsolete)
   make generate-changed-tiles          # Generate tiles changed by import-diff
   make test-sql                        # run unit tests on the OpenMapTiles SQL schema
+  make show-test-failures              # show any test failures from the last test run
   cat  .env                            # list PG database and MIN_ZOOM and MAX_ZOOM information
   cat  quickstart.log                  # transcript of the last ./quickstart.sh run
   make help                            # help about available commands
@@ -686,7 +687,7 @@ test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-te
 
 	@echo "Test SQL output for Import Test Data"
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-import.sql' 2>&1 | \
-		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}' || (echo ""; echo "=== IMPORT TEST FAILURES ==="; $(MAKE) show-test-failures; exit 1)
 
 	@echo "Run UPDATE process on test data..."
 	sed -ir "s/^[#]*\s*DIFF_MODE=.*/DIFF_MODE=true/" .env
@@ -694,4 +695,12 @@ test-sql: clean refresh-docker-images destroy-db start-db-nowait build/import-te
 
 	@echo "Test SQL output for Update Test Data"
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && psql.sh < tests/test-post-update.sql' 2>&1 | \
-		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}'
+		awk -v s="ERROR:" '1{print; fflush()} $$0~s{print "*** ERROR detected, aborting"; exit(1)}' || (echo ""; echo "=== UPDATE TEST FAILURES ==="; $(MAKE) show-test-failures; exit 1)
+
+.PHONY: show-test-failures
+show-test-failures: start-db-nowait
+	@echo "=============================================="
+	@echo "OpenMapTiles Test Failures"
+	@echo "=============================================="
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools psql.sh -v ON_ERROR_STOP=1 -P pager=off -c \
+		"SELECT CASE WHEN COUNT(*) = 0 THEN 'No test failures found.' ELSE 'Found ' || COUNT(*) || ' test failure(s):' END FROM omt_test_failures; SELECT * FROM omt_test_failures ORDER BY test_id;"
