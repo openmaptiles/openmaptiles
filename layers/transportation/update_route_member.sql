@@ -146,8 +146,6 @@ BEGIN
                     FROM transportation_name.network_changes c
                     WHERE c.is_old IS FALSE AND c.osm_id = rel.member
                 ))
-                AND COALESCE(rel.network, '') <> ''
-
             UNION ALL
 
             -- GBR: United Kingdom special processing
