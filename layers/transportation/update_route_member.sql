@@ -147,8 +147,10 @@ BEGIN
                     WHERE c.is_old IS FALSE AND c.osm_id = rel.member
                 ))
                 AND (
-                    COALESCE(NULLIF(rel.network, ''), '') <> ''
-                    OR COALESCE(NULLIF(rel.name, ''), '') <> ''
+                    COALESCE(rel.network, '') <> ''
+                    OR COALESCE(rel.name, '') <> ''
+                    OR COALESCE(rel.colour, '') <> ''
+                    OR COALESCE(rel.osmc_symbol, '') <> ''
                 )
 
             UNION ALL
