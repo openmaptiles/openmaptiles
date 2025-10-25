@@ -840,32 +840,67 @@ BEGIN
 
     -- etldoc: osm_transportation_merge_linestring_gen_z6 -> osm_transportation_merge_linestring_gen_z5
     INSERT INTO osm_transportation_merge_linestring_gen_z5
-    SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
-        id,
-        osm_id,
+    WITH normalized_z6 AS (
+        -- Step 1: Upgrade only small trunk chunks to motorway for merging purposes
+        SELECT ST_Simplify(geometry, ZRes(7)) AS geometry,
+            id,
+            osm_id,
+            -- Only upgrade small trunk chunks to motorway
+            CASE 
+                WHEN highway = 'trunk' AND ST_Length(geometry) < 500 THEN 'motorway'
+                ELSE highway 
+            END AS highway,
+            network,
+            CASE 
+                WHEN construction = 'trunk' AND ST_Length(geometry) < 500 THEN 'motorway'
+                ELSE construction 
+            END AS construction,
+            -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
+            visible_brunnel(geometry, is_bridge, 6) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 6) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 6) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z6
+        WHERE
+            (full_update IS TRUE OR EXISTS(
+                SELECT NULL FROM transportation.changes_z4_z5_z6_z7
+                WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
+                      transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z6.id
+            )) AND
+            -- Include all motorway and trunk roads for merging
+            (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
+    ),
+    merged_z5 AS (
+        -- Step 2: Merge normalized geometry using ST_LineMerge
+        SELECT ST_LineMerge(ST_Union(geometry)) AS geometry,
+            array_agg(id) AS source_ids,
+            array_agg(osm_id) AS osm_ids,
+            highway,
+            network,
+            construction,
+            bool_or(is_bridge) AS is_bridge,
+            bool_or(is_tunnel) AS is_tunnel,
+            bool_or(is_ford) AS is_ford,
+            bool_or(expressway) AS expressway,
+            min(z_order) AS z_order
+        FROM normalized_z6
+        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+    )
+    -- Step 3: Apply final length filtering after merge
+    SELECT geometry,
+        source_ids[1] AS id,
+        osm_ids[1] AS osm_id,
         highway,
         network,
         construction,
-        -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
-        visible_brunnel(geometry, is_bridge, 6) AS is_bridge,
-        visible_brunnel(geometry, is_tunnel, 6) AS is_tunnel,
-        visible_brunnel(geometry, is_ford, 6) AS is_ford,
+        is_bridge,
+        is_tunnel,
+        is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z6
-    WHERE
-        (full_update IS TRUE OR EXISTS(
-            SELECT NULL FROM transportation.changes_z4_z5_z6_z7
-            WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
-                  transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z6.id
-        )) AND
-        -- Current view: all motorways and trunks of national-importance
-        (highway = 'motorway'
-            OR construction = 'motorway'
-            -- Allow trunk roads that are part of a nation's most important route network to show at z5
-            OR (highway = 'trunk' AND osm_national_network(network))
-        ) AND
-        ST_Length(geometry) > 500
+    FROM merged_z5
+    WHERE ST_Length(geometry) > 500  -- Drop small chunks after merge
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
@@ -884,32 +919,66 @@ BEGIN
 
     -- etldoc: osm_transportation_merge_linestring_gen_z5 -> osm_transportation_merge_linestring_gen_z4
     INSERT INTO osm_transportation_merge_linestring_gen_z4
-    SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
-        id,
-        osm_id,
+    WITH normalized_z5 AS (
+        -- Step 1: Upgrade only small trunk chunks to motorway for merging purposes
+        SELECT ST_Simplify(geometry, ZRes(6)) AS geometry,
+            id,
+            osm_id,
+            -- Only upgrade small trunk chunks to motorway
+            CASE 
+                WHEN highway = 'trunk' AND ST_Length(geometry) < 1000 THEN 'motorway'
+                ELSE highway 
+            END AS highway,
+            network,
+            CASE 
+                WHEN construction = 'trunk' AND ST_Length(geometry) < 1000 THEN 'motorway'
+                ELSE construction 
+            END AS construction,
+            visible_brunnel(geometry, is_bridge, 5) AS is_bridge,
+            visible_brunnel(geometry, is_tunnel, 5) AS is_tunnel,
+            visible_brunnel(geometry, is_ford, 5) AS is_ford,
+            expressway,
+            z_order
+        FROM osm_transportation_merge_linestring_gen_z5
+        WHERE
+            (full_update IS TRUE OR EXISTS(
+                SELECT NULL FROM transportation.changes_z4_z5_z6_z7
+                WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
+                      transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
+            )) AND
+            -- Include all motorway and trunk roads for merging
+            (highway IN ('motorway', 'trunk') OR construction IN ('motorway', 'trunk'))
+    ),
+    merged_z4 AS (
+        -- Step 2: Merge normalized geometry using ST_LineMerge
+        SELECT ST_LineMerge(ST_Union(geometry)) AS geometry,
+            array_agg(id) AS source_ids,
+            array_agg(osm_id) AS osm_ids,
+            highway,
+            network,
+            construction,
+            bool_or(is_bridge) AS is_bridge,
+            bool_or(is_tunnel) AS is_tunnel,
+            bool_or(is_ford) AS is_ford,
+            bool_or(expressway) AS expressway,
+            min(z_order) AS z_order
+        FROM normalized_z5
+        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+    )
+    -- Step 3: Apply final length filtering after merge
+    SELECT geometry,
+        source_ids[1] AS id,  -- Use first ID from merged group
+        osm_ids[1] AS osm_id,  -- Use first OSM ID from merged group
         highway,
         network,
         construction,
-        visible_brunnel(geometry, is_bridge, 5) AS is_bridge,
-        visible_brunnel(geometry, is_tunnel, 5) AS is_tunnel,
-        visible_brunnel(geometry, is_ford, 5) AS is_ford,
+        is_bridge,
+        is_tunnel,
+        is_ford,
         expressway,
         z_order
-    FROM osm_transportation_merge_linestring_gen_z5
-    WHERE
-        (full_update IS TRUE OR EXISTS(
-            SELECT NULL FROM transportation.changes_z4_z5_z6_z7
-            WHERE transportation.changes_z4_z5_z6_z7.is_old IS FALSE AND
-                  transportation.changes_z4_z5_z6_z7.id = osm_transportation_merge_linestring_gen_z5.id
-        )) AND
-        -- All motorways without network (e.g. EU, Asia, South America)
-        ((highway = 'motorway' OR construction = 'motorway') AND (network is NULL or network = '')
-        ) OR 
-        -- All roads in network included in osm_national_network except gb-trunk and us-highway
-		( (osm_national_network(network) AND network NOT IN ('gb-trunk', 'us-highway')
-        )) AND
-        -- Current view: national-importance motorways and trunks
-        ST_Length(geometry) > 1000
+    FROM merged_z4
+    WHERE ST_Length(geometry) > 1000  -- Drop small chunks after merge
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
