@@ -438,7 +438,7 @@
         [
           "==",
           "class",
-          "primary"
+          "trunk"
         ],
         [
           "has",
