@@ -369,6 +369,85 @@
       "order": 230
     },
     {
+      "id": "Trunk road shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
+      "layout": {
+        "icon-anchor": "center",
+        "icon-image": "road_trunk",
+        "icon-padding": 2,
+        "icon-rotation-alignment": "viewport",
+        "icon-size": 1,
+        "icon-text-fit": "both",
+        "icon-text-fit-padding": [
+          3,
+          4,
+          3,
+          4
+        ],
+        "symbol-avoid-edges": true,
+        "symbol-placement": {
+          "base": 1,
+          "stops": [
+            [
+              10,
+              "point"
+            ],
+            [
+              11,
+              "line"
+            ]
+          ]
+        },
+        "symbol-spacing": 560,
+        "text-field": "{ref}",
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              15,
+              11
+            ],
+            [
+              17,
+              12
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "text-color": "hsl(12, 77.6%, 21.0%)"
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "primary"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
+      "order": 231
+    },
+    {
       "id": "Highway shield",
       "type": "symbol",
       "source": "openmaptiles",
@@ -448,7 +527,7 @@
           "ref"
         ]
       ],
-      "order": 231
+      "order": 232
     }
   ]
 }
