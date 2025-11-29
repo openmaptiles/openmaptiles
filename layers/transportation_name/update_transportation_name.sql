@@ -437,17 +437,19 @@ BEGIN
 
     -- etldoc: osm_transportation_name_linestring -> osm_transportation_name_linestring_gen1
     INSERT INTO osm_transportation_name_linestring_gen1 (id, geometry, tags, ref, highway, subclass, brunnel, network,
-                                                         route_1, route_2, route_3, route_4, route_5, route_6)
+                                                         route_1, route_2, route_3, route_4, route_5, route_6, z_order)
     SELECT MIN(id) as id,
            ST_Simplify(ST_LineMerge(ST_Collect(geometry)), 50) AS geometry,
            tags, ref, highway, subclass, brunnel, network,
-           route_1, route_2, route_3, route_4, route_5, route_6
+           route_1, route_2, route_3, route_4, route_5, route_6,
+           MIN(z_order) AS z_order
     FROM (
         SELECT id,
                geometry,
                tags, ref, highway, subclass,
                visible_text(geometry, brunnel, 9) AS brunnel,
-               network, route_1, route_2, route_3, route_4, route_5, route_6
+               network, route_1, route_2, route_3, route_4, route_5, route_6,
+               z_order
         FROM osm_transportation_name_linestring
     ) osm_transportation_name_linestring_gen1_pre_merge
     WHERE (
@@ -465,7 +467,7 @@ BEGIN
                                      highway = excluded.highway, subclass = excluded.subclass,
                                      brunnel = excluded.brunnel, network = excluded.network, route_1 = excluded.route_1,
                                      route_2 = excluded.route_2, route_3 = excluded.route_3, route_4 = excluded.route_4,
-                                     route_5 = excluded.route_5, route_6 = excluded.route_6;
+                                     route_5 = excluded.route_5, route_6 = excluded.route_6, z_order = excluded.z_order;
 
     -- Analyze source table
     ANALYZE osm_transportation_name_linestring_gen1;
