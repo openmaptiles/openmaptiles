@@ -15,7 +15,7 @@ jobs:
     steps:
 
       - name: Checkout the changes
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run unit tests
         run: |
