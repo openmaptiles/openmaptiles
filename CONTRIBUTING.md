@@ -37,14 +37,13 @@ When you modify import data rules in `mapping.yaml` or `*.sql`, please update:
 1. field description in `[layer].yaml`
 2. comments starting with `#etldoc`
 3. regenerate documentation graphs with `make generate-devdoc`
-4. update layer description on https://openmaptiles.org/schema/ (https://github.com/openmaptiles/www.openmaptiles.org/tree/master/layers)
-5. check if OMT styles are affected by the PR and if there is a need for style updates
+4. check if OMT styles are affected by the PR and if there is a need for style updates
 
 When you are making PR that adds new spatial features to OpenMapTiles schema, please make also PR for at least one of our GL styles to show it on the map. Visual check is crucial.
 
 # SQL unit testing
 
-It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer.  This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.
+It is recommended that you create a [unit test](TESTING.md) when modifying the behavior of the SQL layer. This will ensure that your changes are working as expected when importing or updating OSM data into an OpenMapTiles database.
 
 # Verifying that updates still work
 
