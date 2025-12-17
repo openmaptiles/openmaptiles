@@ -103,7 +103,7 @@
           "suburb"
         ]
       ],
-      "order": 235
+      "order": 236
     },
     {
       "id": "Village labels",
@@ -164,7 +164,7 @@
           "village"
         ]
       ],
-      "order": 241
+      "order": 242
     },
     {
       "id": "Town labels",
@@ -230,7 +230,7 @@
           "town"
         ]
       ],
-      "order": 242
+      "order": 243
     },
     {
       "id": "State labels",
@@ -298,7 +298,7 @@
           3
         ]
       ],
-      "order": 243
+      "order": 244
     },
     {
       "id": "City labels",
@@ -400,7 +400,7 @@
           2
         ]
       ],
-      "order": 244
+      "order": 245
     },
     {
       "id": "Capital city labels",
@@ -493,7 +493,7 @@
           2
         ]
       ],
-      "order": 245
+      "order": 246
     },
     {
       "id": "Country labels",
@@ -602,7 +602,7 @@
           "VA"
         ]
       ],
-      "order": 246
+      "order": 247
     }
   ]
 }

@@ -174,7 +174,7 @@
           "taxiway"
         ]
       ],
-      "order": 233
+      "order": 234
     },
     {
       "id": "Airport gate labels",
@@ -215,7 +215,7 @@
           "gate"
         ]
       ],
-      "order": 234
+      "order": 235
     }
   ]
 }
