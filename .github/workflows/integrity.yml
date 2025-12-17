@@ -27,7 +27,7 @@ jobs:
           ./quickstart.sh $area
 
       - name: Save quickstart.log
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: quickstart.log
           path: quickstart.log

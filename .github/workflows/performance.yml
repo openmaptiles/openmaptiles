@@ -45,7 +45,7 @@ jobs:
 
       - name: Cache test data download
         id: cache-testdata
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ci_cache
           key: "v2-${{ env.TEST_DATA_URL }}"
@@ -79,7 +79,7 @@ jobs:
           echo "hash=$REV_HASH" >> $GITHUB_OUTPUT
 
       - name: Set up caching for the performance results
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: perf_cache
           # If profiling result cache has incompatible format, increase this "v" number
@@ -287,14 +287,14 @@ jobs:
           fi
 
       - name: Save performance artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: performance_results
           path: artifacts
 
       - name: Save PR message artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: pr_message
           path: pr_message
