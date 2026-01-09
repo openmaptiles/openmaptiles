@@ -1,4 +1,3 @@
-
 # imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
 # Warning: this is not the official imposm3
 
@@ -75,6 +74,15 @@ def_poi_mapping_barrier: &poi_mapping_barrier
   - sally_port
   - stile
   - toll_booth
+
+# cuisine values , see http://taginfo.openstreetmap.org/keys/cuisine#values
+def_poi_mapping_cuisine: &poi_mapping_cuisine
+  - burger
+  - coffee_shop
+  - donut;coffee_shop
+  - ice_cream
+  - pizza
+  - pizza;italian
 
 # building values , see http://taginfo.openstreetmap.org/keys/building#values
 def_poi_mapping_building: &poi_mapping_building
@@ -444,11 +452,15 @@ def_poi_fields: &poi_fields
   - name: brand
     key: brand
     type: string
+  - name: cuisine
+    key: cuisine
+    type: string
 
 def_poi_mapping: &poi_mapping
   aerialway: *poi_mapping_aerialway
   amenity: *poi_mapping_amenity
   barrier: *poi_mapping_barrier
+  cuisine: *poi_mapping_cuisine
   building: *poi_mapping_building
   highway: *poi_mapping_highway
   historic: *poi_mapping_historic
