@@ -1,0 +1,99 @@
+tables:
+  # etldoc: imposm3 -> osm_power_point
+  power_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: power
+      name: class
+      type: string
+    - key: plant:source
+      name: source
+      type: string
+    - key: plant:method
+      name: method
+      type: string
+    - key: generator:source
+      name: gen_source
+      type: string
+    - key: generator:method
+      name: gen_method
+      type: string  
+    - key: power
+      name: name
+      type: string  
+    mapping:
+      power:
+      - tower
+      - pole
+      - catenary_mast
+      - generator
+      - portal
+      - transformer
+      - switch
+      - insulator
+  # etldoc: imposm3 -> osm_power_linestring
+  power_linestring:
+    type: linestring
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: power
+      name: class
+      type: string
+    - key: plant:source
+      name: source
+      type: string
+    - key: plant:method
+      name: method
+      type: string
+    - key: generator:source
+      name: gen_source
+      type: string
+    - key: generator:method
+      name: gen_method
+      type: string  
+    - key: name
+      name: name
+      type: string
+    mapping:
+      power:
+      - line
+      - minor_line
+  # etldoc: imposm3 -> osm_power_polygon
+  power_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: power
+      name: class
+      type: string
+    - key: plant:source
+      name: source
+      type: string
+    - key: plant:method
+      name: method
+      type: string
+    - key: generator:source
+      name: gen_source
+      type: string
+    - key: generator:method
+      name: gen_method
+      type: string  
+    - key: name
+      name: name
+      type: string  
+    mapping:
+      power:
+      - generator
+      - plant
+      - substation
+      - transformer
