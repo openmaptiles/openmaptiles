@@ -57,7 +57,7 @@
           "ferry"
         ]
       ],
-      "order": 226
+      "order": 230
     },
     {
       "id": "Road labels",
@@ -129,7 +129,7 @@
           "ferry"
         ]
       ],
-      "order": 227
+      "order": 231
     },
     {
       "id": "Tertiary road shield",
@@ -208,7 +208,7 @@
           "ref"
         ]
       ],
-      "order": 228
+      "order": 232
     },
     {
       "id": "Secondary road shield",
@@ -287,7 +287,7 @@
           "ref"
         ]
       ],
-      "order": 229
+      "order": 233
     },
     {
       "id": "Primary road shield",
@@ -366,7 +366,7 @@
           "ref"
         ]
       ],
-      "order": 230
+      "order": 234
     },
     {
       "id": "Trunk road shield",
@@ -445,7 +445,7 @@
           "ref"
         ]
       ],
-      "order": 231
+      "order": 235
     },
     {
       "id": "Highway shield",
@@ -527,7 +527,7 @@
           "ref"
         ]
       ],
-      "order": 232
+      "order": 236
     }
   ]
 }

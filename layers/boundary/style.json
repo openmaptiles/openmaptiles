@@ -61,7 +61,7 @@
           0
         ]
       ],
-      "order": 194
+      "order": 198
     },
     {
       "id": "Country border",
@@ -109,7 +109,7 @@
           0
         ]
       ],
-      "order": 195
+      "order": 199
     },
     {
       "id": "Disputed border",
@@ -161,7 +161,7 @@
           1
         ]
       ],
-      "order": 196
+      "order": 200
     }
   ]
 }

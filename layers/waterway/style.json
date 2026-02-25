@@ -38,7 +38,7 @@
           "tunnel"
         ]
       ],
-      "order": 48
+      "order": 47
     },
     {
       "id": "River",
@@ -60,7 +60,7 @@
             ],
             [
               20,
-              6
+              20
             ]
           ]
         }
@@ -84,7 +84,7 @@
           1
         ]
       ],
-      "order": 49
+      "order": 48
     },
     {
       "id": "River intermittent",
@@ -109,7 +109,7 @@
             ],
             [
               20,
-              6
+              20
             ]
           ]
         }
@@ -133,7 +133,7 @@
           1
         ]
       ],
-      "order": 50
+      "order": 49
     },
     {
       "id": "Other waterway",
@@ -179,7 +179,7 @@
           1
         ]
       ],
-      "order": 51
+      "order": 50
     },
     {
       "id": "Other waterway intermittent",
@@ -229,7 +229,7 @@
           1
         ]
       ],
-      "order": 52
+      "order": 51
     },
     {
       "id": "River bridge outline",
@@ -264,7 +264,7 @@
             ],
             [
               20,
-              5
+              12
             ]
           ]
         }
@@ -282,7 +282,7 @@
           "bridge"
         ]
       ],
-      "order": 152
+      "order": 155
     },
     {
       "id": "River bridge",
@@ -304,7 +304,7 @@
             ],
             [
               20,
-              6
+              10
             ]
           ]
         }
@@ -322,7 +322,7 @@
           "bridge"
         ]
       ],
-      "order": 153
+      "order": 156
     },
     {
       "id": "River labels",
@@ -345,8 +345,8 @@
           ]
         ],
         "text-font": [
-          "Open Sans Regular",
-          "Noto Sans Regular"
+          "Open Sans Italic",
+          "Noto Sans Italic"
         ],
         "text-max-width": 5,
         "text-size": {
@@ -377,7 +377,7 @@
           "LineString"
         ]
       ],
-      "order": 197
+      "order": 201
     }
   ]
 }

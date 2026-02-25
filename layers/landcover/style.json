@@ -730,6 +730,155 @@
       "order": 42
     },
     {
+      "id": "Grass",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 9,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-antialias": true,
+        "fill-color": "hsl(91, 60%, 81%)"
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "subclass",
+          "grass",
+          "grassland",
+          "golf_course"
+        ]
+      ],
+      "order": 43
+    },
+    {
+      "id": "Landcover outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 15,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "allotments",
+          "hsl(102, 21%, 72%)",
+          "farm",
+          "hsl(35, 43%, 68%)",
+          "farmland",
+          "hsl(64, 20%, 74%)",
+          "recreation_ground",
+          "hsl(126, 26%, 32%)",
+          "hsl(0, 0%, 0%)"
+        ],
+        "line-opacity": 1,
+        "line-width": [
+          "match",
+          [
+            "get",
+            "subclass"
+          ],
+          "recreation_ground",
+          0.3,
+          0.5
+        ]
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "subclass",
+          "allotments",
+          "farm",
+          "farmland",
+          "recreation_ground"
+        ]
+      ],
+      "order": 44
+    },
+    {
+      "id": "Glacier",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 5,
+      "paint": {
+        "fill-antialias": false,
+        "fill-color": "hsl(180, 28%, 90%)"
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice"
+        ]
+      ],
+      "order": 45
+    },
+    {
+      "id": "Glacier outline",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "landcover",
+      "minzoom": 5,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(210, 100%, 80%)",
+        "line-dasharray": {
+          "stops": [
+            [
+              5,
+              [
+                1,
+                0
+              ]
+            ],
+            [
+              10,
+              [
+                4,
+                2
+              ]
+            ]
+          ]
+        },
+        "line-width": {
+          "stops": [
+            [
+              5,
+              1
+            ],
+            [
+              10,
+              1.5
+            ]
+          ]
+        }
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice"
+        ]
+      ],
+      "order": 46
+    },
+    {
       "id": "Landcover patterns",
       "type": "fill",
       "source": "openmaptiles",
@@ -843,156 +992,7 @@
           "wood"
         ]
       ],
-      "order": 43
-    },
-    {
-      "id": "Grass",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "minzoom": 9,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-antialias": true,
-        "fill-color": "hsl(91, 60%, 81%)"
-      },
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "grass",
-          "grassland",
-          "golf_course"
-        ]
-      ],
-      "order": 44
-    },
-    {
-      "id": "Landcover outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "minzoom": 15,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": [
-          "match",
-          [
-            "get",
-            "subclass"
-          ],
-          "allotments",
-          "hsl(102, 21%, 72%)",
-          "farm",
-          "hsl(35, 43%, 68%)",
-          "farmland",
-          "hsl(64, 20%, 74%)",
-          "recreation_ground",
-          "hsl(126, 26%, 32%)",
-          "hsl(0, 0%, 0%)"
-        ],
-        "line-opacity": 1,
-        "line-width": [
-          "match",
-          [
-            "get",
-            "subclass"
-          ],
-          "recreation_ground",
-          0.3,
-          0.5
-        ]
-      },
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "allotments",
-          "farm",
-          "farmland",
-          "recreation_ground"
-        ]
-      ],
-      "order": 45
-    },
-    {
-      "id": "Glacier",
-      "type": "fill",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "minzoom": 5,
-      "paint": {
-        "fill-antialias": false,
-        "fill-color": "hsl(180, 28%, 90%)"
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ice"
-        ]
-      ],
-      "order": 46
-    },
-    {
-      "id": "Glacier outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "landcover",
-      "minzoom": 5,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(210, 100%, 80%)",
-        "line-dasharray": {
-          "stops": [
-            [
-              5,
-              [
-                1,
-                0
-              ]
-            ],
-            [
-              10,
-              [
-                4,
-                2
-              ]
-            ]
-          ]
-        },
-        "line-width": {
-          "stops": [
-            [
-              5,
-              1
-            ],
-            [
-              10,
-              1.5
-            ]
-          ]
-        }
-      },
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ice"
-        ]
-      ],
-      "order": 47
+      "order": 54
     }
   ]
 }
