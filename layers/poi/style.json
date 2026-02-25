@@ -173,10 +173,11 @@
           "in",
           "subclass",
           "books",
+          "car_parts",
           "supermarket"
         ]
       ],
-      "order": 201
+      "order": 205
     },
     {
       "id": "Waste",
@@ -252,7 +253,7 @@
           "toilets"
         ]
       ],
-      "order": 202
+      "order": 206
     },
     {
       "id": "Mortuary",
@@ -324,7 +325,7 @@
           "cemetery"
         ]
       ],
-      "order": 203
+      "order": 207
     },
     {
       "id": "Education",
@@ -395,7 +396,7 @@
           "university"
         ]
       ],
-      "order": 204
+      "order": 208
     },
     {
       "id": "Outdoor",
@@ -469,7 +470,7 @@
           "gate"
         ]
       ],
-      "order": 205
+      "order": 209
     },
     {
       "id": "Sport",
@@ -544,7 +545,7 @@
           "water_park"
         ]
       ],
-      "order": 206
+      "order": 210
     },
     {
       "id": "Ferry",
@@ -622,7 +623,7 @@
           "ferry_terminal"
         ]
       ],
-      "order": 207
+      "order": 211
     },
     {
       "id": "Food",
@@ -700,7 +701,7 @@
           "restaurant"
         ]
       ],
-      "order": 208
+      "order": 212
     },
     {
       "id": "Public",
@@ -786,7 +787,7 @@
           "books"
         ]
       ],
-      "order": 209
+      "order": 213
     },
     {
       "id": "Cultural",
@@ -873,7 +874,7 @@
           "art"
         ]
       ],
-      "order": 210
+      "order": 214
     },
     {
       "id": "Attraction",
@@ -939,7 +940,7 @@
         "class",
         "attraction"
       ],
-      "order": 211
+      "order": 215
     },
     {
       "id": "Transport",
@@ -1053,9 +1054,14 @@
           "car",
           "fuel",
           "parking"
+        ],
+        [
+          "!in",
+          "subclass",
+          "car_parts"
         ]
       ],
-      "order": 212
+      "order": 216
     },
     {
       "id": "Health",
@@ -1205,7 +1211,7 @@
           "veterinary"
         ]
       ],
-      "order": 213
+      "order": 217
     },
     {
       "id": "Campsite",
@@ -1278,7 +1284,7 @@
           "campsite"
         ]
       ],
-      "order": 214
+      "order": 218
     },
     {
       "id": "Accommodation",
@@ -1352,7 +1358,7 @@
           "lodging"
         ]
       ],
-      "order": 215
+      "order": 219
     },
     {
       "id": "Place of worship",
@@ -1423,7 +1429,7 @@
           "place_of_worship"
         ]
       ],
-      "order": 216
+      "order": 220
     },
     {
       "id": "Bus stop",
@@ -1496,9 +1502,14 @@
           "in",
           "class",
           "bus"
+        ],
+        [
+          "in",
+          "subclass",
+          "bus_stop"
         ]
       ],
-      "order": 217
+      "order": 221
     },
     {
       "id": "Bus station",
@@ -1575,7 +1586,7 @@
           "bus_stop"
         ]
       ],
-      "order": 218
+      "order": 222
     },
     {
       "id": "Harbor",
@@ -1643,7 +1654,7 @@
           "harbor"
         ]
       ],
-      "order": 219
+      "order": 223
     },
     {
       "id": "Mall",
@@ -1720,7 +1731,7 @@
           "mall"
         ]
       ],
-      "order": 220
+      "order": 224
     },
     {
       "id": "Train",
@@ -1792,7 +1803,7 @@
           "railway"
         ]
       ],
-      "order": 221
+      "order": 225
     },
     {
       "id": "Local park",
@@ -1870,7 +1881,7 @@
           "park"
         ]
       ],
-      "order": 237
+      "order": 241
     },
     {
       "id": "Zoo",
@@ -1948,7 +1959,7 @@
           "zoo"
         ]
       ],
-      "order": 239
+      "order": 243
     }
   ]
 }
