@@ -3,9 +3,34 @@
     {
       "id": "Shop",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
+      "filter": [
+        "any",
+        [
+          "in",
+          "class",
+          "alcohol_shop",
+          "bakery",
+          "bicycle",
+          "butcher",
+          "clothing_store",
+          "grocery",
+          "hairdresser",
+          "music",
+          "seafood",
+          "shop"
+        ],
+        [
+          "in",
+          "subclass",
+          "books",
+          "car_parts",
+          "supermarket"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": [
@@ -152,39 +177,26 @@
           1
         ]
       },
-      "metadata": {},
-      "filter": [
-        "any",
-        [
-          "in",
-          "class",
-          "alcohol_shop",
-          "bakery",
-          "bicycle",
-          "butcher",
-          "clothing_store",
-          "grocery",
-          "hairdresser",
-          "music",
-          "seafood",
-          "shop"
-        ],
-        [
-          "in",
-          "subclass",
-          "books",
-          "car_parts",
-          "supermarket"
-        ]
-      ],
       "order": 205
     },
     {
       "id": "Waste",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 18,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "recycling",
+          "waste_basket",
+          "drinking_water",
+          "toilets"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -241,26 +253,23 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "recycling",
-          "waste_basket",
-          "drinking_water",
-          "toilets"
-        ]
-      ],
       "order": 206
     },
     {
       "id": "Mortuary",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 14,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "cemetery"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-offset": [
@@ -316,23 +325,26 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "cemetery"
-        ]
-      ],
       "order": 207
     },
     {
       "id": "Education",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "college",
+          "kindergarten",
+          "school",
+          "university"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-offset": [
@@ -384,26 +396,27 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "college",
-          "kindergarten",
-          "school",
-          "university"
-        ]
-      ],
       "order": 208
     },
     {
       "id": "Outdoor",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "pitch",
+          "playground",
+          "stile",
+          "garden",
+          "gate"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -457,27 +470,27 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "pitch",
-          "playground",
-          "stile",
-          "garden",
-          "gate"
-        ]
-      ],
       "order": 209
     },
     {
       "id": "Sport",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "golf",
+          "stadium",
+          "swimming_pool",
+          "sports_centre",
+          "water_park"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -532,27 +545,28 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 0.2
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "golf",
-          "stadium",
-          "swimming_pool",
-          "sports_centre",
-          "water_park"
-        ]
-      ],
       "order": 210
     },
     {
       "id": "Ferry",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
+      "filter": [
+        "all",
+        [
+          "==",
+          "subclass",
+          "ferry_terminal"
+        ],
+        [
+          "==",
+          "class",
+          "ferry_terminal"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "ferry",
@@ -609,28 +623,28 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "subclass",
-          "ferry_terminal"
-        ],
-        [
-          "==",
-          "class",
-          "ferry_terminal"
-        ]
-      ],
       "order": 211
     },
     {
       "id": "Food",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ice_cream",
+          "cafe",
+          "beer",
+          "bar",
+          "fast_food",
+          "restaurant"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -687,85 +701,15 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ice_cream",
-          "cafe",
-          "beer",
-          "bar",
-          "fast_food",
-          "restaurant"
-        ]
-      ],
       "order": 212
     },
     {
       "id": "Public",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
-      "layout": {
-        "icon-allow-overlap": false,
-        "icon-image": "{subclass}",
-        "symbol-sort-key": [
-          "to-number",
-          [
-            "get",
-            "rank"
-          ]
-        ],
-        "text-anchor": "top",
-        "text-field": [
-          "coalesce",
-          [
-            "get",
-            "name:en"
-          ],
-          [
-            "get",
-            "name"
-          ]
-        ],
-        "text-font": [
-          "Open Sans Semibold",
-          "Noto Sans Bold"
-        ],
-        "text-max-width": 9,
-        "text-offset": [
-          0,
-          0.8
-        ],
-        "text-padding": 2,
-        "text-size": {
-          "stops": [
-            [
-              15,
-              10
-            ],
-            [
-              20,
-              11
-            ]
-          ]
-        },
-        "visibility": "visible"
-      },
-      "paint": {
-        "icon-halo-blur": 1,
-        "icon-halo-color": "hsl(0, 0%, 100%)",
-        "icon-halo-width": 0.5,
-        "icon-opacity": 1,
-        "text-color": "hsl(37, 87%, 24%)",
-        "text-halo-blur": 0.5,
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -787,14 +731,6 @@
           "books"
         ]
       ],
-      "order": 213
-    },
-    {
-      "id": "Cultural",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 15,
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -851,7 +787,15 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
+      "order": 213
+    },
+    {
+      "id": "Cultural",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -874,14 +818,76 @@
           "art"
         ]
       ],
+      "layout": {
+        "icon-allow-overlap": false,
+        "icon-image": "{subclass}",
+        "symbol-sort-key": [
+          "to-number",
+          [
+            "get",
+            "rank"
+          ]
+        ],
+        "text-anchor": "top",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Semibold",
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 9,
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-padding": 2,
+        "text-size": {
+          "stops": [
+            [
+              15,
+              10
+            ],
+            [
+              20,
+              11
+            ]
+          ]
+        },
+        "visibility": "visible"
+      },
+      "paint": {
+        "icon-halo-blur": 1,
+        "icon-halo-color": "hsl(0, 0%, 100%)",
+        "icon-halo-width": 0.5,
+        "icon-opacity": 1,
+        "text-color": "hsl(37, 87%, 24%)",
+        "text-halo-blur": 0.5,
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 1
+      },
       "order": 214
     },
     {
       "id": "Attraction",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
+      "filter": [
+        "==",
+        "class",
+        "attraction"
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "symbol-sort-key": [
@@ -934,20 +940,36 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "==",
-        "class",
-        "attraction"
-      ],
       "order": 215
     },
     {
       "id": "Transport",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [
+          "in",
+          "class",
+          "bicycle_parking",
+          "car",
+          "fuel",
+          "parking"
+        ],
+        [
+          "!in",
+          "subclass",
+          "car_parts"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-ignore-placement": false,
@@ -1039,36 +1061,26 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "Point"
-        ],
-        [
-          "in",
-          "class",
-          "bicycle_parking",
-          "car",
-          "fuel",
-          "parking"
-        ],
-        [
-          "!in",
-          "subclass",
-          "car_parts"
-        ]
-      ],
       "order": 216
     },
     {
       "id": "Health",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "hospital",
+          "pharmacy",
+          "dentist",
+          "veterinary"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{class}",
@@ -1199,26 +1211,23 @@
           1
         ]
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "hospital",
-          "pharmacy",
-          "dentist",
-          "veterinary"
-        ]
-      ],
       "order": 217
     },
     {
       "id": "Campsite",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "campsite"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "camping",
@@ -1275,23 +1284,23 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "campsite"
-        ]
-      ],
       "order": 218
     },
     {
       "id": "Accommodation",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "lodging"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -1349,23 +1358,23 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "lodging"
-        ]
-      ],
       "order": 219
     },
     {
       "id": "Place of worship",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "place_of_worship"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -1420,23 +1429,28 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "place_of_worship"
-        ]
-      ],
       "order": 220
     },
     {
       "id": "Bus stop",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 17,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "bus"
+        ],
+        [
+          "in",
+          "subclass",
+          "bus_stop"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-anchor": "bottom",
@@ -1495,7 +1509,15 @@
         ],
         "text-translate-anchor": "viewport"
       },
+      "order": 221
+    },
+    {
+      "id": "Bus station",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "poi",
+      "minzoom": 17,
       "filter": [
         "all",
         [
@@ -1504,19 +1526,11 @@
           "bus"
         ],
         [
-          "in",
+          "!in",
           "subclass",
           "bus_stop"
         ]
       ],
-      "order": 221
-    },
-    {
-      "id": "Bus station",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "poi",
-      "minzoom": 17,
       "layout": {
         "icon-allow-overlap": false,
         "icon-anchor": "bottom",
@@ -1572,28 +1586,23 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "bus"
-        ],
-        [
-          "!in",
-          "subclass",
-          "bus_stop"
-        ]
-      ],
       "order": 222
     },
     {
       "id": "Harbor",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "harbor"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "symbol-sort-key": [
@@ -1645,23 +1654,28 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 0.3
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "harbor"
-        ]
-      ],
       "order": 223
     },
     {
       "id": "Mall",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "shop"
+        ],
+        [
+          "==",
+          "subclass",
+          "mall"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "symbol-sort-key": [
@@ -1717,28 +1731,23 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "shop"
-        ],
-        [
-          "==",
-          "subclass",
-          "mall"
-        ]
-      ],
       "order": 224
     },
     {
       "id": "Train",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "railway"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-anchor": "bottom",
@@ -1794,15 +1803,6 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "railway"
-        ]
-      ],
       "order": 225
     },
     {
@@ -1811,6 +1811,19 @@
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "park"
+        ],
+        [
+          "==",
+          "subclass",
+          "park"
+        ]
+      ],
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -1868,27 +1881,28 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "park"
-        ],
-        [
-          "==",
-          "subclass",
-          "park"
-        ]
-      ],
       "order": 241
     },
     {
       "id": "Zoo",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "zoo"
+        ],
+        [
+          "==",
+          "subclass",
+          "zoo"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "{subclass}",
@@ -1945,20 +1959,6 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "zoo"
-        ],
-        [
-          "==",
-          "subclass",
-          "zoo"
-        ]
-      ],
       "order": 243
     }
   ]

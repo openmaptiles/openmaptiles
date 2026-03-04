@@ -3,6 +3,7 @@
     {
       "id": "Building",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "building",
       "minzoom": 13,
@@ -36,7 +37,6 @@
           ]
         }
       },
-      "metadata": {},
       "order": 62
     }
   ]
