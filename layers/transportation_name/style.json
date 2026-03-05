@@ -57,7 +57,7 @@
         "text-halo-color": "hsl(195, 45%, 77%)",
         "text-halo-width": 2
       },
-      "order": 230
+      "order": 233
     },
     {
       "id": "Road labels",
@@ -129,7 +129,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.97)",
         "text-halo-width": 1
       },
-      "order": 231
+      "order": 234
     },
     {
       "id": "Tertiary road shield",
@@ -208,7 +208,7 @@
       "paint": {
         "text-color": "hsl(0, 0%, 23%)"
       },
-      "order": 232
+      "order": 235
     },
     {
       "id": "Secondary road shield",
@@ -287,7 +287,7 @@
       "paint": {
         "text-color": "hsl(69, 100%, 12%)"
       },
-      "order": 233
+      "order": 236
     },
     {
       "id": "Primary road shield",
@@ -366,7 +366,7 @@
       "paint": {
         "text-color": "hsl(36, 100%, 15%)"
       },
-      "order": 234
+      "order": 237
     },
     {
       "id": "Trunk road shield",
@@ -445,7 +445,7 @@
       "paint": {
         "text-color": "hsl(12, 77.6%, 21.0%)"
       },
-      "order": 235
+      "order": 238
     },
     {
       "id": "Highway shield",
@@ -527,7 +527,7 @@
       "paint": {
         "text-color": "hsl(338, 87%, 21%)"
       },
-      "order": 236
+      "order": 239
     }
   ]
 }

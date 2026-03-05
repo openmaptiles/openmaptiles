@@ -41,7 +41,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.7)",
         "text-halo-width": 1
       },
-      "order": 202
+      "order": 205
     },
     {
       "id": "Water labels",
@@ -88,7 +88,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "order": 203
+      "order": 206
     }
   ]
 }

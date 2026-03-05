@@ -103,7 +103,7 @@
           ]
         }
       },
-      "order": 240
+      "order": 243
     },
     {
       "id": "Village labels",
@@ -164,7 +164,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
-      "order": 246
+      "order": 249
     },
     {
       "id": "Town labels",
@@ -230,7 +230,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
-      "order": 247
+      "order": 250
     },
     {
       "id": "State labels",
@@ -298,7 +298,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.7)",
         "text-halo-width": 0.8
       },
-      "order": 248
+      "order": 251
     },
     {
       "id": "City labels",
@@ -400,7 +400,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "order": 249
+      "order": 252
     },
     {
       "id": "Capital city labels",
@@ -493,7 +493,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
-      "order": 250
+      "order": 253
     },
     {
       "id": "Country labels",
@@ -602,7 +602,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 0.8
       },
-      "order": 251
+      "order": 254
     }
   ]
 }
