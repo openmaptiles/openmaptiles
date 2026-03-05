@@ -357,6 +357,19 @@ def_poi_mapping_sport: &poi_mapping_sport
   - water_ski
   - yoga
 
+# zoo values , see http://taginfo.openstreetmap.org/keys/zoo#values
+def_poi_mapping_zoo: &poi_mapping_zoo
+  - enclosure
+  - petting_zoo
+  - aviary
+  - wildlife_park
+  - birds
+  - safari_park
+  - butterfly
+  - falconry
+  - reptile
+  - terrarium
+
 # tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
 def_poi_mapping_tourism: &poi_mapping_tourism
   - alpine_hut
@@ -458,6 +471,7 @@ def_poi_mapping: &poi_mapping
   railway: *poi_mapping_railway
   shop: *poi_mapping_shop
   sport: *poi_mapping_sport
+  zoo: *poi_mapping_zoo
   tourism: *poi_mapping_tourism
   waterway: *poi_mapping_waterway
 
