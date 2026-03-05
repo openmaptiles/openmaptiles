@@ -6,6 +6,18 @@
       "source": "openmaptiles",
       "source-layer": "mountain_peak",
       "maxzoom": 16,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "volcano"
+        ],
+        [
+          "has",
+          "ele"
+        ]
+      ],
       "layout": {
         "icon-image": "volcano",
         "symbol-sort-key": [
@@ -45,18 +57,6 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "volcano"
-        ],
-        [
-          "has",
-          "ele"
-        ]
-      ],
       "order": 244
     },
     {
@@ -65,6 +65,19 @@
       "source": "openmaptiles",
       "source-layer": "mountain_peak",
       "maxzoom": 16,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "class",
+          "cliff",
+          "volcano"
+        ],
+        [
+          "has",
+          "ele"
+        ]
+      ],
       "layout": {
         "icon-image": "peak",
         "symbol-sort-key": [
@@ -105,19 +118,6 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "!in",
-          "class",
-          "cliff",
-          "volcano"
-        ],
-        [
-          "has",
-          "ele"
-        ]
-      ],
       "order": 245
     }
   ]

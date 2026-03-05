@@ -3,9 +3,20 @@
     {
       "id": "Residential",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 6,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "residential",
+          "suburbs",
+          "neighbourhood"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -27,33 +38,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "residential",
-          "suburbs",
-          "neighbourhood"
-        ]
-      ],
       "order": 1
     },
     {
       "id": "Cemetery",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(129, 24%, 73%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -67,22 +60,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(129, 24%, 73%)",
+        "fill-opacity": 1
+      },
       "order": 2
     },
     {
       "id": "Military",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(0, 75%, 95%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -96,22 +89,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(0, 75%, 95%)",
+        "fill-opacity": 1
+      },
       "order": 3
     },
     {
       "id": "Railway",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(311, 29%, 89%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -125,22 +118,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(311, 29%, 89%)",
+        "fill-opacity": 1
+      },
       "order": 4
     },
     {
       "id": "Garage",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(53, 21%, 84%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -154,22 +147,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(53, 21%, 84%)",
+        "fill-opacity": 1
+      },
       "order": 5
     },
     {
       "id": "Dam",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(0, 0%, 68%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -183,22 +176,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(0, 0%, 68%)",
+        "fill-opacity": 1
+      },
       "order": 6
     },
     {
       "id": "Quarry",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(0, 0%, 83%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -212,23 +205,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(0, 0%, 83%)",
+        "fill-opacity": 1
+      },
       "order": 7
     },
     {
       "id": "Industrial",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(311, 29%, 89%)",
-        "fill-opacity": 1,
-        "fill-outline-color": "hsl(309, 14%, 74%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -242,22 +234,23 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(311, 29%, 89%)",
+        "fill-opacity": 1,
+        "fill-outline-color": "hsl(309, 14%, 74%)"
+      },
       "order": 8
     },
     {
       "id": "Retail",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(7, 100%, 91%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -271,23 +264,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(7, 100%, 91%)",
+        "fill-opacity": 1
+      },
       "order": 9
     },
     {
       "id": "Commercial",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(2, 49%, 90%)",
-        "fill-opacity": 1,
-        "fill-outline-color": "hsl(2, 49%, 90%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -301,22 +293,23 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(2, 49%, 90%)",
+        "fill-opacity": 1,
+        "fill-outline-color": "hsl(2, 49%, 90%)"
+      },
       "order": 10
     },
     {
       "id": "Education and Health",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(60, 100%, 95%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -334,22 +327,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(60, 100%, 95%)",
+        "fill-opacity": 1
+      },
       "order": 11
     },
     {
       "id": "Stadium",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(126, 100%, 92%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -364,22 +357,22 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(126, 100%, 92%)",
+        "fill-opacity": 1
+      },
       "order": 21
     },
     {
       "id": "Pitch",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 7,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(157, 47%, 77%)",
-        "fill-opacity": 1
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -394,13 +387,31 @@
           "Polygon"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(157, 47%, 77%)",
+        "fill-opacity": 1
+      },
       "order": 22
     },
     {
       "id": "Landuse pattern",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "landuse",
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "military",
+          "cemetery",
+          "quarry"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -442,17 +453,6 @@
           ""
         ]
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "military",
-          "cemetery",
-          "quarry"
-        ]
-      ],
       "order": 59
     },
     {
@@ -461,6 +461,31 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 13,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "railway",
+          "military",
+          "residential",
+          "commercial",
+          "industrial",
+          "retail",
+          "school",
+          "university",
+          "kindergarten",
+          "college",
+          "hospital",
+          "stadium",
+          "pitch",
+          "playground",
+          "track",
+          "theme_park",
+          "zoo",
+          "dam"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -574,31 +599,6 @@
           1
         ]
       },
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "railway",
-          "military",
-          "residential",
-          "commercial",
-          "industrial",
-          "retail",
-          "school",
-          "university",
-          "kindergarten",
-          "college",
-          "hospital",
-          "stadium",
-          "pitch",
-          "playground",
-          "track",
-          "theme_park",
-          "zoo",
-          "dam"
-        ]
-      ],
       "order": 60
     },
     {
@@ -607,6 +607,15 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "minzoom": 13,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "theme_park",
+          "zoo"
+        ]
+      ],
       "layout": {
         "line-cap": "square",
         "line-join": "round",
@@ -640,15 +649,6 @@
           ]
         }
       },
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "theme_park",
-          "zoo"
-        ]
-      ],
       "order": 61
     }
   ]
