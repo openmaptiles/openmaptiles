@@ -282,7 +282,7 @@
           ]
         }
       },
-      "order": 155
+      "order": 158
     },
     {
       "id": "River bridge",
@@ -322,7 +322,7 @@
           ]
         }
       },
-      "order": 156
+      "order": 159
     },
     {
       "id": "River labels",
@@ -377,7 +377,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "order": 201
+      "order": 204
     }
   ]
 }
