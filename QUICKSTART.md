@@ -185,7 +185,7 @@ This is generating `.mbtiles` for your area :  [ MIN_ZOOM: "0"  - MAX_ZOOM: "7" 
 ./quickstart.sh indiana                      # Indiana, US
 ./quickstart.sh indonesia                    # Indonesia, Asia
 ./quickstart.sh iowa                         # Iowa, US
-./quickstart.sh irak                         # Irak, Asia
+./quickstart.sh iraq                         # Iraq, Asia
 ./quickstart.sh iran                         # Iran, Asia
 ./quickstart.sh ireland-and-northern-ireland # Ireland and Northern Ireland, Europe
 ./quickstart.sh isle-of-man                  # Isle of Man, Europe

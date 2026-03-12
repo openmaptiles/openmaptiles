@@ -3,9 +3,24 @@
     {
       "id": "Other border",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "boundary",
       "minzoom": 3,
+      "filter": [
+        "all",
+        [
+          "in",
+          "admin_level",
+          3,
+          4
+        ],
+        [
+          "==",
+          "maritime",
+          0
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -46,29 +61,28 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "admin_level",
-          3,
-          4
-        ],
-        [
-          "==",
-          "maritime",
-          0
-        ]
-      ],
-      "order": 194
+      "order": 201
     },
     {
       "id": "Country border",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "boundary",
       "minzoom": 0,
+      "filter": [
+        "all",
+        [
+          "==",
+          "admin_level",
+          2
+        ],
+        [
+          "==",
+          "disputed",
+          0
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -95,7 +109,15 @@
           ]
         }
       },
+      "order": 202
+    },
+    {
+      "id": "Disputed border",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "boundary",
+      "minzoom": 0,
       "filter": [
         "all",
         [
@@ -106,17 +128,9 @@
         [
           "==",
           "disputed",
-          0
+          1
         ]
       ],
-      "order": 195
-    },
-    {
-      "id": "Disputed border",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "boundary",
-      "minzoom": 0,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -147,21 +161,7 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "admin_level",
-          2
-        ],
-        [
-          "==",
-          "disputed",
-          1
-        ]
-      ],
-      "order": 196
+      "order": 203
     }
   ]
 }

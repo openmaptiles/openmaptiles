@@ -84,9 +84,13 @@ fi
 
 function docker_compose_command () {
     if $DOCKER_COMPOSE_HYPHEN; then
-      docker-compose $@
+      docker-compose "$@"
     else
-      docker compose $@
+      if [[ "$1" == "--version" ]]; then
+        docker compose version
+      else
+        docker compose "$@"
+      fi
     fi
 }
 

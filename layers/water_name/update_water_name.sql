@@ -60,7 +60,8 @@ FROM osm_water_polygon AS wp
          LEFT JOIN lake_centerline ll ON wp.osm_id = ll.osm_id
 WHERE ll.osm_id IS NULL
   AND wp.name <> ''
-  AND ST_IsValid(wp.geometry);
+  AND ST_IsValid(wp.geometry)
+  AND (wp.leisure IS NULL OR wp.leisure != 'swimming_pool');
 
 -- etldoc:  osm_water_point_view ->  osm_water_point_earth_view
 CREATE OR REPLACE VIEW osm_water_point_earth_view AS
