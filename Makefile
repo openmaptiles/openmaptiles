@@ -310,7 +310,7 @@ download-fonts:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c '[ ! -d "/export/fonts" ] && mkdir /export/fonts && \
 		echo "Downloading fonts..." && wget -qO /export/noto-open-sans.zip --show-progress \
 		https://github.com/openmaptiles/fonts/releases/download/v2.0/noto-open-sans.zip && \
-		echo "Unzipping fonts..." && unzip -q /export/v2.0.zip -d /export/fonts && rm /export/v2.0.zip || \
+		echo "Unzipping fonts..." && unzip -q /export/noto-open-sans.zip -d /export/fonts && rm /export/noto-open-sans.zip || \
 		echo "Fonts already exist."'
 
 .PHONY: clean
