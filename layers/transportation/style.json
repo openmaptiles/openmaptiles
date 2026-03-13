@@ -3,9 +3,28 @@
     {
       "id": "Highway link tunnel outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "motorway_link"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -57,32 +76,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "motorway_link"
-        ],
-        [
-          "==",
-          "ramp",
-          1
-        ],
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ]
-      ],
       "order": 63
     },
     {
       "id": "Service tunnel outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "service"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -111,28 +125,32 @@
           ]
         }
       },
+      "order": 64
+    },
+    {
+      "id": "Link tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
+        [
+          "==",
+          "ramp",
+          "1"
+        ],
         [
           "==",
           "brunnel",
           "tunnel"
         ],
         [
-          "in",
-          "class",
-          "service",
-          "track"
+          ">",
+          "layer",
+          0
         ]
       ],
-      "order": 64
-    },
-    {
-      "id": "Link tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -162,32 +180,28 @@
           ]
         }
       },
+      "order": 65
+    },
+    {
+      "id": "Street tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
-        [
-          "==",
-          "ramp",
-          "1"
-        ],
         [
           "==",
           "brunnel",
           "tunnel"
         ],
         [
-          ">",
-          "layer",
-          0
+          "in",
+          "class",
+          "street",
+          "street_limited"
         ]
       ],
-      "order": 65
-    },
-    {
-      "id": "Street tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -228,7 +242,15 @@
           ]
         }
       },
+      "order": 66
+    },
+    {
+      "id": "Tertiary tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -239,18 +261,9 @@
         [
           "in",
           "class",
-          "street",
-          "street_limited"
+          "tertiary"
         ]
       ],
-      "order": 66
-    },
-    {
-      "id": "Tertiary tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -300,7 +313,15 @@
           ]
         }
       },
+      "order": 67
+    },
+    {
+      "id": "Secondary tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -311,17 +332,9 @@
         [
           "in",
           "class",
-          "tertiary"
+          "secondary"
         ]
       ],
-      "order": 67
-    },
-    {
-      "id": "Secondary tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -371,7 +384,15 @@
           ]
         }
       },
+      "order": 68
+    },
+    {
+      "id": "Trunk tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -382,17 +403,9 @@
         [
           "in",
           "class",
-          "secondary"
+          "trunk"
         ]
       ],
-      "order": 68
-    },
-    {
-      "id": "Trunk tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -444,7 +457,15 @@
           ]
         }
       },
+      "order": 69
+    },
+    {
+      "id": "Trunk tunnel under construction outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -455,17 +476,9 @@
         [
           "in",
           "class",
-          "trunk"
+          "trunk_construction"
         ]
       ],
-      "order": 69
-    },
-    {
-      "id": "Trunk tunnel under construction outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -506,7 +519,15 @@
           ]
         }
       },
+      "order": 70
+    },
+    {
+      "id": "Primary tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -517,17 +538,9 @@
         [
           "in",
           "class",
-          "trunk_construction"
+          "primary"
         ]
       ],
-      "order": 70
-    },
-    {
-      "id": "Primary tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -579,67 +592,14 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "primary"
-        ]
-      ],
       "order": 71
     },
     {
       "id": "Highway tunnel under construction outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": {
-          "stops": [
-            [
-              6,
-              "hsl(339, 72%, 51%)"
-            ],
-            [
-              10,
-              "hsl(345, 49%, 53%)"
-            ]
-          ]
-        },
-        "line-dasharray": [
-          0.5,
-          0.25
-        ],
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              5,
-              0
-            ],
-            [
-              7,
-              1.75
-            ],
-            [
-              18,
-              27
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -653,13 +613,6 @@
           "tunnel"
         ]
       ],
-      "order": 72
-    },
-    {
-      "id": "Highway tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -699,7 +652,14 @@
           ]
         }
       },
+      "order": 72
+    },
+    {
+      "id": "Highway tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -713,13 +673,71 @@
           "tunnel"
         ]
       ],
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              6,
+              "hsl(339, 72%, 51%)"
+            ],
+            [
+              10,
+              "hsl(345, 49%, 53%)"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          0.5,
+          0.25
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              5,
+              0
+            ],
+            [
+              7,
+              1.75
+            ],
+            [
+              18,
+              27
+            ]
+          ]
+        }
+      },
       "order": 73
     },
     {
       "id": "Path tunnel second outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "path"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -755,7 +773,14 @@
           ]
         }
       },
+      "order": 74
+    },
+    {
+      "id": "Path tunnel outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -774,13 +799,6 @@
           "path"
         ]
       ],
-      "order": 74
-    },
-    {
-      "id": "Path tunnel outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -816,7 +834,15 @@
           ]
         }
       },
+      "order": 75
+    },
+    {
+      "id": "Cycleway path tunnel",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
@@ -830,19 +856,24 @@
           "tunnel"
         ],
         [
-          "==",
+          "in",
           "class",
           "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
         ]
       ],
-      "order": 75
-    },
-    {
-      "id": "Cycleway path tunnel",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "paint": {
         "line-color": "hsl(240, 100%, 50%)",
         "line-dasharray": [
@@ -875,79 +906,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "path"
-        ],
-        [
-          "any",
-          [
-            "==",
-            "subclass",
-            "cycleway"
-          ],
-          [
-            "==",
-            "bicycle",
-            "designated"
-          ]
-        ]
-      ],
       "order": 76
     },
     {
       "id": "Bridleway path tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
-      "paint": {
-        "line-color": "hsl(120, 100%, 25%)",
-        "line-dasharray": [
-          2,
-          2
-        ],
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              13,
-              0.8
-            ],
-            [
-              14,
-              1
-            ],
-            [
-              15,
-              1.3
-            ],
-            [
-              17,
-              1.3
-            ],
-            [
-              18,
-              1.6
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -984,16 +951,8 @@
           "designated"
         ]
       ],
-      "order": 77
-    },
-    {
-      "id": "Footway path tunnel",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "paint": {
-        "line-color": "hsl(6, 93%, 71%)",
+        "line-color": "hsl(120, 100%, 25%)",
         "line-dasharray": [
           2,
           2
@@ -1024,7 +983,15 @@
           ]
         }
       },
+      "order": 77
+    },
+    {
+      "id": "Footway path tunnel",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
@@ -1059,14 +1026,65 @@
           "designated"
         ]
       ],
+      "paint": {
+        "line-color": "hsl(6, 93%, 71%)",
+        "line-dasharray": [
+          2,
+          2
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        }
+      },
       "order": 78
     },
     {
       "id": "Highway link tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1116,33 +1134,28 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "==",
-          "ramp",
-          1
-        ],
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ]
-      ],
       "order": 79
     },
     {
       "id": "Service tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 15,
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "service"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1175,7 +1188,15 @@
           ]
         }
       },
+      "order": 80
+    },
+    {
+      "id": "Service tunnel under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -1186,18 +1207,9 @@
         [
           "in",
           "class",
-          "service",
-          "track"
+          "service_construction"
         ]
       ],
-      "order": 80
-    },
-    {
-      "id": "Service tunnel under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1234,28 +1246,32 @@
           ]
         }
       },
+      "order": 81
+    },
+    {
+      "id": "Link tunnel",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
+        [
+          "==",
+          "ramp",
+          "1"
+        ],
         [
           "==",
           "brunnel",
           "tunnel"
         ],
         [
-          "in",
-          "class",
-          "service_construction",
-          "track_construction"
+          ">",
+          "layer",
+          0
         ]
       ],
-      "order": 81
-    },
-    {
-      "id": "Link tunnel",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1284,58 +1300,14 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "ramp",
-          "1"
-        ],
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          ">",
-          "layer",
-          0
-        ]
-      ],
       "order": 82
     },
     {
       "id": "Minor tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(0, 0%, 100%)",
-        "line-opacity": 1,
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              13.5,
-              0
-            ],
-            [
-              14,
-              2.5
-            ],
-            [
-              20,
-              11.5
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -1349,13 +1321,52 @@
           "minor"
         ]
       ],
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 100%)",
+        "line-opacity": 1,
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13.5,
+              0
+            ],
+            [
+              14,
+              2.5
+            ],
+            [
+              20,
+              11.5
+            ]
+          ]
+        }
+      },
       "order": 83
     },
     {
       "id": "Minor tunnel under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "minor_construction"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1385,72 +1396,14 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "minor_construction"
-        ]
-      ],
       "order": 84
     },
     {
       "id": "Tertiary tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(0, 0%, 100%)",
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              11,
-              1.9
-            ],
-            [
-              12,
-              3
-            ],
-            [
-              13,
-              3.9
-            ],
-            [
-              14,
-              7.8
-            ],
-            [
-              15,
-              8.8
-            ],
-            [
-              16,
-              16.4
-            ],
-            [
-              17,
-              19.4
-            ],
-            [
-              18,
-              25.4
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -1464,13 +1417,71 @@
           "tertiary"
         ]
       ],
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 100%)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              1.9
+            ],
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              3.9
+            ],
+            [
+              14,
+              7.8
+            ],
+            [
+              15,
+              8.8
+            ],
+            [
+              16,
+              16.4
+            ],
+            [
+              17,
+              19.4
+            ],
+            [
+              18,
+              25.4
+            ]
+          ]
+        }
+      },
       "order": 85
     },
     {
       "id": "Tertiary tunnel under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "tertiary_construction"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1519,85 +1530,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "tertiary_construction"
-        ]
-      ],
       "order": 86
     },
     {
       "id": "Secondary tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 8,
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(63, 86%, 92%)",
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              8,
-              1
-            ],
-            [
-              9,
-              1.1
-            ],
-            [
-              10,
-              1.1
-            ],
-            [
-              11,
-              2.9
-            ],
-            [
-              12,
-              4.3
-            ],
-            [
-              12,
-              4.3
-            ],
-            [
-              14,
-              7.6
-            ],
-            [
-              15,
-              8.6
-            ],
-            [
-              16,
-              16
-            ],
-            [
-              17,
-              19
-            ],
-            [
-              18,
-              25
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -1611,14 +1552,84 @@
           "secondary"
         ]
       ],
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(63, 86%, 92%)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              8,
+              1
+            ],
+            [
+              9,
+              1.1
+            ],
+            [
+              10,
+              1.1
+            ],
+            [
+              11,
+              2.9
+            ],
+            [
+              12,
+              4.3
+            ],
+            [
+              12,
+              4.3
+            ],
+            [
+              14,
+              7.6
+            ],
+            [
+              15,
+              8.6
+            ],
+            [
+              16,
+              16
+            ],
+            [
+              17,
+              19
+            ],
+            [
+              18,
+              25
+            ]
+          ]
+        }
+      },
       "order": 87
     },
     {
       "id": "Secondary tunnel under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "secondary_construction"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1679,7 +1690,15 @@
           ]
         }
       },
+      "order": 88
+    },
+    {
+      "id": "Primary tunnel",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -1690,17 +1709,9 @@
         [
           "in",
           "class",
-          "secondary_construction"
+          "primary"
         ]
       ],
-      "order": 88
-    },
-    {
-      "id": "Primary tunnel",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1762,7 +1773,15 @@
           ]
         }
       },
+      "order": 89
+    },
+    {
+      "id": "Primary tunnel under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -1773,17 +1792,9 @@
         [
           "in",
           "class",
-          "primary"
+          "primary_construction"
         ]
       ],
-      "order": 89
-    },
-    {
-      "id": "Primary tunnel under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1849,7 +1860,14 @@
           ]
         }
       },
+      "order": 90
+    },
+    {
+      "id": "Trunk tunnel",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -1860,16 +1878,9 @@
         [
           "in",
           "class",
-          "primary_construction"
+          "trunk"
         ]
       ],
-      "order": 90
-    },
-    {
-      "id": "Trunk tunnel",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -1942,7 +1953,14 @@
           ]
         }
       },
+      "order": 91
+    },
+    {
+      "id": "Trunk tunnel under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -1953,16 +1971,9 @@
         [
           "in",
           "class",
-          "trunk"
+          "trunk_construction"
         ]
       ],
-      "order": 91
-    },
-    {
-      "id": "Trunk tunnel under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -2028,27 +2039,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "trunk_construction"
-        ]
-      ],
       "order": 92
     },
     {
       "id": "Highway tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -2084,13 +2095,20 @@
           ]
         }
       },
+      "order": 93
+    },
+    {
+      "id": "Highway tunnel under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
           "==",
           "class",
-          "motorway"
+          "motorway_construction"
         ],
         [
           "==",
@@ -2098,13 +2116,6 @@
           "tunnel"
         ]
       ],
-      "order": 93
-    },
-    {
-      "id": "Highway tunnel under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -2144,27 +2155,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "motorway_construction"
-        ],
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ]
-      ],
       "order": 94
     },
     {
       "id": "Major rail tunnel",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "rail"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -2188,28 +2199,29 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "rail"
-        ]
-      ],
       "order": 95
     },
     {
       "id": "Major rail tunnel hatching",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 9,
+      "filter": [
+        "all",
+        [
+          "in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "rail"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -2248,36 +2260,14 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "==",
-          "class",
-          "rail"
-        ]
-      ],
       "order": 96
     },
     {
       "id": "Pier",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-antialias": true,
-        "fill-color": "hsl(42, 49%, 93%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -2291,13 +2281,34 @@
           "pier"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-antialias": true,
+        "fill-color": "hsl(42, 49%, 93%)"
+      },
       "order": 97
     },
     {
       "id": "Pier road",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "pier"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round"
@@ -2318,36 +2329,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "class",
-          "pier"
-        ]
-      ],
       "order": 98
     },
     {
       "id": "Bridge area",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 11,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-antialias": true,
-        "fill-color": "hsl(0, 0%, 72%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -2361,20 +2351,21 @@
           "bridge"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-antialias": true,
+        "fill-color": "hsl(0, 0%, 72%)"
+      },
       "order": 99
     },
     {
       "id": "Platform area",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(0, 0%, 73%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -2397,20 +2388,21 @@
           "platform"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(0, 0%, 73%)",
+        "fill-outline-color": "hsl(0, 0%, 50%)"
+      },
       "order": 100
     },
     {
       "id": "Pedestrian area",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "fill-color": "hsl(240, 19%, 89%)"
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -2427,16 +2419,42 @@
           "class",
           "bridge",
           "pier"
+        ],
+        [
+          "!in",
+          "subclass",
+          "platform"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "hsl(240, 19%, 89%)"
+      },
       "order": 101
     },
     {
-      "id": "Service road link outline",
+      "id": "Service road outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "service"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round"
@@ -2473,7 +2491,15 @@
           ]
         }
       },
+      "order": 102
+    },
+    {
+      "id": "Track road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
@@ -2485,18 +2511,229 @@
         [
           "in",
           "class",
-          "service",
           "track"
         ]
       ],
-      "order": 102
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              11,
+              "hsla(0, 0%, 100%, 0.5)"
+            ],
+            [
+              22,
+              "hsla(0, 0%, 100%, 0.7)"
+            ]
+          ]
+        },
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              2
+            ],
+            [
+              17,
+              3.5
+            ],
+            [
+              19,
+              4.5
+            ]
+          ]
+        }
+      },
+      "order": 103
+    },
+    {
+      "id": "Tertiary road link outline",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "tertiary"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 56%)",
+        "line-opacity": 1,
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              1.6
+            ],
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              4
+            ],
+            [
+              14,
+              6.2
+            ],
+            [
+              15,
+              8.2
+            ],
+            [
+              16,
+              12.6
+            ],
+            [
+              17,
+              15.6
+            ],
+            [
+              18,
+              17.6
+            ]
+          ]
+        }
+      },
+      "order": 104
+    },
+    {
+      "id": "Secondary road link outline",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "secondary"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              11,
+              "hsl(67, 67%, 41%)"
+            ],
+            [
+              12,
+              "hsl(67, 92%, 25%)"
+            ]
+          ]
+        },
+        "line-opacity": 1,
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              2.6
+            ],
+            [
+              12,
+              3.7
+            ],
+            [
+              13,
+              4.2
+            ],
+            [
+              14,
+              6.4
+            ],
+            [
+              15,
+              8.4
+            ],
+            [
+              16,
+              12
+            ],
+            [
+              17,
+              14
+            ],
+            [
+              18,
+              16.5
+            ]
+          ]
+        }
+      },
+      "order": 105
     },
     {
       "id": "Primary road link outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "in",
+          "class",
+          "primary"
+        ]
+      ],
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -2549,7 +2786,15 @@
           ]
         }
       },
+      "order": 106
+    },
+    {
+      "id": "Trunk road link outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -2566,17 +2811,9 @@
         [
           "in",
           "class",
-          "primary"
+          "trunk"
         ]
       ],
-      "order": 103
-    },
-    {
-      "id": "Trunk road link outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -2625,7 +2862,15 @@
           ]
         }
       },
+      "order": 107
+    },
+    {
+      "id": "Highway link outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -2636,23 +2881,15 @@
         ],
         [
           "==",
-          "ramp",
-          1
+          "class",
+          "motorway"
         ],
         [
-          "in",
-          "class",
-          "trunk"
+          "==",
+          "ramp",
+          1
         ]
       ],
-      "order": 104
-    },
-    {
-      "id": "Highway link outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -2706,9 +2943,22 @@
           ]
         }
       },
+      "order": 108
+    },
+    {
+      "id": "Minor road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
         [
           "!in",
           "brunnel",
@@ -2716,24 +2966,16 @@
           "tunnel"
         ],
         [
-          "==",
+          "in",
           "class",
-          "motorway"
+          "minor"
         ],
         [
-          "==",
+          "!=",
           "ramp",
-          1
+          "1"
         ]
       ],
-      "order": 105
-    },
-    {
-      "id": "Minor road outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -2783,14 +3025,17 @@
           ]
         }
       },
+      "order": 109
+    },
+    {
+      "id": "Tertiary road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
         [
           "!in",
           "brunnel",
@@ -2800,22 +3045,14 @@
         [
           "in",
           "class",
-          "minor"
+          "tertiary"
         ],
         [
           "!=",
           "ramp",
-          "1"
+          1
         ]
       ],
-      "order": 106
-    },
-    {
-      "id": "Tertiary road outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -2862,119 +3099,34 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "tertiary"
-        ],
-        [
-          "!=",
-          "ramp",
-          1
-        ]
-      ],
-      "order": 107
-    },
-    {
-      "id": "Secondary road link outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
-      "layout": {
-        "line-cap": "round",
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": {
-          "stops": [
-            [
-              11,
-              "hsl(67, 67%, 41%)"
-            ],
-            [
-              12,
-              "hsl(67, 92%, 25%)"
-            ]
-          ]
-        },
-        "line-opacity": 1,
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              11,
-              3.5
-            ],
-            [
-              12,
-              5
-            ],
-            [
-              13,
-              5
-            ],
-            [
-              14,
-              9
-            ],
-            [
-              15,
-              10
-            ],
-            [
-              16,
-              18
-            ],
-            [
-              17,
-              21
-            ],
-            [
-              18,
-              27
-            ]
-          ]
-        }
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "secondary"
-        ],
-        [
-          "==",
-          "ramp",
-          1
-        ]
-      ],
-      "order": 108
+      "order": 110
     },
     {
       "id": "Secondary road outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "secondary"
+        ],
+        [
+          "!=",
+          "ramp",
+          1
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -3032,7 +3184,15 @@
           ]
         }
       },
+      "order": 111
+    },
+    {
+      "id": "Trunk road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -3042,9 +3202,14 @@
           "tunnel"
         ],
         [
+          "!=",
+          "ramp",
+          1
+        ],
+        [
           "in",
           "class",
-          "secondary"
+          "trunk"
         ],
         [
           "!=",
@@ -3052,14 +3217,6 @@
           1
         ]
       ],
-      "order": 109
-    },
-    {
-      "id": "Trunk road outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -3117,7 +3274,15 @@
           ]
         }
       },
+      "order": 112
+    },
+    {
+      "id": "Primary road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -3134,7 +3299,7 @@
         [
           "in",
           "class",
-          "trunk"
+          "primary"
         ],
         [
           "!=",
@@ -3142,14 +3307,6 @@
           1
         ]
       ],
-      "order": 110
-    },
-    {
-      "id": "Primary road outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 9,
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -3207,7 +3364,15 @@
           ]
         }
       },
+      "order": 113
+    },
+    {
+      "id": "Highway road outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
       "filter": [
         "all",
         [
@@ -3217,14 +3382,9 @@
           "tunnel"
         ],
         [
-          "!=",
-          "ramp",
-          1
-        ],
-        [
-          "in",
+          "==",
           "class",
-          "primary"
+          "motorway"
         ],
         [
           "!=",
@@ -3232,14 +3392,6 @@
           1
         ]
       ],
-      "order": 111
-    },
-    {
-      "id": "Highway road outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 5,
       "layout": {
         "line-cap": "butt",
         "line-join": "round",
@@ -3276,33 +3428,36 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "!=",
-          "ramp",
-          1
-        ]
-      ],
-      "order": 112
+      "order": 114
     },
     {
       "id": "Pedestrian road outline",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "path"
+        ],
+        [
+          "==",
+          "subclass",
+          "pedestrian"
+        ],
+        [
+          "!=",
+          "brunel",
+          "tunnel"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -3337,6 +3492,13 @@
           ]
         }
       },
+      "order": 115
+    },
+    {
+      "id": "Pedestrian road",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -3360,13 +3522,6 @@
           "tunnel"
         ]
       ],
-      "order": 113
-    },
-    {
-      "id": "Pedestrian road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -3401,6 +3556,15 @@
           ]
         }
       },
+      "order": 116
+    },
+    {
+      "id": "Steps path outline",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -3409,29 +3573,22 @@
           "LineString"
         ],
         [
-          "==",
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
           "class",
           "path"
         ],
         [
           "==",
           "subclass",
-          "pedestrian"
-        ],
-        [
-          "!=",
-          "brunel",
-          "tunnel"
+          "steps"
         ]
       ],
-      "order": 114
-    },
-    {
-      "id": "Steps path outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3461,69 +3618,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "path"
-        ],
-        [
-          "==",
-          "subclass",
-          "steps"
-        ]
-      ],
-      "order": 115
+      "order": 117
     },
     {
       "id": "Bridleway path outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 15,
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(0, 0%, 93%)",
-        "line-opacity": 0.6,
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              14,
-              3
-            ],
-            [
-              15,
-              3.3
-            ],
-            [
-              17,
-              3.3
-            ],
-            [
-              18,
-              3.6
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -3561,14 +3664,6 @@
           "designated"
         ]
       ],
-      "order": 116
-    },
-    {
-      "id": "Cycleway path outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3598,7 +3693,15 @@
           ]
         }
       },
+      "order": 118
+    },
+    {
+      "id": "Cycleway path outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -3631,14 +3734,6 @@
           ]
         ]
       ],
-      "order": 117
-    },
-    {
-      "id": "Footway path outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3651,11 +3746,11 @@
           "stops": [
             [
               14,
-              2.7
+              3
             ],
             [
               15,
-              3
+              3.3
             ],
             [
               17,
@@ -3668,7 +3763,15 @@
           ]
         }
       },
+      "order": 119
+    },
+    {
+      "id": "Footway path outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -3704,47 +3807,44 @@
           "designated"
         ]
       ],
-      "order": 118
-    },
-    {
-      "id": "Cycleway path",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "hsl(240, 100%, 50%)",
-        "line-dasharray": [
-          2,
-          2
-        ],
+        "line-color": "hsl(0, 0%, 93%)",
+        "line-opacity": 0.6,
         "line-width": {
           "base": 1.2,
           "stops": [
             [
-              12,
-              0.7
+              14,
+              2.7
             ],
             [
-              14,
-              0.9
+              15,
+              3
             ],
             [
               17,
-              1
+              3.3
             ],
             [
               18,
-              1.3
+              3.6
             ]
           ]
         }
       },
+      "order": 120
+    },
+    {
+      "id": "Cycleway path",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -3777,14 +3877,71 @@
           ]
         ]
       ],
-      "order": 119
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(240, 100%, 50%)",
+        "line-dasharray": [
+          2,
+          2
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              12,
+              0.7
+            ],
+            [
+              14,
+              0.9
+            ],
+            [
+              17,
+              1
+            ],
+            [
+              18,
+              1.3
+            ]
+          ]
+        }
+      },
+      "order": 121
     },
     {
       "id": "Steps path",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "==",
+          "subclass",
+          "steps"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3817,72 +3974,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "path"
-        ],
-        [
-          "==",
-          "subclass",
-          "steps"
-        ]
-      ],
-      "order": 120
+      "order": 122
     },
     {
       "id": "Bridleway path",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
-      "layout": {
-        "line-join": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "hsl(120, 100%, 25%)",
-        "line-dasharray": [
-          2,
-          2
-        ],
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              12,
-              0.7
-            ],
-            [
-              14,
-              0.9
-            ],
-            [
-              17,
-              1
-            ],
-            [
-              18,
-              1.3
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -3920,14 +4020,82 @@
           "designated"
         ]
       ],
-      "order": 121
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(120, 100%, 25%)",
+        "line-dasharray": [
+          2,
+          2
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              12,
+              0.7
+            ],
+            [
+              14,
+              0.9
+            ],
+            [
+              17,
+              1
+            ],
+            [
+              18,
+              1.3
+            ]
+          ]
+        }
+      },
+      "order": 123
     },
     {
       "id": "Footway path",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "in",
+          "subclass",
+          "footway",
+          "path"
+        ],
+        [
+          "!=",
+          "bicycle",
+          "designated"
+        ],
+        [
+          "!=",
+          "horse",
+          "designated"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -3964,14 +4132,17 @@
           ]
         }
       },
+      "order": 124
+    },
+    {
+      "id": "Tertiary road link",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
         [
           "!in",
           "brunnel",
@@ -3981,32 +4152,180 @@
         [
           "in",
           "class",
-          "path"
+          "tertiary"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              10.5,
+              "hsl(0, 0%, 73%)"
+            ],
+            [
+              10.6,
+              "hsl(0, 0%, 100%)"
+            ]
+          ]
+        },
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              1
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              13,
+              3
+            ],
+            [
+              14,
+              5
+            ],
+            [
+              15,
+              7
+            ],
+            [
+              16,
+              11
+            ],
+            [
+              17,
+              14
+            ],
+            [
+              18,
+              16
+            ]
+          ]
+        }
+      },
+      "order": 125
+    },
+    {
+      "id": "Secondary road link",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
         ],
         [
           "in",
-          "subclass",
-          "footway",
-          "path"
+          "class",
+          "secondary"
         ],
         [
-          "!=",
-          "bicycle",
-          "designated"
-        ],
-        [
-          "!=",
-          "horse",
-          "designated"
+          "==",
+          "ramp",
+          1
         ]
       ],
-      "order": 122
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              10.5,
+              "hsl(0, 0%, 73%)"
+            ],
+            [
+              10.6,
+              "hsl(63, 86%, 86%)"
+            ]
+          ]
+        },
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              2
+            ],
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              3.5
+            ],
+            [
+              14,
+              5
+            ],
+            [
+              15,
+              7
+            ],
+            [
+              16,
+              10
+            ],
+            [
+              17,
+              12
+            ],
+            [
+              18,
+              14.5
+            ]
+          ]
+        }
+      },
+      "order": 126
     },
     {
       "id": "Primary road link",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "in",
+          "class",
+          "primary"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4048,7 +4367,15 @@
           ]
         }
       },
+      "order": 127
+    },
+    {
+      "id": "Trunk road link",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -4065,17 +4392,9 @@
         [
           "in",
           "class",
-          "primary"
+          "trunk"
         ]
       ],
-      "order": 123
-    },
-    {
-      "id": "Trunk road link",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4124,7 +4443,15 @@
           ]
         }
       },
+      "order": 128
+    },
+    {
+      "id": "Highway road link",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
       "filter": [
         "all",
         [
@@ -4135,23 +4462,15 @@
         ],
         [
           "==",
-          "ramp",
-          1
+          "class",
+          "motorway"
         ],
         [
-          "in",
-          "class",
-          "trunk"
+          "==",
+          "ramp",
+          1
         ]
       ],
-      "order": 124
-    },
-    {
-      "id": "Highway road link",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4208,7 +4527,15 @@
           ]
         }
       },
+      "order": 129
+    },
+    {
+      "id": "Service road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -4218,24 +4545,11 @@
           "tunnel"
         ],
         [
-          "==",
+          "in",
           "class",
-          "motorway"
-        ],
-        [
-          "==",
-          "ramp",
-          1
+          "service"
         ]
       ],
-      "order": 125
-    },
-    {
-      "id": "Service road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4253,10 +4567,6 @@
             [
               15,
               2.3
-            ],
-            [
-              15,
-              0.5
             ],
             [
               16,
@@ -4277,7 +4587,15 @@
           ]
         }
       },
+      "order": 130
+    },
+    {
+      "id": "Track road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -4289,18 +4607,71 @@
         [
           "in",
           "class",
-          "service",
           "track"
         ]
       ],
-      "order": 126
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              12,
+              "hsla(42, 61%, 41%, 0.5)"
+            ],
+            [
+              16,
+              "hsl(42, 61%, 41%)"
+            ]
+          ]
+        },
+        "line-dasharray": [
+          3,
+          2.5
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              1.5
+            ],
+            [
+              17,
+              2
+            ],
+            [
+              19,
+              2.5
+            ]
+          ]
+        }
+      },
+      "order": 131
     },
     {
       "id": "Service road under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "service_construction"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -4322,10 +4693,6 @@
               2.3
             ],
             [
-              15,
-              0.5
-            ],
-            [
               16,
               5.4
             ],
@@ -4344,30 +4711,23 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "class",
-          "service_construction",
-          "track_construction"
-        ]
-      ],
-      "order": 127
+      "order": 132
     },
     {
       "id": "Raceway road",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 9,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "raceway"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4413,23 +4773,34 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "raceway"
-        ]
-      ],
-      "order": 128
+      "order": 133
     },
     {
       "id": "Minor road under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "minor_construction"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4457,7 +4828,15 @@
           7
         ]
       },
+      "order": 134
+    },
+    {
+      "id": "Minor road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -4477,14 +4856,6 @@
           "minor_construction"
         ]
       ],
-      "order": 129
-    },
-    {
-      "id": "Minor road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "visibility": "visible"
       },
@@ -4525,7 +4896,15 @@
           7
         ]
       },
+      "order": 135
+    },
+    {
+      "id": "Minor road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -4542,17 +4921,9 @@
         [
           "==",
           "class",
-          "minor_construction"
+          "minor"
         ]
       ],
-      "order": 130
-    },
-    {
-      "id": "Minor road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4606,14 +4977,17 @@
           ]
         }
       },
+      "order": 136
+    },
+    {
+      "id": "Tertiary road under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 9,
       "filter": [
         "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
         [
           "!in",
           "brunnel",
@@ -4621,19 +4995,11 @@
           "tunnel"
         ],
         [
-          "==",
+          "in",
           "class",
-          "minor"
+          "tertiary_construction"
         ]
       ],
-      "order": 131
-    },
-    {
-      "id": "Tertiary road under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 9,
       "layout": {
         "visibility": "visible"
       },
@@ -4658,7 +5024,15 @@
           7
         ]
       },
+      "order": 137
+    },
+    {
+      "id": "Tertiary road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -4673,14 +5047,6 @@
           "tertiary_construction"
         ]
       ],
-      "order": 132
-    },
-    {
-      "id": "Tertiary road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 9,
       "layout": {
         "visibility": "visible"
       },
@@ -4720,7 +5086,15 @@
           7
         ]
       },
+      "order": 138
+    },
+    {
+      "id": "Tertiary road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -4732,17 +5106,14 @@
         [
           "in",
           "class",
-          "tertiary_construction"
+          "tertiary"
+        ],
+        [
+          "!=",
+          "ramp",
+          1
         ]
       ],
-      "order": 133
-    },
-    {
-      "id": "Tertiary road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 9,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4807,7 +5178,15 @@
           ]
         }
       },
+      "order": 139
+    },
+    {
+      "id": "Secondary road under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
       "filter": [
         "all",
         [
@@ -4819,17 +5198,9 @@
         [
           "in",
           "class",
-          "tertiary"
+          "secondary_construction"
         ]
       ],
-      "order": 134
-    },
-    {
-      "id": "Secondary road under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -4869,7 +5240,15 @@
           7
         ]
       },
+      "order": 140
+    },
+    {
+      "id": "Secondary road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
       "filter": [
         "all",
         [
@@ -4884,14 +5263,6 @@
           "secondary_construction"
         ]
       ],
-      "order": 135
-    },
-    {
-      "id": "Secondary road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
       "layout": {
         "visibility": "visible"
       },
@@ -4920,7 +5291,15 @@
           7
         ]
       },
+      "order": 141
+    },
+    {
+      "id": "Secondary road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
       "filter": [
         "all",
         [
@@ -4932,17 +5311,14 @@
         [
           "in",
           "class",
-          "secondary_construction"
+          "secondary"
+        ],
+        [
+          "!=",
+          "ramp",
+          1
         ]
       ],
-      "order": 136
-    },
-    {
-      "id": "Secondary road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5011,7 +5387,15 @@
           ]
         }
       },
+      "order": 142
+    },
+    {
+      "id": "Primary road under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -5021,19 +5405,16 @@
           "tunnel"
         ],
         [
+          "!=",
+          "ramp",
+          1
+        ],
+        [
           "in",
           "class",
-          "secondary"
+          "primary_construction"
         ]
       ],
-      "order": 137
-    },
-    {
-      "id": "Primary road under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5071,7 +5452,15 @@
           7
         ]
       },
+      "order": 143
+    },
+    {
+      "id": "Primary road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -5091,14 +5480,6 @@
           "primary_construction"
         ]
       ],
-      "order": 138
-    },
-    {
-      "id": "Primary road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "visibility": "visible"
       },
@@ -5127,7 +5508,15 @@
           7
         ]
       },
+      "order": 144
+    },
+    {
+      "id": "Primary road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -5144,17 +5533,9 @@
         [
           "in",
           "class",
-          "primary_construction"
+          "primary"
         ]
       ],
-      "order": 139
-    },
-    {
-      "id": "Primary road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5223,7 +5604,15 @@
           ]
         }
       },
+      "order": 145
+    },
+    {
+      "id": "Trunk road under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -5240,17 +5629,9 @@
         [
           "in",
           "class",
-          "primary"
+          "trunk_construction"
         ]
       ],
-      "order": 140
-    },
-    {
-      "id": "Trunk road under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5288,7 +5669,15 @@
           7
         ]
       },
+      "order": 146
+    },
+    {
+      "id": "Trunk road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -5308,14 +5697,6 @@
           "trunk_construction"
         ]
       ],
-      "order": 141
-    },
-    {
-      "id": "Trunk road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "visibility": "visible"
       },
@@ -5344,7 +5725,15 @@
           7
         ]
       },
+      "order": 147
+    },
+    {
+      "id": "Trunk road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
       "filter": [
         "all",
         [
@@ -5361,17 +5750,9 @@
         [
           "in",
           "class",
-          "trunk_construction"
+          "trunk"
         ]
       ],
-      "order": 142
-    },
-    {
-      "id": "Trunk road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 5,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5381,8 +5762,8 @@
         "line-color": {
           "stops": [
             [
-              5,
-              "hsl(15, 96%, 81%)"
+              6,
+              "hsl(347, 71%, 67%)"
             ],
             [
               11,
@@ -5448,7 +5829,15 @@
           ]
         }
       },
+      "order": 148
+    },
+    {
+      "id": "Highway road under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
       "filter": [
         "all",
         [
@@ -5458,24 +5847,16 @@
           "tunnel"
         ],
         [
+          "==",
+          "class",
+          "motorway_construction"
+        ],
+        [
           "!=",
           "ramp",
           1
-        ],
-        [
-          "in",
-          "class",
-          "trunk"
         ]
       ],
-      "order": 143
-    },
-    {
-      "id": "Highway road under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 5,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5516,7 +5897,15 @@
           7
         ]
       },
+      "order": 149
+    },
+    {
+      "id": "Highway road under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
       "filter": [
         "all",
         [
@@ -5536,14 +5925,6 @@
           1
         ]
       ],
-      "order": 144
-    },
-    {
-      "id": "Highway road under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 5,
       "layout": {
         "visibility": "visible"
       },
@@ -5574,7 +5955,15 @@
           7
         ]
       },
+      "order": 150
+    },
+    {
+      "id": "Highway road",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 5,
       "filter": [
         "all",
         [
@@ -5586,7 +5975,7 @@
         [
           "==",
           "class",
-          "motorway_construction"
+          "motorway"
         ],
         [
           "!=",
@@ -5594,14 +5983,6 @@
           1
         ]
       ],
-      "order": 145
-    },
-    {
-      "id": "Highway road",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 5,
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -5638,33 +6019,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "!=",
-          "ramp",
-          1
-        ]
-      ],
-      "order": 146
+      "order": 151
     },
     {
       "id": "Subway line",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "transit"
+        ],
+        [
+          "==",
+          "subclass",
+          "subway"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -5688,27 +6063,103 @@
           ]
         }
       },
+      "order": 152
+    },
+    {
+      "id": "Major rail service",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
-          "==",
-          "class",
-          "transit"
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
         ],
         [
-          "==",
-          "subclass",
-          "subway"
+          "in",
+          "class",
+          "rail"
+        ],
+        [
+          "in",
+          "service",
+          "siding",
+          "spur",
+          "yard"
         ]
       ],
-      "order": 147
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              8,
+              "hsl(0, 0%, 47%)"
+            ],
+            [
+              14,
+              "hsl(0, 0%, 51%)"
+            ]
+          ]
+        },
+        "line-opacity": 0.4,
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              8,
+              0.8
+            ],
+            [
+              11,
+              1.5
+            ],
+            [
+              15,
+              3
+            ],
+            [
+              20,
+              5.4
+            ]
+          ]
+        }
+      },
+      "order": 153
     },
     {
       "id": "Major rail",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "in",
+          "class",
+          "rail"
+        ],
+        [
+          "!in",
+          "service",
+          "siding",
+          "spur",
+          "yard"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -5747,7 +6198,14 @@
           ]
         }
       },
+      "order": 154
+    },
+    {
+      "id": "Minor rail",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -5758,17 +6216,11 @@
         ],
         [
           "in",
-          "class",
-          "rail"
+          "subclass",
+          "tram",
+          "light_rail"
         ]
       ],
-      "order": 148
-    },
-    {
-      "id": "Minor rail",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -5792,7 +6244,64 @@
           ]
         }
       },
+      "order": 155
+    },
+    {
+      "id": "Major rail hatching",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "brunnel",
+          "bridge",
+          "tunnel"
+        ],
+        [
+          "==",
+          "class",
+          "rail"
+        ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 100%)",
+        "line-dasharray": [
+          2.5,
+          2.5
+        ],
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              9,
+              0
+            ],
+            [
+              14,
+              1.5
+            ],
+            [
+              20,
+              3
+            ]
+          ]
+        }
+      },
+      "order": 156
+    },
+    {
+      "id": "Minor rail hatching",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -5808,74 +6317,6 @@
           "light_rail"
         ]
       ],
-      "order": 149
-    },
-    {
-      "id": "Major rail hatching",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": {
-          "stops": [
-            [
-              8,
-              "hsla(0, 0%, 100%, 0.44)"
-            ],
-            [
-              10,
-              "hsla(0, 0%, 95%, 0.44)"
-            ]
-          ]
-        },
-        "line-dasharray": [
-          2,
-          2
-        ],
-        "line-width": {
-          "base": 1.4,
-          "stops": [
-            [
-              9,
-              0
-            ],
-            [
-              15,
-              2
-            ],
-            [
-              20,
-              4
-            ]
-          ]
-        }
-      },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "==",
-          "class",
-          "rail"
-        ]
-      ],
-      "order": 150
-    },
-    {
-      "id": "Minor rail hatching",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -5903,29 +6344,32 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!in",
-          "brunnel",
-          "bridge",
-          "tunnel"
-        ],
-        [
-          "in",
-          "subclass",
-          "tram",
-          "light_rail"
-        ]
-      ],
-      "order": 151
+      "order": 157
     },
     {
       "id": "Highway link bridge outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -5966,32 +6410,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "==",
-          "ramp",
-          1
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ]
-      ],
-      "order": 154
+      "order": 160
     },
     {
       "id": "Service bridge outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "service"
+        ]
+      ],
       "layout": {
         "line-join": "round"
       },
@@ -6015,28 +6454,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ],
-        [
-          "in",
-          "class",
-          "service",
-          "track"
-        ]
-      ],
-      "order": 155
+      "order": 161
     },
     {
       "id": "Link bridge outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "link"
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ]
+      ],
       "layout": {
         "line-join": "round"
       },
@@ -6065,27 +6503,28 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "link"
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ]
-      ],
-      "order": 156
+      "order": 162
     },
     {
       "id": "Street bridge outline",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "street",
+          "street_limited"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6126,9 +6565,22 @@
           ]
         }
       },
+      "order": 163
+    },
+    {
+      "id": "Path bridge second outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
         [
           "==",
           "brunnel",
@@ -6137,18 +6589,9 @@
         [
           "in",
           "class",
-          "street",
-          "street_limited"
+          "path"
         ]
       ],
-      "order": 157
-    },
-    {
-      "id": "Path bridge second outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "layout": {
         "line-join": "miter",
         "visibility": "visible"
@@ -6185,7 +6628,15 @@
           ]
         }
       },
+      "order": 164
+    },
+    {
+      "id": "Path bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
@@ -6204,14 +6655,6 @@
           "path"
         ]
       ],
-      "order": 158
-    },
-    {
-      "id": "Path bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "layout": {
         "line-join": "miter",
         "visibility": "visible"
@@ -6248,14 +6691,17 @@
           ]
         }
       },
+      "order": 165
+    },
+    {
+      "id": "Secondary bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
         [
           "==",
           "brunnel",
@@ -6264,17 +6710,10 @@
         [
           "in",
           "class",
-          "path"
+          "secondary",
+          "tertiary"
         ]
       ],
-      "order": 159
-    },
-    {
-      "id": "Secondary bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "line-join": "round"
       },
@@ -6315,7 +6754,14 @@
           ]
         }
       },
+      "order": 166
+    },
+    {
+      "id": "Tertiary bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -6330,13 +6776,6 @@
           "tertiary"
         ]
       ],
-      "order": 160
-    },
-    {
-      "id": "Tertiary bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -6357,7 +6796,15 @@
           ]
         }
       },
+      "order": 167
+    },
+    {
+      "id": "Trunk bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -6368,18 +6815,9 @@
         [
           "in",
           "class",
-          "secondary",
-          "tertiary"
+          "trunk"
         ]
       ],
-      "order": 161
-    },
-    {
-      "id": "Trunk bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round"
       },
@@ -6426,7 +6864,15 @@
           ]
         }
       },
+      "order": 168
+    },
+    {
+      "id": "Primary bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 12,
       "filter": [
         "all",
         [
@@ -6437,17 +6883,9 @@
         [
           "in",
           "class",
-          "trunk"
+          "primary"
         ]
       ],
-      "order": 162
-    },
-    {
-      "id": "Primary bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 12,
       "layout": {
         "line-join": "round"
       },
@@ -6483,27 +6921,32 @@
           ]
         }
       },
+      "order": 169
+    },
+    {
+      "id": "Highway bridge outline",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
         [
           "==",
           "brunnel",
           "bridge"
         ],
         [
-          "in",
-          "class",
-          "primary"
+          "!=",
+          "ramp",
+          1
         ]
       ],
-      "order": 163
-    },
-    {
-      "id": "Highway bridge outline",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6528,13 +6971,21 @@
           ]
         }
       },
+      "order": 170
+    },
+    {
+      "id": "Cycleway bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
           "==",
-          "class",
-          "motorway"
+          "$type",
+          "LineString"
         ],
         [
           "==",
@@ -6542,19 +6993,24 @@
           "bridge"
         ],
         [
-          "!=",
-          "ramp",
-          1
+          "in",
+          "class",
+          "path"
+        ],
+        [
+          "any",
+          [
+            "==",
+            "subclass",
+            "cycleway"
+          ],
+          [
+            "==",
+            "bicycle",
+            "designated"
+          ]
         ]
       ],
-      "order": 164
-    },
-    {
-      "id": "Cycleway bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "paint": {
         "line-color": "hsl(240, 100%, 50%)",
         "line-dasharray": [
@@ -6587,79 +7043,15 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ],
-        [
-          "in",
-          "class",
-          "path"
-        ],
-        [
-          "any",
-          [
-            "==",
-            "subclass",
-            "cycleway"
-          ],
-          [
-            "==",
-            "bicycle",
-            "designated"
-          ]
-        ]
-      ],
-      "order": 165
+      "order": 171
     },
     {
       "id": "Bridleway bridge",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
-      "paint": {
-        "line-color": "hsl(120, 100%, 25%)",
-        "line-dasharray": [
-          2,
-          2
-        ],
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              13,
-              0.8
-            ],
-            [
-              14,
-              1
-            ],
-            [
-              15,
-              1.3
-            ],
-            [
-              17,
-              1.3
-            ],
-            [
-              18,
-              1.6
-            ]
-          ]
-        }
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -6696,16 +7088,8 @@
           "designated"
         ]
       ],
-      "order": 166
-    },
-    {
-      "id": "Footway bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 13,
       "paint": {
-        "line-color": "hsl(6, 93%, 71%)",
+        "line-color": "hsl(120, 100%, 25%)",
         "line-dasharray": [
           2,
           2
@@ -6736,7 +7120,15 @@
           ]
         }
       },
+      "order": 172
+    },
+    {
+      "id": "Footway bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 13,
       "filter": [
         "all",
         [
@@ -6771,13 +7163,64 @@
           "designated"
         ]
       ],
-      "order": 167
+      "paint": {
+        "line-color": "hsl(6, 93%, 71%)",
+        "line-dasharray": [
+          2,
+          2
+        ],
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              13,
+              0.8
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              1.3
+            ],
+            [
+              17,
+              1.3
+            ],
+            [
+              18,
+              1.6
+            ]
+          ]
+        }
+      },
+      "order": 173
     },
     {
       "id": "Highway link bridge",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "motorway"
+        ],
+        [
+          "==",
+          "ramp",
+          1
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6817,32 +7260,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "==",
-          "ramp",
-          1
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ]
-      ],
-      "order": 168
+      "order": 174
     },
     {
       "id": "Service bridge under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "service_construction"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6871,7 +7309,14 @@
           ]
         }
       },
+      "order": 175
+    },
+    {
+      "id": "Service bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -6882,17 +7327,9 @@
         [
           "in",
           "class",
-          "service_construction",
-          "track_construction"
+          "service"
         ]
       ],
-      "order": 169
-    },
-    {
-      "id": "Service bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6917,28 +7354,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ],
-        [
-          "in",
-          "class",
-          "service",
-          "track"
-        ]
-      ],
-      "order": 170
+      "order": 176
     },
     {
       "id": "Link bridge",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "link"
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -6967,27 +7403,27 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "link"
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ]
-      ],
-      "order": 171
+      "order": 177
     },
     {
       "id": "Minor bridge under construction",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "minor_construction"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7014,7 +7450,14 @@
           7
         ]
       },
+      "order": 178
+    },
+    {
+      "id": "Minor bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7028,13 +7471,6 @@
           "minor_construction"
         ]
       ],
-      "order": 172
-    },
-    {
-      "id": "Minor bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -7064,7 +7500,14 @@
           7
         ]
       },
+      "order": 179
+    },
+    {
+      "id": "Minor bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7075,16 +7518,9 @@
         [
           "in",
           "class",
-          "minor_construction"
+          "minor"
         ]
       ],
-      "order": 173
-    },
-    {
-      "id": "Minor bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -7109,7 +7545,14 @@
           ]
         }
       },
+      "order": 180
+    },
+    {
+      "id": "Tertiary bridge under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7120,16 +7563,9 @@
         [
           "in",
           "class",
-          "minor"
+          "tertiary_construction"
         ]
       ],
-      "order": 174
-    },
-    {
-      "id": "Tertiary bridge under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -7154,7 +7590,14 @@
           7
         ]
       },
+      "order": 181
+    },
+    {
+      "id": "Tertiary bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7168,13 +7611,6 @@
           "tertiary_construction"
         ]
       ],
-      "order": 175
-    },
-    {
-      "id": "Tertiary bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "paint": {
         "line-color": "hsl(0, 0%, 100%)",
         "line-dasharray": [
@@ -7200,7 +7636,15 @@
           7
         ]
       },
+      "order": 182
+    },
+    {
+      "id": "Tertiary bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -7211,17 +7655,9 @@
         [
           "in",
           "class",
-          "tertiary_construction"
+          "tertiary"
         ]
       ],
-      "order": 176
-    },
-    {
-      "id": "Tertiary bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 11,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7266,7 +7702,14 @@
           ]
         }
       },
+      "order": 183
+    },
+    {
+      "id": "Secondary bridge under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7277,16 +7720,9 @@
         [
           "in",
           "class",
-          "tertiary"
+          "secondary_construction"
         ]
       ],
-      "order": 177
-    },
-    {
-      "id": "Secondary bridge under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -7311,7 +7747,14 @@
           7
         ]
       },
+      "order": 184
+    },
+    {
+      "id": "Secondary bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7325,13 +7768,6 @@
           "secondary_construction"
         ]
       ],
-      "order": 178
-    },
-    {
-      "id": "Secondary bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "paint": {
         "line-color": "hsl(0, 0%, 100%)",
         "line-dasharray": [
@@ -7357,7 +7793,15 @@
           7
         ]
       },
+      "order": 185
+    },
+    {
+      "id": "Secondary bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 7,
       "filter": [
         "all",
         [
@@ -7368,17 +7812,9 @@
         [
           "in",
           "class",
-          "secondary_construction"
+          "secondary"
         ]
       ],
-      "order": 179
-    },
-    {
-      "id": "Secondary bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 7,
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7427,7 +7863,14 @@
           ]
         }
       },
+      "order": 186
+    },
+    {
+      "id": "Primary bridge under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7436,18 +7879,11 @@
           "bridge"
         ],
         [
-          "in",
+          "==",
           "class",
-          "secondary"
+          "primary_construction"
         ]
       ],
-      "order": 180
-    },
-    {
-      "id": "Primary bridge under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7473,7 +7909,14 @@
           7
         ]
       },
+      "order": 187
+    },
+    {
+      "id": "Primary bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7487,13 +7930,6 @@
           "primary_construction"
         ]
       ],
-      "order": 181
-    },
-    {
-      "id": "Primary bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "visibility": "visible"
       },
@@ -7522,7 +7958,14 @@
           7
         ]
       },
+      "order": 188
+    },
+    {
+      "id": "Primary bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7531,18 +7974,11 @@
           "bridge"
         ],
         [
-          "==",
+          "in",
           "class",
-          "primary_construction"
+          "primary"
         ]
       ],
-      "order": 182
-    },
-    {
-      "id": "Primary bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7587,7 +8023,14 @@
           ]
         }
       },
+      "order": 189
+    },
+    {
+      "id": "Trunk bridge under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7596,18 +8039,11 @@
           "bridge"
         ],
         [
-          "in",
+          "==",
           "class",
-          "primary"
+          "trunk_construction"
         ]
       ],
-      "order": 183
-    },
-    {
-      "id": "Trunk bridge under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7633,7 +8069,14 @@
           7
         ]
       },
+      "order": 190
+    },
+    {
+      "id": "Trunk bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7642,18 +8085,12 @@
           "bridge"
         ],
         [
-          "==",
+          "in",
           "class",
+          "primary_construction",
           "trunk_construction"
         ]
       ],
-      "order": 184
-    },
-    {
-      "id": "Trunk bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7683,7 +8120,14 @@
           7
         ]
       },
+      "order": 191
+    },
+    {
+      "id": "Trunk bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7694,17 +8138,9 @@
         [
           "in",
           "class",
-          "primary_construction",
-          "trunk_construction"
+          "trunk"
         ]
       ],
-      "order": 185
-    },
-    {
-      "id": "Trunk bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -7745,27 +8181,32 @@
           ]
         }
       },
+      "order": 192
+    },
+    {
+      "id": "Highway bridge under construction",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
+        [
+          "==",
+          "class",
+          "motorway_construction"
+        ],
         [
           "==",
           "brunnel",
           "bridge"
         ],
         [
-          "in",
-          "class",
-          "trunk"
+          "!=",
+          "ramp",
+          1
         ]
       ],
-      "order": 186
-    },
-    {
-      "id": "Highway bridge under construction",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -7803,7 +8244,14 @@
           7
         ]
       },
+      "order": 193
+    },
+    {
+      "id": "Highway bridge under construction dash",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
@@ -7822,13 +8270,6 @@
           1
         ]
       ],
-      "order": 187
-    },
-    {
-      "id": "Highway bridge under construction dash",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "paint": {
         "line-color": "hsl(349, 0%, 100%)",
         "line-dasharray": [
@@ -7856,13 +8297,20 @@
           7
         ]
       },
+      "order": 194
+    },
+    {
+      "id": "Highway bridge",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
         [
           "==",
           "class",
-          "motorway_construction"
+          "motorway"
         ],
         [
           "==",
@@ -7875,13 +8323,6 @@
           1
         ]
       ],
-      "order": 188
-    },
-    {
-      "id": "Highway bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
       "layout": {
         "line-join": "round"
       },
@@ -7916,32 +8357,101 @@
           ]
         }
       },
+      "order": 195
+    },
+    {
+      "id": "Major rail bridge service",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
       "filter": [
         "all",
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
         [
           "==",
           "brunnel",
           "bridge"
         ],
         [
-          "!=",
-          "ramp",
-          1
+          "in",
+          "class",
+          "rail"
+        ],
+        [
+          "in",
+          "service",
+          "siding",
+          "spur",
+          "yard"
         ]
       ],
-      "order": 189
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": {
+          "stops": [
+            [
+              6,
+              "hsl(0, 0%, 58%)"
+            ],
+            [
+              12,
+              "hsl(0, 0%, 55%)"
+            ],
+            [
+              14,
+              "hsl(0, 0%, 51%)"
+            ]
+          ]
+        },
+        "line-opacity": 0.4,
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              8,
+              0.5
+            ],
+            [
+              15,
+              3
+            ],
+            [
+              20,
+              5.4
+            ]
+          ]
+        }
+      },
+      "order": 196
     },
     {
       "id": "Major rail bridge",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "class",
+          "rail"
+        ],
+        [
+          "!in",
+          "service",
+          "siding",
+          "spur",
+          "yard"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -7980,7 +8490,15 @@
           ]
         }
       },
+      "order": 197
+    },
+    {
+      "id": "Major rail bridge hatching",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 8,
       "filter": [
         "all",
         [
@@ -7989,35 +8507,16 @@
           "bridge"
         ],
         [
-          "in",
+          "==",
           "class",
           "rail"
         ]
       ],
-      "order": 190
-    },
-    {
-      "id": "Major rail bridge hatching",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 8,
       "layout": {
         "visibility": "visible"
       },
       "paint": {
-        "line-color": {
-          "stops": [
-            [
-              8,
-              "hsla(0, 0%, 100%, 0.44)"
-            ],
-            [
-              10,
-              "hsl(0, 0%, 79%)"
-            ]
-          ]
-        },
+        "line-color": "hsl(0, 0%, 100%)",
         "line-dasharray": [
           2,
           2
@@ -8040,21 +8539,7 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "bridge"
-        ],
-        [
-          "==",
-          "class",
-          "rail"
-        ]
-      ],
-      "order": 191
+      "order": 198
     },
     {
       "id": "Cablecar",
@@ -8062,6 +8547,11 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
+      "filter": [
+        "==",
+        "class",
+        "aerialway"
+      ],
       "layout": {
         "line-cap": "round",
         "visibility": "visible"
@@ -8082,12 +8572,7 @@
           ]
         }
       },
-      "filter": [
-        "==",
-        "class",
-        "aerialway"
-      ],
-      "order": 192
+      "order": 199
     },
     {
       "id": "Cablecar dash",
@@ -8095,6 +8580,11 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
+      "filter": [
+        "==",
+        "class",
+        "aerialway"
+      ],
       "layout": {
         "line-cap": "round",
         "visibility": "visible"
@@ -8119,12 +8609,7 @@
           ]
         }
       },
-      "filter": [
-        "==",
-        "class",
-        "aerialway"
-      ],
-      "order": 193
+      "order": 200
     },
     {
       "id": "Oneway path",
@@ -8132,6 +8617,19 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 15,
+      "filter": [
+        "all",
+        [
+          "==",
+          "oneway",
+          1
+        ],
+        [
+          "==",
+          "class",
+          "path"
+        ]
+      ],
       "layout": {
         "icon-image": "oneway-path",
         "icon-padding": 2,
@@ -8155,6 +8653,14 @@
       "paint": {
         "icon-opacity": 1
       },
+      "order": 229
+    },
+    {
+      "id": "Oneway",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
@@ -8163,19 +8669,17 @@
           1
         ],
         [
-          "==",
+          "in",
           "class",
-          "path"
+          "motorway",
+          "trunk",
+          "primary",
+          "secondary",
+          "tertiary",
+          "minor",
+          "service"
         ]
       ],
-      "order": 222
-    },
-    {
-      "id": "Oneway",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "icon-image": "oneway",
         "icon-padding": 2,
@@ -8199,12 +8703,20 @@
       "paint": {
         "icon-opacity": 1
       },
+      "order": 230
+    },
+    {
+      "id": "Oneway opposite",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 15,
       "filter": [
         "all",
         [
           "==",
           "oneway",
-          1
+          -1
         ],
         [
           "in",
@@ -8218,14 +8730,6 @@
           "service"
         ]
       ],
-      "order": 223
-    },
-    {
-      "id": "Oneway opposite",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation",
-      "minzoom": 15,
       "layout": {
         "icon-image": "oneway",
         "icon-padding": 2,
@@ -8250,26 +8754,7 @@
       "paint": {
         "icon-opacity": 0.5
       },
-      "filter": [
-        "all",
-        [
-          "==",
-          "oneway",
-          -1
-        ],
-        [
-          "in",
-          "class",
-          "motorway",
-          "trunk",
-          "primary",
-          "secondary",
-          "tertiary",
-          "minor",
-          "service"
-        ]
-      ],
-      "order": 224
+      "order": 231
     },
     {
       "id": "Ferry line",
@@ -8277,6 +8762,14 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "ferry"
+        ]
+      ],
       "layout": {
         "line-join": "round",
         "visibility": "visible"
@@ -8313,15 +8806,7 @@
           ]
         }
       },
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "ferry"
-        ]
-      ],
-      "order": 225
+      "order": 232
     }
   ]
 }

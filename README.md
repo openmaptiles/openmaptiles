@@ -1,4 +1,4 @@
-## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/workflows/OpenMapTiles%20Integrity%20CI/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
+## OpenMapTiles [![Build Status](https://github.com/openmaptiles/openmaptiles/actions/workflows/integrity.yml/badge.svg?branch=master)](https://github.com/openmaptiles/openmaptiles/actions)
 
 OpenMapTiles is an extensible and open tile schema based on the OpenStreetMap. This project is used to generate vector tiles for online zoomable maps. OpenMapTiles is about creating a beautiful basemaps with general layers containing topographic information. More information [openmaptiles.org](https://openmaptiles.org/) and [maptiler.com/data/](https://www.maptiler.com/data/).
 
@@ -30,18 +30,6 @@ You can start from several GL styles supporting the OpenMapTiles vector schema.
 - [OSM Liberty](https://github.com/maputnik/osm-liberty)
 - [Positron](https://github.com/openmaptiles/positron-gl-style)
 - [Dark Matter](https://github.com/openmaptiles/dark-matter-gl-style)
-
-We also ported over our favorite old raster styles (TM2).
-
-:link: [Learn how to create TM2 styles with Mapbox Studio Classic and OpenMapTiles](http://openmaptiles.org/docs/style/mapbox-studio-classic/).
-
-- [Light](https://github.com/openmaptiles/mapbox-studio-light.tm2/)
-- [Dark](https://github.com/openmaptiles/mapbox-studio-dark.tm2/)
-- [OSM Bright](https://github.com/openmaptiles/mapbox-studio-osm-bright.tm2/)
-- [Pencil](https://github.com/openmaptiles/mapbox-studio-pencil.tm2/)
-- [Woodcut](https://github.com/openmaptiles/mapbox-studio-woodcut.tm2/)
-- [Pirates](https://github.com/openmaptiles/mapbox-studio-pirates.tm2/)
-- [Wheatpaste](https://github.com/openmaptiles/mapbox-studio-wheatpaste.tm2/)
 
 ## Schema
 

@@ -59,6 +59,14 @@
       "source-layer": "park",
       "minzoom": 7,
       "maxzoom": 12,
+      "filter": [
+        "all",
+        [
+          "<=",
+          "rank",
+          2
+        ]
+      ],
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -115,15 +123,7 @@
         },
         "text-halo-width": 0.3
       },
-      "filter": [
-        "all",
-        [
-          "<=",
-          "rank",
-          2
-        ]
-      ],
-      "order": 237
+      "order": 245
     }
   ]
 }

@@ -7,6 +7,13 @@
       "source-layer": "aerodrome_label",
       "minzoom": 8,
       "maxzoom": 17,
+      "filter": [
+        "all",
+        [
+          "has",
+          "iata"
+        ]
+      ],
       "layout": {
         "icon-allow-overlap": false,
         "icon-image": "aerodrome.12",
@@ -64,14 +71,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "has",
-          "iata"
-        ]
-      ],
-      "order": 232
+      "order": 240
     }
   ]
 }

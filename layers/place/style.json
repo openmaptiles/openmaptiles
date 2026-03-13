@@ -3,9 +3,22 @@
     {
       "id": "Other labels",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "place",
       "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "hamlet",
+          "island",
+          "islet",
+          "neighbourhood",
+          "suburb"
+        ]
+      ],
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -90,27 +103,23 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "hamlet",
-          "island",
-          "islet",
-          "neighbourhood",
-          "suburb"
-        ]
-      ],
-      "order": 235
+      "order": 243
     },
     {
       "id": "Village labels",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "place",
       "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "village"
+        ]
+      ],
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -155,23 +164,23 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
+      "order": 249
+    },
+    {
+      "id": "Town labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "minzoom": 6,
       "filter": [
         "all",
         [
           "==",
           "class",
-          "village"
+          "town"
         ]
       ],
-      "order": 241
-    },
-    {
-      "id": "Town labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 6,
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -221,24 +230,29 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
+      "order": 250
+    },
+    {
+      "id": "State labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "minzoom": 4,
+      "maxzoom": 12,
       "filter": [
         "all",
         [
           "==",
           "class",
-          "town"
+          "state"
+        ],
+        [
+          "<",
+          "rank",
+          3
         ]
       ],
-      "order": 242
-    },
-    {
-      "id": "State labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 4,
-      "maxzoom": 12,
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -284,29 +298,30 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.7)",
         "text-halo-width": 0.8
       },
+      "order": 251
+    },
+    {
+      "id": "City labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "minzoom": 4,
+      "maxzoom": 14,
       "filter": [
         "all",
         [
           "==",
           "class",
-          "state"
+          "city"
         ],
         [
-          "<",
-          "rank",
-          3
+          "!in",
+          "capital",
+          1,
+          2
         ]
       ],
-      "order": 243
-    },
-    {
-      "id": "City labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 4,
-      "maxzoom": 14,
       "layout": {
         "icon-allow-overlap": true,
         "icon-image": {
@@ -385,7 +400,16 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
+      "order": 252
+    },
+    {
+      "id": "Capital city labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "minzoom": 3,
+      "maxzoom": 15,
       "filter": [
         "all",
         [
@@ -394,21 +418,12 @@
           "city"
         ],
         [
-          "!in",
+          "in",
           "capital",
           1,
           2
         ]
       ],
-      "order": 244
-    },
-    {
-      "id": "Capital city labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 3,
-      "maxzoom": 15,
       "layout": {
         "icon-allow-overlap": true,
         "icon-image": {
@@ -478,30 +493,29 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1.2
       },
+      "order": 253
+    },
+    {
+      "id": "Country labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "minzoom": 2,
+      "maxzoom": 12,
       "filter": [
         "all",
         [
           "==",
           "class",
-          "city"
+          "country"
         ],
         [
-          "in",
-          "capital",
-          1,
-          2
+          "!=",
+          "iso_a2",
+          "VA"
         ]
       ],
-      "order": 245
-    },
-    {
-      "id": "Country labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "place",
-      "minzoom": 2,
-      "maxzoom": 12,
       "layout": {
         "symbol-sort-key": [
           "to-number",
@@ -588,21 +602,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 0.8
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "country"
-        ],
-        [
-          "!=",
-          "iso_a2",
-          "VA"
-        ]
-      ],
-      "order": 246
+      "order": 254
     }
   ]
 }
