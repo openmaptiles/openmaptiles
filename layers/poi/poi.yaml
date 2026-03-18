@@ -108,6 +108,8 @@ layer:
           subclass: ['atm']
         fuel:
           subclass: ['fuel', 'charging_station']
+        zoo:
+          subclass: ['zoo', enclosure', 'petting_zoo', 'aviary', 'wildlife_park', 'birds', 'safari_park', 'butterfly', 'falconry', 'reptile', 'terrarium']
     subclass:
       description: |
           Original value of either the
@@ -126,8 +128,9 @@ layer:
           [`aerialway`](http://wiki.openstreetmap.org/wiki/Key:aerialway),
           [`building`](http://wiki.openstreetmap.org/wiki/Key:building),
           [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway),
-          [`office`](https://wiki.openstreetmap.org/wiki/Key:office)
-          or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
+          [`office`](https://wiki.openstreetmap.org/wiki/Key:office),
+          [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
+          or [`zoo`](http://wiki.openstreetmap.org/wiki/Key:zoo)
           tag.  Use this to do more precise styling.
     rank: |
         The POIs are ranked ascending according to their importance within a grid. The `rank` value shows the
