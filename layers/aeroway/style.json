@@ -3,9 +3,15 @@
     {
       "id": "Aeroway",
       "type": "fill",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 11,
+      "filter": [
+        "==",
+        "$type",
+        "Polygon"
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -24,20 +30,28 @@
         },
         "fill-opacity": 1
       },
-      "metadata": {},
-      "filter": [
-        "==",
-        "$type",
-        "Polygon"
-      ],
       "order": 12
     },
     {
       "id": "Runway",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 11,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "runway"
+        ]
+      ],
       "layout": {
         "visibility": "visible"
       },
@@ -58,7 +72,15 @@
           ]
         }
       },
+      "order": 57
+    },
+    {
+      "id": "Taxiway",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "aeroway",
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -69,17 +91,9 @@
         [
           "==",
           "class",
-          "runway"
+          "taxiway"
         ]
       ],
-      "order": 57
-    },
-    {
-      "id": "Taxiway",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "aeroway",
-      "minzoom": 11,
       "layout": {
         "visibility": "visible"
       },
@@ -100,20 +114,6 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "class",
-          "taxiway"
-        ]
-      ],
       "order": 58
     },
     {
@@ -122,6 +122,15 @@
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 14,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "runway",
+          "taxiway"
+        ]
+      ],
       "layout": {
         "symbol-placement": "line",
         "symbol-sort-key": [
@@ -165,16 +174,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "runway",
-          "taxiway"
-        ]
-      ],
-      "order": 234
+      "order": 241
     },
     {
       "id": "Airport gate labels",
@@ -182,6 +182,14 @@
       "source": "openmaptiles",
       "source-layer": "aeroway",
       "minzoom": 16.5,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "gate"
+        ]
+      ],
       "layout": {
         "text-field": "{ref}",
         "text-font": [
@@ -207,15 +215,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "gate"
-        ]
-      ],
-      "order": 235
+      "order": 242
     }
   ]
 }

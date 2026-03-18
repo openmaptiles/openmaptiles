@@ -3,9 +3,18 @@
     {
       "id": "Lakeline labels",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "water_name",
       "minzoom": 0,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
+      ],
       "layout": {
         "symbol-placement": "line",
         "text-field": [
@@ -32,23 +41,28 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.7)",
         "text-halo-width": 1
       },
+      "order": 205
+    },
+    {
+      "id": "Water labels",
+      "type": "symbol",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "water_name",
+      "minzoom": 15,
       "filter": [
         "all",
         [
           "==",
           "$type",
-          "LineString"
+          "Point"
+        ],
+        [
+          "!=",
+          "class",
+          "ocean"
         ]
       ],
-      "order": 198
-    },
-    {
-      "id": "Water labels",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "water_name",
-      "minzoom": 15,
       "layout": {
         "text-field": [
           "coalesce",
@@ -74,21 +88,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "Point"
-        ],
-        [
-          "!=",
-          "class",
-          "ocean"
-        ]
-      ],
-      "order": 199
+      "order": 206
     }
   ]
 }

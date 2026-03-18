@@ -3,9 +3,18 @@
     {
       "id": "Ferry labels",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 14,
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "ferry"
+        ]
+      ],
       "layout": {
         "symbol-placement": "line",
         "text-anchor": "center",
@@ -48,24 +57,24 @@
         "text-halo-color": "hsl(195, 45%, 77%)",
         "text-halo-width": 2
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "class",
-          "ferry"
-        ]
-      ],
-      "order": 226
+      "order": 233
     },
     {
       "id": "Road labels",
       "type": "symbol",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 11,
       "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "!=",
+          "class",
+          "ferry"
+        ]
+      ],
       "layout": {
         "symbol-placement": "line",
         "symbol-spacing": [
@@ -120,16 +129,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.97)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!=",
-          "class",
-          "ferry"
-        ]
-      ],
-      "order": 227
+      "order": 234
     },
     {
       "id": "Tertiary road shield",
@@ -137,6 +137,23 @@
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 9,
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "tertiary"
+        ],
+        [
+          "has",
+          "ref"
+        ]
+      ],
       "layout": {
         "icon-anchor": "center",
         "icon-image": "road_tertiary",
@@ -191,6 +208,14 @@
       "paint": {
         "text-color": "hsl(0, 0%, 23%)"
       },
+      "order": 235
+    },
+    {
+      "id": "Secondary road shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -201,21 +226,13 @@
         [
           "==",
           "class",
-          "tertiary"
+          "secondary"
         ],
         [
           "has",
           "ref"
         ]
       ],
-      "order": 228
-    },
-    {
-      "id": "Secondary road shield",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation_name",
-      "minzoom": 9,
       "layout": {
         "icon-anchor": "center",
         "icon-image": "road_secondary",
@@ -270,6 +287,14 @@
       "paint": {
         "text-color": "hsl(69, 100%, 12%)"
       },
+      "order": 236
+    },
+    {
+      "id": "Primary road shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -280,21 +305,13 @@
         [
           "==",
           "class",
-          "secondary"
+          "primary"
         ],
         [
           "has",
           "ref"
         ]
       ],
-      "order": 229
-    },
-    {
-      "id": "Primary road shield",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation_name",
-      "minzoom": 9,
       "layout": {
         "icon-anchor": "center",
         "icon-image": "road_primary",
@@ -349,6 +366,14 @@
       "paint": {
         "text-color": "hsl(36, 100%, 15%)"
       },
+      "order": 237
+    },
+    {
+      "id": "Trunk road shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -359,21 +384,13 @@
         [
           "==",
           "class",
-          "primary"
+          "trunk"
         ],
         [
           "has",
           "ref"
         ]
       ],
-      "order": 230
-    },
-    {
-      "id": "Trunk road shield",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation_name",
-      "minzoom": 9,
       "layout": {
         "icon-anchor": "center",
         "icon-image": "road_trunk",
@@ -428,6 +445,14 @@
       "paint": {
         "text-color": "hsl(12, 77.6%, 21.0%)"
       },
+      "order": 238
+    },
+    {
+      "id": "Highway shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 9,
       "filter": [
         "all",
         [
@@ -438,21 +463,13 @@
         [
           "==",
           "class",
-          "trunk"
+          "motorway"
         ],
         [
           "has",
           "ref"
         ]
       ],
-      "order": 231
-    },
-    {
-      "id": "Highway shield",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "transportation_name",
-      "minzoom": 9,
       "layout": {
         "icon-anchor": "center",
         "icon-image": "road_motorway",
@@ -510,24 +527,7 @@
       "paint": {
         "text-color": "hsl(338, 87%, 21%)"
       },
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ],
-        [
-          "==",
-          "class",
-          "motorway"
-        ],
-        [
-          "has",
-          "ref"
-        ]
-      ],
-      "order": 232
+      "order": 239
     }
   ]
 }
