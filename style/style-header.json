@@ -23,13 +23,13 @@
   "sprite": "sprite",
   "layers": [
     {
-      "id": "background",
+      "id": "Background",
       "type": "background",
       "layout": {
         "visibility": "visible"
       },
       "paint": {
-        "background-color": "#f2efe9"
+        "background-color": "hsl(40, 26%, 93%)"
       }
     }
   ]

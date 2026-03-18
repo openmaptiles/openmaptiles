@@ -71,12 +71,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE
     ON osm_continent_point
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE place_continent_point.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE
     ON osm_continent_point
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE place_continent_point.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh

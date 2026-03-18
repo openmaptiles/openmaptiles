@@ -1,17 +1,29 @@
 {
   "layers": [
     {
-      "id": "waterway_tunnel",
+      "id": "River tunnel",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
       "minzoom": 14,
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "tunnel"
+        ]
+      ],
       "layout": {
         "line-cap": "round",
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          2,
+          4
+        ],
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -24,48 +36,16 @@
               6
             ]
           ]
-        },
-        "line-dasharray": [
-          2,
-          4
-        ]
-      },
-      "filter": [
-        "all",
-        [
-          "==",
-          "brunnel",
-          "tunnel"
-        ]
-      ],
-      "order": 12
-    },
-    {
-      "id": "waterway_river",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "waterway",
-      "layout": {
-        "line-cap": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "#a0c8f0",
-        "line-width": {
-          "base": 1.2,
-          "stops": [
-            [
-              11,
-              0.5
-            ],
-            [
-              20,
-              6
-            ]
-          ]
         }
       },
+      "order": 47
+    },
+    {
+      "id": "River",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "waterway",
       "filter": [
         "all",
         [
@@ -84,18 +64,61 @@
           1
         ]
       ],
-      "order": 13
+      "layout": {
+        "line-cap": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-width": {
+          "base": 1.2,
+          "stops": [
+            [
+              11,
+              0.5
+            ],
+            [
+              20,
+              20
+            ]
+          ]
+        }
+      },
+      "order": 48
     },
     {
-      "id": "waterway_river_intermittent",
+      "id": "River intermittent",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "waterway",
+      "filter": [
+        "all",
+        [
+          "==",
+          "class",
+          "river"
+        ],
+        [
+          "!=",
+          "brunnel",
+          "tunnel"
+        ],
+        [
+          "==",
+          "intermittent",
+          1
+        ]
+      ],
       "layout": {
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          3,
+          2
+        ],
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -105,20 +128,23 @@
             ],
             [
               20,
-              6
+              20
             ]
           ]
-        },
-        "line-dasharray": [
-          3,
-          2
-        ]
+        }
       },
+      "order": 49
+    },
+    {
+      "id": "Other waterway",
+      "type": "line",
       "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "waterway",
       "filter": [
         "all",
         [
-          "==",
+          "!=",
           "class",
           "river"
         ],
@@ -128,24 +154,17 @@
           "tunnel"
         ],
         [
-          "==",
+          "!=",
           "intermittent",
           1
         ]
       ],
-      "order": 14
-    },
-    {
-      "id": "waterway_other",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "waterway",
       "layout": {
         "line-cap": "round",
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#a0c8f0",
+        "line-color": "hsl(210, 73%, 78%)",
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -160,57 +179,14 @@
           ]
         }
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "!=",
-          "class",
-          "river"
-        ],
-        [
-          "!=",
-          "brunnel",
-          "tunnel"
-        ],
-        [
-          "!=",
-          "intermittent",
-          1
-        ]
-      ],
-      "order": 15
+      "order": 50
     },
     {
-      "id": "waterway_other_intermittent",
+      "id": "Other waterway intermittent",
       "type": "line",
+      "metadata": {},
       "source": "openmaptiles",
       "source-layer": "waterway",
-      "layout": {
-        "line-cap": "round",
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "#a0c8f0",
-        "line-width": {
-          "base": 1.3,
-          "stops": [
-            [
-              13,
-              0.5
-            ],
-            [
-              20,
-              6
-            ]
-          ]
-        },
-        "line-dasharray": [
-          4,
-          3
-        ]
-      },
-      "metadata": {},
       "filter": [
         "all",
         [
@@ -229,32 +205,56 @@
           1
         ]
       ],
-      "order": 16
+      "layout": {
+        "line-cap": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(210, 73%, 78%)",
+        "line-dasharray": [
+          4,
+          3
+        ],
+        "line-width": {
+          "base": 1.3,
+          "stops": [
+            [
+              13,
+              0.5
+            ],
+            [
+              20,
+              6
+            ]
+          ]
+        }
+      },
+      "order": 51
     },
     {
-      "id": "waterway-bridge-case",
+      "id": "River bridge outline",
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "waterway",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ]
+      ],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter"
       },
       "paint": {
-        "line-color": "#bbbbbb",
-        "line-width": {
-          "base": 1.6,
-          "stops": [
-            [
-              12,
-              0.5
-            ],
-            [
-              20,
-              5
-            ]
-          ]
-        },
+        "line-color": "hsl(0, 0%, 73%)",
         "line-gap-width": {
           "base": 1.3,
           "stops": [
@@ -267,8 +267,28 @@
               6
             ]
           ]
+        },
+        "line-width": {
+          "base": 1.6,
+          "stops": [
+            [
+              12,
+              0.5
+            ],
+            [
+              20,
+              12
+            ]
+          ]
         }
       },
+      "order": 158
+    },
+    {
+      "id": "River bridge",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "waterway",
       "filter": [
         "all",
         [
@@ -282,19 +302,12 @@
           "bridge"
         ]
       ],
-      "order": 111
-    },
-    {
-      "id": "waterway-bridge",
-      "type": "line",
-      "source": "openmaptiles",
-      "source-layer": "waterway",
       "layout": {
         "line-cap": "round",
         "line-join": "round"
       },
       "paint": {
-        "line-color": "rgba(134, 204, 250, 1)",
+        "line-color": "hsl(204, 92%, 75%)",
         "line-width": {
           "base": 1.3,
           "stops": [
@@ -304,37 +317,47 @@
             ],
             [
               20,
-              6
+              10
             ]
           ]
         }
       },
+      "order": 159
+    },
+    {
+      "id": "River labels",
+      "type": "symbol",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "waterway",
+      "minzoom": 3,
       "filter": [
         "all",
         [
           "==",
           "$type",
           "LineString"
-        ],
-        [
-          "==",
-          "brunnel",
-          "bridge"
         ]
       ],
-      "order": 112
-    },
-    {
-      "id": "water_way_name",
-      "type": "symbol",
-      "source": "openmaptiles",
-      "source-layer": "waterway",
-      "minzoom": 0,
       "layout": {
-        "text-font": [
-          "Noto Sans Regular",
-          "Noto Sans Bold"
+        "symbol-placement": "line",
+        "symbol-spacing": 400,
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
         ],
+        "text-font": [
+          "Open Sans Italic",
+          "Noto Sans Italic"
+        ],
+        "text-max-width": 5,
         "text-size": {
           "stops": [
             [
@@ -347,27 +370,14 @@
             ]
           ]
         },
-        "text-field": "{name:latin}\n{name:nonlatin}",
-        "visibility": "visible",
-        "symbol-spacing": 400,
-        "text-max-width": 5,
-        "symbol-placement": "line"
+        "visibility": "visible"
       },
       "paint": {
-        "text-color": "#4d80b3",
-        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-color": "hsl(210, 40%, 50%)",
+        "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "metadata": {},
-      "filter": [
-        "all",
-        [
-          "==",
-          "$type",
-          "LineString"
-        ]
-      ],
-      "order": 151
+      "order": 204
     }
   ]
 }

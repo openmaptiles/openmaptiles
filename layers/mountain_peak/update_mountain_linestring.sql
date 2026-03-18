@@ -71,12 +71,14 @@ CREATE TRIGGER trigger_store
     AFTER INSERT OR UPDATE
     ON osm_mountain_linestring
     FOR EACH ROW
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE mountain_linestring.store();
 
 CREATE TRIGGER trigger_flag
     AFTER INSERT OR UPDATE
     ON osm_mountain_linestring
     FOR EACH STATEMENT
+    WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE mountain_linestring.flag();
 
 CREATE CONSTRAINT TRIGGER trigger_refresh

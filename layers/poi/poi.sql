@@ -76,7 +76,7 @@ FROM (
                     ELSE osm_id * 10 + 1
                     END AS osm_id_hash
          FROM osm_poi_polygon
-         WHERE geometry && bbox AND
+         WHERE zoom_level > 9 AND geometry && bbox AND
            CASE
                WHEN zoom_level >= 14 THEN TRUE
                WHEN zoom_level >= 12 AND

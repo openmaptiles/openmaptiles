@@ -149,7 +149,7 @@ BEGIN
 
     -- Analyze tracking and source tables before performing update
     ANALYZE osm_park_polygon_gen_z4;
-    REFRESH MATERIALIZED VIEW osm_park_polygon_dissolve_z4;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_park_polygon_dissolve_z4;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM park_polygon.updates;
