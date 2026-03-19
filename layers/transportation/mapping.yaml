@@ -487,6 +487,12 @@ tables:
     - *ref
     - *network
     - *name
+    - name: route
+      key: route
+      type: string
+    - name: cycle_network
+      key: cycle_network
+      type: string
     - name: osmc_symbol
       key: osmc:symbol
       type: string
@@ -498,5 +504,6 @@ tables:
       type: string
     mapping:
       route:
-      - road
+      - bicycle
       - hiking
+      - road
