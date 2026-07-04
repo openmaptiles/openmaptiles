@@ -8,6 +8,14 @@ SHELL         = /bin/bash
 
 # Layers definition and meta data
 TILESET_FILE := $(or $(TILESET_FILE),$(shell (. .env; echo $${TILESET_FILE})),openmaptiles.yaml)
+TOOLS_VERSION := $(or $(TOOLS_VERSION),$(shell (. .env; echo $${TOOLS_VERSION})),latest)
+
+TOOLS_VERSION_PARTS := $(words $(subst ., ,$(TOOLS_VERSION)))
+ifeq ($(TOOLS_VERSION_PARTS),2)
+	OPENMAPTILES_TOOLS_GIT_REF_DEFAULT := v$(TOOLS_VERSION).0
+else
+	OPENMAPTILES_TOOLS_GIT_REF_DEFAULT := v$(TOOLS_VERSION)
+endif
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
@@ -25,13 +33,17 @@ export TPORT
 STYLE_FILE := build/style/style.json
 STYLE_HEADER_FILE := style/style-header.json
 
-# Support newer `docker compose` syntax in addition to `docker-compose`
-
-ifeq (, $(shell which docker-compose))
+ifneq (, $(shell which nerdctl))
+  DOCKER_COMPOSE_COMMAND := nerdctl compose
+	CONTAINER_BUILD_COMMAND := nerdctl build
+  $(info Using containerd compose (nerdctl compose))
+else ifeq (, $(shell which docker-compose))
   DOCKER_COMPOSE_COMMAND := docker compose
+	CONTAINER_BUILD_COMMAND := docker build
   $(info Using docker compose V2 (docker compose))
 else
   DOCKER_COMPOSE_COMMAND := docker-compose
+	CONTAINER_BUILD_COMMAND := docker build
   $(info Using docker compose V1 (docker-compose))
 endif
 
@@ -66,6 +78,14 @@ endif
 
 # Set OpenMapTiles host
 export OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
+
+ARM64_PLATFORM ?= linux/arm64
+OPENMAPTILES_TOOLS_SRC_DIR ?= build/openmaptiles-tools-src
+OPENMAPTILES_TOOLS_GIT_REF ?= $(OPENMAPTILES_TOOLS_GIT_REF_DEFAULT)
+LOCAL_OPENMAPTILES_TOOLS_IMAGE ?= local/openmaptiles-tools
+LOCAL_IMPORT_DATA_IMAGE ?= local/import-data
+LOCAL_GENERATE_VECTORTILES_IMAGE ?= local/generate-vectortiles
+NATIVE_ASYNCPG_VERSION ?= 0.27.0
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
@@ -193,6 +213,8 @@ Hints for designers:
 Hints for developers:
   make                                 # build source code
   make bash                            # start openmaptiles-tools /bin/bash terminal
+	make build-native-arm64-images       # build local linux/arm64 images from openmaptiles-tools source
+	make show-native-arm64-env           # print .env overrides to activate local arm64 images
   make generate-bbox-file              # compute bounding box of a data file and store it in a file
   make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
   make generate-qa                     # statistics for a given layer's field
@@ -270,6 +292,35 @@ init-dirs:
 	@mkdir -p data
 	@mkdir -p cache
 	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
+
+.PHONY: prepare-native-tools-src
+prepare-native-tools-src: init-dirs
+	@if [ ! -d "$(OPENMAPTILES_TOOLS_SRC_DIR)/.git" ]; then \
+		git clone --branch "$(OPENMAPTILES_TOOLS_GIT_REF)" --depth 1 https://github.com/openmaptiles/openmaptiles-tools.git "$(OPENMAPTILES_TOOLS_SRC_DIR)"; \
+	else \
+		git -C "$(OPENMAPTILES_TOOLS_SRC_DIR)" fetch --tags --depth 1 origin; \
+		git -C "$(OPENMAPTILES_TOOLS_SRC_DIR)" checkout --force "$(OPENMAPTILES_TOOLS_GIT_REF)"; \
+	fi
+
+.PHONY: build-native-arm64-images
+build-native-arm64-images: prepare-native-tools-src
+	@sed -i.bak 's/^asyncpg==0.25.0$$/asyncpg==$(NATIVE_ASYNCPG_VERSION)/' "$(OPENMAPTILES_TOOLS_SRC_DIR)/requirements.txt" && rm -f "$(OPENMAPTILES_TOOLS_SRC_DIR)/requirements.txt.bak"
+	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
+		--tag "$(LOCAL_OPENMAPTILES_TOOLS_IMAGE):$(TOOLS_VERSION)" \
+		"$(OPENMAPTILES_TOOLS_SRC_DIR)"
+	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
+		--tag "$(LOCAL_IMPORT_DATA_IMAGE):$(TOOLS_VERSION)" \
+		"$(OPENMAPTILES_TOOLS_SRC_DIR)/docker/import-data"
+	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
+		--tag "$(LOCAL_GENERATE_VECTORTILES_IMAGE):$(TOOLS_VERSION)" \
+		"$(OPENMAPTILES_TOOLS_SRC_DIR)/docker/generate-vectortiles"
+
+.PHONY: show-native-arm64-env
+show-native-arm64-env:
+	@echo "Add these lines to .env to use locally built linux/arm64 images:"
+	@echo "OPENMAPTILES_TOOLS_IMAGE=$(LOCAL_OPENMAPTILES_TOOLS_IMAGE)"
+	@echo "IMPORT_DATA_IMAGE=$(LOCAL_IMPORT_DATA_IMAGE)"
+	@echo "GENERATE_VECTORTILES_IMAGE=$(LOCAL_GENERATE_VECTORTILES_IMAGE)"
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
@@ -427,7 +478,7 @@ else
 endif
 
 .PHONY: import-osm
-import-osm: all start-db-nowait
+import-osm: all
 	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 

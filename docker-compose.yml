@@ -29,13 +29,17 @@ services:
       PGPORT: ${PGPORT:-5432}
 
   import-data:
-    image: "openmaptiles/import-data:${TOOLS_VERSION}"
+    image: "${IMPORT_DATA_IMAGE:-openmaptiles/import-data}:${TOOLS_VERSION}"
     env_file: .env
     networks:
       - postgres
 
   openmaptiles-tools: &openmaptiles-tools
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
+    image: "${OPENMAPTILES_TOOLS_IMAGE:-openmaptiles/openmaptiles-tools}:${TOOLS_VERSION}"
+    deploy:
+      resources:
+        limits:
+          memory: 8g
     env_file: .env
     environment:
       # Must match the version of this file (first line)
@@ -54,6 +58,7 @@ services:
       PGDATABASE: ${PGDATABASE:-openmaptiles}
       PGUSER: ${PGUSER:-openmaptiles}
       PGPASSWORD: ${PGPASSWORD:-openmaptiles}
+      PGHOST: ${PGHOST:-postgres}
       PGPORT: ${PGPORT:-5432}
       MBTILES_FILE: ${MBTILES_FILE}
     networks:
@@ -72,7 +77,7 @@ services:
     command: import-update
 
   generate-changed-vectortiles:
-    image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
+    image: "${GENERATE_VECTORTILES_IMAGE:-openmaptiles/generate-vectortiles}:${TOOLS_VERSION}"
     command: ./export-list.sh
     volumes:
       - ./data:/export
@@ -90,7 +95,7 @@ services:
       PGPORT: ${PGPORT:-5432}
 
   generate-vectortiles:
-    image: "openmaptiles/generate-vectortiles:${TOOLS_VERSION}"
+    image: "${GENERATE_VECTORTILES_IMAGE:-openmaptiles/generate-vectortiles}:${TOOLS_VERSION}"
     volumes:
       - ./data:/export
       - ./build/openmaptiles.tm2source:/tm2source
@@ -111,7 +116,7 @@ services:
       PGPORT: ${PGPORT:-5432}
 
   postserve:
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
+    image: "${OPENMAPTILES_TOOLS_IMAGE:-openmaptiles/openmaptiles-tools}:${TOOLS_VERSION}"
     command: "postserve ${TILESET_FILE} --verbose --serve=${OMT_HOST:-http://localhost}:${PPORT:-8090}"
     env_file: .env
     environment:
