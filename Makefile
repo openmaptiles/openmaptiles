@@ -80,12 +80,14 @@ endif
 export OMT_HOST := http://$(firstword $(subst :, ,$(subst tcp://,,$(DOCKER_HOST))) localhost)
 
 ARM64_PLATFORM ?= linux/arm64
-OPENMAPTILES_TOOLS_SRC_DIR ?= build/openmaptiles-tools-src
+OPENMAPTILES_TOOLS_DEFAULT_SRC_DIR := build/openmaptiles-tools-src
+OPENMAPTILES_TOOLS_LOCAL_SRC_DIR := ../openmaptiles-tools
+OPENMAPTILES_TOOLS_SRC_DIR ?= $(if $(wildcard $(OPENMAPTILES_TOOLS_LOCAL_SRC_DIR)/.git),$(OPENMAPTILES_TOOLS_LOCAL_SRC_DIR),$(OPENMAPTILES_TOOLS_DEFAULT_SRC_DIR))
 OPENMAPTILES_TOOLS_GIT_REF ?= $(OPENMAPTILES_TOOLS_GIT_REF_DEFAULT)
 LOCAL_OPENMAPTILES_TOOLS_IMAGE ?= local/openmaptiles-tools
 LOCAL_IMPORT_DATA_IMAGE ?= local/import-data
 LOCAL_GENERATE_VECTORTILES_IMAGE ?= local/generate-vectortiles
-NATIVE_ASYNCPG_VERSION ?= 0.27.0
+BUILD_LEGACY_GENERATE_VECTORTILES ?= no
 
 # This defines an easy $(newline) value to act as a "\n". Make sure to keep exactly two empty lines after newline.
 define newline
@@ -214,6 +216,7 @@ Hints for developers:
   make                                 # build source code
   make bash                            # start openmaptiles-tools /bin/bash terminal
 	make build-native-arm64-images       # build local linux/arm64 images from openmaptiles-tools source
+	make build-native-arm64-images BUILD_LEGACY_GENERATE_VECTORTILES=yes # also build legacy generate-vectortiles image
 	make show-native-arm64-env           # print .env overrides to activate local arm64 images
   make generate-bbox-file              # compute bounding box of a data file and store it in a file
   make generate-devdoc                 # generate devdoc including graphs for all layers [./layers/...]
@@ -297,6 +300,8 @@ init-dirs:
 prepare-native-tools-src: init-dirs
 	@if [ ! -d "$(OPENMAPTILES_TOOLS_SRC_DIR)/.git" ]; then \
 		git clone --branch "$(OPENMAPTILES_TOOLS_GIT_REF)" --depth 1 https://github.com/openmaptiles/openmaptiles-tools.git "$(OPENMAPTILES_TOOLS_SRC_DIR)"; \
+	elif [ "$(OPENMAPTILES_TOOLS_SRC_DIR)" != "$(OPENMAPTILES_TOOLS_DEFAULT_SRC_DIR)" ]; then \
+		echo "Using local openmaptiles-tools repo at $(OPENMAPTILES_TOOLS_SRC_DIR) (skip fetch/checkout)."; \
 	else \
 		git -C "$(OPENMAPTILES_TOOLS_SRC_DIR)" fetch --tags --depth 1 origin; \
 		git -C "$(OPENMAPTILES_TOOLS_SRC_DIR)" checkout --force "$(OPENMAPTILES_TOOLS_GIT_REF)"; \
@@ -304,23 +309,31 @@ prepare-native-tools-src: init-dirs
 
 .PHONY: build-native-arm64-images
 build-native-arm64-images: prepare-native-tools-src
-	@sed -i.bak 's/^asyncpg==0.25.0$$/asyncpg==$(NATIVE_ASYNCPG_VERSION)/' "$(OPENMAPTILES_TOOLS_SRC_DIR)/requirements.txt" && rm -f "$(OPENMAPTILES_TOOLS_SRC_DIR)/requirements.txt.bak"
 	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
 		--tag "$(LOCAL_OPENMAPTILES_TOOLS_IMAGE):$(TOOLS_VERSION)" \
 		"$(OPENMAPTILES_TOOLS_SRC_DIR)"
 	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
 		--tag "$(LOCAL_IMPORT_DATA_IMAGE):$(TOOLS_VERSION)" \
 		"$(OPENMAPTILES_TOOLS_SRC_DIR)/docker/import-data"
+	@if [ "$(BUILD_LEGACY_GENERATE_VECTORTILES)" = "yes" ]; then \
 	$(CONTAINER_BUILD_COMMAND) --platform=$(ARM64_PLATFORM) \
 		--tag "$(LOCAL_GENERATE_VECTORTILES_IMAGE):$(TOOLS_VERSION)" \
-		"$(OPENMAPTILES_TOOLS_SRC_DIR)/docker/generate-vectortiles"
+		"$(OPENMAPTILES_TOOLS_SRC_DIR)/docker/generate-vectortiles"; \
+	else \
+		echo "Skipping legacy generate-vectortiles arm64 image build (BUILD_LEGACY_GENERATE_VECTORTILES=$(BUILD_LEGACY_GENERATE_VECTORTILES))."; \
+		echo "This is usually fine when using generate-tiles-pg (recommended)."; \
+	fi
 
 .PHONY: show-native-arm64-env
 show-native-arm64-env:
 	@echo "Add these lines to .env to use locally built linux/arm64 images:"
 	@echo "OPENMAPTILES_TOOLS_IMAGE=$(LOCAL_OPENMAPTILES_TOOLS_IMAGE)"
 	@echo "IMPORT_DATA_IMAGE=$(LOCAL_IMPORT_DATA_IMAGE)"
-	@echo "GENERATE_VECTORTILES_IMAGE=$(LOCAL_GENERATE_VECTORTILES_IMAGE)"
+	@if [ "$(BUILD_LEGACY_GENERATE_VECTORTILES)" = "yes" ]; then \
+		echo "GENERATE_VECTORTILES_IMAGE=$(LOCAL_GENERATE_VECTORTILES_IMAGE)"; \
+	else \
+		echo "# Leave GENERATE_VECTORTILES_IMAGE unset unless you built the legacy image"; \
+	fi
 
 build/openmaptiles.tm2source/data.yml: init-dirs
 ifeq (,$(wildcard build/openmaptiles.tm2source/data.yml))
@@ -478,7 +491,7 @@ else
 endif
 
 .PHONY: import-osm
-import-osm: all
+import-osm: all start-db-nowait
 	@$(assert_area_is_given)
 	$(DOCKER_COMPOSE) $(DC_CONFIG_CACHE) run $(DC_OPTS_CACHE) openmaptiles-tools sh -c 'pgwait && import-osm $(PBF_FILE)'
 
