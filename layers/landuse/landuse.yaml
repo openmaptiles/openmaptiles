@@ -51,8 +51,6 @@ layer:
           Original value of the
           [`parking`](http://wiki.openstreetmap.org/wiki/Key:parking) tag.
           Use this to do more precise styling.
-      values:
-      - parking
     access:
       description: |
           Access restrictions. Supported values of the
