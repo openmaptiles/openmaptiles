@@ -67,6 +67,12 @@ tables:
     - name: waterway
       key: waterway
       type: string
+    - name: parking
+      key: parking
+      type: string
+    - name: access
+      key: access
+      type: string
     - name: area
       type: area
     mapping:
@@ -90,6 +96,7 @@ tables:
       - library
       - hospital
       - grave_yard
+      - parking
       leisure:
       - stadium
       - pitch

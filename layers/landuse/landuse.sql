@@ -12,6 +12,8 @@ SELECT
        NULL::text AS tourism,
        NULL::text AS place,
        NULL::text AS waterway,
+       NULL::text AS parking,
+       NULL::text AS access,
        scalerank
 FROM ne_50m_urban_areas
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
@@ -29,7 +31,9 @@ SELECT
        leisure,
        tourism,
        place,
-       waterway
+       waterway,
+       parking,
+       access
 FROM ne_50m_urban_areas_gen_z5
 WHERE scalerank <= 2
     ) /* DELAY_MATERIALIZED_VIEW_CREATION */ ;
@@ -46,7 +50,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z6_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z6
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -57,7 +63,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z6_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z6
 );
 
@@ -72,7 +80,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z7_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z7
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -83,7 +93,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z7_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z7
 );
 
@@ -98,7 +110,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z8_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z8
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -109,7 +123,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z8_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z8
 );
 
@@ -124,7 +140,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z9_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z9
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -135,7 +153,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z9_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z9
 );
 
@@ -150,7 +170,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z10_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z10
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -161,7 +183,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z10_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z10
 );
 
@@ -176,7 +200,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z11_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z11
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -187,7 +213,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z11_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z11
 );
 
@@ -202,7 +230,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z12_union AS
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z12
 		 WHERE landuse <> 'residential'
        UNION ALL
@@ -213,7 +243,9 @@ CREATE OR REPLACE VIEW osm_landuse_polygon_gen_z12_union AS
               '' AS leisure,
               '' AS tourism,
               '' AS place,
-              '' AS waterway
+              '' AS waterway,
+              '' AS parking,
+              '' AS access
          FROM osm_residential_gen_z12
 );
 
@@ -225,7 +257,9 @@ CREATE OR REPLACE FUNCTION layer_landuse(bbox geometry, zoom_level int)
             (
                 osm_id   bigint,
                 geometry geometry,
-                class    text
+                class    text,
+                subclass    text,
+                access    text
             )
 AS
 $$
@@ -239,7 +273,9 @@ SELECT osm_id,
                NULLIF(tourism, ''),
                NULLIF(place, ''),
                NULLIF(waterway, '')
-           )) AS class
+           )) AS class,
+       NULLIF(parking, '') as subclass,
+       CASE WHEN access IN ('private', 'no') THEN 'no' END AS access
 FROM (
          -- etldoc: ne_50m_urban_areas_gen_z4 -> layer_landuse:z4
          SELECT osm_id,
@@ -249,7 +285,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM ne_50m_urban_areas_gen_z4
          WHERE zoom_level = 4
          UNION ALL
@@ -261,7 +299,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM ne_50m_urban_areas_gen_z5
          WHERE zoom_level = 5
          UNION ALL
@@ -273,7 +313,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z6_union
          WHERE zoom_level = 6
          UNION ALL
@@ -285,7 +327,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z7_union
          WHERE zoom_level = 7
          UNION ALL
@@ -297,7 +341,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z8_union
          WHERE zoom_level = 8
          UNION ALL
@@ -309,7 +355,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z9_union
          WHERE zoom_level = 9
          UNION ALL
@@ -321,7 +369,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z10_union
          WHERE zoom_level = 10
          UNION ALL
@@ -333,7 +383,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z11_union
          WHERE zoom_level = 11
          UNION ALL
@@ -345,7 +397,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z12_union
          WHERE zoom_level = 12
          UNION ALL
@@ -357,7 +411,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon_gen_z13
          WHERE zoom_level = 13
          UNION ALL
@@ -369,7 +425,9 @@ FROM (
                 leisure,
                 tourism,
                 place,
-                waterway
+                waterway,
+                parking,
+                access
          FROM osm_landuse_polygon
          WHERE zoom_level >= 14
      ) AS zoom_levels
