@@ -82,6 +82,8 @@ layer:
           subclass: ['bar', 'nightclub']
         harbor:
           subclass: ['marina', 'dock']
+        beach: 
+          subclass: ['beach']
         car:
           subclass: ['car', 'car_repair', 'car_parts', 'taxi']
         hospital:
