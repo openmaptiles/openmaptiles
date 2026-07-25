@@ -56,7 +56,7 @@ CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
 AS
 $$
 SELECT geometry,
-       osm_id,
+       CASE WHEN osm_id < 0 THEN -osm_id * 10 + 4 ELSE osm_id * 10 + 1 END AS osm_id,
        render_height,
        render_min_height,
        COALESCE(colour, CASE material
