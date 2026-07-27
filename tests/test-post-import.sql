@@ -210,6 +210,18 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_polygon charging_station with name "OpenMapTiles Charging Station Brand" expected 1, got ' || cnt);
   END IF;
 
+  -- verify that farm shops are imported and classified as shops
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'farm'
+      AND mapping_key = 'shop'
+      AND tags->'name' = 'OpenMapTiles Farm Shop';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point farm shop expected 1, got ' || cnt);
+  END IF;
+  IF poi_class('farm', 'shop') <> 'shop' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
+  END IF;
+
 END;
 
 $$

@@ -38,6 +38,10 @@
   <node id="600010" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.1" />
   <node id="600011" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.1" />
   </node>
+  <node id="600012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.85" lon="-80.85">
+    <tag k="shop" v="farm"/>
+    <tag k="name" v="OpenMapTiles Farm Shop"/>
+  </node>
     <node id="6000012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.9" lon="-80.9">
     <tag k="amenity" v="charging_station"/>
     <tag k="name" v="OpenMapTiles Charging Station"/>
