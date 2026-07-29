@@ -174,7 +174,7 @@
         "text-halo-color": "hsla(0, 0%, 100%, 0.8)",
         "text-halo-width": 1
       },
-      "order": 241
+      "order": 243
     },
     {
       "id": "Airport gate labels",
@@ -215,7 +215,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 242
+      "order": 244
     }
   ]
 }
