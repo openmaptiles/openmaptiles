@@ -8360,6 +8360,100 @@
       "order": 195
     },
     {
+      "id": "Minor rail bridge",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "subclass",
+          "light_rail",
+          "tram"
+        ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 51%)",
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              12,
+              0.8
+            ],
+            [
+              15,
+              1.2
+            ],
+            [
+              20,
+              4
+            ]
+          ]
+        }
+      },
+      "order": 196
+    },
+    {
+      "id": "Minor rail bridge hatching",
+      "type": "line",
+      "metadata": {},
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "all",
+        [
+          "==",
+          "brunnel",
+          "bridge"
+        ],
+        [
+          "in",
+          "subclass",
+          "light_rail",
+          "tram"
+        ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(0, 0%, 73%)",
+        "line-dasharray": [
+          0.2,
+          4
+        ],
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              14.5,
+              0
+            ],
+            [
+              15,
+              2
+            ],
+            [
+              20,
+              6
+            ]
+          ]
+        }
+      },
+      "order": 197
+    },
+    {
       "id": "Major rail bridge service",
       "type": "line",
       "metadata": {},
@@ -8424,7 +8518,7 @@
           ]
         }
       },
-      "order": 196
+      "order": 198
     },
     {
       "id": "Major rail bridge",
@@ -8490,7 +8584,7 @@
           ]
         }
       },
-      "order": 197
+      "order": 199
     },
     {
       "id": "Major rail bridge hatching",
@@ -8539,7 +8633,7 @@
           ]
         }
       },
-      "order": 198
+      "order": 200
     },
     {
       "id": "Cablecar",
@@ -8572,7 +8666,7 @@
           ]
         }
       },
-      "order": 199
+      "order": 201
     },
     {
       "id": "Cablecar dash",
@@ -8609,7 +8703,7 @@
           ]
         }
       },
-      "order": 200
+      "order": 202
     },
     {
       "id": "Oneway path",
@@ -8653,7 +8747,7 @@
       "paint": {
         "icon-opacity": 1
       },
-      "order": 229
+      "order": 231
     },
     {
       "id": "Oneway",
@@ -8703,7 +8797,7 @@
       "paint": {
         "icon-opacity": 1
       },
-      "order": 230
+      "order": 232
     },
     {
       "id": "Oneway opposite",
@@ -8754,7 +8848,7 @@
       "paint": {
         "icon-opacity": 0.5
       },
-      "order": 231
+      "order": 233
     },
     {
       "id": "Ferry line",
@@ -8806,7 +8900,7 @@
           ]
         }
       },
-      "order": 232
+      "order": 234
     }
   ]
 }
