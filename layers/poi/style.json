@@ -177,7 +177,7 @@
           1
         ]
       },
-      "order": 208
+      "order": 210
     },
     {
       "id": "Waste",
@@ -253,7 +253,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 209
+      "order": 211
     },
     {
       "id": "Mortuary",
@@ -325,7 +325,7 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "order": 210
+      "order": 212
     },
     {
       "id": "Education",
@@ -396,7 +396,7 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "order": 211
+      "order": 213
     },
     {
       "id": "Outdoor",
@@ -470,7 +470,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 212
+      "order": 214
     },
     {
       "id": "Sport",
@@ -545,7 +545,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 0.2
       },
-      "order": 213
+      "order": 215
     },
     {
       "id": "Ferry",
@@ -623,7 +623,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 214
+      "order": 216
     },
     {
       "id": "Food",
@@ -701,7 +701,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 215
+      "order": 217
     },
     {
       "id": "Public",
@@ -787,7 +787,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 216
+      "order": 218
     },
     {
       "id": "Cultural",
@@ -874,7 +874,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 217
+      "order": 219
     },
     {
       "id": "Attraction",
@@ -940,7 +940,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 218
+      "order": 220
     },
     {
       "id": "Transport",
@@ -1061,7 +1061,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 219
+      "order": 221
     },
     {
       "id": "Health",
@@ -1211,7 +1211,7 @@
           1
         ]
       },
-      "order": 220
+      "order": 222
     },
     {
       "id": "Campsite",
@@ -1284,7 +1284,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 221
+      "order": 223
     },
     {
       "id": "Accommodation",
@@ -1358,7 +1358,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 222
+      "order": 224
     },
     {
       "id": "Place of worship",
@@ -1429,7 +1429,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 223
+      "order": 225
     },
     {
       "id": "Bus stop",
@@ -1509,7 +1509,7 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "order": 224
+      "order": 226
     },
     {
       "id": "Bus station",
@@ -1586,7 +1586,7 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "order": 225
+      "order": 227
     },
     {
       "id": "Harbor",
@@ -1654,7 +1654,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 0.3
       },
-      "order": 226
+      "order": 228
     },
     {
       "id": "Mall",
@@ -1731,7 +1731,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 227
+      "order": 229
     },
     {
       "id": "Train",
@@ -1803,7 +1803,7 @@
         ],
         "text-translate-anchor": "viewport"
       },
-      "order": 228
+      "order": 230
     },
     {
       "id": "Local park",
@@ -1881,7 +1881,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 244
+      "order": 246
     },
     {
       "id": "Zoo",
@@ -1959,7 +1959,7 @@
         "text-halo-color": "hsl(0, 0%, 100%)",
         "text-halo-width": 1
       },
-      "order": 246
+      "order": 248
     }
   ]
 }
