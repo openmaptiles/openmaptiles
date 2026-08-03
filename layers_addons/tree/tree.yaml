@@ -1,0 +1,20 @@
+layer:
+  id: "tree"
+  description: |
+      [Trees](http://wiki.openstreetmap.org/wiki/Tag:natural%3Dtree)
+  buffer_size: 4
+  fields:
+    leaf_type:
+      description: |
+        Type of leaf from [OSM](https://wiki.openstreetmap.org/wiki/Key:leaf_type).
+      values:
+        - broadleaved
+        - needleleaved
+  datasource:
+    geometry_field: geometry
+    query: (SELECT geometry, leaf_type FROM layer_tree(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+schema:
+  - ./layer.sql
+datasources:
+  - type: imposm3
+    mapping_file: ./mapping.yaml
