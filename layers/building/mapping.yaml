@@ -51,6 +51,9 @@ tables:
     - name: min_level
       key: min_level
       type: string
+    - name: name
+      key: name
+      type: string
     mapping:
       building:part:
       - __any__
@@ -123,6 +126,10 @@ tables:
       from_member: true
     - name: min_level
       key: min_level
+      type: string
+      from_member: true
+    - name: name
+      key: name
       type: string
       from_member: true
     - name: relbuildingheight

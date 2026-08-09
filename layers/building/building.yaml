@@ -9,7 +9,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, geometry, render_height, render_min_height, colour, hide_3d FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT osm_id, geometry, render_height, render_min_height, colour, hide_3d, name FROM layer_building(!bbox!, z(!scale_denominator!))) AS t
   fields:
     render_height: |
         An approximated height from levels and height of the building or building:part.
@@ -19,6 +19,10 @@ layer:
         Colour
     hide_3d: |
         If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d.
+    name: |
+        The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the building.
+        Set on at most one building per name and tile - the largest one - and omitted
+        when the same OSM object is already emitted by the `poi` layer, which labels it there.
 schema:
   - ./update_building.sql
   - ./building.sql

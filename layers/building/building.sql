@@ -17,6 +17,7 @@ SELECT
     COALESCE(CleanNumeric(min_level), CleanNumeric(buildingmin_level)) AS min_level,
     nullif(material, '') AS material,
     nullif(colour, '') AS colour,
+    nullif(name, '') AS name,
     FALSE AS hide_3d
 FROM osm_building_relation
 WHERE building = ''
@@ -34,6 +35,7 @@ SELECT
     COALESCE(CleanNumeric(obp.min_level), CleanNumeric(obp.buildingmin_level)) AS min_level,
     nullif(obp.material, '') AS material,
     nullif(obp.colour, '') AS colour,
+    nullif(obp.name, '') AS name,
     obr.role IS NOT NULL AS hide_3d
 FROM osm_building_polygon obp
          LEFT JOIN osm_building_relation obr ON
@@ -43,6 +45,11 @@ FROM osm_building_polygon obp
 WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
     );
 
+-- CREATE OR REPLACE cannot change a function's return type, so an added or
+-- removed column below would fail the import into a database that still has
+-- the previous definition.
+DROP FUNCTION IF EXISTS layer_building(geometry, int);
+
 CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
     RETURNS TABLE
             (
@@ -51,10 +58,20 @@ CREATE OR REPLACE FUNCTION layer_building(bbox geometry, zoom_level int)
                 render_height     int,
                 render_min_height int,
                 colour            text,
-                hide_3d           boolean
+                hide_3d           boolean,
+                name              text
             )
 AS
 $$
+-- Buildings that the poi layer already emits as a POI of their own, keyed by
+-- the OSM object they were built from. Restricted to this tile so the lookup
+-- rides the geometry index instead of needing one on osm_id.
+WITH poi_ids AS MATERIALIZED (
+    -- etldoc: osm_poi_polygon -> layer_building:z14_
+    SELECT osm_id
+    FROM osm_poi_polygon
+    WHERE geometry && bbox
+)
 SELECT geometry,
        osm_id,
        render_height,
@@ -79,37 +96,52 @@ SELECT geometry,
                             WHEN 'sandstone' THEN '#b4a995' -- same as stone
                             WHEN 'clay' THEN '#9d8b75' -- same as mud
            END) AS colour,
-       CASE WHEN hide_3d THEN TRUE END AS hide_3d
+       CASE WHEN hide_3d THEN TRUE END AS hide_3d,
+       -- Only label the largest building of a group sharing the same name, and
+       -- only when that building is not a POI itself - the poi layer labels it.
+       CASE
+           WHEN name_rank = 1
+               AND NOT EXISTS(SELECT 1 FROM poi_ids WHERE poi_ids.osm_id = zoom_levels.osm_id)
+               THEN zoom_levels.name
+           END AS name
 FROM (
-         SELECT
-             -- etldoc: osm_building_block_gen_z13 -> layer_building:z13
-             osm_id,
-             geometry,
-             NULL::int AS render_height,
-             NULL::int AS render_min_height,
-             NULL::text AS material,
-             NULL::text AS colour,
-             FALSE AS hide_3d
-         FROM osm_building_block_gen_z13
-         WHERE zoom_level = 13
-           AND geometry && bbox
-         UNION ALL
-         SELECT
-                                  -- etldoc: osm_building_polygon -> layer_building:z14_
-             DISTINCT ON (osm_id) osm_id,
-                                  geometry,
-                                  ceil(COALESCE(height, levels * 3.66, 5))::int AS render_height,
-                                  floor(COALESCE(min_height, min_level * 3.66, 0))::int AS render_min_height,
-                                  material,
-                                  colour,
-                                  hide_3d
-         FROM osm_all_buildings
-         WHERE (levels IS NULL OR levels < 1000)
-           AND (min_level IS NULL OR min_level < 1000)
-           AND (height IS NULL OR height < 3000)
-           AND (min_height IS NULL OR min_height < 3000)
-           AND zoom_level >= 14
-           AND geometry && bbox
+         -- The window function must be evaluated after DISTINCT ON has removed
+         -- the duplicate osm_ids, otherwise they would skew the ranking.
+         SELECT *,
+                row_number() OVER (PARTITION BY name ORDER BY ST_Area(geometry) DESC) AS name_rank
+         FROM (
+                  SELECT
+                      -- etldoc: osm_building_block_gen_z13 -> layer_building:z13
+                      osm_id,
+                      geometry,
+                      NULL::int AS render_height,
+                      NULL::int AS render_min_height,
+                      NULL::text AS material,
+                      NULL::text AS colour,
+                      NULL::text AS name,
+                      FALSE AS hide_3d
+                  FROM osm_building_block_gen_z13
+                  WHERE zoom_level = 13
+                    AND geometry && bbox
+                  UNION ALL
+                  SELECT
+                                           -- etldoc: osm_building_polygon -> layer_building:z14_
+                      DISTINCT ON (osm_id) osm_id,
+                                           geometry,
+                                           ceil(COALESCE(height, levels * 3.66, 5))::int AS render_height,
+                                           floor(COALESCE(min_height, min_level * 3.66, 0))::int AS render_min_height,
+                                           material,
+                                           colour,
+                                           name,
+                                           hide_3d
+                  FROM osm_all_buildings
+                  WHERE (levels IS NULL OR levels < 1000)
+                    AND (min_level IS NULL OR min_level < 1000)
+                    AND (height IS NULL OR height < 3000)
+                    AND (min_height IS NULL OR min_height < 3000)
+                    AND zoom_level >= 14
+                    AND geometry && bbox
+              ) AS buildings
      ) AS zoom_levels
 ORDER BY render_height ASC, ST_YMin(geometry) DESC;
 $$ LANGUAGE SQL STABLE
