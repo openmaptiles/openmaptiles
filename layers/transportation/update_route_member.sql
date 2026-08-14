@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS transportation_route_member_coalesced
 (
     member            bigint,
     network           varchar,
+    cycle_network     varchar,  
+    route             varchar,
     ref               varchar,
     osm_id            bigint not null,
     role              varchar,
@@ -128,6 +130,8 @@ BEGIN
         SELECT DISTINCT ON (member, COALESCE(rel.network, ''), COALESCE(rel.ref, ''))
             rel.member,
             COALESCE(NULLIF(rel.network,''), gb_way.network, ir_way.network, '') AS network,
+            NULLIF(rel.cycle_network,'') AS cycle_network,
+            NULLIF(rel.route, '') AS route,
             COALESCE(rel.ref, '') AS ref,
             osm_id,
             role,
