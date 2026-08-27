@@ -4,6 +4,12 @@
   <node id="300002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.0" />
   <node id="300003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.1" lon="-80.1" />
   <node id="300004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.0" lon="-80.1" />
+  <node id="300005" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.2" lon="-80.0" />
+  <node id="300006" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.3" lon="-80.0" />
+  <node id="300007" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.3" lon="-80.1" />
+  <node id="300008" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.4" lon="-80.0" />
+  <node id="300009" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.5" lon="-80.0" />
+  <node id="300010" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.5" lon="-80.1" />
   <way id="3000" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
     <nd ref="300001" />
     <nd ref="300002" />
@@ -11,5 +17,19 @@
     <nd ref="300004" />
     <nd ref="300001" />
     <tag k="natural" v="wood"/>
+  </way>
+  <way id="3001" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="300005" />
+    <nd ref="300006" />
+    <nd ref="300007" />
+    <nd ref="300005" />
+    <tag k="leisure" v="dog_park"/>
+  </way>
+  <way id="3002" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="300008" />
+    <nd ref="300009" />
+    <nd ref="300010" />
+    <nd ref="300008" />
+    <tag k="leisure" v="playground"/>
   </way>
 </osm>
