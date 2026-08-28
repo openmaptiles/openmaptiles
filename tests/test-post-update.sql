@@ -42,6 +42,23 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(300, 'update', 'osm_landcover_polygon natural=wood expected 0, got ' || cnt);
   END IF;
 
+  SELECT COUNT(*) INTO cnt FROM osm_landcover_polygon WHERE mapping_key='leisure' AND subclass='dog_park';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'update', 'osm_landcover_polygon leisure=dog_park expected 2, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt
+  FROM layer_landcover(ST_MakeEnvelope(-20037508, -20037508, 20037508, 20037508, 3857), 14)
+  WHERE class='grass' AND subclass='dog_park';
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'update', 'layer_landcover grass/dog_park expected 2, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_landuse_polygon WHERE leisure='playground';
+  IF cnt <> 0 THEN
+    INSERT INTO omt_test_failures VALUES(300, 'update', 'osm_landuse_polygon leisure=playground expected 0, got ' || cnt);
+  END IF;
+
   -- Test 400: Verify new city added
   SELECT COUNT(DISTINCT relation_id) INTO cnt FROM osm_border_linestring WHERE admin_level=8;
   IF cnt <> 2 THEN

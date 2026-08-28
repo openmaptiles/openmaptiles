@@ -740,6 +740,7 @@
         [
           "in",
           "subclass",
+          "dog_park",
           "grass",
           "grassland",
           "golf_course"
@@ -899,6 +900,7 @@
           "farm",
           "farmland",
           "forest",
+          "dog_park",
           "grass",
           "grassland",
           "golf_course",

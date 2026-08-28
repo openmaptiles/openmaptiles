@@ -43,6 +43,7 @@ tables:
       - sand
       - dune
       leisure:
+      - dog_park
       - park
       - garden
       - golf_course

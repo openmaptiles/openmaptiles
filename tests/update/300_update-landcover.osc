@@ -13,5 +13,12 @@
       <nd ref="300001" />
       <tag k="natural" v="scrub"/>
     </way>
+    <way id="3002" timestamp="2020-01-02T00:00:00Z" version="2">
+      <nd ref="300008" />
+      <nd ref="300009" />
+      <nd ref="300010" />
+      <nd ref="300008" />
+      <tag k="leisure" v="dog_park"/>
+    </way>
   </modify>
 </osmChange>
