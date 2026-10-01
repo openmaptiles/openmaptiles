@@ -266,6 +266,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - supermarket
   - tailor
   - tattoo
+  - tea
   - ticket
   - tobacco
   - toys

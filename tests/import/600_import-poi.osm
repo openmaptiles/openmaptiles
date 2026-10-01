@@ -42,6 +42,10 @@
     <tag k="shop" v="farm"/>
     <tag k="name" v="OpenMapTiles Farm Shop"/>
   </node>
+  <node id="600013" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.86" lon="-80.86">
+    <tag k="shop" v="tea"/>
+    <tag k="name" v="OpenMapTiles Tea Shop"/>
+  </node>
     <node id="6000012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.9" lon="-80.9">
     <tag k="amenity" v="charging_station"/>
     <tag k="name" v="OpenMapTiles Charging Station"/>

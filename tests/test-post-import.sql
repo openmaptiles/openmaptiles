@@ -222,6 +222,18 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
   END IF;
 
+  -- verify that tea shops are imported and classified as shops
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'tea'
+      AND mapping_key = 'shop'
+      AND tags->'name' = 'OpenMapTiles Tea Shop';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point tea shop expected 1, got ' || cnt);
+  END IF;
+  IF poi_class('tea', 'shop') <> 'shop' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=tea');
+  END IF;
+
 END;
 
 $$

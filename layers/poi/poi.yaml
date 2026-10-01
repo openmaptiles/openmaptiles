@@ -23,7 +23,7 @@ layer:
                      'general', 'gift', 'hardware', 'hearing_aids', 'hifi', 'interior_decoration',
                      'jewelry', 'kiosk', 'locksmith', 'lamps', 'mall', 'massage', 'motorcycle', 'mobile_phone',
                      'newsagent', 'optician', 'outdoor', 'paint', 'perfumery', 'perfume', 'pet', 'photo', 'second_hand', 
-                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'ticket', 'tobacco', 'toys', 'travel_agency',
+                     'shoes', 'sports', 'stationery', 'tailor', 'tattoo', 'tea', 'ticket', 'tobacco', 'toys', 'travel_agency',
                      'watches', 'weapons', 'wholesale']
         office:
           subclass: ['accountant', 'advertising_agency', 'architect', 'association', 'bail_bond_agent', 'charity',
