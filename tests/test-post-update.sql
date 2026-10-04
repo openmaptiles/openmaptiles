@@ -127,6 +127,12 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'update', 'osm_poi_polygon charging_station with name "OpenMapTiles Charging Station" expected 1, got ' || cnt);
   END IF;
 
+  -- Test 700
+  SELECT COUNT(*) INTO cnt FROM osm_all_buildings WHERE hide_3d AND height = 32;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(700, 'update', 'osm_all_buildings hide_3d for a building covered by parts expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$;

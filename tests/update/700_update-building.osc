@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osmChange version="0.6" generator="Manual" timestamp="2020-01-02T00:00:00Z">
+  <!--
+      Test 700: Buildings
+        Grow the small building part so that it covers most of its building
+  -->
+  <modify>
+    <node id="700013" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.0" lon="-80.99" />
+    <node id="700014" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.0" lon="-80.989" />
+    <node id="700015" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.0008" lon="-80.989" />
+    <node id="700016" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.0008" lon="-80.99" />
+    <way id="7003" timestamp="2020-01-02T00:00:00Z" version="1" visible="true">
+      <nd ref="700013" />
+      <nd ref="700014" />
+      <nd ref="700015" />
+      <nd ref="700016" />
+      <nd ref="700013" />
+      <tag k="building:part" v="yes"/>
+      <tag k="height" v="40"/>
+    </way>
+  </modify>
+</osmChange>

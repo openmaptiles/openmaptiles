@@ -18,7 +18,7 @@ layer:
     colour: |
         Colour
     hide_3d: |
-        If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d.
+        If True, building (part) should not be rendered in 3D. Currently, [building outlines](https://wiki.openstreetmap.org/wiki/Simple_3D_buildings) are marked as hide_3d, when they are the outline of a building relation or when building parts cover more than half of them.
 schema:
   - ./update_building.sql
   - ./building.sql

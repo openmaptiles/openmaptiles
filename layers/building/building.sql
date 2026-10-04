@@ -34,12 +34,15 @@ SELECT
     COALESCE(CleanNumeric(obp.min_level), CleanNumeric(obp.buildingmin_level)) AS min_level,
     nullif(obp.material, '') AS material,
     nullif(obp.colour, '') AS colour,
-    obr.role IS NOT NULL AS hide_3d
+    obr.role IS NOT NULL OR covered.osm_id IS NOT NULL AS hide_3d
 FROM osm_building_polygon obp
          LEFT JOIN osm_building_relation obr ON
         obp.osm_id >= 0 AND
         obr.member = obp.osm_id AND
         obr.role = 'outline'
+         -- etldoc: osm_building_covered_by_parts -> layer_building:z14_
+         LEFT JOIN osm_building_covered_by_parts covered ON
+        covered.osm_id = obp.osm_id
 WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
     );
 
@@ -116,5 +119,3 @@ $$ LANGUAGE SQL STABLE
                 -- STRICT
                 PARALLEL SAFE
                 ;
-
--- not handled: where a building outline covers building parts

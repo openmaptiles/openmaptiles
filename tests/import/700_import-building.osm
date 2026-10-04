@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Manual">
+  <node id="700001" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-81.0" />
+  <node id="700002" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.999" />
+  <node id="700003" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.001" lon="-80.999" />
+  <node id="700004" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.001" lon="-81.0" />
+  <node id="700005" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-81.0" />
+  <node id="700006" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.999" />
+  <node id="700007" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0008" lon="-80.999" />
+  <node id="700008" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0008" lon="-81.0" />
+  <node id="700009" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.99" />
+  <node id="700010" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0" lon="-80.989" />
+  <node id="700011" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.001" lon="-80.989" />
+  <node id="700012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.001" lon="-80.99" />
+  <node id="700013" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0002" lon="-80.9898" />
+  <node id="700014" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0002" lon="-80.9896" />
+  <node id="700015" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0004" lon="-80.9896" />
+  <node id="700016" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.0004" lon="-80.9898" />
+  <way id="7000" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="700001" />
+    <nd ref="700002" />
+    <nd ref="700003" />
+    <nd ref="700004" />
+    <nd ref="700001" />
+    <tag k="building" v="yes"/>
+    <tag k="height" v="31"/>
+  </way>
+  <way id="7001" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="700005" />
+    <nd ref="700006" />
+    <nd ref="700007" />
+    <nd ref="700008" />
+    <nd ref="700005" />
+    <tag k="building:part" v="yes"/>
+    <tag k="height" v="20"/>
+  </way>
+  <way id="7002" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="700009" />
+    <nd ref="700010" />
+    <nd ref="700011" />
+    <nd ref="700012" />
+    <nd ref="700009" />
+    <tag k="building" v="yes"/>
+    <tag k="height" v="32"/>
+  </way>
+  <way id="7003" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="700013" />
+    <nd ref="700014" />
+    <nd ref="700015" />
+    <nd ref="700016" />
+    <nd ref="700013" />
+    <tag k="building:part" v="yes"/>
+    <tag k="height" v="40"/>
+  </way>
+</osm>

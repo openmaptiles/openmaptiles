@@ -222,6 +222,17 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
   END IF;
 
+  -- Test 700
+  SELECT COUNT(*) INTO cnt FROM osm_all_buildings WHERE hide_3d;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(700, 'import', 'osm_all_buildings hide_3d expected 1, got ' || cnt);
+  END IF;
+
+  SELECT COUNT(*) INTO cnt FROM osm_all_buildings WHERE hide_3d AND height = 31;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(700, 'import', 'osm_all_buildings hide_3d for a building covered by parts expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$

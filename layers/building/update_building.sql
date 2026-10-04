@@ -136,6 +136,21 @@ SELECT osm.osm_id,
 CREATE INDEX ON osm_building_block_gen_z13 USING gist (geometry);
 CREATE UNIQUE INDEX ON osm_building_block_gen_z13 USING btree (osm_id);
 
+-- etldoc: osm_building_polygon -> osm_building_covered_by_parts
+-- Buildings that are covered by building parts for more than half of their area. Simple 3D Buildings
+-- does not use the outline of a building for 3D rendering when it has building parts.
+DROP MATERIALIZED VIEW IF EXISTS osm_building_covered_by_parts CASCADE;
+CREATE MATERIALIZED VIEW osm_building_covered_by_parts AS
+SELECT DISTINCT building.osm_id
+FROM osm_building_polygon part
+         JOIN osm_building_polygon building ON building.geometry && part.geometry
+WHERE part.buildingpart <> ''
+  AND building.buildingpart = ''
+GROUP BY building.osm_id, building.id
+HAVING ST_Area(ST_Intersection(building.geometry, ST_Union(part.geometry))) > 0.5 * ST_Area(building.geometry);
+
+CREATE UNIQUE INDEX ON osm_building_covered_by_parts USING btree (osm_id);
+
 -- Handle updates
 
 CREATE SCHEMA IF NOT EXISTS buildings;
@@ -163,6 +178,7 @@ BEGIN
     RAISE LOG 'Refresh buildings block';
     REFRESH MATERIALIZED VIEW osm_building_block_gen1_dup;
     REFRESH MATERIALIZED VIEW osm_building_block_gen_z13;
+    REFRESH MATERIALIZED VIEW osm_building_covered_by_parts;
     -- noinspection SqlWithoutWhere
     DELETE FROM buildings.updates;
 
