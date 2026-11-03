@@ -209,6 +209,10 @@ expressway_field: &expressway
   key: expressway
   name: expressway
   type: bool
+motorroad_field: &motorroad
+  key: motorroad
+  name: motorroad
+  type: bool
 
 tables:
 # etldoc: imposm3 -> osm_highway_linestring
@@ -261,6 +265,7 @@ tables:
     - *informal
     - *surface
     - *expressway
+    - *motorroad
     mapping:
       highway:
       - motorway
