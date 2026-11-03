@@ -10,6 +10,7 @@
       <nd ref="500022" />
       <tag k="highway" v="primary"/>
       <tag k="expressway" v="yes"/>
+      <tag k="motorroad" v="yes"/>
       <tag k="name" v="OpenMapTiles Primary"/>
     </way>
     <!-- Change tags -->

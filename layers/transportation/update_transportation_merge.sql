@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z11(
     is_tunnel boolean,
     is_ford boolean,
     expressway boolean,
+    motorroad boolean,
     z_order integer,
     bicycle character varying,
     foot character varying,
@@ -209,7 +210,7 @@ TRUNCATE osm_transportation_merge_linestring_gen_z11_source_ids;
 -- Merge LineStrings from osm_highway_linestring_gen_z11 by grouping them and creating intersecting clusters of
 -- each group via ST_ClusterDBSCAN
 INSERT INTO osm_transportation_merge_linestring_gen_z11 (geometry, source_ids, highway, network, construction,
-                                                         is_bridge, is_tunnel, is_ford, expressway, z_order,
+                                                         is_bridge, is_tunnel, is_ford, expressway, motorroad, z_order,
                                                          bicycle, foot, horse, mtb_scale, sac_scale, operator,
                                                          informal, access, toll, layer)
 SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
@@ -230,6 +231,7 @@ SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
        is_tunnel,
        is_ford,
        expressway,
+       motorroad,
        min(z_order) as z_order,
        bicycle,
        foot,
@@ -248,15 +250,15 @@ FROM (
            -- Get intersecting clusters by setting minimum distance to 0 and minimum intersecting points to 1
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
-               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle,
-                            foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
+               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad,
+                            bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
-               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle,
-                        foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
+               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad,
+                        bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) as cluster_group
     FROM (
         -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
@@ -269,6 +271,7 @@ FROM (
                visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
                visible_brunnel(geometry, is_ford, 11) AS is_ford,
                expressway,
+               motorroad,
                z_order,
                bicycle,
                foot,
@@ -283,7 +286,7 @@ FROM (
         FROM osm_highway_linestring_gen_z11
     ) osm_highway_linestring_normalized_brunnel_z11
 ) q
-GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
+GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad,
          bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer;
 
 -- Geometry Index
@@ -387,6 +390,7 @@ BEGIN
         visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
         visible_brunnel(geometry, is_ford, 11) AS is_ford,
         expressway,
+        motorroad,
         z_order,
         bicycle,
         foot,
@@ -411,7 +415,8 @@ BEGIN
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order,
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
                                    operator = excluded.operator, informal = excluded.informal,
@@ -441,6 +446,7 @@ BEGIN
         visible_brunnel(geometry, is_tunnel, 10) AS is_tunnel,
         visible_brunnel(geometry, is_ford, 10) AS is_ford,
         expressway,
+        motorroad,
         z_order,
         bicycle,
         foot,
@@ -461,7 +467,8 @@ BEGIN
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order,
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order,
                                    bicycle = excluded.bicycle, foot = excluded.foot, horse = excluded.horse,
                                    mtb_scale = excluded.mtb_scale, sac_scale = excluded.sac_scale,
                                    operator = excluded.operator, informal = excluded.informal,
@@ -501,6 +508,7 @@ CREATE TABLE IF NOT EXISTS osm_transportation_merge_linestring_gen_z8(
     is_tunnel boolean,
     is_ford boolean,
     expressway boolean,
+    motorroad boolean,
     z_order integer
 );
 
@@ -561,7 +569,7 @@ ANALYZE osm_transportation_merge_linestring_gen_z9;
 -- Merge LineStrings from osm_transportation_merge_linestring_gen_z9 by grouping them and creating intersecting
 -- clusters of each group via ST_ClusterDBSCAN
 INSERT INTO osm_transportation_merge_linestring_gen_z8(geometry, source_ids, highway, network, construction, is_bridge,
-                                                       is_tunnel, is_ford, expressway, z_order)
+                                                       is_tunnel, is_ford, expressway, motorroad, z_order)
 SELECT (ST_Dump(ST_Simplify(ST_LineMerge(ST_Union(geometry)), ZRes(10)))).geom AS geometry,
        -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
        -- merge. https://postgis.net/docs/ST_Union.html
@@ -580,19 +588,20 @@ SELECT (ST_Dump(ST_Simplify(ST_LineMerge(ST_Union(geometry)), ZRes(10)))).geom A
        is_tunnel,
        is_ford,
        expressway,
+       motorroad,
        min(z_order) as z_order
 FROM (
     SELECT osm_highway_linestring_normalized_brunnel_z9.*,
            -- Get intersecting clusters by setting minimum distance to 0 and minimum intersecting points to 1
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
-               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
-               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
            ) as cluster_group
     FROM (
         -- Remove bridge/tunnel/ford attributes from short sections of road so they can be merged
@@ -605,6 +614,7 @@ FROM (
                visible_brunnel(geometry, is_tunnel, 9) AS is_tunnel,
                visible_brunnel(geometry, is_ford, 9) AS is_ford,
                expressway,
+               motorroad,
                z_order
         FROM osm_transportation_merge_linestring_gen_z9
         WHERE (
@@ -613,7 +623,7 @@ FROM (
         ) AND ST_IsValid(geometry) AND access IS NULL
     ) osm_highway_linestring_normalized_brunnel_z9
 ) q
-GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway;
+GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad;
 
 -- Geometry Index
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z8_geometry_idx
@@ -735,9 +745,11 @@ BEGIN
                 is_tunnel, 
                 is_ford,
                 expressway,
+                motorroad,
                 z_order
         FROM osm_transportation_merge_linestring_gen_z8
-        GROUP BY id, osm_id, highway, construction, network, is_bridge, is_tunnel, is_ford, expressway, z_order
+        GROUP BY id, osm_id, highway, construction, network, is_bridge, is_tunnel, is_ford, expressway, motorroad,
+                 z_order
         ),
     roads_z8_merge AS (
         SELECT  id,
@@ -752,9 +764,10 @@ BEGIN
                 is_tunnel,
                 is_ford,
                 expressway,
+                motorroad,
                 z_order
     FROM roads_z8
-    GROUP BY id, osm_id, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, z_order
+    GROUP BY id, osm_id, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad, z_order
     )
 
     SELECT  CASE
@@ -772,6 +785,7 @@ BEGIN
             visible_brunnel(geometry, is_tunnel, 8) AS is_tunnel,
             visible_brunnel(geometry, is_ford, 8) AS is_ford,
             expressway,
+            motorroad,
             z_order
     FROM roads_z8_merge
         -- Current view: motorway/trunk/primary
@@ -785,7 +799,8 @@ BEGIN
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order;
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order;
 
     -- Analyze source table
     ANALYZE osm_transportation_merge_linestring_gen_z7;
@@ -811,6 +826,7 @@ BEGIN
         visible_brunnel(geometry, is_tunnel, 7) AS is_tunnel,
         visible_brunnel(geometry, is_ford, 7) AS is_ford,
         expressway,
+        motorroad,
         z_order
     FROM osm_transportation_merge_linestring_gen_z7
     -- Current view: motorway/trunk/primary
@@ -825,7 +841,8 @@ BEGIN
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order;
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order;
 
     -- Analyze source table
     ANALYZE osm_transportation_merge_linestring_gen_z6;
@@ -860,6 +877,7 @@ BEGIN
             visible_brunnel(geometry, is_tunnel, 6) AS is_tunnel,
             visible_brunnel(geometry, is_ford, 6) AS is_ford,
             expressway,
+            motorroad,
             z_order
         FROM osm_transportation_merge_linestring_gen_z6
         WHERE
@@ -883,9 +901,10 @@ BEGIN
             bool_or(is_tunnel) AS is_tunnel,
             bool_or(is_ford) AS is_ford,
             bool_or(expressway) AS expressway,
+            bool_or(motorroad) AS motorroad,
             min(z_order) AS z_order
         FROM normalized_z6
-        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
     )
     -- Step 3: Apply final length filtering after merge
     SELECT geometry,
@@ -898,13 +917,15 @@ BEGIN
         is_tunnel,
         is_ford,
         expressway,
+        motorroad,
         z_order
     FROM merged_z5
     WHERE ST_Length(geometry) > 500  -- Drop small chunks after merge
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order;
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order;
 
     -- Analyze source table
     ANALYZE osm_transportation_merge_linestring_gen_z5;
@@ -938,6 +959,7 @@ BEGIN
             visible_brunnel(geometry, is_tunnel, 5) AS is_tunnel,
             visible_brunnel(geometry, is_ford, 5) AS is_ford,
             expressway,
+            motorroad,
             z_order
         FROM osm_transportation_merge_linestring_gen_z5
         WHERE
@@ -961,9 +983,10 @@ BEGIN
             bool_or(is_tunnel) AS is_tunnel,
             bool_or(is_ford) AS is_ford,
             bool_or(expressway) AS expressway,
+            bool_or(motorroad) AS motorroad,
             min(z_order) AS z_order
         FROM normalized_z5
-        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+        GROUP BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
     )
     -- Step 3: Apply final length filtering after merge
     SELECT geometry,
@@ -976,13 +999,15 @@ BEGIN
         is_tunnel,
         is_ford,
         expressway,
+        motorroad,
         z_order
     FROM merged_z4
     WHERE ST_Length(geometry) > 1000  -- Drop small chunks after merge
     ON CONFLICT (id) DO UPDATE SET osm_id = excluded.osm_id, highway = excluded.highway, network = excluded.network,
                                    construction = excluded.construction, is_bridge = excluded.is_bridge,
                                    is_tunnel = excluded.is_tunnel, is_ford = excluded.is_ford,
-                                   expressway = excluded.expressway, z_order = excluded.z_order;
+                                   expressway = excluded.expressway, motorroad = excluded.motorroad,
+                                   z_order = excluded.z_order;
 
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.changes_z4_z5_z6_z7;
@@ -1142,7 +1167,7 @@ BEGIN
            visible_brunnel(geometry, is_bridge, 11) AS is_bridge,
            visible_brunnel(geometry, is_tunnel, 11) AS is_tunnel,
            visible_brunnel(geometry, is_ford, 11) AS is_ford,
-           expressway, bicycle, foot, horse, mtb_scale, sac_scale, operator, informal,
+           expressway, motorroad, bicycle, foot, horse, mtb_scale, sac_scale, operator, informal,
            CASE WHEN access IN ('private', 'no') THEN 'no' ELSE NULL::text END AS access, toll,
            visible_layer(geometry, layer, 11) AS layer, z_order
     -- Table containing the IDs of all Source-LineStrings affected by this update
@@ -1173,7 +1198,7 @@ BEGIN
            visible_brunnel(m.geometry, m.is_bridge, 11) AS is_bridge,
            visible_brunnel(m.geometry, m.is_tunnel, 11) AS is_tunnel,
            visible_brunnel(m.geometry, m.is_ford, 11) AS is_ford,
-           m.expressway, m.bicycle, m.foot, m.horse, m.mtb_scale, m.sac_scale,
+           m.expressway, m.motorroad, m.bicycle, m.foot, m.horse, m.mtb_scale, m.sac_scale,
            m.operator, m.informal, m.access, m.toll,
            visible_layer(m.geometry, m.layer, 11) AS layer, m.z_order
     FROM linestrings_to_merge
@@ -1201,15 +1226,15 @@ BEGIN
            -- Get intersecting clusters by setting minimum distance to 0 and minimum intersecting points to 1
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
-               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot,
-               horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
+               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad,
+               bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
-               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, bicycle, foot, horse,
-               mtb_scale, sac_scale, operator, informal, access, toll, layer
+               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad, bicycle,
+               foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
            ) as cluster_group
     FROM linestrings_to_merge;
 
@@ -1224,8 +1249,9 @@ BEGIN
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z11(geometry, new_source_ids, old_source_ids, highway,
                                                                 network, construction, is_bridge, is_tunnel, is_ford,
-                                                                expressway, z_order, bicycle, foot, horse, mtb_scale,
-                                                                sac_scale, operator, informal, access, toll, layer)
+                                                                expressway, motorroad, z_order, bicycle, foot, horse,
+                                                                mtb_scale, sac_scale, operator, informal, access, toll,
+                                                                layer)
         SELECT (ST_Dump(ST_LineMerge(ST_Union(geometry)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
                -- merge. https://postgis.net/docs/ST_Union.html
@@ -1243,6 +1269,7 @@ BEGIN
                is_tunnel,
                is_ford,
                expressway,
+               motorroad,
                min(z_order) as z_order,
                bicycle,
                foot,
@@ -1256,7 +1283,7 @@ BEGIN
                layer
         FROM clustered_linestrings_to_merge
         GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
-                 bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
+                 motorroad, bicycle, foot, horse, mtb_scale, sac_scale, operator, informal, access, toll, layer
         RETURNING id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources.
@@ -1436,7 +1463,7 @@ BEGIN
     SELECT id AS source_id, NULL::INT AS id, NULL::INT[] AS source_ids, geometry, highway, network, construction,
            visible_brunnel(geometry, is_bridge, 9) AS is_bridge,
            visible_brunnel(geometry, is_tunnel, 9) AS is_tunnel,
-           visible_brunnel(geometry, is_ford, 9) AS is_ford, expressway, z_order
+           visible_brunnel(geometry, is_ford, 9) AS is_ford, expressway, motorroad, z_order
     -- Create a table containing the IDs of all Source-LineStrings affected by this update
     FROM (
         -- Get Source-LineString-IDs of deleted or updated elements
@@ -1470,7 +1497,7 @@ BEGIN
            )::INT[] AS source_ids, m.geometry, m.highway, m.network, m.construction,
            visible_brunnel(m.geometry, m.is_bridge, 9) AS is_bridge,
            visible_brunnel(m.geometry, m.is_tunnel, 9) AS is_tunnel,
-           visible_brunnel(m.geometry, m.is_ford, 9) AS is_ford, m.expressway, m.z_order
+           visible_brunnel(m.geometry, m.is_ford, 9) AS is_ford, m.expressway, m.motorroad, m.z_order
     FROM linestrings_to_merge
     JOIN osm_transportation_merge_linestring_gen_z8 m ON (ST_Intersects(linestrings_to_merge.geometry, m.geometry));
 
@@ -1496,13 +1523,13 @@ BEGIN
            -- Get intersecting clusters by setting minimum distance to 0 and minimum intersecting points to 1
            -- https://postgis.net/docs/ST_ClusterDBSCAN.html
            ST_ClusterDBSCAN(geometry, 0, 1) OVER (
-               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+               PARTITION BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
            ) AS cluster,
            -- ST_ClusterDBSCAN returns an increasing integer as the cluster-ids within each partition starting at 0.
            -- This leads to clusters having the same ID across multiple partitions therefore we generate a
            -- Cluster-Group-ID by utilizing the DENSE_RANK function sorted over the partition columns.
            DENSE_RANK() OVER (
-               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+               ORDER BY highway, network, construction, is_bridge, is_tunnel, is_ford, expressway, motorroad
            ) as cluster_group
     FROM linestrings_to_merge;
 
@@ -1519,7 +1546,7 @@ BEGIN
         -- Merge LineStrings of each cluster and insert them
         INSERT INTO osm_transportation_merge_linestring_gen_z8(geometry, new_source_ids, old_source_ids, highway,
                                                                network, construction, is_bridge, is_tunnel, is_ford,
-                                                               expressway, z_order)
+                                                               expressway, motorroad, z_order)
         SELECT (ST_Dump(ST_Simplify(ST_LineMerge(ST_Union(geometry)), ZRes(10)))).geom AS geometry,
                -- We use St_Union instead of St_Collect to ensure no overlapping points exist within the geometries to
                -- merge. https://postgis.net/docs/ST_Union.html
@@ -1537,9 +1564,11 @@ BEGIN
             is_tunnel,
             is_ford,
             expressway,
+            motorroad,
             min(z_order) as z_order
         FROM clustered_linestrings_to_merge
-        GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway
+        GROUP BY cluster_group, cluster, highway, network, construction, is_bridge, is_tunnel, is_ford, expressway,
+                 motorroad
         RETURNING id, new_source_ids, old_source_ids, geometry
     )
     -- Store OSM-IDs of Source-LineStrings by intersecting Merged-LineStrings with their sources. This required because
