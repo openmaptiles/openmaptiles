@@ -222,6 +222,24 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
   END IF;
 
+  -- verify that elevators are imported as points and as areas, with their level
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'elevator'
+      AND mapping_key = 'highway'
+      AND level = -1;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point elevator with level -1 expected 1, got ' || cnt);
+  END IF;
+  SELECT COUNT(*) INTO cnt FROM osm_poi_polygon
+    WHERE subclass = 'elevator'
+      AND mapping_key = 'highway';
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_polygon elevator expected 1, got ' || cnt);
+  END IF;
+  IF poi_class('elevator', 'highway') <> 'elevator' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected elevator for highway=elevator');
+  END IF;
+
 END;
 
 $$

@@ -127,6 +127,15 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'update', 'osm_poi_polygon charging_station with name "OpenMapTiles Charging Station" expected 1, got ' || cnt);
   END IF;
 
+  -- for elevator
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE subclass = 'elevator'
+      AND mapping_key = 'highway'
+      AND level = 0;
+  IF cnt <> 1 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'update', 'osm_poi_point elevator with level 0 expected 1, got ' || cnt);
+  END IF;
+
 END;
 
 $$;

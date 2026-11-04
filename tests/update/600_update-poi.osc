@@ -4,6 +4,7 @@
       Test 600: POIs
         Change atm's network
         Remove Parcel locker name and leave brand
+        Move the elevator to another level
   -->
   <modify>
     <node id="600003" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.4" lon="-80.4">
@@ -18,6 +19,10 @@
     <node id="600007" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.8" lon="-80.8">
       <tag k="amenity" v="charging_station"/>
       <tag k="brand" v="OpenMapTiles Charging Station Brand"/>
+    </node>
+    <node id="600013" visible="true" timestamp="2020-01-02T00:00:00Z" version="1" lat="35.95" lon="-80.95">
+      <tag k="highway" v="elevator"/>
+      <tag k="level" v="0"/>
     </node>
     <way id="6000" timestamp="2020-01-02T00:00:00Z" version="1" visible="true">
       <nd ref="600008" />
