@@ -42,6 +42,14 @@
     <tag k="shop" v="farm"/>
     <tag k="name" v="OpenMapTiles Farm Shop"/>
   </node>
+  <node id="600013" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.95" lon="-80.95">
+    <tag k="highway" v="elevator"/>
+    <tag k="level" v="-1"/>
+  </node>
+  <node id="600014" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.2" lon="-80.0" />
+  <node id="600015" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.2001" lon="-80.0" />
+  <node id="600016" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.2001" lon="-80.0001" />
+  <node id="600017" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="34.2" lon="-80.0001" />
     <node id="6000012" visible="true" timestamp="2019-01-01T00:00:00Z" version="1" lat="35.9" lon="-80.9">
     <tag k="amenity" v="charging_station"/>
     <tag k="name" v="OpenMapTiles Charging Station"/>
@@ -55,5 +63,14 @@
     <nd ref="600008" />
     <tag k="amenity" v="charging_station"/>
     <tag k="brand" v="OpenMapTiles Charging Station Brand"/>
+  </way>
+  <way id="6001" timestamp="2019-01-01T00:00:00Z" version="1" visible="true">
+    <nd ref="600014" />
+    <nd ref="600015" />
+    <nd ref="600016" />
+    <nd ref="600017" />
+    <nd ref="600014" />
+    <tag k="highway" v="elevator"/>
+    <tag k="building:part" v="elevator"/>
   </way>
 </osm>
