@@ -109,7 +109,7 @@ layer:
         fuel:
           subclass: ['fuel', 'charging_station']
         zoo:
-          subclass: ['zoo', enclosure', 'petting_zoo', 'aviary', 'wildlife_park', 'birds', 'safari_park', 'butterfly', 'falconry', 'reptile', 'terrarium']
+          subclass: ['zoo', 'enclosure', 'petting_zoo', 'aviary', 'wildlife_park', 'birds', 'safari_park', 'butterfly', 'falconry', 'reptile', 'terrarium']
     subclass:
       description: |
           Original value of either the

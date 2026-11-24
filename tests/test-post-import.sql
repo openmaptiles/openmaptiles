@@ -222,6 +222,11 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
   END IF;
 
+  -- verify that every zoo=* value is classified as zoo
+  IF poi_class('enclosure', 'zoo') <> 'zoo' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected zoo for zoo=enclosure, got ' || poi_class('enclosure', 'zoo'));
+  END IF;
+
 END;
 
 $$
