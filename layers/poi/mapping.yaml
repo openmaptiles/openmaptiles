@@ -200,6 +200,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - bed
   - beverages
   - bicycle
+  - boat
   - books
   - boutique
   - butcher
@@ -259,6 +260,7 @@ def_poi_mapping_shop: &poi_mapping_shop
   - perfumery
   - pet
   - photo
+  - seafood
   - second_hand
   - shoes
   - sports

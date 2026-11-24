@@ -222,6 +222,21 @@ BEGIN
     INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=farm');
   END IF;
 
+  -- verify that boat and seafood shops are imported and classified as shops (#1800)
+  SELECT COUNT(*) INTO cnt FROM osm_poi_point
+    WHERE mapping_key = 'shop'
+      AND (subclass, tags->'name') IN (('boat', 'OpenMapTiles Boat Shop'),
+                                       ('seafood', 'OpenMapTiles Seafood Shop'));
+  IF cnt <> 2 THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'osm_poi_point boat and seafood shops expected 2, got ' || cnt);
+  END IF;
+  IF poi_class('boat', 'shop') <> 'shop' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=boat');
+  END IF;
+  IF poi_class('seafood', 'shop') <> 'shop' THEN
+    INSERT INTO omt_test_failures VALUES(600, 'import', 'poi_class expected shop for shop=seafood');
+  END IF;
+
 END;
 
 $$
