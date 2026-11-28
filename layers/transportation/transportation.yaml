@@ -41,7 +41,7 @@ layer:
         minor:
           highway: ['unclassified', 'residential', 'living_street', 'road']
         path:
-          highway: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+          highway: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'ladder', 'bridleway', 'corridor']
           public_transport: 'platform'
         service:
           highway: service
@@ -83,7 +83,7 @@ layer:
           __AND__:
             - highway: construction
             - __OR__:
-                construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'bridleway', 'corridor']
+                construction: ['pedestrian', 'path', 'footway', 'cycleway', 'steps', 'ladder', 'bridleway', 'corridor']
                 public_transport: platform
         service_construction:
           __AND__:
@@ -118,6 +118,7 @@ layer:
       - footway
       - cycleway
       - steps
+      - ladder
       - bridleway
       - corridor
       - platform
